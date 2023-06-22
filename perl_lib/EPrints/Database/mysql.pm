@@ -32,6 +32,7 @@ Foreign keys will be defined if you use a DB engine that supports them
     $c->{dbuser} = 'bob';
     $c->{dbpass} = 'asecret';
     # $c->{dbengine} = 'InnoDB';
+    # $c->{dbcharset} = 'utf8mb4'
 
 =head2 MySQL-specific Annoyances
 
@@ -273,8 +274,9 @@ sub connect
 	{
 		# always try to reconnect
 		$self->{dbh}->{mysql_auto_reconnect} = 1;
+		$self->{dbh}->{mysql_enable_utf8mb4} = 1;
 
-		$self->do("SET NAMES 'utf8'");
+		$self->do("SET NAMES '".$self->get_default_charset."'");
 		$self->do('SET @@session.optimizer_search_depth = 3;');
 	}
 	elsif( $DBI::err == 1040 )
@@ -480,12 +482,22 @@ sub _cache_from_SELECT
 
 =item $charset = $db->get_default_charset
 
-Return the character set to use.  Always C<utf8>.
+Return the character set to use.  Configured by C<$c-E<gt>{dbcharset}> or
+C<uff8> if undefined.
 
 =cut
 ######################################################################
 
-sub get_default_charset { "utf8" }
+sub get_default_charset 
+{  
+	my( $self ) = @_;
+	
+	if ( $self->{session}->config( "dbcharset" ) )
+	{
+		return $self->{session}->config( "dbcharset" );	
+	}
+	return 'utf8';
+}
 
 
 ######################################################################
@@ -493,7 +505,8 @@ sub get_default_charset { "utf8" }
 
 =item $collation = $db->get_default_collation( $lang )
 
-Return the collation to use for language C<$lang>. Always C<utf8_bin>.
+Return the collation to use for language C<$lang>. C<utf8_bin> or 
+C<utf8mb4_bin> depending on C<$c-E<gt>{dbcharset}>.
 
 =cut
 ######################################################################
@@ -502,9 +515,37 @@ sub get_default_collation
 {
 	my( $self, $langid ) = @_;
 
+	if ( $self->{session}->config( "dbcharset" ) )
+        {
+                return $self->{session}->config( "dbcharset" ) . "_bin";
+        }
+
 	return "utf8_bin";
 }
 
+######################################################################
+=pod
+
+=item $collation = $db->get_default_ci_collation( $lang )
+
+Return the case-insensitive collation to use for language C<$lang>. 
+C<utf8_general_ci> or C<utf8mb4_general_ci> depending on
+C<$c-E<gt>{dbcharset}>.
+
+=cut
+######################################################################
+
+sub get_default_ci_collation
+{
+        my( $self, $langid ) = @_;
+
+        if ( $self->{session}->config( "dbcharset" ) )
+        {
+                return $self->{session}->config( "dbcharset" ) . "_general_ci";
+        }
+
+        return "utf8_general_ci";
+}
 
 ######################################################################
 =pod
@@ -694,7 +735,7 @@ sub prepare_regexp
 =item $sql = $db->sql_LIKE()
 
 Returns the syntactic glue to use when making a case-insensitive
-C<LIKE> using C<utf8_general_ci> collation.
+C<LIKE> using C<get_default_ci_collation> collation.
 
 =cut
 ######################################################################
@@ -703,7 +744,7 @@ sub sql_LIKE
 {
 	my( $self ) = @_;
 
-	return " COLLATE utf8_general_ci LIKE ";
+	return " COLLATE ".$self->get_default_ci_collation." LIKE ";
 }
 
 
@@ -730,7 +771,7 @@ sub ci_lookup
 	my $sql =
 		"SELECT ".$self->quote_identifier( $field->get_sql_name ).
 		" FROM ".$self->quote_identifier( $table ).
-		" WHERE ".$self->quote_identifier( $field->get_sql_name )."=".$self->quote_value( $value )." COLLATE utf8_general_ci";
+		" WHERE ".$self->quote_identifier( $field->get_sql_name )."=".$self->quote_value( $value )." COLLATE " . $self->get_default_ci_collation;
 
 	my $sth = $self->prepare( $sql );
 	$self->execute( $sth, $sql );

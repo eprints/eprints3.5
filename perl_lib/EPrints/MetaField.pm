@@ -1767,7 +1767,7 @@ sub form_value_basic
 	$value=~s/[\n\r]+/ /gs;
 
 	# replace UTF8-MB4 characters with a �
-	$value=~s/[^\N{U+0000}-\N{U+FFFF}]/\N{REPLACEMENT CHARACTER}/g;
+	$value=~s/[^\N{U+0000}-\N{U+FFFF}]/\N{REPLACEMENT CHARACTER}/g if $session->config( 'dbcharset' ) ne "utf8mb4";
 
 	return $value;
 }

@@ -954,6 +954,7 @@ sub config_db
 	$config{dbuser} = $repoid;
 	$config{dbpass} = undef;
 	$config{dbengine} = "InnoDB";
+	$config{dbcharset} = "utf8mb4";
 
 	print "\nConfiguring Database for: $repoid\n";
 
@@ -985,6 +986,8 @@ sub config_db
 
 	$config{dbengine} = EPrints::Utils::get_input( "(InnoDB|MyISAM)", 'Database Engine',  $config{dbengine} );
 
+	$config{dbcharset} = EPrints::Utils::get_input( "(utf8|utf8mb4)", 'Database Character Set',  $config{dbcharset} );
+
 	print "\n";
 	my $config_db = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Write these database settings?", "yes" );
 	if( $config_db eq "no" )
@@ -1005,6 +1008,7 @@ sub config_db
 			$config{dbuser},
 			$config{dbpass},
 			$config{dbengine},
+			$config{dbcharset},
 		],
 		[qw/
 			$c->{dbname} 
@@ -1014,6 +1018,7 @@ sub config_db
 			$c->{dbuser}
 			$c->{dbpass}
 			$c->{dbengine}
+			$c->{dbcharset}
 		/]
 	);
 	close DBCONF;
@@ -2596,6 +2601,8 @@ sub update_datasets
 		{
 			my $database = $repo->config( "dbname" );
 			my $table = $dataset->get_sql_rindex_table_name();
+			my $charset = defined $repo->config( "dbcharset" ) ? $repo->config( "dbcharset" ) : "utf8";
+			my $collation = $charset . "_bin";
 			foreach my $col (qw( field word ))
 			{
 				if ( $dry_run )
@@ -2613,12 +2620,14 @@ WHERE
 	TABLE_SCHEMA='$database' AND
 	TABLE_NAME='$table' AND
 	COLUMN_NAME='$col' AND
-	LOWER(COLLATION_NAME)!='utf8_bin'
+	LOWER(COLLATION_NAME)!='$collation'
 LIMIT 1
 EOS
 					$db->execute( $sth );
 					my( $collate ) = $sth->fetchrow_array or next;
-					$db->do("ALTER TABLE ".$db->quote_identifier($table)." CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin");
+					$db->do("SET FOREIGN_KEY_CHECKS = 0");
+					$db->do("ALTER TABLE ".$db->quote_identifier($table)." CONVERT TO CHARACTER SET $charset COLLATE $collation");
+					$db->do("SET FOREIGN_KEY_CHECKS = 1");
 					print "Fixed $table.$col collation\n" if $noise;
 				}
 				last;
@@ -2934,7 +2943,23 @@ sub upgrade_mysql_charset
 	}
 
 	print " collation is $collation: ";
-	if( 0 && $collation =~ /^utf8_/ )
+	if( 0 && $collation =~ /^utf8mb4_/ )
+        {
+                print " [ Failed ]\n";
+                print STDERR <<EOW;
+Warning! It looks like your database tables are already set to use
+UTF-8 MB4. If this is unexpected then any non-English characters in
+your database may be double-encoded. You would see this as corrupt
+characters when viewed from EPrints or a MySQL client. This
+situation is recoverable but can not be identified or fixed by
+this upgrade.
+
+The upgrade will continue.
+
+EOW
+                return;
+        }
+	elsif( 0 && $collation =~ /^utf8_/ )
 	{
 		print " [ Failed ]\n";
 		print STDERR <<EOW;
@@ -2965,8 +2990,9 @@ EOW
 
 	print " [ OK ]\n";
 
+	my $charset = defined $repo->config( 'dbcharset' ) ? $repo->config( 'dbcharset' ) : "utf8";
 	my $rc = $db->do("ALTER TABLE _utf8_test MODIFY version BINARY(255)");
-	$rc &&= $db->do("ALTER TABLE _utf8_test MODIFY version VARCHAR(255) CHARACTER SET utf8");
+	$rc &&= $db->do("ALTER TABLE _utf8_test MODIFY version VARCHAR(255) CHARACTER SET $charset");
 
 	if( !$rc )
 	{
@@ -3021,7 +3047,7 @@ EOW
 			my $rindex_table = $dataset->get_sql_rindex_table_name;
 			my $grep_table = $dataset->get_sql_grep_table_name;
 			my $Q_key_name = $db->quote_identifier( $key_field->get_sql_name );
-			my $sql = "ALTER IGNORE TABLE $rindex_table MODIFY field VARCHAR(64) CHARACTER SET UTF8, MODIFY word VARCHAR(128) CHARACTER SET UTF8, DEFAULT CHARACTER SET UTF8, ADD PRIMARY KEY(field,word,$Q_key_name)";
+			my $sql = "ALTER IGNORE TABLE $rindex_table MODIFY field VARCHAR(64) CHARACTER SET $charset, MODIFY word VARCHAR(128) CHARACTER SET $charset, DEFAULT CHARACTER SET $charset, ADD PRIMARY KEY(field,word,$Q_key_name)";
 			if( $db->get_primary_key( $rindex_table ) )
 			{
 				$sql =~ s/(ADD PRIMARY KEY)/DROP PRIMARY KEY, $1/;
@@ -3032,7 +3058,7 @@ EOW
 				$sql .= ", DROP KEY ".$db->quote_identifier( $old_key );
 			}
 			$rc &&= $db->do( $sql );
-			$sql = "ALTER IGNORE TABLE $grep_table MODIFY fieldname VARCHAR(64) CHARACTER SET UTF8, MODIFY grepstring VARCHAR(128) CHARACTER SET UTF8, DEFAULT CHARACTER SET UTF8, ADD PRIMARY KEY(fieldname,grepstring,$Q_key_name)";
+			$sql = "ALTER IGNORE TABLE $grep_table MODIFY fieldname VARCHAR(64) CHARACTER SET $charset, MODIFY grepstring VARCHAR(128) CHARACTER SET $charset, DEFAULT CHARACTER SET $charset, ADD PRIMARY KEY(fieldname,grepstring,$Q_key_name)";
 			if( $db->get_primary_key( $grep_table ) )
 			{
 				$sql =~ s/(ADD PRIMARY KEY)/DROP PRIMARY KEY, $1/;
@@ -3047,8 +3073,8 @@ EOW
 	}
 
 	# don't need to go via binary because these should only contain US-ASCII
-	$rc &&= $db->do("ALTER TABLE `version` MODIFY `version` VARCHAR(255) CHARACTER SET utf8");
-	$rc &&= $db->do("ALTER TABLE `counters` MODIFY `countername` VARCHAR(255) CHARACTER SET utf8");
+	$rc &&= $db->do("ALTER TABLE `version` MODIFY `version` VARCHAR(255) CHARACTER SET $charset");
+	$rc &&= $db->do("ALTER TABLE `counters` MODIFY `countername` VARCHAR(255) CHARACTER SET $charset");
 
 	if( !$rc )
 	{
@@ -3088,13 +3114,16 @@ sub upgrade_mysql_charset_table
 	my $Q_table = $db->quote_identifier( $table );
 	my $Q_new_table = $db->quote_identifier( $new_table );
 
+	my $charset = defined $repo->config( 'dbcharset' ) ? $repo->config( 'dbcharset' ) : "utf8";
+	my $collation = $charset . "_bin";
+
 	print STDERR "Upgrading $Q_table by insertion\n";
 
 	# create a table LIKE $table
 	$rc &&= $db->do( "DROP TABLE IF EXISTS $Q_new_table" );
 	$rc &&= $db->do( "CREATE TABLE $Q_new_table LIKE $Q_table" );
-	# change it to use UTF8
-	$rc &&= $db->do( "ALTER TABLE $Q_new_table CONVERT TO CHARACTER SET utf8 COLLATE utf8_bin" );
+	# change it to use utf8 / utf8mb4
+	$rc &&= $db->do( "ALTER TABLE $Q_new_table CONVERT TO CHARACTER SET $charset COLLATE $collation" );
 
 	if( !$rc || !$db->has_table( $new_table ) )
 	{
