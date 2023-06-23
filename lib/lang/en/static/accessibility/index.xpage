@@ -171,8 +171,10 @@ Other Example:
 <!--
 [Note: publishing an accessibility roadmap is optional. It’s a good idea to publish one if you want to be specific about the order you’re planning to tackle accessibility issues, and there’s no space to do so in the accessibility statement itself.] 
 -->
+<!--
 <h2 id="what-were-doing-to-improve-accessibility">What we’re doing to improve accessibility</h2>
 <p>Our <a href="roadmap.html">accessibility roadmap</a> shows how and when we plan to improve accessibility on <epc:phrase ref="archive_name" />.</p>    
+-->
 
 <p><em>This statement was first prepared on <b><epc:phrase ref="accessibility_statement_prepared_date"/></b>. It was last updated on <b><epc:phrase ref="accessibility_statement_last_updated_date"/></b>.</em></p>
 

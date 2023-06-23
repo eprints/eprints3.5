@@ -27,51 +27,52 @@ EPrints::SystemSettings
 package EPrints::SystemSettings;
 
 $EPrints::SystemSettings::conf = {
-                                   'version' => 'EPrints 3.4.5',
-                                   'version_id' => 'eprints-3.4.5',
-                                   'base_path' => '/opt/eprints3',
-                                   'show_ids_in_log' => 0,
-                                   'group' => 'eprints',
-                                   'version_history' => [
-                                                          'eprints-3.2.3',
-                                                          'eprints-3.3.6',
-                                                          'eprints-3.3.9',
-                                                          'eprints-3.3.10',
-                                                          'eprints-3.3.12',
-                                                          'eprints-3.3.13',
-                                                          'eprints-3.3.14',
-                                                          'eprints-3.3.15',
-														  'eprints-3.4.0',
-														  'eprints-3.4.1',
-														  'eprints-3.4.2',
-														  'eprints-3.4.3',
-														  'eprints-3.4.4',
-                                                        ],
-                                   'smtp_server' => '127.0.0.1', # sensible default, but may not be valid
-                                   'user' => 'eprints',
-                                   'file_perms' => '0664',
-                                   'invocation' => {},
-                                   'executables' => {
-                                                      'perl' => '/usr/bin/perl'
-                                                    },
-                                   'dir_perms' => '02775',
-                                   'flavours' => {
-                                                   'zero' => [##site_lib has been removed from the flavour path and now a special lib that can overwrite core modules.
-                                                       'ingredients/bazaar',
-													   'ingredients/prototypejs',
-                                                    ]
-                                                },
-                                   'perl_module_isolation' => 0, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
-								   'indexer_daemon' => {
-								   						 'loglevel' => 1,
-														 'rollcount' => 5,
-														 'maxwait' => 8, # 8 seconds
-														 'interval' => 30, # 30 seconds
-														 'respawn' => 86400, # 1 day
-														 'timeout' => 600, # 10 minutes
-														 'interrupt' => 0, # break out of any loops
-													   },
-                                };
+	'version' => 'EPrints 3.5.0',
+	'version_id' => 'eprints-3.5.0',
+	'base_path' => '/opt/eprints3',
+	'show_ids_in_log' => 0,
+	'user' => 'eprints',
+	'group' => 'eprints',
+	'file_perms' => '0664',
+	'dir_perms' => '02775',
+	'version_history' => [
+		'eprints-3.2.3',
+		'eprints-3.3.6',
+		'eprints-3.3.9',
+		'eprints-3.3.10',
+		'eprints-3.3.12',
+		'eprints-3.3.13',
+		'eprints-3.3.14',
+		'eprints-3.3.15',
+		'eprints-3.4.0',
+		'eprints-3.4.1',
+		'eprints-3.4.2',
+		'eprints-3.4.3',
+		'eprints-3.4.4',
+		'eprints-3.4.5',
+	],
+	'smtp_server' => '127.0.0.1', # sensible default, but may not be valid
+	'invocation' => {},
+	'executables' => {
+		'perl' => '/usr/bin/perl'
+	},
+	'flavours' => {
+        	'zero' => [
+			'ingredients/bazaar',
+			'ingredients/prototypejs',
+		]
+	},
+	'perl_module_isolation' => 0, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
+	'indexer_daemon' => {
+		 'loglevel' => 1,
+		 'rollcount' => 5,
+		 'maxwait' => 8, # 8 seconds
+		 'interval' => 30, # 30 seconds
+		 'respawn' => 86400, # 1 day
+		 'timeout' => 600, # 10 minutes
+		 'interrupt' => 0, # break out of any loops
+	},
+};
 
 ## load the flavour inc files into the system settings' 'flavour' key.
 my $flavour_dir = $conf->{base_path}."/flavours";
