@@ -86,8 +86,6 @@ Where I<command> is one of:
 
 =item update
 
-=item update_dry_run
-
 =item upgrade
 
 =back
@@ -210,13 +208,9 @@ Run a performance profile of I<test> using L<Devel::NYTProf>.
 
 Remove the database entries for the given field, can not be undone!
 
-=item B<epadmin> update I<repository_id>
+=item B<epadmin> update I<repository_id> [ I<--dry-run> ]
 
-This will add tables and columns to your SQL database to bring it in-line with your current configuration. It will not remove data. Use with caution on a live database. Database backup is recommended before use on live systems.
-
-=item B<epadmin> update_dry_run I<repository_id>
-
-This will tell you which tables and columns will be added to your SQL database to bring it in-line with your current configuration. As update does not remove any data it will not tell you about any tables or columns that are in your database but not in your current configuration.
+This will add tables and columns to your SQL database to bring it in-line with your current configuration. It will not remove data. Use with caution on a live database. Database backup is recommended before use on live systems.  If run with I<--dry-run> flag only what will change will be reported and the database will not be modified.
 
 =item B<epadmin> upgrade I<repository_id>
 
@@ -250,6 +244,10 @@ Explain in detail what is going on. May be repeated for greater effect.
 
 Be more forceful (don't ask for confirmation).
 
+=item B<--dry-run>
+
+Just for "update" action.  Explains how the database will be updated rather than doing it.
+
 =item B<--version>
 
 Output version information and exit.
@@ -279,6 +277,7 @@ my $help = 0;
 my $man = 0;
 my $version = 0;
 my $force = 0;
+my $dry_run = 0;
 
 Getopt::Long::Configure("permute");
 
@@ -290,6 +289,7 @@ GetOptions(
 	'silent' => \$quiet,
 	'quiet' => \$quiet,
 	'force' => \$force,
+	'dry-run' => \$dry_run,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "epadmin" ) if $version;
 pod2usage( 1 ) if $help;
@@ -302,6 +302,7 @@ $|=1;
 my $noise = 1;
 $noise = 0 if( $quiet );
 $noise = 1+$verbose if( $verbose );
+
 
 my $db_ok = 0;
 my $core_ok = 0;
@@ -339,8 +340,7 @@ else
 	elsif( $action eq "upgrade" ) { upgrade( $repoid ); }
 	elsif( $action eq "schema" ) { schema( $repoid ); }
 	elsif( $action eq "update_database_structure" ) { update_database_structure( $repoid ); }
-	elsif( $action eq "update" ) { update_database_structure( $repoid ); }
-	elsif( $action eq "update_dry_run" ) { update_database_structure( $repoid, 1 ); }
+	elsif( $action eq "update" ) { update_database_structure( $repoid, $dry_run ); }
 	elsif( $action eq "upgrade_mysql_charset" ) { upgrade_mysql_charset( $repoid ); }
 	elsif( $action eq "rebuild_triples" ) { rebuild_triples( $repoid, @ARGV ); }
 	elsif( $action eq "recommit" ) 
