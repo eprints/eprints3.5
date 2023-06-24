@@ -246,7 +246,7 @@ Be more forceful (don't ask for confirmation).
 
 =item B<--dry-run>
 
-Just for "update" action.  Explains how the database will be updated rather than doing it.
+Just for "update" command.  Explains how the database will be updated rather than doing it.
 
 =item B<--version>
 
@@ -312,6 +312,10 @@ my @PASSWORD_CHARS = ( 'a'..'z','A'..'Z','0'..'9' );
 my $eprints = EPrints->new();
 
 my $action = shift @ARGV;
+if ( $action ne "update" && $dry_run )
+{
+	pod2usage( "--dry-run can only be used with 'update' command" );
+}
 if( $action eq "create" ) { create( @ARGV ); }
 elsif( $action eq "test" ) { test( @ARGV ); }
 elsif( $action eq "profile" ) { profile( @ARGV ); }
@@ -857,8 +861,7 @@ script generates.
 
 END
 	$config{archive_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Archive Name',  $config{archive_name} );
-
-		print <<END;
+	print <<END;
 
 Enter the name of the organisation in the default language. Again, if you wish to enter 
 other titles for other languages or enter non ascii characters then you may
@@ -1047,7 +1050,6 @@ sub get_mysql_root_password
 {
 	return $mysql_root_password if( defined $mysql_root_password );
 
-	#cjg hide password from display?
 	print <<END;
 
 Ok, I'll need to connect to the mysql database as root. What is the root 
@@ -1621,13 +1623,13 @@ restarting the server at this point is slightly more efficient.
 
 END
 		if ( defined $repo->config( "citation_caching", "enabled" ) && $repo->config( "citation_caching", "enabled" ) )
-				{
-						print <<END;
+		{
+			print <<END;
 You will also need to running "refresh_citations" if you have made changes 
 to any of the citation files that are used by view (browse) pages.
 
 END
-				}
+		}
 
 	}
 
@@ -1672,25 +1674,25 @@ END
 
 sub refresh_citations
 {
-		my( $repoid ) = @_;
+	my( $repoid ) = @_;
 
-		my $repo = &repository( $repoid );
+	my $repo = &repository( $repoid );
 
-		my $file = $repo->config( "variables_path" )."/citations.timestamp";
-		unless( open( CHANGEDFILE, ">$file" ) )
-		{
-				EPrints::abort( "Cannot write to file $file" );
-		}
-		print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
-		close CHANGEDFILE;
-		if( $noise > 0 )
-		{
-				print <<END;
+	my $file = $repo->config( "variables_path" )."/citations.timestamp";
+	unless( open( CHANGEDFILE, ">$file" ) )
+	{
+		EPrints::abort( "Cannot write to file $file" );
+	}
+	print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+	close CHANGEDFILE;
+	if( $noise > 0 )
+	{
+		print <<END;
 Citation caches will be updated when they are next requested.  You may wish to run
 refresh_abstracts and/or refresh_views as citations will only be updated on 
 non-cached pages.
 END
-		}
+	}
 }
 	
 
@@ -1927,15 +1929,15 @@ sub erase_fulltext_index
 	print "Starting to erase caches\n" if( $noise >= 1 );
 
 	$ds->search->map( sub {
-			my( undef, undef, $doc ) = @_;
+		my( undef, undef, $doc ) = @_;
 
-			if( $noise >= 2 )
-			{
-				print "Removing fulltext index for: ".$doc->id."\n";
-			}
-			
-			$doc->remove_indexcodes();
-		} );
+		if( $noise >= 2 )
+		{
+			print "Removing fulltext index for: ".$doc->id."\n";
+		}
+
+		$doc->remove_indexcodes();
+	} );
 
 	print "Done erasing\n" if( $noise >= 1 );
 	print "Queuing records for re-indexing\n" if( $noise >= 1 );
@@ -1980,7 +1982,7 @@ sub test
 		if( Dumper( $repo->config( "can_request_view_document" ) ) =~ /connection\S+remote_ip/i )
 		{
 			print "EPrints warning! '".$repo->get_id."' uses 'remote_ip' in the 'can_request_view_document' configuration, but this version of Apache does not have that method. This may lead to the security value for a document being ignored. Please check configuration.\n";
-			}
+		}
 	}
 
 	if( $noise > 1 )
@@ -2074,14 +2076,14 @@ sub rehash
 		print "Rehashing documents\n" if( $noise > 0);
 		my $count = 0;
 		$dataset->search->map( sub {
-				my( $session, $dataset, $doc ) = @_;
-				$doc->rehash;
-				if( $noise > 1 )
-				{
-					print "Rehashed ".$doc->id."\n";
-				}
-				$count++;
-			} );
+			my( $session, $dataset, $doc ) = @_;
+			$doc->rehash;
+			if( $noise > 1 )
+			{
+				print "Rehashed ".$doc->id."\n";
+			}
+			$count++;
+		} );
 
 		if( $noise > 0)
 		{
@@ -2152,13 +2154,13 @@ sub recommit
 	}
 
 	$list->map( sub {
-			my( $session, $dataset, $item ) = @_;
+		my( $session, $dataset, $item ) = @_;
 	
-			if( $noise >= 2 )
-			{
-					print STDERR "Committing item: ".$dataset->id()."/".$item->id()."\n";
-			}
-			$item->commit( 1 );
+		if( $noise >= 2 )
+		{
+			print STDERR "Committing item: ".$dataset->id()."/".$item->id()."\n";
+		}
+		$item->commit( 1 );
 	} );
 
 	if( !scalar @ids )
@@ -2236,7 +2238,7 @@ sub rebuild_triples
 	}
 
 	$list->map( sub {
-			my( $repository, $dataset, $item ) = @_;
+		my( $repository, $dataset, $item ) = @_;
 	
 		my $action = "clear_triples";
 		if( $item->get_value( "eprint_status" ) eq "archive" )
@@ -2369,13 +2371,13 @@ sub set_developer_mode
 	my ( $repoid, $set_to ) = @_;
 
 	if( !defined $set_to )
-		{
-				pod2usage( "Do you want to set developer mode to 'on' or 'off'?" );
-		}
+	{
+		pod2usage( "Do you want to set developer mode to 'on' or 'off'?" );
+	}
 
 	my $repo = &repository( $repoid );
 
-		my $file = $repo->config( "variables_path" )."/developer_mode_on";
+	my $file = $repo->config( "variables_path" )."/developer_mode_on";
 
 	if($set_to eq "on")
 	{
@@ -2389,11 +2391,12 @@ sub set_developer_mode
 		return;	
 	}
 
-	if($set_to eq "off"){
+	if($set_to eq "off")
+	{
 		if( -e $file && !unlink( $file ) )
-				{
-						EPrints::abort( "Cannot remove file $file" );
-				}
+		{
+			EPrints::abort( "Cannot remove file $file" );
+		}
 		print "Developer mode is for $repoid is set to off\n";
 		
 		return;	
@@ -2431,12 +2434,12 @@ sub migrate_to_multiple_values
 	my $c=0;
 	while( my @row = $sth->fetchrow )
 	{
-			my $tablename = $dataset->get_sql_table_name ."_".$field->get_name;
-			next unless( defined $row[1] );
-			if( $rc &&= $db->insert( $tablename, [$dataset->key_field->get_name, 'pos', $field->get_name], ([$row[0],0,$row[1]] ) ) )
-			{
-				$c++;
-			}
+		my $tablename = $dataset->get_sql_table_name ."_".$field->get_name;
+		next unless( defined $row[1] );
+		if( $rc &&= $db->insert( $tablename, [$dataset->key_field->get_name, 'pos', $field->get_name], ([$row[0],0,$row[1]] ) ) )
+		{
+			$c++;
+		}
 	}
 	if( $rc )
 	{
@@ -2488,13 +2491,13 @@ sub migrate_to_multilang
 
 	while( my @row = $sth->fetchrow )
 	{
-			next unless( defined $row[0] );
+		next unless( defined $row[0] );
 
-			$rc &&= $db->insert( $text_tablename, [$keyfieldname, 'pos', $text_field->name], ( [ $row[0], 0, $row[1] ] ) );
-			next if( !$rc );
+		$rc &&= $db->insert( $text_tablename, [$keyfieldname, 'pos', $text_field->name], ( [ $row[0], 0, $row[1] ] ) );
+		next if( !$rc );
 			
-			$rc &&= $db->insert( $lang_tablename, [$keyfieldname, 'pos', $lang_fieldname], ( [ $row[0], 0, $lang ] ) );
-			$c++;
+		$rc &&= $db->insert( $lang_tablename, [$keyfieldname, 'pos', $lang_fieldname], ( [ $row[0], 0, $lang ] ) );
+		$c++;
 	}
 	if( $rc )
 	{
@@ -2548,8 +2551,8 @@ sub update_datasets
 			{
 				if ( $dry_run )
 				{
-						++$field_count;
-						print "Dry run: Added ".$field->get_name." to dataset $_\n";
+					++$field_count;
+					print "Dry run: Added ".$field->get_name." to dataset $_\n";
 				}
 				elsif( $db->add_field( $dataset, $field ) )
 				{
@@ -2583,7 +2586,7 @@ sub update_datasets
 			{
 				if ( $dry_run )
 				{
-						print "Dry run: Fixed PRIMARY KEY on $table\n";
+					print "Dry run: Fixed PRIMARY KEY on $table\n";
 				}
 				else
 				{
