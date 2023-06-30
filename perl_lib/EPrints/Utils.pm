@@ -778,7 +778,18 @@ value is returned.
 
 sub get_input
 {
-	my( $regexp, $prompt, $default ) = @_;
+	my( $regexp, $prompt, $default, $config, $attr_path ) = @_;
+
+	if ( defined $config )
+	{
+		my $value = $config;
+		for ( my $a = 0; $a < scalar @$attr_path; $a++ )
+		{
+			$value = $value->{$attr_path->[$a]};
+			last unless defined $value;
+		}
+		return $value if defined $value;
+	}
 
 	$prompt = "" if( !defined $prompt);
 	$prompt .= " [$default] " if( defined $default );
@@ -822,7 +833,18 @@ Identical to get_input except the characters don't appear.
 
 sub get_input_hidden
 {
-	my( $regexp, $prompt, $default ) = @_;
+	my( $regexp, $prompt, $default, $config, $attr_path ) = @_;
+
+	if ( defined $config )
+        {
+                my $value = $config;
+                for ( my $a = 0; $a < scalar @$attr_path; $a++ )
+                {
+                        $value = $value->{$attr_path->[$a]};
+                        last unless defined $value;
+                }
+                return $value if EPrints::Utils::is_set( $value );
+        }
 
 	$prompt = "" if( !defined $prompt);
 	$prompt .= " [$default] " if( defined $default );

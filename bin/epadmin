@@ -5,6 +5,7 @@ use FindBin;
 use lib "$FindBin::Bin/../perl_lib";
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
+use YAML::Tiny;
 use EPrints::Utils;
 
 ######################################################################
@@ -248,6 +249,10 @@ Be more forceful (don't ask for confirmation).
 
 Just for "update" command.  Explains how the database will be updated rather than doing it.
 
+=item B<--config=/path/to/yaml/config>
+
+Just for for "create" command. Use configuration provided by a YAML file.
+
 =item B<--version>
 
 Output version information and exit.
@@ -278,6 +283,7 @@ my $man = 0;
 my $version = 0;
 my $force = 0;
 my $dry_run = 0;
+my $config;
 
 Getopt::Long::Configure("permute");
 
@@ -290,6 +296,7 @@ GetOptions(
 	'quiet' => \$quiet,
 	'force' => \$force,
 	'dry-run' => \$dry_run,
+	'config=s' => \$config,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "epadmin" ) if $version;
 pod2usage( 1 ) if $help;
@@ -316,7 +323,7 @@ if ( $action ne "update" && $dry_run )
 {
 	pod2usage( "--dry-run can only be used with 'update' command" );
 }
-if( $action eq "create" ) { create( @ARGV ); }
+if( $action eq "create" ) { create( $config ); }
 elsif( $action eq "test" ) { test( @ARGV ); }
 elsif( $action eq "profile" ) { profile( @ARGV ); }
 else
@@ -392,17 +399,19 @@ sub repository
 
 sub create
 {
-	pod2usage( 2 ) if( scalar @ARGV > 1 ); 
+	my ( $config_file ) = @_;
+
+	my $config = {};
+	if ( defined $config_file && -f $config_file )
+	{
+		my $yaml = YAML::Tiny->read( $config_file );
+		$config = $yaml->[0];
+	}
 
 	my $conf = $EPrints::SystemSettings::conf;
 	my @flavours =  keys %{$conf->{flavours}};
-	my $repo_type = $ARGV[0]? $ARGV[0]:"";
-	if (not $repo_type ~~ @flavours)
-	{
-		print STDERR "Available repository types are: \n   ",join("\n   ",@flavours),"\n";
-		print STDERR "Usage: epadmin create [repository type]\n";
-		exit 1;
-	}
+
+	my $repo_type = EPrints::Utils::get_input( '^('.join( '|', @flavours ).')$', 'Select a flavour ('.join( "|",@flavours).')', 'pub', $config, [ 'flavour' ] );
 
 	my $system = EPrints::System->new;
 
@@ -421,7 +430,7 @@ END
 		print join( ", ", EPrints::Config::get_repository_ids() )."\n\n";
 	}
 
-	my $repoid = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Archive ID' );
+	my $repoid = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Archive ID', undef, $config, [ 'archive_id' ] );
 
 	my $repodir = EPrints::Config::get( "base_path" )."/archives/".$repoid;
 
@@ -499,10 +508,14 @@ END
 
 	EPrints::Config::init(); # rescan repositories
 
-	my $config_core = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Configure vital settings?", "yes" );
+	my $config_core = "yes";
+	unless ( defined $config->{core} )
+	{
+		$config_core = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Configure vital settings?", "yes" );
+	}
 	if( $config_core eq "yes" )
 	{
-		config_core( $repoid );	
+		config_core( $repoid, $config->{core} );	
 	}
 	else
 	{
@@ -510,10 +523,14 @@ END
 	}
 
 	print "\n";
-	my $config_db = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Configure database?", "yes" );
+	my $config_db = "yes";
+	unless ( defined $config->{database} )
+	{
+		$config_db = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Configure database?", "yes" );
+	}
 	if( $config_db eq "yes" )
 	{
-		config_db( $repoid );	
+		config_db( $repoid, $config->{database} );	
 		
 		if( !$db_ok )
 		{
@@ -530,42 +547,47 @@ END
 
 	if( $config_db eq "yes" ) 
 	{
-		my $create_user = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create an initial user?", "yes" );
+		my $create_user = "yes";
+		unless ( defined $config->{user} )
+		{
+			$create_user = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create an initial user?", "yes" );
+		}
 		if( $create_user eq "yes" )
 		{
-			create_user( $repoid );	
+			my $u = $config->{user};
+			create_user( $repoid, ( $u->{username}, $u->{usertype}, $u->{password}, $u->{email} ) );	
 		}
 		else
 		{
 			print "OK, but you will not be able to log into the website. You can always run 'epadmin create_user $repoid' later.\n"
 		}
 
-		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to build the static web pages?", "yes" );
+		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to build the static web pages?", "yes", $config, [ 'generate_static' ] );
 		if( $ok eq "yes" )
 		{
-			run_script( $repoid, "generate_static", "--verbose", $repoid );	
+			run_script( $repoid, "generate_static", "--quiet", $repoid );	
 		}
 
 		if ($repo_type eq "zero")
 		{
-			run_script( $repoid, "import_subjects", "--verbose", "--force", $repoid );
+			run_script( $repoid, "import_subjects", "--force", $repoid );
 		}
 		else
 		{
-			$ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to import the LOC subjects and sample divisions?", "yes" );
+			$ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to import the LOC subjects and sample divisions?", "yes", $config, [ 'import_subjects' ] );
 			if( $ok eq "yes" )
 			{
-				run_script( $repoid, "import_subjects", "--verbose", "--force", $repoid );	
+				run_script( $repoid, "import_subjects", "--force", $repoid );	
 			}
 		}
 	}
 
 	if( $db_ok && $core_ok )
 	{
-		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to update the apache config files? (you still need to add the 'Include' line)", "yes" );
+		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to update the apache config files? (you still need to add the 'Include' line)", "yes", $config, [ 'generate_apacheconf' ] );
 		if( $ok eq "yes" )
 		{
-			run_script( $repoid, "generate_apacheconf", "--verbose" );
+			run_script( $repoid, "generate_apacheconf" );
 		}
 
 	my $base_path = EPrints::Config::get( "base_path" );
@@ -589,14 +611,12 @@ Make sure that your main apache config file contains the line:
 
 Then stop and start your webserver:
 Often:
- /etc/rc.d/init.d/httpd stop
- /etc/rc.d/init.d/httpd start
-(or maybe /usr/local/apache/bin/apachectl graceful)
+ apachectl restart
+or:
+ apache2ctl restart
 
 And then try connecting to your repository.
 --------------------------------------------------------------------------
-
-Don't forget to register your repository at http://roar.eprints.org/
 
 END
 	}
@@ -670,7 +690,7 @@ sub cleanup_cachemaps
 
 sub config_core
 {
-	my( $repo ) = @_;
+	my( $repo, $coreconf ) = @_;
 
 	my $repoid = ref($repo) ? $repo->get_id : $repo;
 
@@ -716,7 +736,7 @@ Example: $eg_hostname.footle.ac.uk
 END
 
 	HOSTNAME:
-	$config{host} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'Hostname', $config{host} );
+	$config{host} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'Hostname', $config{host}, $coreconf, [ 'host' ] );
 
 	if( $config{host} eq "localhost" || $config{host} =~ /^\d{1,3}(.\d{1,3}){3}$/ )
 	{
@@ -732,7 +752,7 @@ to run apache on a different port if you are experimenting.
 
 END
 
-	$config{port} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Webserver Port', $config{port} );
+	$config{port} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Webserver Port', $config{port}, $coreconf, [ 'port' ] );
 
 
 	# calculate example aliases
@@ -774,21 +794,28 @@ END
 	my @aliases = ( defined $config{aliases} ) ? @{$config{aliases}} : ();
 	$config{aliases} = [];
 
-	for(;;)
+	if ( defined $coreconf->{aliases} )
 	{
-		my $default = shift @aliases;
-		my $alias = EPrints::Utils::get_input( '^('.$EPrints::Utils::REGEXP_HOSTNAME_MIDDLE.'|#)$', 'Alias (enter # when done)',
-			(defined $default ? $default->{name} : '#' ) );
-		last if( $alias eq "#" );
-		my $aliasrecord = {};
-		$aliasrecord->{name} = $alias;
-		$aliasrecord->{redirect} = 
-			EPrints::Utils::get_input( 
-				$EPrints::Utils::REGEXP_YESNO,
-				"Redirect $alias to $config{host}",
-				(defined $default && $default->{redirect} ne 'yes' ? 'no' : 'yes' ) );
-		push @{$config{aliases}},$aliasrecord;
-		print "\n";
+		$config{aliases} = $coreconf->{aliases};
+	}
+	else
+	{
+		for(;;)
+		{
+			my $default = shift @aliases;
+			my $alias = EPrints::Utils::get_input( '^('.$EPrints::Utils::REGEXP_HOSTNAME_MIDDLE.'|#)$', 'Alias (enter # when done)',
+				(defined $default ? $default->{name} : '#' ) );
+			last if( $alias eq "#" );
+			my $aliasrecord = {};
+			$aliasrecord->{name} = $alias;
+			$aliasrecord->{redirect} = 
+				EPrints::Utils::get_input( 
+					$EPrints::Utils::REGEXP_YESNO,
+					"Redirect $alias to $config{host}",
+					(defined $default && $default->{redirect} ne 'yes' ? 'no' : 'yes' ) );
+			push @{$config{aliases}},$aliasrecord;
+			print "\n";
+		}
 	}
 
 	print <<END;
@@ -798,7 +825,7 @@ be '/'.
 
 END
 	$config{http_root} .= "/" if defined $config{http_root};
-	$config{http_root} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Path', $config{http_root} );
+	$config{http_root} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Path', $config{http_root}, $coreconf, [ 'path' ] );
 	$config{http_root} =~ s! ^/? !/!x;
 	$config{http_root} =~ s! /$ !!x;
 	$config{http_root} = undef if $config{http_root} eq "";
@@ -810,7 +837,7 @@ here, or leave blank when using http only.
 
 END
 
-	$config{securehost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME_OR_UNSET, 'HTTPS Hostname', $config{securehost}||"" );
+	$config{securehost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME_OR_UNSET, 'HTTPS Hostname', $config{securehost}||"", $coreconf, [ 'securehost' ] );
 
 	if( $config{securehost} )
 	{
@@ -820,7 +847,7 @@ Please enter the port of your secure (https) server. This is probably 443.
 
 END
 
-		$config{secureport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Secure Webserver Port', $config{secureport} );
+		$config{secureport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Secure Webserver Port', $config{secureport}, $coreconf, [ 'secureport' ] );
 	}
 
 #print <<END;
@@ -851,7 +878,7 @@ END
 
 	print "\n\n";
 
-	$config{adminemail} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_EMAIL, 'Administrator Email',  $config{adminemail} );
+	$config{adminemail} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_EMAIL, 'Administrator Email',  $config{adminemail}, $coreconf, [ 'adminemail' ] );
 	print <<END;
 
 Enter the name of the repository in the default language. If you wish to enter 
@@ -860,7 +887,7 @@ enter something as a placeholder and edit the XML config file which this
 script generates.
 
 END
-	$config{archive_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Archive Name',  $config{archive_name} );
+	$config{archive_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Archive Name',  $config{archive_name}, $coreconf, [ 'phrases', 'archive_name' ] );
 	print <<END;
 
 Enter the name of the organisation in the default language. Again, if you wish to enter 
@@ -869,12 +896,16 @@ enter something as a placeholder and edit the XML config file which this
 script generates.
 
 END
-	$config{organisation_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Organisation Name',  $config{organisation_name} );
+	$config{organisation_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Organisation Name',  $config{organisation_name}, $coreconf, [ 'phrases', 'archive_name' ] );
 
 	# Write files?
 
 	print "\n";
-	my $config_core = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Write these core settings?", "yes" );
+	my $config_core = "yes";
+	unless ( defined $coreconf )
+	{
+		$config_core = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Write these core settings?", "yes" );
+	}
 	if( $config_core eq "no" )
 	{
 		print "\nOK. Not writing after all.\n";
@@ -947,7 +978,7 @@ END
 
 sub config_db
 {
-	my( $repoid ) = @_;
+	my( $repoid, $dbconf ) = @_;
 
 	my %config = ();
 	$config{dbname} = $repoid;
@@ -961,17 +992,17 @@ sub config_db
 
 	print "\nConfiguring Database for: $repoid\n";
 
-	$config{dbname} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Database Name',  $config{dbname} );
-	$config{dbhost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'MySQL Host',  $config{dbhost} );
+	$config{dbname} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Database Name',  $config{dbname}, $dbconf, [ 'dbname' ] );
+	$config{dbhost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'MySQL Host',  $config{dbhost}, $dbconf,  [ 'dbhost' ] );
 
 	print "\nYou probably don't need to set socket and port (unless you do!?).\n";
 	$config{dbport} = "#" if( !defined $config{dbport} );
-	$config{dbport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER_OR_HASH, 'MySQL Port (# for no setting)',  $config{dbport} );
+	$config{dbport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER_OR_HASH, 'MySQL Port (# for no setting)',  $config{dbport}, $dbconf, [ 'dbport' ] );
 	$config{dbport} = undef if( $config{dbport} eq "#" );
 
 	$config{dbsock} = "#" if( !defined $config{dbsock} );
 	# can't remember what is a legal mysql socket ... cjg
-	$config{dbsock} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'MySQL Socket (# for no setting)',  $config{dbsock} );
+	$config{dbsock} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'MySQL Socket (# for no setting)',  $config{dbsock}, $dbconf, [ 'dbsock' ] );
 	$config{dbsock} = undef if( $config{dbsock} eq "#" );
 
 	my $defaultpass = $config{dbpass};
@@ -984,15 +1015,19 @@ sub config_db
 			$defaultpass .= $PASSWORD_CHARS[int rand scalar @PASSWORD_CHARS];
 		}
 	}
-	$config{dbuser} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_USERNAME, 'Database User',  $config{dbuser} );
-	$config{dbpass} = EPrints::Utils::get_input_hidden( $EPrints::Utils::REGEXP_VARNAME, 'Database Password',  $defaultpass );
+	$config{dbuser} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_USERNAME, 'Database User',  $config{dbuser}, $dbconf, [ 'dbuser' ] );
+	$config{dbpass} = EPrints::Utils::get_input_hidden( $EPrints::Utils::REGEXP_VARNAME, 'Database Password',  $defaultpass, $dbconf, [ 'dbpass' ] );
 
-	$config{dbengine} = EPrints::Utils::get_input( "(InnoDB|MyISAM)", 'Database Engine',  $config{dbengine} );
+	$config{dbengine} = EPrints::Utils::get_input( "(InnoDB|MyISAM)", 'Database Engine',  $config{dbengine}, $dbconf, [ 'dbengine' ] );
 
-	$config{dbcharset} = EPrints::Utils::get_input( "(utf8|utf8mb4)", 'Database Character Set',  $config{dbcharset} );
+	$config{dbcharset} = EPrints::Utils::get_input( "(utf8|utf8mb4)", 'Database Character Set',  $config{dbcharset}, $dbconf, [ 'dbcharset' ] );
 
 	print "\n";
-	my $config_db = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Write these database settings?", "yes" );
+	my $config_db = "yes";
+	unless ( defined $dbconf )
+	{
+		my $config_db = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Write these database settings?", "yes" );
+	}
 	if( $config_db eq "no" )
 	{
 		print "\nOK. Not writing after all.\n";
@@ -1032,10 +1067,14 @@ sub config_db
 EPrints can create the database, and grant the correct permissions.
 	
 END
-	my $makedb = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create database \"$config{dbname}\"", "yes" );
+	my $makedb = "yes";
+	unless ( defined $dbconf->{admin} )
+	{
+		$makedb = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create database \"$config{dbname}\"", "yes" );
+	}
 	if( $makedb eq "yes" )
 	{
-		create_db( $repoid );
+		create_db( $repoid, $dbconf->{admin} );
 	}
 	else
 	{
@@ -1172,7 +1211,7 @@ sub database_type_info
 
 sub create_db
 {
-	my( $repoid ) = @_;
+	my( $repoid, $dbaconf ) = @_;
 
 	my $repo = &repository( $repoid, db_connect => 0 );
 
@@ -1185,8 +1224,8 @@ sub create_db
 
 	BADPASSWORD:
 
-	my $username = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, "Database Superuser Username", "root" );
-	my $password = EPrints::Utils::get_input_hidden( '^.*$', "Database Superuser Password" );
+	my $username = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, "Database Superuser Username", "root", $dbaconf, [ 'username' ] );
+	my $password = EPrints::Utils::get_input_hidden( '^.*$', "Database Superuser Password", undef, $dbaconf, [ 'password' ] );
 
 	my $database = EPrints::Database->new( $repo, db_connect => 0 );
 
@@ -1197,7 +1236,11 @@ sub create_db
 		exit 1;
 	}
 
-	my $mktables = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create database tables?", "yes" );
+	my $mktables = "yes";
+	unless ( defined $dbaconf )
+	{
+		$mktables = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Create database tables?", "yes" );
+	}
 	if( $mktables eq "yes" )
 	{
 		create_tables( $repoid );
@@ -1207,6 +1250,9 @@ sub create_db
 sub create_user
 {
 	my( $repoid, @info ) = @_;
+
+	use Data::Dumper;
+	my $userconf = {};
 
 	my $repo = &repository( $repoid );
 

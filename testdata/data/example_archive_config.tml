@@ -1,0 +1,34 @@
+flavour: 'pub'
+archive_id: 'example'
+core:
+  host: 'eprints.example.org'
+  port: 80
+  aliases: []
+  path: '/'
+  securehost: ''
+  secureport: 443
+  adminemail: 'eprints@example.org'  
+  phrases:
+    archive_name: 'Example Repository'
+    organisation_name: 'Example Organisation'
+database:
+  dbname: 'example'
+  dbhost: 'localhost'
+  dbport: '#'
+  dbsock: '#'
+  dbuser: 'test3'
+  dbpass: 'abcdefghijk1234'
+  dbengine: 'InnoDB'
+  dbcharset: 'utf8mb4'
+  admin:
+    username: 'root'
+    password: ''
+user:
+  username: 'admin'
+  usertype: 'admin'
+  password: 'admin'
+  email: 'eprints@example.org'
+generate_static: 'yes'
+import_subjects: 'yes'
+generate_apacheconf: 'yes'
+
