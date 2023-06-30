@@ -788,7 +788,7 @@ sub get_input
 			$value = $value->{$attr_path->[$a]};
 			last unless defined $value;
 		}
-		return $value if defined $value;
+		return $value if defined $value && $value =~ m/^$regexp$/;
 	}
 
 	$prompt = "" if( !defined $prompt);
@@ -843,7 +843,7 @@ sub get_input_hidden
                         $value = $value->{$attr_path->[$a]};
                         last unless defined $value;
                 }
-                return $value if EPrints::Utils::is_set( $value );
+                return $value if defined $value && $value =~ m/^$regexp$/;
         }
 
 	$prompt = "" if( !defined $prompt);
