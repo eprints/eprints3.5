@@ -5,7 +5,6 @@ use FindBin;
 use lib "$FindBin::Bin/../perl_lib";
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
-use YAML::Tiny;
 use EPrints::Utils;
 
 ######################################################################
@@ -402,12 +401,22 @@ sub create
 	my ( $config_file ) = @_;
 
 	my $config = {};
-	if ( defined $config_file && -f $config_file )
+	if ( defined $config_file ) 
 	{
-		my $yaml = YAML::Tiny->read( $config_file );
-		$config = $yaml->[0];
+		if ( EPrints::Utils::require_if_exists( 'YAML::Tiny' ) )
+		{
+			if ( -f $config_file )
+			{
+				my $yaml = YAML::Tiny->read( $config_file );
+				$config = $yaml->[0];
+			}
+		}
+		else
+		{
+			print STDERR "Failed to create repository using config file: $config_file. YAML::Tiny is not installed.\n";
+			exit 1;
+		}
 	}
-
 	my $conf = $EPrints::SystemSettings::conf;
 	my @flavours =  keys %{$conf->{flavours}};
 
