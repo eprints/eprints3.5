@@ -420,26 +420,29 @@ sub create
 	my $conf = $EPrints::SystemSettings::conf;
 	my @flavours =  keys %{$conf->{flavours}};
 
+	print "\n";
+
 	my $repo_type = EPrints::Utils::get_input( '^('.join( '|', @flavours ).')$', 'Select a flavour ('.join( "|",@flavours).')', 'pub', $config, [ 'flavour' ] );
 
 	my $system = EPrints::System->new;
 
-	print <<END;
+	my $archive_id_text = "
 
 Create a $repo_type Repository
 
 Please select an ID for the repository, which will be used to create a directory
 and identify the repository. Lower case letters, numbers and underscores, may not start with
-a number or underscore. examples: "lemurprints", "test3" or "research_archive"
+a number or underscore. examples: 'lemurprints', 'test3' or 'research_archive'
 
-END
+";
 	if( scalar EPrints::Config::get_repository_ids() )
 	{
-		print "Existing repositories:\n";
-		print join( ", ", EPrints::Config::get_repository_ids() )."\n\n";
+		$archive_id_text .= "Existing repositories:\n";
+		$archive_id_text .= join( ", ", EPrints::Config::get_repository_ids() )."\n\n";
 	}
+	$archive_id_text .= "Archive ID";
 
-	my $repoid = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Archive ID', undef, $config, [ 'archive_id' ] );
+	my $repoid = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, $archive_id_text, undef, $config, [ 'archive_id' ] );
 
 	my $repodir = EPrints::Config::get( "base_path" )."/archives/".$repoid;
 
@@ -733,7 +736,9 @@ sub config_core
 	my $eg_hostname = $repoid;
 	$eg_hostname =~ s/_/-/g;
 	$eg_hostname =~ tr/[A-Z]/[a-z]/;
-print <<END;
+	unless ( defined $coreconf && defined $coreconf->{host} )
+	{
+		print <<END;
 
 Please enter the fully qualified hostname of the repository. 
 
@@ -743,6 +748,7 @@ machine.
 Example: $eg_hostname.footle.ac.uk
 
 END
+	}
 
 	HOSTNAME:
 	$config{host} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'Hostname', $config{host}, $coreconf, [ 'host' ] );
@@ -754,61 +760,56 @@ END
 		goto HOSTNAME;
 	}
 
-print <<END;
+	my $port_text = "
 
 Please enter the port of the webserver. This is probably 80, but you may wish 
 to run apache on a different port if you are experimenting.
 
-END
+Webserver Port";
 
-	$config{port} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Webserver Port', $config{port}, $coreconf, [ 'port' ] );
+	$config{port} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, $port_text, $config{port}, $coreconf, [ 'port' ] );
 
-
-	# calculate example aliases
-	my $realhostname = hostname();
-	if( $realhostname !~ m/\./ )
+	unless ( defined $coreconf && defined $coreconf->{aliases} )
 	{
-		$realhostname.=".example.org";
-	}
-	my @example_aliases = ();
-	push @example_aliases,$realhostname;
+		# calculate example aliases
+		my $realhostname = hostname();
+		if( $realhostname !~ m/\./ )
+		{
+			$realhostname.=".example.org";
+		}
+		my @example_aliases = ();
+		push @example_aliases,$realhostname;
 	
-	$realhostname=~m/^(([^\.]*)\.[^\.]*)(\.|$)?/;
-	push @example_aliases,$1 if( $3 eq ".");
-	push @example_aliases,$2;
+		$realhostname=~m/^(([^\.]*)\.[^\.]*)(\.|$)?/;
+		push @example_aliases,$1 if( $3 eq ".");
+		push @example_aliases,$2;
 	
-	$config{host}=~m/^(([^\.]*)\.[^\.]*)(\.|$)?/;
-	push @example_aliases,$1 if( $3 eq "." );
-	push @example_aliases,$2;
-	print <<END;
+		$config{host}=~m/^(([^\.]*)\.[^\.]*)(\.|$)?/;
+		push @example_aliases,$1 if( $3 eq "." );
+		push @example_aliases,$2;
+		print <<END;
 	
 Please enter all the aliases which could reach the repository, and indicate if 
 you would like EPrints to write a Redirect Rule to redirect requests to this
 alias to the correct URL.
 END
-	if( !defined $config{aliases} || scalar @{$config{aliases}}==0 )
-	{
-		print "Some suggestions:\n";
-		foreach( @example_aliases )
+		if( !defined $config{aliases} || scalar @{$config{aliases}}==0 )
 		{
-			print $_."\n";
+			print "Some suggestions:\n";
+			foreach( @example_aliases )
+			{
+				print $_."\n";
+			}
 		}
-	}
-	print <<END;
+		print <<END;
 	
 Enter a single hash (#) when you're done.
 
 END
 
-	my @aliases = ( defined $config{aliases} ) ? @{$config{aliases}} : ();
-	$config{aliases} = [];
+		my @aliases = ( defined $config{aliases} ) ? @{$config{aliases}} : ();
+		$config{aliases} = [];
 
-	if ( defined $coreconf->{aliases} )
-	{
-		$config{aliases} = $coreconf->{aliases};
-	}
-	else
-	{
 		for(;;)
 		{
 			my $default = shift @aliases;
@@ -826,86 +827,65 @@ END
 			print "\n";
 		}
 	}
+	else
+        {
+                $config{aliases} = $coreconf->{aliases};
+        }
 
-	print <<END;
+
+	my $path_text = "
 	
 Please enter the path part of the repository's base URL. This should probably
 be '/'.
 
-END
+Path";
 	$config{http_root} .= "/" if defined $config{http_root};
-	$config{http_root} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Path', $config{http_root}, $coreconf, [ 'path' ] );
+	$config{http_root} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, $path_text, $config{http_root}, $coreconf, [ 'path' ] );
 	$config{http_root} =~ s! ^/? !/!x;
 	$config{http_root} =~ s! /$ !!x;
 	$config{http_root} = undef if $config{http_root} eq "";
 
-	print <<END;
+	my $securehost_text = "
 
 If you will use https for your user pages (including login) enter the https hostname
 here, or leave blank when using http only.
 
-END
+HTTPS Hostname";
 
-	$config{securehost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME_OR_UNSET, 'HTTPS Hostname', $config{securehost}||"", $coreconf, [ 'securehost' ] );
+	$config{securehost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME_OR_UNSET, $securehost_text, $config{securehost}||"", $coreconf, [ 'securehost' ] );
 
 	if( $config{securehost} )
 	{
-		print <<END;
+		my $secureport_text = "
 
 Please enter the port of your secure (https) server. This is probably 443.
 
-END
+Secure Webserver Port";
 
-		$config{secureport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, 'Secure Webserver Port', $config{secureport}, $coreconf, [ 'secureport' ] );
+		$config{secureport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, $secureport_text, $config{secureport}, $coreconf, [ 'secureport' ] );
 	}
 
-#print <<END;
-#
-#Language Configuration
-#
-#Please enter the primary language and other supported languages for the 
-#repository. Supporting other languages represents a serious commitment to 
-#translate all the phrases and templates etc. into each of these other 
-#languages.
-#
-#Available languages: (please use the ID to refer to them)
-#END
-#my @langs = EPrints::Config::get_supported_languages();
-#foreach( @langs )
-#{
-#	my $title = utf8("");
-#	$title->utf8( "".EPrints::Config::lang_title( $_ ) );
-#	print $_." - ".($title->latin1)."\n";
-#}
-#print <<END;
-#
-#If you plan to add support for another language, you will need to edit the 
-#languages.xml file to indicate that this language is supported, and create 
-#the relevant phrase and template files. 
-#
-#END
-
-	print "\n\n";
-
 	$config{adminemail} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_EMAIL, 'Administrator Email',  $config{adminemail}, $coreconf, [ 'adminemail' ] );
-	print <<END;
+
+	my $archive_name_text = "
 
 Enter the name of the repository in the default language. If you wish to enter 
 other titles for other languages or enter non ascii characters then you may
 enter something as a placeholder and edit the XML config file which this
 script generates.
 
-END
-	$config{archive_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Archive Name',  $config{archive_name}, $coreconf, [ 'phrases', 'archive_name' ] );
-	print <<END;
+Archive Name";
+	$config{archive_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, $archive_name_text, $config{archive_name}, $coreconf, [ 'phrases', 'archive_name' ] );
+
+	my $organisation_name_text = "
 
 Enter the name of the organisation in the default language. Again, if you wish to enter 
 other titles for other languages or enter non ascii characters then you may
 enter something as a placeholder and edit the XML config file which this
 script generates.
 
-END
-	$config{organisation_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, 'Organisation Name',  $config{organisation_name}, $coreconf, [ 'phrases', 'archive_name' ] );
+Organisation Name";
+	$config{organisation_name} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, $organisation_name_text, $config{organisation_name}, $coreconf, [ 'phrases', 'organisation_name' ] );
 
 	# Write files?
 
