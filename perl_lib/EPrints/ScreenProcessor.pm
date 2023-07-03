@@ -279,9 +279,18 @@ sub render_toolbar
 	my $class = "ep_tm_key_tools";
 	$class = $self->{session}->config( "toolbar_class" ) if defined $self->{session}->config( "toolbar_class" );
 
-	return $self->render_item_list( [
+	my $toolbar = $self->render_item_list( [
 		$self->list_items( "key_tools" ),
 	], ( class => $class ) );
+
+	if ( -e $self->{session}->config( 'variables_path' ) ."/developer_mode_on" && $self->{session}->config( 'developer_mode', 'show_banner' ))
+	{
+		my $dev_banner = $self->{session}->make_element( 'div', class => 'ep_dev_banner' );
+		$dev_banner->appendChild( $self->{session}->html_phrase( "developer_banner_text" ) );
+		$toolbar->appendChild( $dev_banner );
+	}
+
+	return $toolbar;
 }
 
 =item EPrints::ScreenProcessor->process( %opts )

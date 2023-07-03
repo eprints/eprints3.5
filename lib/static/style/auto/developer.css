@@ -1,0 +1,12 @@
+.ep_dev_banner {
+	position: fixed;
+	right: 0; 
+	bottom: 0;
+	padding: 0.3em; 
+	margin: 0;
+	z-index: 10000;
+	color: #f00;
+	font-size: 2em;
+	background-color: #fff;
+	opacity: 0.8;
+}

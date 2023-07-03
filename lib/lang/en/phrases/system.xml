@@ -4448,4 +4448,12 @@ EPrints Accessibility
 <p>Miscellaneous pages like those for OAI metadata harvesting have been tested and found to have issues with tables being reported as being used for layout when they are genuinely being used as tables. However, as these pages are not intended for general human use, there is no intention to further address these issues.</p>
 </epp:phrase>
 
+<!--
+
+Developer Mode
+
+-->
+<epp:phrase id="developer_banner_text">DEVELOPER MODE</epp:phrase>
+
+
 </epp:phrases>

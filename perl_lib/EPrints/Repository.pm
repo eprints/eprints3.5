@@ -5818,25 +5818,58 @@ sub check_developer_mode
 	my( $self ) = @_;
 
 	return if !-e $self->{config}->{variables_path}."/developer_mode_on";
+
+	print STDERR $self->{id}." repository has developer mode switched on. Check cfg.d/developer_mode.pl to see what this entails. Turn this off when you finish development.\n";
+
+	my $always_reload_config = 1;
+	my $disable_abstracts_cache = 1;
+	my $disable_views_cache = 0;
+	if ( defined $self->{config}->{developer_mode} )
+	{
+		$always_reload_config = $self->{config}->{developer_mode}->{always_reload_config};
+		$disable_abstracts_cache = $self->{config}->{developer_mode}->{disable_abstracts_cache};
+		$disable_views_cache = $self->{config}->{developer_mode}->{disable_views_cache};
+	}
 	
-	print STDERR $self->{id}." repository has developer mode switched on. The config will be reloaded every request and abstract pages will be generated on demand. Turn this off when you finish development\n";
-	if( $self->load_config( 1 ) )
+	if ( $always_reload_config )
 	{
-		$self->{loadtime} = time();
+		if( $self->load_config( 1 ) )
+		{
+			$self->{loadtime} = time();
+		}
+		else
+		{
+			warn( "Something went wrong while reloading configuration" );
+		}
 	}
-	else
-	{
-		warn( "Something went wrong while reloading configuration" );
+	
+	if ( $disable_abstracts_cache )
+        {
+
+		my $file = $self->config( "variables_path" )."/abstracts.timestamp";
+
+		unless( open( CHANGEDFILE, ">$file" ) )
+		{
+			EPrints::abort( "Cannot write to file $file" );
+		}
+
+		print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+		close CHANGEDFILE;
 	}
 
-	my $file = $self->config( "variables_path" )."/abstracts.timestamp";
+	if ( $disable_views_cache )
+        {
 
-	unless( open( CHANGEDFILE, ">$file" ) )
-	{
-		EPrints::abort( "Cannot write to file $file" );
-	}
-	print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
-	close CHANGEDFILE;
+                my $file = $self->config( "variables_path" )."/views.timestamp";
+
+                unless( open( CHANGEDFILE, ">$file" ) )
+                {
+                        EPrints::abort( "Cannot write to file $file" );
+                }
+
+                print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+                close CHANGEDFILE;
+        }
 }
 
 =item $repo->init_from_indexer( $daemon )

@@ -65,15 +65,20 @@ sub handler
 	}	
 	if( !defined $robots )
 	{
-		my $http_cgiroot = $repository->config( 'http_cgiroot' );
-		my $https_cgiroot = $repository->config( 'https_cgiroot' ); 
+		my $http_disallow = $repository->config( 'http_cgiroot' );
+		my $https_disallow = $repository->config( 'https_cgiroot' );
+		if ( -e $repository->config( 'variables_path' ) . "/developer_mode_on" && $repository->config( 'developer_mode', 'robots_txt_full_disallow' ) )
+		{
+			$http_disallow = $repository->config( 'http_root' );
+			$https_disallow = $repository->config( 'https_root' );
+		}
 		$robots = <<END;
 User-agent: *
-Disallow: $http_cgiroot/
+Disallow: $http_disallow/
 END
-		if( $http_cgiroot ne $https_cgiroot )
+		if( EPrints::Utils::is_set( $https_disallow ) && $http_disallow ne $https_disallow )
 		{
-			$robots .= "\nDisallow: $https_cgiroot/";
+			$robots .= "\nDisallow: $https_disallow/";
 		}
 	}
 

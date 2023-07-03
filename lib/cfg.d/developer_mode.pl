@@ -1,0 +1,5 @@
+$c->{developer_mode}->{always_reload_config} = 1;
+$c->{developer_mode}->{disable_abstracts_cache} = 1;
+$c->{developer_mode}->{disable_views_cache} = 1;
+$c->{developer_mode}->{robots_txt_full_disallow} = 1;
+$c->{developer_mode}->{show_banner} = 1;
