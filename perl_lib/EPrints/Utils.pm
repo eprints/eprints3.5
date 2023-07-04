@@ -780,15 +780,22 @@ sub get_input
 {
 	my( $regexp, $prompt, $default, $config, $attr_path ) = @_;
 
+	my $value = undef;	
 	if ( defined $config )
 	{
-		my $value = $config;
+		$value = $config;
 		for ( my $a = 0; $a < scalar @$attr_path; $a++ )
 		{
 			$value = $value->{$attr_path->[$a]};
 			last unless defined $value;
 		}
 		return $value if defined $value && $value =~ m/^$regexp$/;
+	}
+
+	if ( defined $value && $value !~ m/^$regexp$/ )
+	{	
+		my $regexp_type = get_regexp_type( $regexp );
+		print "Bad input from config file. Not $regexp_type. Try entering manually.\n";
 	}
 
 	$prompt = "" if( !defined $prompt);
@@ -835,15 +842,22 @@ sub get_input_hidden
 {
 	my( $regexp, $prompt, $default, $config, $attr_path ) = @_;
 
+	my $value = undef;
 	if ( defined $config )
         {
-                my $value = $config;
+                $value = $config;
                 for ( my $a = 0; $a < scalar @$attr_path; $a++ )
                 {
                         $value = $value->{$attr_path->[$a]};
                         last unless defined $value;
                 }
                 return $value if defined $value && $value =~ m/^$regexp$/;
+        }
+
+	if ( defined $value && $value !~ m/^$regexp$/ )
+        {
+                my $regexp_type = get_regexp_type( $regexp );
+                print "Bad input from config file. Not $regexp_type. Try entering manually.\n";
         }
 
 	$prompt = "" if( !defined $prompt);

@@ -984,7 +984,10 @@ sub config_db
 	$config{dbname} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_VARNAME, 'Database Name',  $config{dbname}, $dbconf, [ 'dbname' ] );
 	$config{dbhost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME, 'MySQL Host',  $config{dbhost}, $dbconf,  [ 'dbhost' ] );
 
-	print "\nYou probably don't need to set socket and port (unless you do!?).\n";
+	unless ( defined $dbconf->{dbport} && defined $dbconf->{dbsock} )
+	{
+		print "\nYou probably don't need to set socket or port (unless you do!?).\n";
+	}
 	$config{dbport} = "#" if( !defined $config{dbport} );
 	$config{dbport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER_OR_HASH, 'MySQL Port (# for no setting)',  $config{dbport}, $dbconf, [ 'dbport' ] );
 	$config{dbport} = undef if( $config{dbport} eq "#" );
