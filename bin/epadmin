@@ -261,8 +261,23 @@ Output version information and exit.
 
 =cut
 
-#cjg Does not use noise levels
+# Make sure that SystemSettings.pm exists.
 
+BEGIN
+{
+	use FindBin;
+	use File::Copy;
+
+	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
+	
+	if(! -e $system_settings_file )
+	{
+		if( !copy( "$system_settings_file.tmpl", $system_settings_file ) )
+		{
+			die "Could not install SystemSettings.pm\n";
+		}
+	}
+}
 
 use EPrints;
 
