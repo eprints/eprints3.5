@@ -122,6 +122,7 @@ sub render
 
 	$page->appendChild( &$title( "Key Tools Test" ));
 	$page->appendChild( $session->template_phrase( "view:EPrints/ScreenProcessor:render_item_list", { item => $keytools_test } ) );
+	$page->appendChild( $session->make_element( "div", "style" => "clear: both" ) );
 
 	$keytools_test->{class} = "test_class";
 	$keytools_test->{id} = "keytools_test2";
