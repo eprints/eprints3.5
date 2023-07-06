@@ -1259,71 +1259,79 @@ sub render_input_field_actual
 {
 	my( $self, $session, $value, $dataset, $staff, $hidden_fields, $obj, $basename, $one_field_component ) = @_;
 
-	# Note: if there is only one element we still need the table to
-	# centre-align the input
-
-	my $elements = $self->get_input_elements( $session, $value, $staff, $obj, $basename, $one_field_component );
-
-	my $frag = $session->make_doc_fragment;
-
-	my $table = $session->make_element( "div", class=>"ep_form_input_grid" );
-	$frag->appendChild ($table);
+	my $titles = [];
+	my $rows = [];
 
 	my $col_titles = $self->get_input_col_titles( $session, $staff );
+
 	if( defined $col_titles )
 	{
-		my $tr = $session->make_element( "div" );
-		my $th;
 		if( $self->get_property( "multiple" ) && $self->{input_ordered})
 		{
-			$th = $session->make_element( "div", class=>"empty_heading", id=>$basename."_th_0" );
-			$tr->appendChild( $th );
+			push $titles, {
+				column_index => 0,
+				empty_column => 1,
+			};
 		}
 
-		if( !defined $col_titles )
+		my @input_ids = $self->get_basic_input_ids( $session, $basename, $staff );
+
+		my $x = 0;
+
+		foreach my $col_title ( @{$col_titles} )
 		{
-			$th = $session->make_element( "div", class=>"empty_heading", id=>$basename."_th_0" );
-			$tr->appendChild( $th );
-		}	
-		else
-		{
-			my $x = 0;
-			my @input_ids = $self->get_basic_input_ids( $session, $basename, $staff );
-			foreach my $col_title ( @{$col_titles} )
-			{
-				
-				$th = $session->make_element( "div", class=>"heading", id=>$input_ids[$x++]."_label" );
-				$th->appendChild( $col_title );
-				$tr->appendChild( $th );
-			}
+			push $titles, {
+				column_index => $x,
+				title => $col_title,
+				id => $input_ids[$x],
+			};
+
+			$x++;
 		}
-		$table->appendChild( $tr );
 	}
 
+	my $elements = $self->get_input_elements( $session, $value, $staff, $obj, $basename, $one_field_component );
 	my $y = 0;
+
 	foreach my $row ( @{$elements} )
 	{
 		my $x = 0;
-		my $tr = $session->make_element( "div" );
+
+		my $row_info = {
+			row_index => $y,
+			cells => [],
+		};
+
 		foreach my $item ( @{$row} )
 		{
-			my %opts = ( id=>$basename."_cell_".$x++."_".$y );
+			my $cell_info = {
+				column_index => $x,
+				attrs => [],
+			};
+
 			foreach my $prop ( keys %{$item} )
 			{
 				next if( $prop eq "el" );
-				$opts{$prop} = $item->{$prop};
-			}	
-			my $td = $session->make_element( "div", %opts );
+
+				push $cell_info->{attrs}, {
+					name => $prop,
+					value => $item->{$prop},
+				};
+			}
+
 			if( defined $item->{el} )
 			{
-				$td->appendChild( $item->{el} );
+				$cell_info->{item} = $item->{el};
 			}
-			$tr->appendChild( $td );
+
+			push $row_info->{cells}, $cell_info;
+			$x++;
 		}
-		$table->appendChild( $tr );
+
+		push $rows, $row_info;
 		$y++;
 	}
-
+ 
 	my $extra_params = URI->new( 'http:' );
 	$extra_params->query( $self->{input_lookup_params} );
 	my @params = (
@@ -1344,14 +1352,21 @@ sub render_input_field_actual
 	my $componentid = substr($basename, 0, length($basename)-length($self->{name})-1);
 	my $url = EPrints::Utils::js_string( $self->{input_lookup_url} );
 	my $params = EPrints::Utils::js_string( $extra_params );
-	$frag->appendChild( $session->make_javascript( <<EOJ ) );
+
+	my $javascript = $session->make_javascript( <<EOJ );
 new Metafield ('$componentid', '$self->{name}', {
 	input_lookup_url: $url,
 	input_lookup_params: $params
 });
 EOJ
 
-	return $frag;
+	return $self->repository->template_phrase( "view:MetaField/render_input_field_actual", { item => {
+		basename => $basename,
+		has_col_titles => !!$col_titles,
+		titles => $titles,
+		rows => $rows,
+		javascript => $javascript,
+	} } );
 }
 
 sub get_input_col_titles
@@ -2276,49 +2291,39 @@ sub render_search_input
 {
 	my( $self, $session, $searchfield, %opts ) = @_;
 	
-	my $frag = $session->make_doc_fragment;
+	my %text_options;
 
 	if( $searchfield->get_match ne "EX" )
 	{
-		# complex text types
 		my @text_tags = ( "ALL", "ANY" );
+
 		my %text_labels = ( 
 			"ANY" => $session->phrase( "lib/searchfield:text_any" ),
 			"ALL" => $session->phrase( "lib/searchfield:text_all" ) );
+
 		my $labelledby = ( $searchfield->get_form_prefix =~ m/^(c[0-9]+)?q[0-9]*$/ ) ? "Search" : $searchfield->get_form_prefix . "_label";
 		if ( $searchfield->get_form_prefix =~ m/^(c[0-9]+)q[0-9]*$/ )
 		{
 			$labelledby = "_internal_" . $1 . "_search";
 		}
-		$frag->appendChild( 
-			$session->render_option_list(
-				name=>$searchfield->get_form_prefix."_merge",
-				values=>\@text_tags,
-				default=>$searchfield->get_merge,
-				labels=>\%text_labels,
-				'aria-labelledby' => $labelledby ) );
-		$frag->appendChild( $session->make_text(" ") );
+
+		$text_options{default} = $searchfield->get_merge,
+		$text_options{labels} = \%text_labels;
+		$text_options{values} = \@text_tags;
+		$text_options{labelled_by} = $labelledby;
 	}
-	$frag->appendChild(
-		$session->render_input_field(
-			class => "ep_form_text",
-			type => "text",
-			name => $searchfield->get_form_prefix,
+
+	return $session->template_phrase( "view:MetaField:render_search_input", {
+		item => {
+			form_prefix => $searchfield->get_form_prefix,
+			match => $searchfield->get_match,
+			prop_match => $self->property( "match" ),
+			text_options => \%text_options,
 			value => $searchfield->get_value,
 			size => $self->get_property( "search_cols" ),
-			maxlength => 256,
-			'aria-labelledby' => $searchfield->get_form_prefix . "_label",
-			%opts,
-			) );
-	if( $searchfield->get_match ne $self->property( "match" ) )
-	{
-		$frag->appendChild(
-			$session->render_hidden_field(
-				$searchfield->get_form_prefix . "_match",
-				$searchfield->get_match
-			) );
-	}
-	return $frag;
+			opts => \%opts
+		},
+	} );
 }
 
 sub from_search_form

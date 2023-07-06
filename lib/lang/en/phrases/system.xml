@@ -4417,6 +4417,9 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="limit_names_shown">et al.</epp:phrase>
 	<epp:phrase id="limit_names_shown_label">Show All <epc:pin name="field"/></epp:phrase>
 
+    <epp:phrase id="Plugin/Screen/Admin/TemplateTest:title">Template Tests</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Admin/TemplateTest:description">View the template tests for this repository.</epp:phrase>
+
 <!--
 
 EPrint Template Field

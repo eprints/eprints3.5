@@ -748,8 +748,6 @@ sub tabs
 	my $xml = $repo->xml;
 	my $online = $repo->get_online;
 
-	my $frag = $xml->create_document_fragment;
-
 	my $base_url = exists($opts{base_url}) || !$online ? $opts{base_url} : $repo->current_url( query => 1 );
 	my $basename = exists($opts{basename}) ? $opts{basename} : "ep_tabs";
 
@@ -787,24 +785,11 @@ sub tabs
 		$current = exists $raliases{$current} ? $raliases{$current} : 0;
 	}
 
-	my $ul = $xml->create_element( "ul",
-		id=>$basename."_tabs",
-		class => "ep_tab_bar",
-		role => "tablist",
-	);
-	$frag->appendChild( $ul );
-
-	my $panel;
-	if( @$contents )
-	{
-		$panel = $xml->create_element( "div", 
-				id => $basename."_panels",
-				class => "ep_tab_panel",
-				role => "tabpanel" );
-		$frag->appendChild( $panel );
-	}
+	my $has_content = !!@$contents;
 
 	my %expensive = map { $_ => 1 } @{$opts{expensive}||[]};
+
+	my @tabs;
 
 	for(0..$#$labels)
 	{
@@ -813,12 +798,6 @@ sub tabs
 		$sanit_label =~ s/[^a-zA-Z0-9_-]/_/g;
 		my $width = int( 100 / @$labels );
 		$width += 100 % @$labels if $_ == 0;
-		my $tab = $ul->appendChild( $xml->create_element( "li",
-			($current == $_ ? (class => "ep_tab_selected") : ()),
-			id => $basename."_tab_".$sanit_label,
-			role => "tab",
-			style => "width: $width\%",
-		) );
 
 		my $href;
 		if( $online )
@@ -833,35 +812,30 @@ sub tabs
 		{
 			$href = $links->{$label};
 		}
-#		$href->fragment( "ep_tabs:".$basename.":".$_ );
 
-		my $link = $tab->appendChild( $xml->create_data_element( "a",
-			$labels->[$_],
-			href => $href,
-			onclick => "return ep_showTab('$basename','$label',".($expensive{$_}?1:0).");",
-			class => "ep_tab_link",
-		) );
+		my $tab = {};
 
-		if( defined $panel )
+		$tab->{tab_id} = $basename."_tab_".$sanit_label; 
+		$tab->{panel_id} = $basename."_panel_".$sanit_label;
+		$tab->{current} = $current == $_;
+		$tab->{width} = $width;
+		$tab->{label} = $labels->[$_];
+		$tab->{href} = $href;
+		$tab->{onclick} = "return ep_showTab('$basename','$label',".($expensive{$_}?1:0).");";
+
+		if( $has_content )
 		{
-			my $inner_panel = $xml->create_element( "div", 
-				id => $basename."_panel_".$sanit_label,
-			);
-			if( $_ != $current )
-			{
-				# padding for non-javascript enabled browsers
-				$panel->appendChild( $xml->create_element( "div",
-					class=>"ep_no_js",
-					style => "height: 1em",
-				) );
-				$inner_panel->setAttribute( class => "ep_no_js" );
-			}
-			$panel->appendChild( $inner_panel );
-			$inner_panel->appendChild( $contents->[$_] );
+			$tab->{content} = $contents->[$_];
 		}
+
+		push @tabs, $tab;
 	}
 
-	return $frag;
+	return $repo->template_phrase( "view:EPrints/XHTML:tabs", { item => {
+		basename => $basename,
+		has_content => $has_content,
+		tabs => \@tabs,
+	} } );
 }
 
 =item $node = $xhtml->tree( $root, OPTIONS )
@@ -968,16 +942,7 @@ sub action_list
 {
 	my( $self, $actions, %opts ) = @_;
 
-	my $repo = $self->{repository};
-	my $xml = $repo->xml;
-
-	my $ul = $xml->create_element( "ul", class => "ep_action_list", role => "toolbar" );
-	for(@$actions)
-	{
-		$ul->appendChild( $xml->create_data_element( "li", $_ ) );
-	}
-
-	return $ul;
+	$self->{repository}->template_phrase( "view:EPrints/XHTML:action_list", { item => { actions => $actions, opts => \%opts } } );
 }
 
 =item $node = $xhtml->action_definition_list( $actions, $definitions, %opts )
@@ -993,17 +958,22 @@ sub action_definition_list
 	my $repo = $self->{repository};
 	my $xml = $repo->xml;
 
-	$opts{id} = "action_list" unless defined $opts{id};
-	my $dl = $xml->create_element( "dl",class => "ep_action_list", id => $opts{id}, role => "menu" );
-	$dl->setAttribute( 'id', $opts{id} );
+	my $list = [];
 
 	for(my $i = 0; $i < @$actions; ++$i)
 	{
-		$dl->appendChild( $xml->create_data_element( "dt", $actions->[$i], role=>"menuitem", "aria-describedby"=>"ep_".$opts{id}."_desc_$i" ) );
-		$dl->appendChild( $xml->create_data_element( "dd", $definitions->[$i], id=>"ep_".$opts{id}."_desc_$i", role=>"description" ) );
+		push $list, {
+			action => $actions->[$i],
+			definition => $definitions->[$i],
+		};
 	}
 
-	return $dl;
+	$repo->template_phrase( "view:EPrints/XHTML:action_definition_list", {
+		item => {
+			id => defined $opts{id} ? $opts{id} : "action_list",
+			list => $list
+		}
+	});
 }
 
 =item $str = $xhtml->doc_type

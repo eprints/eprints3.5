@@ -562,10 +562,11 @@ sub render_action_list_bar
 		push @actions, $self->render_action_button( { %$params, hidden => $hidden } );
 	}
 
-	my $div = $repo->xml->create_element( "div", class => "ep_block" );
-	$div->appendChild( $repo->xhtml->action_list( \@actions ) );
-
-	return $div;
+	return $self->repository->template_phrase( "view:EPrints/Plugin/Screen:render_action_list_bar", { item => {
+		list_id => $list_id,
+		action_list => $repo->xhtml->action_list( \@actions ),
+		hidden => $hidden,
+	} } );
 }
 
 
@@ -573,15 +574,18 @@ sub render_action_list_icons
 {
 	my( $self, $list_id, $hidden ) = @_;
 
-	my $repo = $self->repository;
+	my $item = {
+		columns => []
+	};
 
-	my @actions;
 	foreach my $params ($self->action_list( $list_id ))
 	{
-		push @actions, $self->render_action_icon( { %$params, hidden => $hidden } );
+		push $item->{columns}, {
+			icon => $self->render_action_icon( { %$params, hidden => $hidden } )
+		};
 	}
 
-	return $repo->xhtml->action_list( \@actions );
+	return $self->repository->template_phrase( "view:EPrints/Plugin/Screen:action_list_icons", { item => $item } );
 }
 
 1;

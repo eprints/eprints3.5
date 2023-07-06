@@ -240,30 +240,29 @@ sub render_item_list
 {
 	my( $self, $list, %opts ) = @_;
 
-	my $class = exists($opts{class}) ? $opts{class} : "ep_tm_key_tools";
+	my $item = {
+		class => $opts{class},
+		entries => [],
+	};
 
-	my $xml = $self->{session}->xml;
 
-	my $ul = $xml->create_element( "ul", class => $class, id => "ep_tm_menu_tools", "role" => "toolbar" );
-
-	foreach my $opt (@$list)
+	foreach my $entry ( @$list )
 	{
-		my $screen = $opt->{screen};
+		my $screen = $entry->{screen};
+		my $item_list_class = "";
 
-		my $li = $xml->create_element( "li", class => "ep_tm_key_tools_item" );
+		$item_list_class = $self->{session}->config( 'item_list_class' ) if defined $self->{session}->config( 'item_list_class' );
+		$item_list_class .= $screen->{class} if defined $screen->{class};		
 
-		my $li_class = "";
-                $li_class = $self->{session}->config( 'item_list_class' ) if defined $self->{session}->config( 'item_list_class' );
-                $li_class .= $screen->{class} if defined $screen->{class};
-                $li->setAttribute( class => $li_class ) unless $li_class eq "";
-
-		$ul->appendChild( $li );
-
-		my $link = $screen->render_action_link();
-		$li->appendChild( $link );
+		push $item->{entries}, {
+			id => $entry->{screen}->{id},
+			class => $item_list_class,
+			item => $entry->{screen}->render_action_link,
+			title => $entry->{screen}->render_title,
+		};
 	}
 
-	return $ul;
+	return $self->{session}->template_phrase( "view:EPrints/ScreenProcessor:render_item_list", { item => $item } );
 }
 
 =item $frag = $processor->render_toolbar( %opts )

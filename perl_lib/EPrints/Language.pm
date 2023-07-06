@@ -248,6 +248,13 @@ sub phrase
 {
 	my( $self, $phraseid, $inserts ) = @_;
 
+	return $self->phrase_with_item( $phraseid, $inserts );
+}
+
+sub phrase_with_item
+{
+	my( $self, $phraseid, $inserts, $item ) = @_;
+
 	my $session = $self->{repository};
 
 	# not using fb 
@@ -284,7 +291,7 @@ sub phrase
 	my $ref = $phrase->getAttribute( "ref" );
 	if( EPrints::Utils::is_set( $ref ) )
 	{
-		return $self->phrase( $ref, $inserts, $session );
+		return $self->phrase_with_item( $ref, $inserts, $session, $item );
 	}
 
 #print STDERR "---\nN:$phrase\nNO:".$phrase->getOwnerDocument."\n";
@@ -292,7 +299,8 @@ sub phrase
 	my $result = EPrints::XML::EPC::process_child_nodes( 
 		$phrase, 
 		in => "Phrase: '$phraseid'",
-		session => $session, 
+		session => $session,
+		item => $item,
 		pindata=>{ 
 			inserts => $inserts,
 			used => $used,

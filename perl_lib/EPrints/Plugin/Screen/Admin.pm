@@ -49,21 +49,22 @@ sub render
 {
 	my( $self ) = @_;
 
-	my @labels;
-	my @panels;
+	my $lists = [];
 
 	foreach my $list_id ( @{$self->param( "action_lists" )} )
 	{
 		next unless scalar $self->action_list( $list_id );
-		push @labels, $self->html_phrase( $list_id );
-		push @panels, $self->render_action_list( $list_id );
+
+		push $lists, {
+			list_id => $list_id,
+			label_phrase_id => $self->html_phrase_id( $list_id ),
+			content => $self->render_action_list( $list_id ),
+		};
 	}
 
-	return $self->{repository}->xhtml->tabs(
-		\@labels,
-		\@panels,
-		basename => "ep_admin_tabs",
-	);
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Admin:render", { item => {
+		lists => $lists,
+	} } );
 }
 
 1;

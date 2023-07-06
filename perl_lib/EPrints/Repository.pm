@@ -80,6 +80,7 @@ package EPrints::Repository;
 
 use EPrints;
 use EPrints::Const qw( :trigger );
+use EPrints::Template qw( :template_phrase );
 
 #use URI::Escape;
 use CGI qw(-compile);
@@ -3414,30 +3415,19 @@ sub render_row
 {
 	my( $repository, $key, @values ) = @_;
 
-	my( $tr, $th, $td );
-
-	$tr = $repository->make_element( "tr", class=>"ep_table_row" );
-
-	$th = $repository->make_element( "th", valign=>"top", class=>"ep_row ep_table_header" ); 
-	if( !defined $key )
-	{
-		$th->appendChild( $repository->render_nbsp );
-	}
-	else
-	{
-		$th->appendChild( $key );
-		$th->appendChild( $repository->make_text( ":" ) );
-	}
-	$tr->appendChild( $th );
+	my $values_info = [];
 
 	foreach my $value ( @values )
 	{
-		$td = $repository->make_element( "td", valign=>"top", class=>"ep_row ep_table_data" ); 
-		$td->appendChild( $value );
-		$tr->appendChild( $td );
+		push $values_info, {
+			value => $value,
+		};
 	}
 
-	return $tr;
+	return $repository->template_phrase( "view:EPrints/Repository:render_row", { item => {
+		key => $key,
+		values => $values_info,
+	} } );
 }
 
 # parts...
@@ -3459,94 +3449,21 @@ sub render_row_with_help
 		delete $parts{help};
 	}
 
+	my $has_help = defined $parts{help} && !$parts{no_help};
+	my $has_toggle = $has_help && !$parts{no_toggle};
 
-	my $context = $parts{context} ? $parts{context} : 'none';
-	my $tr = $self->make_element( "div", class=>$parts{class} . " ep_table_row", "data-context"=>$context );
-
-	#
-	# COL 1
-	#
-	my $th;
-	if ( ref $parts{label} ne "" ) 
-	{
-		$th = $self->make_element( "div", class=> "ep_multi_heading ep_table_cell" );
-		my $prefix = $parts{prefix};
-		$prefix .= "_legend" if defined $parts{uses_fieldset} && $parts{uses_fieldset};
-		my $label = $self->make_element( "span", id=>$prefix."_label" );
-		$label->appendChild( $parts{label} );
-		$th->appendChild( $label );
-	}
-	else
-	{
-		$th = $self->make_element( "div", class=> "ep_multi_heading_legend ep_table_cell" );
-	}
-	$tr->appendChild( $th );
-
-	if( !defined $parts{help} || $parts{no_help} )
-	{
-		my $td = $self->make_element( "div", class=>"ep_multi_input ep_table_cell" );
-		$tr->appendChild( $td );
-		$td->appendChild( $parts{field} );
-		my $td2 = $self->make_element( "div", class=>"ep_table_cell" );
-		$tr->appendChild( $td2 );
-		return $tr;
-	}
-
-	#
-	# COL 2
-	#
-	
-	my $inline_help_class = "ep_multi_inline_help";
-	my $colspan = "2";
-	if( !$parts{no_toggle} ) 
-	{ 
-		# ie, yes to toggle
-		$inline_help_class .= " ep_no_js"; 
-		$colspan = 1;
-	}
-
-	my $td = $self->make_element( "div", class=>"ep_multi_input ep_table_cell", colspan=>$colspan, id=>$parts{help_prefix}."_outer" );
-	$tr->appendChild( $td );
-
-	my $inline_help = $self->make_element( "div", id=>$parts{help_prefix}, class=>$inline_help_class );
-	my $inline_help_inner = $self->make_element( "div", id=>$parts{help_prefix}."_inner", role=>'definition', 'aria-labelledby'=>$parts{prefix}."_label" );
-	$inline_help->appendChild( $inline_help_inner );
-	$inline_help_inner->appendChild( $parts{help} );
-	$td->appendChild( $inline_help );
-
-	$td->appendChild( $parts{field} );
-
-	if( $parts{no_toggle} ) 
-	{ 
-		return $tr;
-	}
-		
-	#
-	# COL 3
-	# help toggle
-	#
-
-	my $td2 = $self->make_element( "div", class=>"ep_multi_help ep_only_js_table_cell ep_toggle ep_table_cell" );
-	my $show_help = $self->make_element( "div", class=>"ep_sr_show_help ep_only_js", id=>$parts{help_prefix}."_show" );
-	my $helplink = $self->make_element( "a", onclick => "EPJS_blur(event); EPJS_toggleSlide('$parts{help_prefix}',false,'block');EPJS_toggle('$parts{help_prefix}_hide',false,'block');EPJS_toggle('$parts{help_prefix}_show',true,'block');return false", href=>"#" );
-	$helplink->appendChild( $self->make_element( "img", 
-		alt => $self->html_phrase( "lib/session:show_help_alt" ), 
-		title=> $self->html_phrase( "lib/session:show_help_title" ), 
-		src => $self->html_phrase( "lib/session:show_help_src" ) ) );
-	$show_help->appendChild( $helplink );
-	$td2->appendChild( $show_help );
-
-	my $hide_help = $self->make_element( "div", class=>"ep_sr_hide_help ep_hide", id=>$parts{help_prefix}."_hide" );
-	my $helplink2 = $self->make_element( "a", onclick => "EPJS_blur(event); EPJS_toggleSlide('$parts{help_prefix}',false,'block');EPJS_toggle('$parts{help_prefix}_hide',false,'block');EPJS_toggle('$parts{help_prefix}_show',true,'block');return false", href=>"#" );
-        $helplink2->appendChild( $self->make_element( "img", 
-		alt => $self->html_phrase( "lib/session:hide_help_alt" ), 
-		title=> $self->html_phrase( "lib/session:hide_help_title" ), 
-		src => $self->html_phrase( "lib/session:hide_help_src" ) ) );
-	$hide_help->appendChild( $helplink2 );
-	$td2->appendChild( $hide_help );
-	$tr->appendChild( $td2 );
-
-	return $tr;
+	return $self->template_phrase( "view:EPrints/Repository:render_row_with_help", { item => {
+		class => $parts{class},
+		context => $parts{context},
+		field => $parts{field},
+		label => $parts{label},
+		prefix => $parts{prefix},
+		help => $parts{help},
+		help_prefix => $parts{help_prefix},
+		has_help => $has_help,
+		has_toggle => $has_toggle,
+		uses_fieldset => $parts{uses_fieldset},
+	} } );
 }
 
 ######################################################################
@@ -3732,102 +3649,49 @@ sub render_option_list
 		$pairs = [ @pairsa, [ '-', '----------' ], @pairsb ];
 	}
 
-	if( $params{checkbox} )
-	{
-		my $fieldset = $self->make_element( "fieldset", class=>"ep_option_list" );
-		my $legend = $self->make_element( "legend", id=> $params{name}."_label", class=>"ep_field_legend", 'aria-labelledby' => $params{name}."_legend_label" );
-		$legend->appendChild( $self->make_text( $params{legend} ) );
-		$fieldset->appendChild( $legend ); 
-		my $rowdiv = $self->make_element( "div", class=>"ep_option_list_row" );
-		$fieldset->appendChild( $rowdiv );	
-		my $celldiv = $self->make_element( "div", class=>"ep_option_list_cell" );
-		$rowdiv->appendChild( $celldiv );	
-		my $i = 0;
-		my $len = scalar @$pairs;
-		foreach my $pair ( @{$pairs} )
-		{
-			my $div = $self->make_element( "div", class=>"ep_option_list_option" );
-			my $label = $self->make_element( "label" );
-			$div->appendChild( $label );
-			my $box = $self->render_input_field( type=>"checkbox", name=>$params{name}, value=>$pair->[0], class=>"ep_form_checkbox", 'aria-labelledby'=>$params{name}."_label" );
-			$label->appendChild( $box );
-			$label->appendChild( $self->make_text( " ".$pair->[1] ) );
-			if( $defaults{$pair->[0]} )
-			{
-				$box->setAttribute( "checked" , "checked" );
-			}
-			if ( $params{onchange} )
-			{
-				$box->setAttribute( "onchange" , $params{onchange} );
-			}
-			$celldiv->appendChild( $div );
-			++$i;
-			if( $len > 5 && int($len / 2)==$i )
-			{
-				$celldiv = $self->make_element( "div", class=>"ep_option_list_cell" );
-				$rowdiv->appendChild( $celldiv );	
-			}
-		}
-		return $fieldset;
-	}
-		
-
-	my $class = ( defined($params{class}) ) ? $params{class} : "";
-	my $element = $self->make_element( "select" , name => $params{name}, id => $params{name}, class => $class );
-	my $span = undef;
-	if( $params{readonly} )
-        {
-                $element->setAttribute( "readonly" , "readonly" );
-		$span = $self->make_element( "span" , class => "ep_set_disabled" );
-		$element = $self->make_element( "select", name => $params{name} . "_disabled", id => $params{name} . "_disabled", class => $class, disabled => "disabled" );
-		foreach my $pair ( @{$pairs} )
-		{
-			if( $defaults{$pair->[0]} )
-			{
-				my $hidden = $self->make_element( "input", name => $params{name}, id => $params{name}, type => "hidden", value => $pair->[0] );
-				$span->appendChild( $hidden );
-			}
-		}
-		
-        }
-	if( $params{multiple} )
-	{
-		$element->setAttribute( "multiple" , "multiple" );
-	}
-	if( $params{onchange} )
-        {
-        	$element->setAttribute( "onchange" , $params{onchange} );
-        }
-        $element->setAttribute( "aria-labelledby", $params{"aria-labelledby"} ) if EPrints::Utils::is_set( $params{"aria-labelledby"} );
-        $element->setAttribute( "aria-describedby", $params{"aria-describedby"} ) if EPrints::Utils::is_set( $params{"aria-describedby"} );
 	my $size = 0;
+	my $pairs_info = [];
+	my $two_column_mode = 0;
+
 	foreach my $pair ( @{$pairs} )
 	{
-		$element->appendChild( 
-			$self->render_single_option(
-				$pair->[0],
-				$pair->[1],
-				$defaults{$pair->[0]} ) );
+		push $pairs_info, {
+			key => $pair->[0],
+			desc => $pair->[1],
+			selected => $defaults{$pair->[0]},
+		};
+
 		$size++;
 	}
-	if( defined $params{height} )
+
+	if( !$params{checkbox} )
 	{
-		if( $params{height} ne "ALL" )
+		if( defined $params{height} )
 		{
-			if( $params{height} < $size )
+			if( $params{height} ne "ALL" )
 			{
-				$size = $params{height};
+				if( $params{height} < $size )
+				{
+					$size = $params{height};
+				}
 			}
 		}
-		$element->setAttribute( "size" , $size );
 	}
-	
-	if ( defined $span )
-	{
-		$span->appendChild( $element );
-		return $span;
-	}		
-	return $element;
+
+	return $self->template_phrase( "view:Repository:render_option_list", { item => {
+		checkbox => $params{checkbox},
+		class => $params{class},
+		name => $params{name},
+		legend => $params{legend},
+		multiple => $params{multiple},
+		readonly => $params{readonly},
+		onchange => $params{onchange},
+		aria_labelledby => EPrints::Utils::is_set( $params{"aria-labelledby"} ) ? $params{"aria-labelledby"} : undef,
+		aria_describedby => EPrints::Utils::is_set( $params{"aria-describedby"} ) ? $params{"aria-describedby"} : undef,
+		size => $size,
+		pairs => $pairs_info,
+		height => $params{height},
+	} } );
 }
 
 
@@ -3850,14 +3714,11 @@ sub render_single_option
 {
 	my( $self, $key, $desc, $selected ) = @_;
 
-	my $opt = $self->make_element( "option", value => $key );
-	$opt->appendChild( $self->make_text( $desc ) );
-
-	if( $selected )
-	{
-		$opt->setAttribute( "selected" , "selected" );
-	}
-	return $opt;
+	return $self->template_phrase( "view:Repository:render_single_option", { item => {
+		key => $key,
+		desc => $desc,
+		selected => $selected,
+	} } );
 }
 
 
@@ -4563,21 +4424,14 @@ sub render_message
 	
 	$show_icon = 1 unless defined $show_icon;
 
-	my $id = "m".$self->get_next_id;
-	my $div = $self->make_element( "div", class=>"ep_msg_".$type, id=>$id );
-	my $content_div = $self->make_element( "div", class=>"ep_msg_".$type."_content" );
-	if( $show_icon )
-	{
-		my $icon_div = $self->make_element( "div", class=>"ep_msg_".$type."_icon" );
-		my $imagesurl = $self->get_repository->get_conf( "rel_path" );
-		$icon_div->appendChild( $self->make_element( "img", src=>"$imagesurl/style/images/".$type.".png", alt=>$self->phrase( "Plugin/Screen:message_".$type ) ) );
-		$content_div->appendChild( $icon_div );
-	}
-	my $text_div = $self->make_element( "div", class=>"ep_msg_".$type."_text" );
-	$content_div->appendChild( $text_div );
-	$text_div->appendChild( $content );
-	$div->appendChild( $content_div );
-	return $div;
+	return $self->template_phrase( "view:EPrints/Repository:render_message", { item => {
+		type => $type,
+		content => $content,
+		show_icon => !!$show_icon,
+		message_id => "m".$self->get_next_id,
+		alt_phrase_id => "Plugin/Screen:message_".$type,
+	} } );
+
 }
 
 
@@ -6066,6 +5920,11 @@ sub in_export_fieldlist
 	return !defined $export_fieldlist || grep { $_ eq $field_name } @{$export_fieldlist};	
 }
 
+
+sub template_phrase
+{
+	return EPrints::Template::template_phrase(@_);
+}
 
 ######################################################################
 =pod

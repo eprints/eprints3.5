@@ -133,8 +133,6 @@ sub paginate_list
 	my $plast = $offset + $pagesize;
 	$plast = $n_results if $n_results< $plast;
 
-	my %pins;
-
 	# Add params to action urls
 	my $url = URI->new( $session->get_uri );
 	my @param_list;
@@ -153,70 +151,40 @@ sub paginate_list
 	}
 	$url->query_form( @param_list );
 
-	my $matches = $session->make_doc_fragment;	
+	my $paginate_data = {
+		url => $url,
+		basename => $basename,
+		from => $offset + 1,
+		to => $plast,
+		n_results => $n_results,
+		page_size => $opts{page_size},
+	};
+
+	my $results_info = {
+		n_results => $n_results,
+		rows_before => $opts{rows_before},
+		rows => [],
+		rows_after => $opts{rows_after},
+	};
+
 	if( scalar $n_results > 0 )
 	{
-		# TODO default phrase for item range
-		# TODO override default phrase with opts
-		my %numbers = ();
-		$numbers{from} = $session->make_element( "span", class=>"ep_search_number" );
-		$numbers{from}->appendChild( $session->make_text( $offset+1 ) );
-		$numbers{to} = $session->make_element( "span", class=>"ep_search_number" );
-		$numbers{to}->appendChild( $session->make_text( $plast ) );
-		$numbers{n} = $session->make_element( "span", class=>"ep_search_number" );
-		$numbers{n}->appendChild( $session->make_text( $n_results ) );
-		$matches->appendChild( 
-			$session->html_phrase( "lib/searchexpression:results", %numbers )
-			);
 		if( !$opts{page_size} )
 		{
-			$matches->appendChild( $session->make_text( " " ) );
-			my %links;
-			for(10,25,100)
-			{
-				$links{"n_$_"} = $session->render_link( $url . "&${basename}page_size=$_" );
-				$links{"n_$_"}->appendChild( $session->make_text( $_ ) );
-			}
-
-			# option to show all results
-			$links{n_all} = $session->render_link( $url . "&${basename}page_size=$n_results" );
-
-			$matches->appendChild(
-				$session->html_phrase( "lib/searchexpression:results_page_size", %links )
-				);
 			if( defined $session->param( "${basename}page_size" ) )
 			{
 				$url->query_form( @param_list, $basename."page_size" => $pagesize );
 			}
 		}
 	}
-	else
-	{
-		# override default phrase with opts
-		$matches->appendChild( $session->html_phrase( 
-				"lib/searchexpression:noresults" ) );
-	}
-
-	$pins{above_results} = $opts{above_results};
-	if( !defined $pins{above_results} )
-	{
-		$pins{above_results} = $session->make_doc_fragment;
-	}
-	$pins{below_results} = $opts{below_results};
-	if( !defined $pins{below_results} )
-	{
-		$pins{below_results} = $session->make_doc_fragment;
-	}
 
 	my @controls; # page controls
+
 	if( defined $opts{controls_before} )
 	{
-		my $custom_controls = $opts{controls_before};
-		foreach my $control ( @$custom_controls )
+		foreach my $control ( @{ $opts{controls_before} } )
 		{
-			my $custom_control = $session->render_link( $control->{url} );
-			$custom_control->appendChild( $control->{label} );
-			push @controls, $custom_control;
+   			push @controls, { url => $control->{url}, label => $control->{label}, type => 'before' };
 		}
 	}
 
@@ -225,14 +193,8 @@ sub paginate_list
 	{
 		my $bk = $offset-$pagesize;
 		my $prevurl = "$url&$basename\_offset=".($bk<0?0:$bk);
-		my $prevlink = $session->render_link( $prevurl );
-		my $pn = $pagesize>$offset?$offset:$pagesize;
-		$prevlink->appendChild( 
-			$session->html_phrase( 
-				"lib/searchexpression:prev",
-				n=>$session->make_doc_fragment ) );
-				#n=>$session->make_text( $pn ) ) );
-		push @controls, $prevlink;
+
+		push @controls, { url => $prevurl, type => 'previous' };
 	}
 
 	# Page jumps
@@ -260,19 +222,10 @@ sub paginate_list
 	{
 		for my $page_n ( $start_page..$end_page )
 		{
-			my $jumplink;
-			if( $page_n != $cur_page )
-			{
-				my $jumpurl = "$url&$basename\_offset=" . $page_n * $pagesize;
-				$jumplink = $session->render_link( $jumpurl );
-				$jumplink->appendChild( $session->make_text( $page_n + 1 ) );
-			}
-			else
-			{
-				$jumplink = $session->make_element( "strong" );
-				$jumplink->appendChild( $session->make_text( $page_n + 1 ) );
-			}
-			push @controls, $jumplink;
+			my $jumpurl = "$url&$basename\_offset=" . $page_n * $pagesize;
+
+			push @controls, { url => $jumpurl, label => $page_n + 1,
+				type => $page_n != $cur_page ? "jump" : "current" };
 		}
 	}
 
@@ -280,105 +233,51 @@ sub paginate_list
 	if( $offset + $pagesize < $n_results )
 	{
 		my $nexturl="$url&$basename\_offset=".($offset+$pagesize);
-		my $nextlink = $session->render_link( $nexturl );
-		my $nn = $n_results - $offset - $pagesize;
-		$nn = $pagesize if( $pagesize < $nn);
-		$nextlink->appendChild( $session->html_phrase( "lib/searchexpression:next",
-					n=>$session->make_doc_fragment ) );
-					#n=>$session->make_text( $nn ) ) );
-		push @controls, $nextlink;
+
+		push @controls, { url => $nexturl, type => 'next' };
 	}
 
-#	if( defined $opts{controls_after} )
-#	{
-#		my $custom_controls = $opts{controls_after};
-#		foreach my $control ( @$custom_controls )
-#		{
-#			my $custom_control = $session->render_link( $control->{url} );
-#			$custom_control->appendChild( $control->{label} );
-#			push @controls, $custom_control;
-#		}
-#	}
-
-	if( scalar @controls )
-	{
-		$pins{controls} = $session->make_element( "div" );
-		$pins{controls}->appendChild( $matches );
-
-		$pins{controls}->appendChild( $session->make_element( "br" ) );
-
-		my $first = 1;
-		foreach my $control ( @controls )
-		{
-			if( $first )
-			{
-				$first = 0;
-			}
-			else
-			{
-				$pins{controls}->appendChild( $session->html_phrase( "lib/searchexpression:separator" ) );
-			}
-			my $cspan = $session->make_element( 'span', class=>"ep_search_control" );
-			$cspan->appendChild( $control );
-			$pins{controls}->appendChild( $cspan );
-		}
-	}
-	
-	if( defined $opts{controls_after} )
-	{
-		$pins{controls} = $session->make_element( 'div' ) if( !defined $pins{controls} );
-		$pins{controls}->appendChild( $opts{controls_after} );	
-	}
+	my $has_main_controls = scalar @controls > 0;
 
 	my $type;
-	# Container for results (e.g. table, div..)
-	if( defined $opts{container} )
-	{
-		$pins{results} = $opts{container};
-	}
-	else
+
+	if( !defined $opts{container} )
 	{
 		$type = $session->get_citation_type( $list->get_dataset );
-		$pins{results} = $session->make_element( 
-				"div", 
-				class=>"ep_paginate_list" );
-	}
-
-	if( defined $opts{rows_before} )
-	{
-		$pins{results}->appendChild( $opts{rows_before} );
 	}
 
 	my $n = $offset;
 	foreach my $result ( @results )
 	{
 		$n += 1;
+
+		my $row_info = {
+			index => $n,
+			as_div => 0,
+		};
+
 		# Render individual results
 		if( defined $opts{render_result} )
 		{
 			# Custom rendering routine specified
-			my $params = $opts{render_result_params};
-			my $custom = &{ $opts{render_result} }( 
-						$session, 
-						$result, 
-						$params, 
+
+			$row_info->{render} = &{ $opts{render_result} }(
+						$session,
+						$result,
+						$opts{render_result_params},
 						$n );
-			$pins{results}->appendChild( $custom );
 		}
 		elsif( $type eq "table_row" )
 		{
-			$pins{results}->appendChild( 
-				$result->render_citation_link() ); 
+			$row_info->{render} = $result->render_citation_link();
 		}
 		else
 		{
-			my $div = $session->make_element( 
-				"div", 
-				class=>"ep_paginate_result" );
-			$div->appendChild( 
-				$result->render_citation_link() ); 
-			$pins{results}->appendChild( $div );
+			$row_info->{as_div} = 1;
+			$row_info->{render} = $result->render_citation_link();
 		}
+
+		push $results_info->{rows}, $row_info;
 	}
 
 	# If we have no results, we can use a custom renderer to	
@@ -389,60 +288,61 @@ sub paginate_list
 		if( defined $opts{render_no_results} )
 		{
 			my $params = $opts{render_result_params};
-			my $no_res = &{ $opts{render_no_results} }(
+
+			$results_info->{no_results_message} = &{ $opts{render_no_results} }(
 					$session,
 					$params,
 					$session->html_phrase( 
 						"lib/paginate:no_items" )
 					);
-			$pins{results}->appendChild( $no_res );
 		}
 	}
-	
-	if( defined $opts{rows_after} )
+
+	my %pins;
+
+	$pins{above_results} = $opts{above_results};
+
+	if( !defined $pins{above_results} )
 	{
-		$pins{results}->appendChild( $opts{rows_after} );
+		$pins{above_results} = $session->make_doc_fragment;
 	}
 
-	# Render a page of results
+	$pins{below_results} = $opts{below_results};
+
+	if( !defined $pins{below_results} )
+	{
+		$pins{below_results} = $session->make_doc_fragment;
+	}
+
+	$results_info->{container} = $opts{container};
+	$results_info->{citation_type} = $type;
+
+	$pins{results} = $session->template_phrase( "view:EPrints/Paginate:paginate_list/results_container", { item => $results_info } );
+
+	$paginate_data->{control_links} = \@controls;
+	$paginate_data->{controls_after} = $opts{controls_after};
+	$paginate_data->{has_main_controls} = $has_main_controls;
+
+	if( $has_main_controls || $opts{controls_after} )
+	{
+		$pins{controls} = $session->template_phrase( "view:EPrints/Paginate:paginate_list/controls", { item => $paginate_data } );
+	}
+
+	# Apply custom pins.
+
 	my $custom_pins = $opts{pins};
+
 	for( keys %$custom_pins )
 	{
 		$pins{$_} = $custom_pins->{$_} if defined $custom_pins->{$_};
 	}
 
+	$paginate_data->{above_results} = $pins{above_results};
+	$paginate_data->{below_results} = $pins{below_results};
+	$paginate_data->{results} = $pins{results};
+	$paginate_data->{controls} = $pins{controls};
 
-	my $page = $session->make_doc_fragment;
-
-	if( defined $pins{controls} )
-	{
-		my $div = $session->make_element( "div", class=>"ep_search_controls" );
-		$div->appendChild( $pins{controls} );
-		$page->appendChild( $div );
-	}	
-	if( defined $pins{above_results} )
-	{
-		$page->appendChild( $pins{above_results} );
-	}	
-	if( defined $pins{results} )
-	{
-		my $div = $session->make_element( "div", class=>"ep_search_results" );
-		$div->appendChild( $pins{results} );
-		$page->appendChild( $div );
-	}	
-	if( defined $pins{below_results} )
-	{
-		$page->appendChild( $pins{below_results} );
-	}	
-	if( $n_results > 0 && defined $pins{controls} )
-	{
-		my $div = $session->make_element( "div", class=>"ep_search_controls_bottom" );
-		$div->appendChild( $session->clone_for_me( $pins{controls}, 1 ) );
-		$page->appendChild( $div );
-	}	
-
-
-	return $page;
+	return $session->template_phrase( "view:EPrints/Paginate:paginate_list", { item => $paginate_data } );
 }
 
 1;

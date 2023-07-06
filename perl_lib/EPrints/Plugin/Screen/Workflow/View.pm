@@ -82,29 +82,21 @@ sub render_title
 	my $dataset = $self->{processor}->{dataset};
 	my $dataobj = $self->{processor}->{dataobj};
 
-	my $listing;
 	my $priv = $dataset->id . "/view";
-	if( $self->EPrints::Plugin::Screen::allow( $priv ) )
-	{
-		my $url = URI->new( $session->current_url );
-		$url->query_form(
-			screen => $self->listing_screen,
-			dataset => $dataset->id
-		);
-		$listing = $session->render_link( $url );
-		$listing->appendChild( $dataset->render_name( $session ) );
-	}
-	else
-	{
-		$listing = $dataset->render_name( $session );
-	}
+	my $url = URI->new( $session->current_url );
 
-	my $desc = $dataobj->render_description();
-
-	return $self->html_phrase( "page_title",
-		listing => $listing,
-		desc => $desc,
+	$url->query_form(
+		screen => $self->listing_screen,
+		dataset => $dataset->id
 	);
+
+	return $session->template_phrase( "view:EPrints/Plugin/Screen/Workflow:render_title", { item => {
+		can_view_dataset => $self->EPrints::Plugin::Screen::allow( $priv ),
+		title_phrase_id => $self->html_phrase_id( "page_title" ),
+		name => $dataset->render_name( $session ),
+		description => $dataobj->render_description(),
+		dataset_url => $url,
+	} } );
 }
 
 sub render
@@ -112,15 +104,6 @@ sub render
 	my( $self ) = @_;
 
 	my $dataset = $self->{processor}->{dataset};
-
-	my $chunk = $self->{session}->make_doc_fragment;
-
-	$chunk->appendChild( $self->render_status );
-
-	my $buttons = $self->render_common_action_buttons;
-	$chunk->appendChild( $buttons );
-
-	# if in archive and can request delete then do that here TODO
 
 	# current view to show
 	my $view = $self->{session}->param( "view" );
@@ -147,43 +130,46 @@ sub render
 		push @screens, $item->{screen};
 	}
 
-	if( !@screens )
-	{
-		return $chunk;
-	}
+	my $tabs;
 
-	my @labels;
-	my @contents;
-	my @expensive;
-
-	for(my $i = 0; $i < @screens; ++$i)
+	if( @screens )
 	{
-		my $screen = $screens[$i];
-		my $rtt = $screen->render_tab_title;
- 	        push @labels, ( $rtt ) ? $rtt : $screen;
-		push @expensive, $i if $screen->{expensive};
-		if( $screen->{expensive} && $i != $current )
+		my @labels;
+		my @contents;
+		my @expensive;
+
+		for(my $i = 0; $i < @screens; ++$i)
 		{
-			push @contents, $self->{session}->html_phrase(
-				"cgi/users/edit_eprint:loading"
+			my $screen = $screens[$i];
+			my $rtt = $screen->render_tab_title;
+			push @labels, ( $rtt ) ? $rtt : $screen;
+			push @expensive, $i if $screen->{expensive};
+			if( $screen->{expensive} && $i != $current )
+			{
+				push @contents, $self->{session}->html_phrase(
+					"cgi/users/edit_eprint:loading"
+				);
+			}
+			else
+			{
+				push @contents, $screen->render;
+			}
+		}
+
+		$tabs = $self->{session}->xhtml->tabs(
+			\@labels,
+			\@contents,
+			basename => $id_prefix,
+			current => $current,
+			expensive => \@expensive,
 			);
-		}
-		else
-		{
-			push @contents, $screen->render;
-		}
 	}
 
-	$chunk->appendChild( $self->{session}->xhtml->tabs(
-		\@labels,
-		\@contents,
-		basename => $id_prefix,
-		current => $current,
-		expensive => \@expensive,
-		) );
-
-#	$chunk->appendChild( $buttons->cloneNode(1) );
-	return $chunk;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow:render", { item => {
+		status => $self->render_status,
+		buttons => $self->render_common_action_buttons,
+		tabs => $tabs,
+	} } );
 }
 
 sub render_status
@@ -192,15 +178,9 @@ sub render_status
 
 	my $dataobj = $self->{processor}->{dataobj};
 
-	my $url = $dataobj->uri;
-
-	my $div = $self->{session}->make_element( "div", class=>"ep_block" );
-
-	my $link = $self->{session}->render_link( $url );
-	$div->appendChild( $link );
-	$link->appendChild( $self->{session}->make_text( $url ) );
-
-	return $div;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow:render_status", { item => {
+		url => $dataobj->uri
+	} } );
 }
 
 sub render_common_action_buttons

@@ -352,6 +352,23 @@ sub run_yesno
 	return [ "no", "STRING" ];
 }
 
+sub run_if
+{
+	my( $self, $state, $condition, $true_expr, $false_expr ) = @_;
+	
+	my $test = $condition->[0];
+
+	if( !$test && !defined( $false_expr ))
+	{
+		return [ "", "STRING" ];
+	}
+
+	return [
+		$test ? $true_expr->[0] : $false_expr->[0],
+		$test ? $true_expr->[1] : $false_expr->[1]
+	];	
+}
+
 
 =item one_of( VAR, ARRAY )
 
@@ -681,6 +698,20 @@ sub run_control_url
 	return [ $eprint->get_control_url(), "STRING" ];
 }
 
+sub run_js_string
+{
+	my( $self, $state, $string ) = @_;
+
+	return [ EPrints::Utils::js_string( $string->[0] ), "STRING" ];
+}
+
+sub run_current_url
+{
+	my( $self, $state ) = @_;
+
+	return [ $state->{session}->current_url( query => 0 ), "STRING" ];
+}
+
 sub run_contact_email
 {
 	my( $self, $state, $eprint, $doc ) = @_;
@@ -899,6 +930,20 @@ sub run_array_concat
 	return [ \@v, "DATA_ARRAY" ];
 }
 
+sub run_array_length
+{
+	my( $self, $state, $array ) = @_;
+
+	return [ scalar @{$array->[0]}, "INTEGER" ];
+}
+
+sub run_concat
+{
+	my( $self, $state, @strings ) = @_;
+
+	return [ join('', map { $_->[0] } @strings ), "STRING" ];
+}
+
 sub run_join
 {
 	my( $self, $state, $array, $join_string ) = @_;
@@ -929,6 +974,20 @@ sub run_phrase
 	my( $self, $state, $phrase ) = @_;
 
 	return [ $state->{session}->html_phrase( $phrase->[0] ), "XHTML" ];
+}
+
+sub run_has_phrase
+{
+	my( $self, $state, $phrase ) = @_;
+
+	return [ $state->{session}->get_lang->has_phrase( $phrase->[0], $state->{session} ), "INTEGER" ];
+}
+
+sub run_string_phrase
+{
+	my( $self, $state, $phrase ) = @_;
+
+	return [ $state->{session}->phrase( $phrase->[0] ), "STRING" ];
 }
 
 sub run_documents

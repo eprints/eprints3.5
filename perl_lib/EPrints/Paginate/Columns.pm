@@ -34,7 +34,7 @@ sub paginate_list
 	my( $class, $session, $basename, $list, %opts ) = @_;
 
 	my %newopts = %opts;
-	
+
 	if( EPrints::Utils::is_set( $basename ) )
 	{
 		$basename .= '_';
@@ -69,7 +69,7 @@ sub paginate_list
 	{
 		$sort_order = $session->param( $basename."order" );
 	}
-	if( !defined $sort_order ) 
+	if( !defined $sort_order )
 	{
 		foreach my $sort_col (@{$opts{columns}})
 		{
@@ -80,14 +80,14 @@ sub paginate_list
 			if( $field->should_reverse_order )
 			{
 				$sort_order = "-$sort_col";
-			}	
-			else	
+			}
+			else
 			{
 				$sort_order = "$sort_col";
-			}	
+			}
 			last;
 		}
-	}	
+	}
 	if( EPrints::Utils::is_set( $sort_order ) )
 	{
 		$newopts{params}{ $basename."order" } = $sort_order;
@@ -96,14 +96,10 @@ sub paginate_list
 			$list = $list->reorder( $sort_order );
 		}
 	}
-	
-	# URL for images
-	my $imagesurl = $session->config( "rel_path" )."/style/images";
 
-	# Container for list
-	my $table = $session->make_element( "table", border=>0, cellpadding=>4, cellspacing=>0, class=>"ep_columns" );
-	my $tr = $session->make_element( "tr", class=>"header_plain" );
-	$table->appendChild( $tr );
+	my $header_info = {
+		headings => [],
+	};
 
 	my $len = scalar(@{$opts{columns}});
 
@@ -111,17 +107,23 @@ sub paginate_list
 	{
 		my $col = $opts{columns}->[$i];
 		my $last = ($i == $len-1);
-		# Column headings
-		my $th = $session->make_element( "th", style=>"padding:0px", class=>"ep_columns_title".($last?" ep_columns_title_last":"") );
-		if ( !defined $col )
+
+		my $heading = {
+			empty => 1,
+			actions => 0,
+			last => $last,
+		};
+
+		push $header_info->{headings}, $heading;
+
+		if( !defined $col )
 		{
-			my $span = $session->make_element( "span", style=>"padding: 4px" );
-			$span->appendChild( $session->make_text( $session->html_phrase( "general:actions_column_name" ) ) );
-			$th->appendChild( $span );
+			$heading->{actions} = 1;
+			next;
 		}
-		$tr->appendChild( $th );
-		next if !defined $col;
-	
+
+		$heading->{empty} = 0;
+
 		my $linkurl = "$url&${basename}order=$col";
 		if( $col eq $sort_order )
 		{
@@ -136,47 +138,36 @@ sub paginate_list
 				$linkurl = "$url&${basename}order=$col";
 			}
 		}
-		my $itable = $session->make_element( "div", class=>"ep_columns_title_inner" );
-		$th->appendChild( $itable );
-		my $itr = $session->make_element( "div" );
-		$itable->appendChild( $itr );
-		my $itd1 = $session->make_element( "div" );
-		$itr->appendChild( $itd1 );
-		my $link = $session->make_element( "a", href=>$linkurl . "&link=name", style=>'display:block;padding:4px' );
-		$link->appendChild( $list->get_dataset->get_field( $col )->render_name( $session ) );
-		$itd1->appendChild( $link );
+
+		$heading->{linkurl} = $linkurl;
+		$heading->{label} = $list->get_dataset->get_field( $col )->render_name( $session );
+		$heading->{sorted} = 'none';
 
 		# Sort controls
 
-		if( $sort_order eq $col || $sort_order eq "-$col")
+		if( $sort_order eq $col )
 		{
-			my $itd2 = $session->make_element( "div", class=>"ep_columns_title_inner_sort" );
-			$itr->appendChild( $itd2 );
-			my $link2 = $session->render_link( $linkurl . "&link=icon" );
-			$itd2->appendChild( $link2 );
-			if( $sort_order eq $col )
-			{
-				$link2->appendChild( $session->make_element(
-					"img",
-					alt=>"Up",
-					src=> "$imagesurl/sorting_up_arrow.gif" ));
-			}
-			if( $sort_order eq "-$col" )
-			{
-				$link2->appendChild( $session->make_element(
-					"img",
-					alt=>"Down",
-					src=> "$imagesurl/sorting_down_arrow.gif" ));
-			}
+			$heading->{sorted} = 'ascending';
 		}
-			
+
+		if( $sort_order eq "-$col" )
+		{
+			$heading->{sorted} = 'descending';
+		}
 	}
-	
+
 	my $info = {
 		row => 1,
 		columns => $opts{columns},
 	};
-	$newopts{container} = $table unless defined $newopts{container};
+
+	if( !defined( $newopts{container} ) )
+	{
+		$newopts{container} = $session->template_phrase( "view:EPrints/Paginate/Columns:paginate_list/container", {
+			item => $header_info
+		}, single => 1 );
+	}
+
 	$newopts{render_result_params} = $info unless defined $newopts{render_result_params};
 	$newopts{render_result} = sub {
 		my( $session, $e, $info ) = @_;
@@ -194,14 +185,15 @@ sub paginate_list
 	} unless defined $newopts{render_result};
 
 	$newopts{render_no_results} = sub {
+
 		my( $session, $info, $phrase ) = @_;
-		my $tr = $session->make_element( "tr" );
-		my $td = $session->make_element( "td", class=>"ep_columns_no_items", colspan => scalar @{ $opts{columns} } );
-		$td->appendChild( $phrase ); 
-		$tr->appendChild( $td );
-		return $tr;
+
+		return $session->template_phrase( "view:EPrints/Paginate/Columns:paginate_list/no_items", {
+			item => { message => $phrase, column_count => scalar @{ $opts{columns} } }
+		}, single => 1 );
+
 	} unless defined $newopts{render_no_results};
-	
+
 	return EPrints::Paginate->paginate_list( $session, $basename, $list, %newopts );
 }
 

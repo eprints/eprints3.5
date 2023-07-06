@@ -71,21 +71,26 @@ sub _render_name_maybe_with_link
 	my $name = $field->get_name;
 	my $stage = $self->_find_stage( $name );
 
-	my $r_name = $field->render_name( $self->{session} );
-	return $r_name if !defined $stage;
+	my $url;
 
-	my $url = URI->new( $self->{session}->current_url );
-	$url->query_form(
-		screen => $self->edit_screen,
-		dataset => $dataset->id,
-		dataobj => $dataobj->id,
-		stage => $stage
-	);
-	$url->fragment( $name );
-	my $link = $self->{session}->render_link( $url );
-	$link->appendChild( $r_name );
+	if( defined $stage )
+	{
+		$url = URI->new( $self->{session}->current_url );
 
-	return $link;
+		$url->query_form(
+			screen => $self->edit_screen,
+			dataset => $dataset->id,
+			dataobj => $dataobj->id,
+			stage => $stage
+		);
+
+		$url->fragment( $name );
+	}
+
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:_render_name_maybe_with_link", { item => {
+		name => $field->render_name( $self->{session} ),
+		url => $url,
+	} } );
 }
 
 sub DESTROY
@@ -115,8 +120,6 @@ sub render
 	my $session = $self->{session};
 	my $workflow = $self->workflow;
 
-	my $page = $session->make_doc_fragment;
-
 	my $has_problems = 0;
 
 	#$self->{edit_ok} = $self->could_obtain_eprint_lock; # hmm
@@ -131,7 +134,7 @@ sub render
 		$stages{$stage} = {
 			count => 0,
 			rows => [],
-			unspec => $session->make_doc_fragment,
+			unspec => [],
 		};
 	}
 
@@ -153,107 +156,61 @@ sub render
 
 		if( $dataobj->is_set( $name ) )
 		{
-			if( $field->isa( "EPrints::MetaField::Subobject" ) )
-			{
-				push @$rows, $session->render_row(
-					$r_name,
-					$dataobj->render_value( $field->get_name(), 1 ) );
-			}
-			else
-			{
-				push @$rows, $session->render_row(
-					$r_name,
-					$dataobj->render_value( $field->get_name(), 1 ) );
-			}
+			my $render_row = $session->render_row(
+				$r_name,
+				$dataobj->render_value( $field->get_name(), 1 ) );
+
+			push @$rows, {
+				name => $name,
+				render_row => $render_row,
+			};
 		}
 		else
 		{
-			if( $unspec->hasChildNodes )
-			{
-				$unspec->appendChild( $session->make_text( ", " ) );
-			}
-			$unspec->appendChild( $r_name );
+			push @$unspec, {
+				name => $name,
+				render_name => $r_name,
+			};
 		}
 	}
 
-	my $table = $session->make_element( "table",
-			border => "0",
-			cellpadding => "3",
-			class => "ep_view_details_table" );
-	$page->appendChild( $table );
+	my $sections = [];
 
 	foreach my $stage_id ($self->workflow->get_stage_ids, "")
 	{
+		my $section_info = {
+			unspec => [],
+			count => $stages{$stage_id}->{count},
+			rows => $stages{$stage_id}->{rows},
+		};
+
 		my $unspec = $stages{$stage_id}->{unspec};
 		next if $stages{$stage_id}->{count} == 0;
 
 		my $stage = $self->workflow->get_stage( $stage_id );
 
-		my( $tr, $th, $td );
-
-		my $rows = $stages{$stage_id}->{rows};
-
-		my $url = URI->new( $session->current_url );
-		$url->query_form(
-			screen => $self->edit_screen,
-			dataobj => $dataobj->id,
-			stage => $stage_id
-		);
-
-		$tr = $session->make_element( "tr" );
-		$table->appendChild( $tr );
-		$th = $session->make_element( "th", colspan => 2, class => "ep_title_row", "role" => "banner" );
-
-		$tr->appendChild( $th );
-
-		if( !defined $stage )
+		if( defined $stage )
 		{
-			$th->appendChild( $self->html_phrase( "other" ) );
-		}
-		else
-		{
-			my $title = $stage->render_title();
-			my $table_inner = $session->make_element( "div", class=>"ep_title_row_inner" );
-			my $tr_inner = $session->make_element( "div" );
-			my $td_inner_1 = $session->make_element( "div", class=>"ep_title" );
-			$th->appendChild( $table_inner );
-			$table_inner->appendChild( $tr_inner );
-			$tr_inner->appendChild( $td_inner_1 );
-			$td_inner_1->appendChild( $title );
+			my $warnings = $self->render_stage_warnings( $stage );
+			my $has_warnings = $warnings->hasChildNodes;
+
+			$section_info->{title} = $stage->render_title();
+			$section_info->{warnings} = $warnings;
+			$section_info->{has_problems} = $has_warnings;
+			$section_info->{unspec} = $unspec;
+
 			if( $edit_ok )
 			{
-				my $td_inner_2  = $session->make_element( "div" );
-				$tr_inner->appendChild( $td_inner_2 );
-				$td_inner_2->appendChild( $self->render_edit_button( $stage ) );
+				$section_info->{edit_button} = $self->render_edit_button( $stage );
+			}
+
+			if( $has_warnings )
+			{
+				$has_problems = 1;
 			}
 		}
 
-		if( defined $stage )
-		{
-			$tr = $session->make_element( "tr" );
-			$table->appendChild( $tr );
-			$td = $session->make_element( "td", colspan => 2 );
-			$tr->appendChild( $td );
-			$td->appendChild( $self->render_stage_warnings( $stage ) );
-			$has_problems = 1 if $td->hasChildNodes;
-		}
-
-		foreach $tr (@$rows)
-		{
-			$table->appendChild( $tr );
-		}
-
-		if( $stage ne "" && $unspec->hasChildNodes )
-		{
-			$table->appendChild( $session->render_row(
-				$session->html_phrase( "lib/dataobj:unspecified" ),
-				$unspec ) );
-		}
-
-		$tr = $session->make_element( "tr" );
-		$table->appendChild( $tr );
-		$td = $session->make_element( "td", colspan => 2, style=>'height: 1em' );
-		$tr->appendChild( $td );
+		push $sections, $section_info;
 	}
 
 	if( $has_problems )
@@ -262,7 +219,11 @@ sub render
 		$span->setAttribute( style => "padding-left: 20px; background: url('".$session->current_url( path => "static", "style/images/warning-icon.png" )."') no-repeat;" );
 	}
 
-	return $page;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:render", { item => {
+		edit_ok => $edit_ok,
+		sections => $sections,
+		other_title_phrase => $self->html_phrase_id( "other" ),
+	} } );
 }
 
 sub render_edit_button
@@ -270,8 +231,6 @@ sub render_edit_button
 	my( $self, $stage ) = @_;
 
 	my $session = $self->{session};
-
-	my $div = $session->make_element( "div" );
 
 	my $button = $self->render_action_button({
 		screen => $session->plugin( "Screen::".$self->edit_screen,
@@ -284,31 +243,38 @@ sub render_edit_button
 			stage => $stage->get_name,
 		},
 	});
-	$div->appendChild( $button );
 
-	return $div;
+	return $session->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:render_edit_button", { item => {
+		button => $button,
+	} } );
 }
 
 sub render_stage_warnings
 {
 	my( $self, $stage ) = @_;
 
-	my $session = $self->{session};
-
 	my @problems = $stage->validate( $self->{processor} );
+	my $problems_info = [];
 
-	return $session->make_doc_fragment if !scalar @problems;
- 
-	my $ul = $session->make_element( "ul" );
-	foreach my $problem ( @problems )
+	if (scalar @problems )
 	{
-		my $li = $session->make_element( "li" );
-		$li->appendChild( $problem );
-		$ul->appendChild( $li );
+		foreach my $problem ( @problems )
+		{
+			push $problems_info, {
+				problem => $problem,
+			};
+		}
 	}
-	$self->workflow->link_problem_xhtml( $ul, $self->edit_screen, $stage );
 
-	return $session->render_message( "warning", $ul );
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:render_stage_warnings", {
+		workflow => $self->workflow,
+		item => {
+			has_problems => !!(scalar @problems),
+			problems => $problems_info,
+			stage => $stage,
+		},
+	} );
+	
 }
 
 1;

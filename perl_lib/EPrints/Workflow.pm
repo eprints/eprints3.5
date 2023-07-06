@@ -510,14 +510,18 @@ sub get_state_params
 # add links to fields in problem-report xhtml chunks.
 sub link_problem_xhtml
 {
-	my( $self, $node, $screenid, $new_stage ) = @_;
+	my( $self, $node, $screenid, $new_stage, $problem_classname ) = @_;
+
+	$problem_classname = "ep_problem_field" unless defined( $problem_classname );
 
 	if( EPrints::XML::is_dom( $node, "Element" ) )
 	{
 		my $class = $node->getAttribute( "class" );
-		if( $class && $class=~m/^ep_problem_field:(.*)$/ )
+
+		if( $class && $class=~m/^$problem_classname:(.*)$/ )
 		{
 			my $stage = $self->{field_stages}->{$1};
+
 			return if( !defined $stage );
 			my $keyfield = $self->{dataset}->get_key_field();
 			my $kf_sql = $keyfield->get_sql_name;
@@ -551,7 +555,13 @@ sub link_problem_xhtml
 		}
 	}
 
-
+	if( EPrints::XML::is_dom( $node, "DocumentFragment" ) )
+	{
+		foreach my $child ( $node->getChildNodes )
+		{
+			$self->link_problem_xhtml( $child, $screenid, $new_stage );
+		}
+	}
 }
 
 

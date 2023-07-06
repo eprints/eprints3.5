@@ -44,30 +44,25 @@ sub render
 	my $imagesurl = $repo->config( "rel_path" )."/style/images";
 	my @datasets = $self->datasets;
 
-	my $html = $xml->create_document_fragment;
+	my $item = {
+		datasets => []
+	};
 
 	if( $repo->get_lang->has_phrase( $self->html_phrase_id( "intro" ), $repo ) )
 	{
-		my $intro_div_outer = $xml->create_element( "div", class => "ep_toolbox" );
-		my $intro_div = $xml->create_element( "div", class => "ep_toolbox_content" );
-		$intro_div->appendChild( $self->html_phrase( "intro" ) );
-		$intro_div_outer->appendChild( $intro_div );
-		$html->appendChild( $intro_div_outer );
+		$item->{has_intro} = 1;
 	}
-
-	my $table = $xml->create_element( "table", id => "ep_datasets_table" );
-	$html->appendChild( $table );
 
 	foreach my $dataset (@datasets)
 	{
-		my $link = $xml->create_element( "a", href => $self->listing( $dataset ) );
-		$link->appendChild( $dataset->render_name( $repo ) );
-		$table->appendChild( $repo->render_row(
-			$link,
-			$repo->html_phrase( "datasethelp_".$dataset->id ) ) );
+		push $item->{datasets}, {
+			id => $dataset->id,
+			label => $dataset->render_name( $repo ),
+			href => $self->listing( $dataset ),
+		}
 	}
 
-	return $html;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/DataSets:render", { item => $item } );
 }
 
 sub datasets

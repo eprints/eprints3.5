@@ -83,33 +83,25 @@ sub render_top_bar
 {
 	my( $self ) = @_;
 
-	my $repo = $self->{session};
-	my $frag = $repo->xml->create_document_fragment;
-	my $user = $repo->current_user;
-	my $imagesurl = $repo->config( "rel_path" )."/style/images";
+	my $session = $self->{session};
+	my $user = $session->current_user;
+
+	my $has_editperms = $user->is_set( "editperms" );
+	my $editperms_description;
 
 	if( $user->is_set( "editperms" ) )
 	{
-		my $div = $repo->xml->create_element( "div", class=>"ep_block" );
-		$div->appendChild( $repo->html_phrase( 
+		$editperms_description = $session->html_phrase( 
 			"cgi/users/buffer:buffer_scope",
-			scope=>$user->render_value( "editperms" ) ) );
-		$frag->appendChild( $div );
+			scope=>$user->render_value( "editperms" ) );
 	}
 
-	my %options = (
-		session => $repo,
-		id => "ep_review_instructions",
-		title => $repo->html_phrase( "Plugin/Screen/Review:help_title" ),
-		content => $repo->html_phrase( "Plugin/Screen/Review:help" ),
-		collapsed => 1,
-		show_icon_url => "$imagesurl/help.png",
-	);
-	my $box = $repo->xml->create_element( "div", style=>"text-align: left" );
-	$box->appendChild( EPrints::Box::render( %options ) );
-	$frag->appendChild( $box );
-
-	return $frag;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Review:render_top_bar", { item => {
+		has_editperms => $has_editperms,
+		editperms_description => $editperms_description,
+		intro_title => $session->html_phrase( "Plugin/Screen/Review:help_title" ),
+		intro_content => $session->html_phrase( "Plugin/Screen/Review:help" ),
+	} } );
 }
 
 sub render_dataobj_actions

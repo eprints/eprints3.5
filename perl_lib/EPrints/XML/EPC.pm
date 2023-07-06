@@ -54,13 +54,14 @@ sub process
 	
 	if( EPrints::XML::is_dom( $node, "Element" ) )
 	{
-		my $name = $node->tagName;
+		my $name_with_ns = $node->tagName;
+		my $name = $name_with_ns;
 		$name =~ s/^epc://;
 
 		return $params{session}->xml->create_document_fragment
 			if $node->hasAttribute( "disabled" ) && $node->getAttribute( "disabled" );
 
-		if( $name=~m/^(if|comment|choose|print|debug|phrase|pin|foreach|set|list)$/ )
+		if( $name=~m/^(if|comment|choose|print|debug|phrase|pin|foreach|set|list|attribute|whitespace|template)$/ )
 		{
 			my $fn = "_process_$name";
 			no strict "refs";
@@ -73,10 +74,41 @@ sub process
 			}
 			return $r;
 		}
+
+		if( defined( $params{helper_functions} ) )
+		{
+			if( defined( $params{helper_functions}{$name_with_ns} ) )
+			{
+				no strict "refs";
+				my $r = eval { &{$params{helper_functions}{$name_with_ns}}( $node, \&process_child_nodes, %params ); };
+				use strict "refs";
+				if( $@ )
+				{
+					$params{session}->log( "EPScript error: $@" );
+					return $params{session}->html_phrase( "XML/EPC:script_error" );
+				}
+				return $r;
+			}
+		}
 	}
 
 	my $collapsed = $params{session}->clone_for_me( $node );
-	my $attrs = $collapsed->attributes;
+
+	EPrints::XML::EPC::expand_attributes( $collapsed, %params );
+
+	if( $node->hasChildNodes )
+	{
+		$collapsed->appendChild( process_child_nodes( $node, %params, parent_element => $collapsed ) );
+	}
+	return $collapsed;
+}
+
+sub expand_attributes
+{
+	my( $element, %params ) = @_;
+
+	my $attrs = $element->attributes;
+
 	if( defined $attrs )
 	{
 		for( my $i = 0; $i<$attrs->length; ++$i )
@@ -93,12 +125,6 @@ sub process
 			if( $v ne $newv ) { $attr->setValue( $newv ); }
 		}
 	}
-
-	if( $node->hasChildNodes )
-	{
-		$collapsed->appendChild( process_child_nodes( $node, %params ) );
-	}
-	return $collapsed;
 }
 
 sub expand_attribute
@@ -131,10 +157,25 @@ sub process_child_nodes
 
 	foreach my $child ( $node->getChildNodes )
 	{
-		$collapsed->appendChild(
-			process( 
-				$child,
-				%params ) );			
+		if( EPrints::XML::is_dom( $child, "Text" ) )
+		{
+			if( $params{strip_empty_text_nodes} )
+			{
+				my $text = $child->getData;
+
+				if ( $text =~ /^[\s]+$/ )
+				{
+					next;
+				}
+			}
+		}
+
+		my $childResult = process( $child, %params );
+
+		if( defined( $childResult ) )
+		{
+			$collapsed->appendChild( $childResult );
+		}
 	}
 
 	return $collapsed;
@@ -183,9 +224,9 @@ sub _process_pin
 }
 
 
-sub _process_phrase
+sub _phrase_template_aux
 {
-	my( $node, %params ) = @_;
+	my( $node, $item, %params ) = @_;
 
 	if( !$node->hasAttribute( "ref" ) )
 	{
@@ -209,10 +250,25 @@ sub _process_phrase
 		my $name = $param->getAttribute( "name" );
 		
 		$pins{$name} = process_child_nodes( $param, %params );
+
+		if( $param->getAttribute( "singleElement" ) )
+		{
+			if( !$pins{$name}->hasChildNodes )
+			{
+				EPrints::abort( "Param $name has no nodes." );
+			}
+
+			$pins{$name} = $pins{$name}->childNodes->[0]->cloneNode;
+		}
 	}
 
 	my $collapsed;
-	if( $node->hasAttribute( "textonly" ) && $node->getAttribute( "textonly" ) eq 'yes' )
+
+	if( defined( $item ) )
+	{
+		$collapsed = $params{session}->template_phrase( $ref, { %pins, item => $item } );
+	}
+	elsif( $node->hasAttribute( "textonly" ) && $node->getAttribute( "textonly" ) eq 'yes' )
 	{
 		$collapsed = $params{session}->make_text( $params{session}->phrase( $ref, %pins ) );
 	}
@@ -224,6 +280,27 @@ sub _process_phrase
 #	print $collapsed->toString."\n";
 
 	return $collapsed;
+}
+
+sub _process_phrase
+{
+	my( $node, %params ) = @_;
+
+	return _phrase_template_aux( $node, undef, %params );
+}
+
+sub _process_template
+{
+	my( $node, %params ) = @_;
+
+	my $item;
+
+	if( $node->hasAttribute( "item" ) )
+	{
+		$item = EPrints::Script::execute( $node->getAttribute( "item" ), \%params )->[0];
+	}
+
+	return _phrase_template_aux( $node, $item, %params );
 }
 
 sub _process_print
@@ -247,8 +324,86 @@ sub _process_print
 		$opts = $node->getAttribute( "opts" );
 	}
 
-	return EPrints::Script::print( $expr, \%params, $opts );
+	my $passthrough = $node->getAttribute( "passthrough" );
+
+	my $result;
+
+	if( defined $passthrough )
+	{
+		my $xhtml = EPrints::Script::execute( $expr, \%params );
+
+		if( $xhtml->[1] ne "XHTML" )
+		{
+			EPrints::abort( "print element with passthrough can only print XHTML.\n".substr( $node->toString, 0, 100 ) );	
+		}
+
+		$result = $xhtml->[0];
+	}
+	else
+	{
+		$result = EPrints::Script::print( $expr, \%params, $opts );
+
+		if( $node->hasChildNodes )
+		{
+			$result->appendChild( process_child_nodes( $node, %params ) );
+		}
+	}
+
+	return $result;
 }	
+
+sub _process_attribute
+{
+	my( $node, %params ) = @_;
+
+	if( !defined( $params{parent_element} ) )
+	{
+		EPrints::abort("epc:attribute has no parent element.");
+	}
+
+	my $parent = $params{parent_element};
+	my $name = $node->getAttribute( "name" );
+
+
+	if( !defined( $name ) )
+	{
+		EPrints::abort("epc:attribute requires a name attribute.")
+	}
+
+	$name = expand_attribute( $name, "name", \%params );
+
+	my $children = $params{session}->make_doc_fragment;
+
+	if( $node->hasChildNodes )
+	{
+		$children->appendChild( process_child_nodes( $node, %params ) );
+	}
+
+	$parent->setAttribute( $name, $children->toString );
+
+	return undef;
+}
+
+sub _process_whitespace
+{
+	my( $node, %params ) = @_;
+
+	if( $node->hasAttribute( "empty") )
+	{
+		my $empty = $node->getAttribute( "empty" );
+
+		if( $empty eq "strip" )
+		{
+			$params{strip_empty_text_nodes} = 1;
+		}
+		elsif ( $empty eq "preserve" )
+		{
+			$params{strip_empty_text_nodes} = 0;
+		}
+	}
+
+	return process_child_nodes( $node, %params );
+}
 
 sub _process_debug
 {

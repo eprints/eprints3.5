@@ -716,31 +716,18 @@ sub render_search_form
 {
 	my( $self ) = @_;
 
-	my $form = $self->{session}->render_form( "get" );
+	my $is_staff = !!$self->{processor}->{sconf}->{staff};
 
-	$form->appendChild( $self->render_hidden_bits );
-
-	$form->appendChild( $self->render_preamble );
-
-	$form->appendChild( $self->render_controls );
-
-	my $table = $self->{session}->make_element( "div", class=>"ep_search_fields" );
-	$form->appendChild( $table );
-
-	$table->appendChild( $self->render_search_fields );
-
-	$table->appendChild( $self->render_anyall_field );
-
-	$table->appendChild( $self->render_order_field );
-
-    if ( $self->{processor}->{sconf}->{staff} )
-    {
-        $table->appendChild( $self->render_show_hidden );
-    }
-
-	$form->appendChild( $self->render_controls );
-
-	return( $form );
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/AbstractSearch:render_search_form", { item => {
+		"hidden_bits" => $self->render_hidden_bits,
+		"preamble" => $self->render_preamble,
+		"controls" => $self->render_controls,
+		"search_fields" => $self->render_search_fields,
+		"anyall_field" => $self->render_anyall_field,
+		"order_field" => $self->render_order_field,
+		"show_hidden" => $is_staff ? $self->render_show_hidden : undef,
+		"is_staff" => $is_staff,
+	} } );
 }
 
 sub render_hidden_bits
@@ -774,36 +761,40 @@ sub render_search_fields
 {
 	my( $self ) = @_;
 
-	my $frag = $self->{session}->make_doc_fragment;
+	my @fields;
 
 	foreach my $sf ( $self->{processor}->{search}->get_non_filter_searchfields )
 	{
 		my $field;
 		my $ft = $sf->{"field"}->get_type();
-		my $prefix = $sf->get_form_prefix;
+		my $is_checkbox_set = 0;
+
 		if ( ( $ft eq "set" || $ft eq "namedset" ) && $sf->{"field"}->{search_input_style} eq "checkbox" )
 		{
 			$field = $sf->render( legend => EPrints::Utils::tree_to_utf8( $sf->render_name ) . " " . EPrints::Utils::tree_to_utf8( $self->{session}->html_phrase( "lib/searchfield:desc:set_legend_suffix" ) ) );
-			$prefix .= "_legend"; 
+			$is_checkbox_set = 1;
 		}
-		else {
+		else
+		{
 			$field = $sf->render();
 		}
 
-		$frag->appendChild(
-			$self->{session}->render_row_with_help(
-				prefix => $prefix,
-				help_prefix => $sf->get_form_prefix."_help",
-				help => $sf->render_help,
-				label => $sf->render_name,
-				field => $field,
-				no_toggle => ( $sf->{show_help} eq "always" ),
-				no_help => ( $sf->{show_help} eq "never" ),
-				context => "type_$ft",
-			 ) );
+		push @fields, {
+			prefix => $sf->get_form_prefix,
+			name => $sf->render_name,
+			field_type => $ft,
+			show_help => $sf->{show_help},
+			no_toggle => ( $sf->{show_help} eq "always" ),
+			no_help => ( $sf->{show_help} eq "never" ),
+			field => $field,
+			help => $sf->render_help,
+			is_checkbox_set => $is_checkbox_set,
+		};
 	}
 
-	return $frag;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/AbstractSearch:render_search_fields", { item => {
+		"fields" => \@fields,
+	} } );
 }
 
 

@@ -342,10 +342,7 @@ sub render_links
 {
 	my( $self ) = @_;
 
-	my $style = $self->{session}->make_element( "style", type=>"text/css" );
-	$style->appendChild( $self->{session}->make_text( ".ep_tm_main { width: 90%; }" ) );
-
-	return $style;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Listing:render_links" );
 }
 
 sub show_columns
@@ -390,13 +387,6 @@ sub render
 
 	my $session = $self->{session};
 	my $user = $session->current_user;
-	my $imagesurl = $session->config( "rel_path" )."/style/images";
-
-	my $chunk = $session->make_doc_fragment;
-
-	$chunk->appendChild( $self->render_top_bar() );
-
-	$chunk->appendChild( $self->render_filters() );
 
 	### Get the items owned by the current user
 	my $ds = $self->{processor}->{dataset};
@@ -413,78 +403,26 @@ sub render
 
 	my $len = scalar @{$columns};
 
-	my $final_row = $session->make_element( "tr" );
-	foreach my $i (0..$#$columns)
+	# Get the current object as this can be inherited.
+	my $screen = ref $self;
+	$screen =~ s/.*://;
+
+	my $final_row = {
+		columns => [],
+		column_param => 'column',
+		screen => $screen,
+		hidden_bits => $self->render_hidden_bits,
+	};
+
+	my $column_count = scalar @{$columns};
+
+	for( my $i = 0; $i < $column_count; $i++ )
 	{
-		# Column headings
-		my $td = $session->make_element( "td", class=>"ep_columns_alter" );
-		$final_row->appendChild( $td );
-
-		my $acts_table = $session->make_element( "div", class=>"ep_columns_alter_inner", cellpadding=>0, cellspacing=>0, border=>0, width=>"100%" );
-		my $acts_row = $session->make_element( "div" );
-		my $acts_td1 = $session->make_element( "div" );
-		my $acts_td2 = $session->make_element( "div" );
-		my $acts_td3 = $session->make_element( "div" );
-		$acts_table->appendChild( $acts_row );
-		$acts_row->appendChild( $acts_td1 );
-		$acts_row->appendChild( $acts_td2 );
-		$acts_row->appendChild( $acts_td3 );
-		$td->appendChild( $acts_table );
-
-		if( $i > 0 )
-		{
-			my $form_l = $self->render_form;
-			$form_l->appendChild( $session->render_hidden_field( "column", $i ) );
-			$form_l->appendChild( $session->make_element( 
-				"input",
-				type=>"image",
-				value=>$session->phrase( "lib/paginate:move_left" ),
-				title=>$session->phrase( "lib/paginate:move_left" ),
-				src => "$imagesurl/left.png",
-				alt => "<",
-				name => "_action_col_left" ) );
-			$acts_td1->appendChild( $form_l );
-		}
-		else
-		{
-			$acts_td1->appendChild( $session->make_element("img",src=>"$imagesurl/noicon.png",alt=>"") );
-		}
-
-		my $msg = $self->phrase( "remove_column_confirm" );
-		my $form_rm = $self->render_form;
-		$form_rm->appendChild( $session->render_hidden_field( "column", $i ) );
-		$form_rm->appendChild( $session->make_element( 
-			"input",
-			type=>"image",
-			value=>$session->phrase( "lib/paginate:remove_column" ),
-			title=>$session->phrase( "lib/paginate:remove_column" ),
-			src => "$imagesurl/delete.png",
-			alt => "X",
-			onclick => "if( window.event ) { window.event.cancelBubble = true; } return confirm( ".EPrints::Utils::js_string($msg).");",
-			name => "_action_remove_col" ) );
-		$acts_td2->appendChild( $form_rm );
-
-		if( $i < $#$columns )
-		{
-			my $form_r = $self->render_form;
-			$form_r->appendChild( $session->render_hidden_field( "column", $i ) );
-			$form_r->appendChild( $session->make_element( 
-				"input",
-				type=>"image",
-				value=>$session->phrase( "lib/paginate:move_right" ),
-				title=>$session->phrase( "lib/paginate:move_right" ),
-				src => "$imagesurl/right.png",
-				alt => ">",
-				name => "_action_col_right" ) );
-			$acts_td3->appendChild( $form_r );
-		}
-		else
-		{
-			$acts_td3->appendChild( $session->make_element("img",src=>"$imagesurl/noicon.png",alt=>"")  );
-		}
+		push $final_row->{columns}, {
+			column => $columns->[$i],
+			column_index => $i,
+		};
 	}
-	my $td = $session->make_element( "td", class=>"ep_columns_alter ep_columns_alter_last" );
-	$final_row->appendChild( $td );
 
 	# Paginate list
 	my $row = 0;
@@ -498,42 +436,42 @@ sub render
 		columns => [(map{ $_->name } @{$columns}), undef ],
 		above_results => $session->make_doc_fragment,
 		render_result => sub {
-			my( undef, $dataobj ) = @_;
+
+			my( undef, $dataobj, $info ) = @_;
 
 			local $self->{processor}->{dataobj} = $dataobj;
-			my $class = "row_".($row % 2 ? "b" : "a");
 
-			my $tr = $session->make_element( "tr", class=>$class );
+			my $item = {
+				row_index => $info->{row},
+				columns => [],
+			};
 
-			my $first = 1;
+			my $column_index = 1;
+
 			for( map { $_->name } @$columns )
 			{
-				my $td = $session->make_element( "td", class=>"ep_columns_cell".($first?" ep_columns_cell_first":"")." ep_columns_cell_$_"  );
-				$first = 0;
-				$tr->appendChild( $td );
-				$td->appendChild( $dataobj->render_value( $_ ) );
+				push $item->{columns}, {
+					column => $_,
+					column_index => $column_index++,
+					render_value => $dataobj->render_value( $_ ),
+				};
 			}
 
-			my $td = $session->make_element( "td", class=>"ep_columns_cell ep_columns_cell_last", align=>"left" );
-			$tr->appendChild( $td );
-			$td->appendChild( $self->render_dataobj_actions( $dataobj ) );
+			$item->{action_list_icons} = $self->render_dataobj_actions( $dataobj );
 
-			++$row;
+			++$info->{row};
 
-			return $tr;
+			return $session->template_phrase( "view:EPrints/Plugin/Screen/Listing:render/render_result", { item => $item } );
 		},
-		rows_after => $final_row,
+
+		rows_after => $session->template_phrase( "view:EPrints/Plugin/Screen/Items:render_items/final_row", { item => $final_row } )
 	);
 
 	$opts{page_size} = $self->param( 'page_size' );
 
-	$chunk->appendChild( EPrints::Paginate::Columns->paginate_list( $session, "_listing", $list, %opts ) );
-
+	my $paginated_list = EPrints::Paginate::Columns->paginate_list( $session, "_listing", $list, %opts );
 
 	# Add form
-	my $div = $session->make_element( "div", class=>"ep_columns_add" );
-	my $form_add = $self->render_form;
-
 	my %col_shown = map { $_->name() => 1 } @$columns;
 	my $fieldnames = {};
 	foreach my $field ( $ds->fields )
@@ -551,31 +489,23 @@ sub render
 	}
 
 	my @tags = sort { $fieldnames->{$a} cmp $fieldnames->{$b} } keys %$fieldnames;
+	# End of Add form
 
-	my $label = $session->make_element( "label" );
-	$label->appendChild( $session->make_text( $session->phrase( "lib/paginate:add_column_label" ) . " " ) );
-
-	$label->appendChild( $session->render_option_list( 
+	my $add_column_option_list = $session->render_option_list( 
 		name => 'column',
 		height => 1,
 		multiple => 0,
 		'values' => \@tags,
-		labels => $fieldnames ) );
+		labels => $fieldnames );
 
-	$form_add->appendChild( $label );
-		
-	$form_add->appendChild( 
-			$session->render_button(
-				class=>"ep_form_action_button",
-				role=>"button",
-				name=>"_action_add_col", 
-				value => $session->phrase( "lib/paginate:add_column" ),
-			) );
-	$div->appendChild( $form_add );
-	$chunk->appendChild( $div );
-	# End of Add form
-
-	return $chunk;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Listing:render", { item => {
+		top_bar => $self->render_top_bar,
+		filters => $self->render_filters,
+		paginated_list => $paginated_list,
+		screen => 'Listing',
+		hidden_bits => $self->render_hidden_bits,
+		add_column_option_list => $add_column_option_list,
+	} } );
 }
 
 sub hidden_bits
@@ -594,23 +524,18 @@ sub render_top_bar
 	my( $self ) = @_;
 
 	my $session = $self->{session};
-	my $chunk = $session->make_doc_fragment;
 
-	if( $session->get_lang->has_phrase( $self->html_phrase_id( "intro" ), $session ) )
-	{
-		my $intro_div_outer = $session->make_element( "div", class => "ep_toolbox" );
-		my $intro_div = $session->make_element( "div", class => "ep_toolbox_content" );
-		$intro_div->appendChild( $self->html_phrase( "intro" ) );
-		$intro_div_outer->appendChild( $intro_div );
-		$chunk->appendChild( $intro_div_outer );
-	}
+	my $has_intro = !!$session->get_lang->has_phrase( $self->html_phrase_id( "intro" ), $session );
 
-	# we've munged the argument list below
-	$chunk->appendChild( $self->render_action_list_bar( "dataobj_tools", {
+	my $dataobj_tools = $self->render_action_list_bar( "dataobj_tools", {
 		dataset => $self->{processor}->{dataset}->id,
-	} ) );
+	} );
 
-	return $chunk;
+	return $session->template_phrase( "view:EPrints/Plugin/Screen/Listing:render_top_bar", { item => {
+		has_intro => $has_intro,
+		intro => $has_intro ?  $self->html_phrase( "intro" ) : undef,
+		data_objtools => $dataobj_tools,
+	} } );
 }
 
 sub render_dataobj_actions
@@ -630,46 +555,24 @@ sub render_filters
 	my( $self ) = @_;
 
 	my $session = $self->{session};
-	my $xml = $session->xml;
-	my $dataset = $self->{processor}->{dataset};
-	my $imagesurl = $session->config( "rel_path" )."/style/images";
 
-	my $f = $xml->create_document_fragment;
-
-	my $form = $self->render_search_form();
-
-	my %options = (
-		session => $session,
-		id => "ep_listing_search",
-		title => $session->html_phrase( "lib/searchexpression:action_filter" ),
-		content => $form,
+	return $session->template_phrase( "view:EPrints/Plugin/Screen/Listing:render_filters", { item => {
+		form => $self->render_search_form(),
 		collapsed => $self->{processor}->{search}->is_blank(),
-		show_icon_url => "$imagesurl/help.png",
-	);
-	my $box = $session->make_element( "div", style=>"text-align: left" );
-	$box->appendChild( EPrints::Box::render( %options ) );
-	$f->appendChild( $box );
-
-	return $f;
+		title => $session->html_phrase( "lib/searchexpression:action_filter" ),
+	} } );
 }
 
 sub render_search_form
 {
 	my( $self ) = @_;
 
-	my $form = $self->render_form;
-	$form->setAttribute( method => "get" );
-
-	my $table = $self->{session}->make_element( "div", class=>"ep_search_fields" );
-	$form->appendChild( $table );
-
-	$table->appendChild( $self->render_search_fields );
-
-#	$table->appendChild( $self->render_anyall_field );
-
-	$form->appendChild( $self->render_controls );
-
-	return( $form );
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Listing:render_search_form", { item => {
+		hidden_bits => $self->render_hidden_bits,
+		search_fields => $self->render_search_fields,
+		# anyall_field => $self->render_anyall_field,
+		controls => $self->render_controls,
+	} } );
 }
 
 
@@ -739,18 +642,17 @@ sub render_anyall_field
 
 sub render_controls
 {
-        my( $self ) = @_;
+	my( $self ) = @_;
 
-        my $div = $self->{session}->make_element(
-                "div" ,
-                class => "ep_search_buttons" );
-        $div->appendChild( $self->{session}->render_action_buttons(
-                set_filters => $self->{session}->phrase( "lib/searchexpression:action_filter" ),
-                reset_filters => $self->{session}->phrase( "lib/searchexpression:action_reset" ),
-                _order => [ "set_filters", "reset_filters" ],
-        ) );
+	my $search_buttons = $self->{session}->render_action_buttons(
+		set_filters => $self->{session}->phrase( "lib/searchexpression:action_filter" ),
+		reset_filters => $self->{session}->phrase( "lib/searchexpression:action_reset" ),
+		_order => [ "set_filters", "reset_filters" ],
+	);
 
-        return $div;
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Listing:render_controls", { item => {
+		search_buttons => $search_buttons,
+	} } );
 }
 
 1;
