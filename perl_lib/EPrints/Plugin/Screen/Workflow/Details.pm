@@ -210,7 +210,7 @@ sub render
 			}
 		}
 
-		push $sections, $section_info;
+		push @$sections, $section_info;
 	}
 
 	if( $has_problems )
@@ -260,7 +260,7 @@ sub render_stage_warnings
 	{
 		foreach my $problem ( @problems )
 		{
-			push $problems_info, {
+			push @$problems_info, {
 				problem => $problem,
 			};
 		}

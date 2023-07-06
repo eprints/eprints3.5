@@ -962,7 +962,7 @@ sub action_definition_list
 
 	for(my $i = 0; $i < @$actions; ++$i)
 	{
-		push $list, {
+		push @$list, {
 			action => $actions->[$i],
 			definition => $definitions->[$i],
 		};

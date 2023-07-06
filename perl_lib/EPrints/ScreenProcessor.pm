@@ -254,7 +254,7 @@ sub render_item_list
 		$item_list_class = $self->{session}->config( 'item_list_class' ) if defined $self->{session}->config( 'item_list_class' );
 		$item_list_class .= $screen->{class} if defined $screen->{class};		
 
-		push $item->{entries}, {
+		push @{ $item->{entries} }, {
 			id => $entry->{screen}->{id},
 			class => $item_list_class,
 			item => $entry->{screen}->render_action_link,

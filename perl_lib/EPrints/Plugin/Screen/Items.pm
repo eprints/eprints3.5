@@ -223,7 +223,7 @@ sub render_items
 		$q{"set_show_$filter"} = !$filters{$filter};
 		$url->query_form( %q );
 
-		push $filter_info->{filters}, {
+		push @{ $filter_info->{filters} }, {
 			id => $filter,
 			active => $filters{$filter},
 			url => $url,
@@ -250,7 +250,7 @@ sub render_items
 
 	for( my $i = 0; $i < $column_count; $i++ )
 	{
-		push $final_row->{columns}, {
+		push @{ $final_row->{columns} }, {
 			column => $columns->[$i],
 			column_index => $i,
 		};
@@ -298,7 +298,7 @@ sub render_items
 
 			for( @$columns )
 			{
-				push $item->{columns}, {
+				push @{ $item->{columns} }, {
 					column => $_,
 					column_index => $column_index++,
 					render_value => $eprint->render_value( $_ ),

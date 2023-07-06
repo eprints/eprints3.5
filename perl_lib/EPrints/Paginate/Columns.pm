@@ -114,7 +114,7 @@ sub paginate_list
 			last => $last,
 		};
 
-		push $header_info->{headings}, $heading;
+		push @{ $header_info->{headings} }, $heading;
 
 		if( !defined $col )
 		{

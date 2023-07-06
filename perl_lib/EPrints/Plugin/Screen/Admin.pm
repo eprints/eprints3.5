@@ -55,7 +55,7 @@ sub render
 	{
 		next unless scalar $self->action_list( $list_id );
 
-		push $lists, {
+		push @$lists, {
 			list_id => $list_id,
 			label_phrase_id => $self->html_phrase_id( $list_id ),
 			content => $self->render_action_list( $list_id ),

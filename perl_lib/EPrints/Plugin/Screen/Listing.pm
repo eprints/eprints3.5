@@ -418,7 +418,7 @@ sub render
 
 	for( my $i = 0; $i < $column_count; $i++ )
 	{
-		push $final_row->{columns}, {
+		push @{ $final_row->{columns} }, {
 			column => $columns->[$i],
 			column_index => $i,
 		};
@@ -450,7 +450,7 @@ sub render
 
 			for( map { $_->name } @$columns )
 			{
-				push $item->{columns}, {
+				push @{ $item->{columns} }, {
 					column => $_,
 					column_index => $column_index++,
 					render_value => $dataobj->render_value( $_ ),

@@ -1268,7 +1268,7 @@ sub render_input_field_actual
 	{
 		if( $self->get_property( "multiple" ) && $self->{input_ordered})
 		{
-			push $titles, {
+			push @$titles, {
 				column_index => 0,
 				empty_column => 1,
 			};
@@ -1280,7 +1280,7 @@ sub render_input_field_actual
 
 		foreach my $col_title ( @{$col_titles} )
 		{
-			push $titles, {
+			push @$titles, {
 				column_index => $x,
 				title => $col_title,
 				id => $input_ids[$x],
@@ -1313,7 +1313,7 @@ sub render_input_field_actual
 			{
 				next if( $prop eq "el" );
 
-				push $cell_info->{attrs}, {
+				push @{ $cell_info->{attrs} }, {
 					name => $prop,
 					value => $item->{$prop},
 				};
@@ -1324,11 +1324,11 @@ sub render_input_field_actual
 				$cell_info->{item} = $item->{el};
 			}
 
-			push $row_info->{cells}, $cell_info;
+			push @{ $row_info->{cells} }, $cell_info;
 			$x++;
 		}
 
-		push $rows, $row_info;
+		push @$rows, $row_info;
 		$y++;
 	}
  

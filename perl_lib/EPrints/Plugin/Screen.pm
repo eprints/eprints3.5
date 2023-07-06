@@ -580,7 +580,7 @@ sub render_action_list_icons
 
 	foreach my $params ($self->action_list( $list_id ))
 	{
-		push $item->{columns}, {
+		push @{ $item->{columns} }, {
 			icon => $self->render_action_icon( { %$params, hidden => $hidden } )
 		};
 	}

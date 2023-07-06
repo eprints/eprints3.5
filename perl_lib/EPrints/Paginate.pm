@@ -277,7 +277,7 @@ sub paginate_list
 			$row_info->{render} = $result->render_citation_link();
 		}
 
-		push $results_info->{rows}, $row_info;
+		push @{ $results_info->{rows} }, $row_info;
 	}
 
 	# If we have no results, we can use a custom renderer to	

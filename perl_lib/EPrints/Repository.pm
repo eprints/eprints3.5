@@ -3419,7 +3419,7 @@ sub render_row
 
 	foreach my $value ( @values )
 	{
-		push $values_info, {
+		push @{ $values_info }, {
 			value => $value,
 		};
 	}
@@ -3655,7 +3655,7 @@ sub render_option_list
 
 	foreach my $pair ( @{$pairs} )
 	{
-		push $pairs_info, {
+		push @$pairs_info, {
 			key => $pair->[0],
 			desc => $pair->[1],
 			selected => $defaults{$pair->[0]},

@@ -161,7 +161,7 @@ sub template_phrase
 				{
 					my $opts = EPrints::Script::execute( $node->getAttribute( 'opts' ), \%params )->[0];
 
-					foreach my $opt_key ( keys $opts )
+					foreach my $opt_key ( keys %$opts )
 					{
 						$options{$opt_key} = $opts->{$opt_key};
 					}
@@ -284,7 +284,7 @@ sub template_phrase
 
 				if( $attr_name eq "label" )
 				{
-					push $params{current_tabs}->{labels}, EPrints::XML::EPC::expand_attribute( $attr_value, $attr_name, \%params );
+					push @{ $params{current_tabs}->{labels} }, EPrints::XML::EPC::expand_attribute( $attr_value, $attr_name, \%params );
 					$has_label = 1;
 				}
 				elsif( $attr_name eq "expensive" )
@@ -296,7 +296,7 @@ sub template_phrase
 
 					if( $attr_value eq "yes" )
 					{
-						push $params{current_tabs}->{options}->{expensive}, $tab_index;
+						push @{ $params{current_tabs}->{options}->{expensive} }, $tab_index;
 					}
 				}
 				elsif( $attr_name eq "alias" )

@@ -55,7 +55,7 @@ sub render
 
 	foreach my $dataset (@datasets)
 	{
-		push $item->{datasets}, {
+		push @{ $item->{datasets} }, {
 			id => $dataset->id,
 			label => $dataset->render_name( $repo ),
 			href => $self->listing( $dataset ),
