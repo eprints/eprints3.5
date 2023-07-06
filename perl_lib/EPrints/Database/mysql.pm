@@ -274,7 +274,6 @@ sub connect
 	{
 		# always try to reconnect
 		$self->{dbh}->{mysql_auto_reconnect} = 1;
-		$self->{dbh}->{mysql_enable_utf8mb4} = 1;
 
 		$self->do("SET NAMES '".$self->get_default_charset."'");
 		$self->do('SET @@session.optimizer_search_depth = 3;');
