@@ -132,14 +132,14 @@
             <epc:param name="n"><span class="ep_search_number"><epc:print expr="n_results"/></span></epc:param>
           </epc:phrase>
           <epc:whitespace empty="preserve"> </epc:whitespace>
-          <epc:test expr="page_size != ''">
+          <epc:if test="page_size != ''">
             <epc:phrase ref="lib/searchexpression:results_page_size">
               <epc:param name="n_10"><epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link></epc:param>
               <epc:param name="n_25"><epv:link uri="{url}&amp;{basename}page_size=25">25</epv:link></epc:param>
               <epc:param name="n_100"><epv:link uri="{url}&amp;{basename}page_size=100">100</epv:link></epc:param>
               <epc:param name="n_all" singleElement="singleElement"><epv:link uri="{url}&amp;{basename}page_size={n_results}"/></epc:param>
             </epc:phrase>
-          </epc:test>
+          </epc:if>
         </epc:when>
 
         <epc:otherwise>
