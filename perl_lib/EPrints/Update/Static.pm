@@ -117,7 +117,10 @@ sub update_static_file
 
 	my $target_mtime = EPrints::Utils::mtime( $target );
 
-	return if( defined $target_mtime && $target_mtime > $source_mtime ); # nothing to do
+	unless ( -e $session->config( "variables_path" ) . "/developer_mode_on" && $session->config( "developer_mode", "disable_static_cache" ) )
+	{
+		return if( defined $target_mtime && $target_mtime > $source_mtime ); # nothing to do
+	}
 
 	$target =~ m/^(.*)\/([^\/]+)/;
 	my( $target_dir, $target_file ) = ( $1, $2 );

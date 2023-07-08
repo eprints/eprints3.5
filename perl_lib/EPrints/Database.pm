@@ -140,7 +140,6 @@ use constant {
 Exporter::export_tags( qw( sql_types ) );
 
 use strict;
-my $DEBUG_SQL = 0;
 
 # this may not be the current version of eprints, it's the version
 # of eprints where the current desired db configuration became standard.
@@ -212,7 +211,7 @@ sub _new
     Scalar::Util::weaken($self->{session})
         if defined &Scalar::Util::weaken;
 
-    $self->{debug} = $DEBUG_SQL;
+    $self->{debug} = -e $session->config( "variables_path" ) . "/developer_mode_on" && $session->config( "developer_mode", "debug_sql" );
     if( $session->{noise} == 3 )
     {
         $self->{debug} = 1;
