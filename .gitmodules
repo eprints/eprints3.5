@@ -1,0 +1,6 @@
+[submodule "ingredients/easy_pages"]
+	path = ingredients/easy_pages
+	url = https://github.com/eprints/easy_pages.git
+[submodule "ingredients/richtext"]
+	path = ingredients/richtext
+	url = https://github.com/eprints/richtext.git
