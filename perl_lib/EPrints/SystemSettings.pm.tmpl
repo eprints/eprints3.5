@@ -62,7 +62,7 @@ $EPrints::SystemSettings::conf = {
 			'ingredients/prototypejs',
 		]
 	},
-	'perl_module_isolation' => 0, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
+	'perl_module_isolation' => 1, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
 	'indexer_daemon' => {
 		 'loglevel' => 1,
 		 'rollcount' => 5,
