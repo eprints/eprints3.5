@@ -152,6 +152,7 @@ sub apache_secure_conf
 
 	my $id = $repo->get_id;
 	my $https_root = $repo->config( "https_root" );
+	my $base_path = EPrints::Config::get( "base_path" );
 
 	$lrb_conf = "\n";
 	if ( my $limitrequestbody = $repo->config("max_upload_filesize") )
@@ -168,6 +169,8 @@ sub apache_secure_conf
 # with the --replace option
 #
 $lrb_conf
+  Include $base_path/cfg/perl_module_isolation_vhost.conf
+
   <Location "$https_root">
     PerlSetVar EPrints_ArchiveID $id
     PerlSetVar EPrints_Secure yes
