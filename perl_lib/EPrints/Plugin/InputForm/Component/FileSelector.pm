@@ -91,7 +91,6 @@ sub render_content
 	my $epmid = $epm->id;
 	my @exclude = split /\s+/, <<"EOE";
 		^defaultcfg
-		^syscfg\\.d
 		^entities\\.dtd\$
 		^mime\\.types\$
 		^epm/$epmid/$epmid\\.epm\$

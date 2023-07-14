@@ -1,6 +1,0 @@
-
-Do not edit these files!
-
-If you want to make changes to these files copy them from lib/syscfg.d/ to 
-cfg/cfg.d/ which will be used in preference and not over-written when you 
-upgrade.

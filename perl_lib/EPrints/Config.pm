@@ -129,23 +129,7 @@ Load the system configuration files.
 
 sub load_system_config
 {
-	my $syslibcfgd = $SYSTEMCONF->{"lib_path"}."/syscfg.d";
-	my $syscfgd = $SYSTEMCONF->{"cfg_path"}."/cfg.d";
-
 	my $files = {};
-
-	foreach my $dir ( $syslibcfgd, $syscfgd )
-	{
-		next if !-e $dir;
-		opendir(my $dh, $dir) or die "Error opening $dir: $!";
-		foreach my $file (readdir($dh)) 
-		{
-			next if $file =~ m/^\./;
-			next if $file !~ m/\.pl$/;
-			$files->{$file} = "$dir/$file";
-		}
-		closedir($dh);
-	}
 
 	{
 		no strict 'refs';
@@ -153,15 +137,6 @@ sub load_system_config
 	}
 
 	eval &_bootstrap( "EPrints::SystemSettings" ) or die $@;
-
-	# we want to sort by filename because we interleave files from default and
-	# custom locations
-	foreach my $file (sort keys %$files)
-	{
-		my $filepath = $files->{$file};
-		my $err = EPrints::SystemSettings::load_config_file( $filepath );
-		EPrints->abort( "Error in configuration:\n$err\n" ) if $err;
-	}
 }
 
 ######################################################################
