@@ -462,6 +462,8 @@ sub post_config_handler_module_isolation
 	# make carp verbose
 	$Carp::Verbose = 1;
 
+	return OK unless Apache2::MPM->can( "is_threaded" ); # Assume OK if called by unit test or something not Apache.
+
 	if( Apache2::MPM->is_threaded )
 	{
         print STDERR ( "Warning! Running EPrints under threads is experimental and liable to break" );
