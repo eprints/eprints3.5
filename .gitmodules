@@ -4,3 +4,6 @@
 [submodule "ingredients/richtext"]
 	path = ingredients/richtext
 	url = https://github.com/eprints/richtext.git
+[submodule "flavours/pub_lib"]
+	path = flavours/pub_lib
+	url = https://github.com/eprints/pub_lib.git
