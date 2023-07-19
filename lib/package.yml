@@ -1,0 +1,5 @@
+flavour: "zero"
+name: "Zero"
+includes:
+  - ingredients/bazaar
+  - ingredients/prototypejs

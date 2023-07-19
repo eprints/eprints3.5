@@ -80,6 +80,7 @@ sub new
 
    
 	# system plugins (don't reload)
+	# TODO: Review if lib/ plugins should be treated as system plugins
 	if( !scalar keys %SYSTEM_PLUGINS )
 	{
 		$dir = $repository->config( "base_path" )."/perl_lib";
@@ -102,37 +103,18 @@ sub new
 
 	}
 
+	my @lib_order = EPrints::Init::get_lib_paths( $self->{load_order}, 'plugins' );	
 
-
-	# flavour lib plugins
-	my $flavour = $repository->get_conf( "flavour" );
-	my @lib_order = @{  $repository->get_conf('flavours')->{$flavour}  };
 	foreach (@lib_order)
 	{
-		my $dir = $repository->config( "base_path" )."/$_/plugins";
-		$self->_load_dir(  $self->{repository_data}, $repository, $dir );
+		next if $_ =~ m!/lib/!; # lib/ treated as a system plugins
+		$self->_load_dir( $self->{repository_data}, $repository, $_ );
 		if( $use_xslt )
 		{
-			$self->_load_xslt_dir(  $self->{repository_data}, $repository, $dir );
+			$self->_load_xslt_dir(  $self->{repository_data}, $repository, $_ );
 		}
 	}
-
-
-
  
-	# repository-specific plugins
-	$dir = $repository->get_conf( "config_path" )."/plugins";
-	$self->_load_dir( $self->{repository_data}, $repository, $dir );
-	if( $use_xslt )
-	{
-		$self->_load_xslt_dir( $self->{repository_data}, $repository, $dir );
-	}
-
-
-
-
-
-    
 	if( scalar @PLUGINS_TO_DISABLE )
 	{
 		# default to disabled

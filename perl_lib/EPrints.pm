@@ -88,21 +88,10 @@ BEGIN
 		$conf->{base_path} = $base_path;
 	}
 
-
-	unshift @INC, $conf->{base_path} . "/lib/plugins";
-	unshift @INC, $conf->{base_path} . "/site_lib/plugins";
-
-    # @INC looks like:[ site_lib/plugins ; lib/plugins; perl_lib ].  Searching of a module start from the head.
-    # Flavour libs can NOT overwrite core modules (core modules are loaded in the list of "use" statements below)
-    # To override core modules (hacking the core, not recommended), put them in the site_lib/plugins/.
-    # NOTE: overridden core modules are loaded in all repositories on the same server.
-    # 
-    # Flavour/ingredient libs can ADD perl modules outside the EPrints/Plugin (e.g. plugins/EPrints/Xapian.pm), and adding and overriding perl modules inside the EPrints/Plugin 
-    #    (e.g. plugins/EPrints/Plugin/Screen/myscreen.pm)
-    # Archive level plugin folder can only make changes inside the EPrints/Plugin level (adding and overriding), and it has the highest priority.
-
-
-#    print STDERR "[EPrints.pm::begin]:[ INC:",join("\n",@INC), "]\n";
+	use EPrints::Init;
+	my $load_order = EPrints::Init::get_load_order( $conf->{base_path} );
+	my @libpaths = EPrints::Init::get_lib_paths( $load_order, "plugins" );
+	EPrints::Init::update_inc_paths( \@libpaths, $conf->{base_path} ); 
 }
 
 use Data::Dumper;

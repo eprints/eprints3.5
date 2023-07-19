@@ -233,17 +233,7 @@ sub handler
 
 		##cgi path loaded earlier takes priority.
 
-		my $flavour = $repository->get_conf( "flavour" );
-
-		my @lib_order = reverse(@{  $repository->config('flavours')->{$flavour}   });
-
-
-		my @paths = $repository->config( "cgi_path" ); ##archive cgi path
-		foreach (@lib_order)
-		{
-			push @paths, $repository->config( "base_path" ) . "/$_/cgi";
-		}
-		push @paths, EPrints::Config::get( "cgi_path" ); ##system cgi path
+		my @paths = reverse( EPrints::Init::get_lib_paths( $repository->{load_order}, 'cgi' ) );
 
 		PATH: foreach my $path (@paths)
 		{
