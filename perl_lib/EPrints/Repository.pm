@@ -5674,9 +5674,7 @@ sub package_includes
 {
         my ($self, $module) = @_;
 
-	my $pkg_cfg = EPrints::Init::get_package_config( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
-
-	return scalar ( grep { $_ eq $module } @{ EPrints::Init::get_includes( $pkg_cfg ) } );
+	return scalar ( grep { $_ eq $module } @{ $self->includes } );
 }
 
 ######################################################################
@@ -5702,6 +5700,32 @@ sub flavour
 
 	return $pkg_cfg->{flavour};
 }
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $includes = $repository->includes
+
+returns an array reference containng the includes paths used by the 
+repository archive.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+
+sub includes
+{
+        my ($self) = @_;
+
+        my $pkg_cfg = EPrints::Init::get_package_config( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
+
+        return EPrints::Init::get_includes( $pkg_cfg );
+}
+
 
 ######################################################################
 =pod
