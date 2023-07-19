@@ -50,10 +50,10 @@ sub get_load_order
 {
         my ( $base_path, $archiveroot ) = @_;
 
-        my $pkg_cfg = get_package_config( $base_path, $archiveroot );
+        my $includes = get_includes( get_package_config( $base_path, $archiveroot ) );
 
         my $load_order = [ $base_path . "/lib" ];
-        foreach my $inc ( @{ $pkg_cfg->{includes} } )
+        foreach my $inc ( @{ $includes } )
         {
                 push @$load_order, $base_path . "/" . $inc;
         }
@@ -112,6 +112,29 @@ sub get_package_config
         }
 
         return $pkg_cfg;
+}
+
+######################################################################
+=pod
+
+=item $lib_paths = EPrints::Init::get_includes( $pkg_cfg )
+
+Just get the includes paths from a package configuration.
+
+Takes a C<$pkg_cfg> package configuration hash reference.
+
+Returns an array reference of the includes paths defined in the 
+package configuration.
+
+=cut
+######################################################################
+
+
+sub get_includes
+{
+        my ( $pkg_cfg ) = @_;
+
+	return $pkg_cfg->{includes};
 }
 
 

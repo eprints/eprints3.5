@@ -5676,7 +5676,7 @@ sub package_includes
 
 	my $pkg_cfg = EPrints::Init::get_package_config( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
 
-	return scalar ( grep { $_ eq $module } @{$pkg_cfg->{includes}} );
+	return scalar ( grep { $_ eq $module } @{ EPrints::Init::get_includes( $pkg_cfg ) } );
 }
 
 ######################################################################
