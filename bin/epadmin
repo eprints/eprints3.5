@@ -5,8 +5,6 @@ use FindBin;
 use lib "$FindBin::Bin/../perl_lib";
 no if $] >= 5.017011, warnings => 'experimental::smartmatch';
 
-use EPrints::Utils;
-
 ######################################################################
 #
 #
@@ -268,6 +266,11 @@ BEGIN
 	use FindBin;
 	use File::Copy;
 
+	if ( scalar @ARGV )
+	{
+		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test --help --man --version /;
+	}
+
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
 	
 	if(! -e $system_settings_file )
@@ -432,8 +435,20 @@ sub create
 			exit 1;
 		}
 	}
+
+	# Determine available flavours
 	my $conf = $EPrints::SystemSettings::conf;
-	my @flavours =  keys %{$conf->{flavours}};
+	my @flavours;
+	push @flavours, 'zero' if -f $conf->{base_path} . "/lib/package.yml";
+	opendir( DIR,  $conf->{base_path} . "/flavours" );
+	my @flavour_dirs = grep { ! /^\./ && -d $conf->{base_path} . "/flavours/" . $_ } readdir( DIR );
+	closedir( DIR );
+	foreach ( @flavour_dirs )
+	{
+		my $flavour = $_;
+		$flavour =~ s/_lib$//;
+		push @flavours, $flavour if -f $conf->{base_path} . "/flavours/" . $_ . "/package.yml";
+	}
 
 	print "\n";
 
@@ -505,19 +520,16 @@ a number or underscore. examples: 'lemurprints', 'test3' or 'research_archive'
 		$system->mkdir( "$repodir/$_" );
 	}
 	
-	##create the 00_flavour.pl
-	my $flavourfile = "$repodir/cfg/cfg.d/00_flavour.pl";
-	mkdir "$repodir/cfg/cfg.d" unless -d "$repodir/cfg/cfg.d";
-	open( FLAV, ">$flavourfile" ) || die "Could not write to $flavourfile: $!";
-	print FLAV Data::Dumper->Dump(
-		[
-			$repo_type,
-		],
-		[qw/
-			$c->{flavour} 
-		/]
-	);
-	close FLAV;
+	##create archive's package.yml
+	my $flavourfile = "$repodir/cfg/package.yml";
+	if ( $repo_type eq "zero" )
+	{
+		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/lib/package.yml", $flavourfile );
+	}
+	else
+	{
+		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/flavours/" . $repo_type . "_lib/package.yml", $flavourfile );
+	}
 	print "Wrote $flavourfile\n";
 
 

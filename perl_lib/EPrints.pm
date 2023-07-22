@@ -67,6 +67,7 @@ package EPrints;
 my $conf;
 		
 use Cwd;
+use Term::ReadKey;
 
 BEGIN
 {
@@ -88,8 +89,71 @@ BEGIN
 		$conf->{base_path} = $base_path;
 	}
 
+	# Try to determine archive by some means
+	my $archives_path = $conf->{base_path} . "/archives/";
+	my $archive;
+
+	opendir( DIR, $archives_path );
+        my @arc_dirs = grep { ! /^\./ && -d $archives_path . $_ } readdir( DIR );
+	closedir( DIR );
+
+	# Only one archive. Must be that.
+	if ( scalar @arc_dirs == 1 ) 
+	{
+		$archive = $arc_dirs[0];
+	}
+	# Archive is defined within Apache configuration
+	elsif ( defined $r && defined $r->dir_config( 'EPrints_Archive' ) )
+        {
+               $archive = $r->dir_config( 'EPrints_Archive' );
+	}
+	# Called from a command line script
+	elsif ( @ARGV )
+	{
+		# Archive is first argument of the script and matches an archive directory
+		if ( $ARGV[0] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ && -d $archives_path . $ARGV[0] )
+		{	
+			$archive = $ARGV[0];
+		}
+		else
+		{
+			# Archive specified via an --archive flag
+			for ( my $a = 0; $a < scalar @ARGV; $a++ )
+			{
+				if ( $ARGV[$a] =~ m/^--archive=[a-zA-Z][_a-zA-Z0-9]+$/ )
+				{
+					$archive = $ARGV[$a];
+					@ARGV = grep {!/$archive/} @ARGV;
+					$archive =~ s/^--archive=//;
+					use Data::Dumper;
+					print STDERR "ARGV: ".Dumper( @ARGV );
+					last;
+				}
+			}
+
+			# Warn and prompt for continuation if archive cannot be determined.
+			if ( ( !$archive || ! -d $archives_path . $archive ) && !$ENV{IGNORE_UNKNOWN_ARCHIVE} )
+			{
+				print STDERR "\nWARNING: Could not determine archive for initial loading.  Try adding --archive=ARCHIVEID or setting \$ENV{IGNORE_UNKNOWN_ARCHIVE} environment variable to the BEGIN block of your script.\n\n";
+				print "Continue anyway? [Y/n]: ";
+				my $continue = Term::ReadKey::ReadLine(0); 
+				unless ( length( $continue ) == 0 || substr($continue, 0, 1) =~ m/y/i )
+				{
+					exit 1;
+				}
+			}
+
+		}
+	}
+
+	my $archiveroot;
+	if ( $archive )
+	{
+		$archiveroot = $archives_path . $archive;
+	}
+
 	use EPrints::Init;
-	my $load_order = EPrints::Init::get_load_order( $conf->{base_path} );
+	my $load_order = EPrints::Init::get_load_order( $conf->{base_path}, $archiveroot );
 	my @libpaths = EPrints::Init::get_lib_paths( $load_order, "plugins" );
 	EPrints::Init::update_inc_paths( \@libpaths, $conf->{base_path} ); 
 }
