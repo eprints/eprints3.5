@@ -125,8 +125,6 @@ BEGIN
 					$archive = $ARGV[$a];
 					@ARGV = grep {!/$archive/} @ARGV;
 					$archive =~ s/^--archive=//;
-					use Data::Dumper;
-					print STDERR "ARGV: ".Dumper( @ARGV );
 					last;
 				}
 			}
