@@ -849,6 +849,8 @@ sub _load_workflows
 {
 	my( $self ) = @_;
 
+	$self->{workflows} = {};
+
 	my @lib_order = EPrints::Init::get_lib_paths( $self->{load_order}, 'workflows' );
 
 	foreach ( @lib_order )
@@ -1344,7 +1346,7 @@ sub _load_namedsets
 {
 	my( $self ) = @_;
 
-        my @paths = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'namedsets' ) );
+        my @paths = EPrints::Init::get_lib_paths( $self->{load_order}, 'namedsets' );
 
 	foreach my $dir ( @paths )
 	{
@@ -1985,25 +1987,25 @@ sub template_dirs
 
 	my @dirs;
 
-	my @tdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'templates' ) );
-	my @ltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order},"lang/$langid/templates" ) );
-
-	my @ttdirs = ();
-	my @tltdirs = ();
 	my $theme = $self->config( "theme" );
 	if ( defined $theme )
-	{
-		@ttdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "theme/$theme/templates" ) );
-		@tltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "theme/$theme/lang/$langid/templates" ) );
-	}
+        {
+                my @ttdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/templates" ) );
+                my @tltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/lang/$langid/templates" ) );
+                for ( my $i = 0; $i < scalar @ttdirs; $i++ )
+                {
+                        push @dirs, $tltdirs[$i];
+                        push @dirs, $ttdirs[$i];
+                }
+        }
 
-	for ( my $i = 0; $i < scalar @tdirs; $i++ )
-	{
-		push @dirs, $ltdirs[$i];
-		push @dirs, $tdirs[$i];
-		push @dirs, $tltdirs[$i] if defined $tltdirs[$i];
-		push @dirs, $ttdirs[$i] if defined $ttdirs[$i];
-	}
+        my @tdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'templates' ) );
+        my @ltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order},"lang/$langid/templates" ) );
+        for ( my $i = 0; $i < scalar @tdirs; $i++ )
+        {
+               push @dirs, $ltdirs[$i];
+               push @dirs, $tdirs[$i];
+        }
 
 	return @dirs;
 }
@@ -2029,15 +2031,26 @@ sub get_static_dirs
 	my( $self, $langid ) = @_;
 
 	my @dirs;
+        
+	my $theme = $self->config( "theme" );
+        if ( defined $theme )
+        {
+                my @tsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/static" ) );
+                my @tlsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/lang/$langid/static" ) );
+		for ( my $i = 0; $i < scalar @tsdirs; $i++ )
+		{
+			push @dirs, $tlsdirs[$i];
+	       		push @dirs, $tsdirs[$i];
+		}
+	}
 
 	my @sdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'static' ) );
         my @lsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order},"lang/$langid/static" ) );
-
 	for ( my $i = 0; $i < scalar @sdirs; $i++ )
-        {
-                push @dirs, $lsdirs[$i];
-                push @dirs, $sdirs[$i];
-        }
+	{
+               push @dirs, $lsdirs[$i];
+               push @dirs, $sdirs[$i];
+      	}
 
 	return @dirs;
 }
