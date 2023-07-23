@@ -268,7 +268,7 @@ BEGIN
 
 	if ( scalar @ARGV )
 	{
-		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test --help --man --version /;
+		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test /;
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";

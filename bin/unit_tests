@@ -66,6 +66,10 @@ Output version information and exit.
 
 =cut
 
+BEGIN {
+        $ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
+}
+
 use EPrints;
 
 use Sys::Hostname;
