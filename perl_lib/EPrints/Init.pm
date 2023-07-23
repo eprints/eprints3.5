@@ -83,33 +83,37 @@ sub get_package_config
 {
         my ( $base_path, $archiveroot ) = @_;
 
-        my $pkg_filename = "package.yml";
-        my $pkg_filepath = $base_path . "/lib/" . $pkg_filename;
+	my $pkg_cfg;
 
-        if ( defined $archiveroot )
+        if ( $archiveroot )
         {
-                $pkg_filepath = $archiveroot . "/cfg/" . $pkg_filename;
-        }
+                my $pkg_filepath = $archiveroot . "/cfg/package.yml";
 
-        if ( ! -f $pkg_filepath )
-        {
-                print STDERR "No file at: $pkg_filepath\n\n";
-                exit 1;
-        }
+	        if ( ! -f $pkg_filepath )
+        	{
+                	print STDERR "No file at: $pkg_filepath\n\n";
+	                exit 1;
+        	}
 
-        my $yaml = YAML::Tiny->read( $pkg_filepath );
-        if ( !defined $yaml || !defined $yaml->[0] )
-        {
-                print STDERR "Could not read YAML in $pkg_filepath file\n\n";
-                exit 1;
-        }
+	        my $yaml = YAML::Tiny->read( $pkg_filepath );
+        	if ( !defined $yaml || !defined $yaml->[0] )
+        	{
+                	print STDERR "Could not read YAML in $pkg_filepath file\n\n";
+	                exit 1;
+        	}
 
-        my $pkg_cfg = $yaml->[0];
-        if ( !defined $pkg_cfg->{flavour} || !defined $pkg_cfg->{name} || !defined $pkg_cfg->{includes} || !defined $pkg_cfg->{includes}->[0] )
-        {
-                print STDERR "Invalid file at: $pkg_filepath\n\n";
-                exit 1;
-        }
+	        $pkg_cfg = $yaml->[0];
+        	if ( !defined $pkg_cfg->{flavour} || !defined $pkg_cfg->{name} || !defined $pkg_cfg->{includes} || !defined $pkg_cfg->{includes}->[0] )
+        	{
+                	print STDERR "Invalid file at: $pkg_filepath\n\n";
+	                exit 1;
+        	}
+	}
+	else
+	{
+		my $conf = $EPrints::SystemSettings::conf;
+		$pkg_cfg->{includes} = defined $conf->{includes} ? $conf->{includes} : [];
+	}
 
         return $pkg_cfg;
 }

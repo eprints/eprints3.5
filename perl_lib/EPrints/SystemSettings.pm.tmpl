@@ -56,6 +56,12 @@ $EPrints::SystemSettings::conf = {
 	'executables' => {
 		'perl' => '/usr/bin/perl'
 	},
+	'includes' => [
+		'ingredients/bazaar',
+		'ingredients/easy_pages',
+		'ingredients/prototypejs',
+		'ingredients/richtext',
+	],
 	'perl_module_isolation' => 1, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
 	'indexer_daemon' => {
 		 'loglevel' => 1,

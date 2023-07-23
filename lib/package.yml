@@ -2,4 +2,6 @@ flavour: "zero"
 name: "Zero"
 includes:
   - ingredients/bazaar
+  - ingredients/easy_pages
   - ingredients/prototypejs
+  - ingredients/richtext
