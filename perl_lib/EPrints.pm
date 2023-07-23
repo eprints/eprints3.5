@@ -117,7 +117,8 @@ BEGIN
 		}
 		else
 		{
-			# Archive specified via an --archive flag
+			# Archive specified via an --archive flag or otherwise has real arguments not just flags.
+			my $real_args = 0;
 			for ( my $a = 0; $a < scalar @ARGV; $a++ )
 			{
 				if ( $ARGV[$a] =~ m/^--archive=[a-zA-Z][_a-zA-Z0-9]+$/ )
@@ -127,10 +128,14 @@ BEGIN
 					$archive =~ s/^--archive=//;
 					last;
 				}
+				elsif ( $ARGV[$a] =~ m/^[^-]/ )
+				{
+					$real_args = 1;
+				}
 			}
 
 			# Warn and prompt for continuation if archive cannot be determined.
-			if ( ( !$archive || ! -d $archives_path . $archive ) && !$ENV{IGNORE_UNKNOWN_ARCHIVE} )
+			if ( ( !$archive || ! -d $archives_path . $archive ) && !$ENV{IGNORE_UNKNOWN_ARCHIVE} && $real_args )
 			{
 				print STDERR "\nWARNING: Could not determine archive for initial loading.  Try adding --archive=ARCHIVEID or setting \$ENV{IGNORE_UNKNOWN_ARCHIVE} environment variable to the BEGIN block of your script.\n\n";
 				print "Continue anyway? [Y/n]: ";
