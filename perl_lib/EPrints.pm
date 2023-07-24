@@ -102,11 +102,6 @@ BEGIN
 	{
 		$archive = $arc_dirs[0];
 	}
-	# Archive is defined within Apache configuration
-	elsif ( defined $r && defined $r->dir_config( 'EPrints_Archive' ) )
-        {
-               $archive = $r->dir_config( 'EPrints_Archive' );
-	}
 	# Called from a command line script
 	elsif ( @ARGV )
 	{
@@ -529,12 +524,8 @@ sub post_config_handler_module_isolation
 	# check for configuration using methods removed from Apache2.4
  	my $check_security = !Apache2::Connection->can( 'remote_ip' );
 
-	$EPrints::HANDLE = EPrints->new;
-    
-#    print STDERR "[EPrints.pm]: INC:",join("\n",@INC);
-
-
-
+	# Load the chosen repository archive
+	$EPrints::HANDLE = EPrints->new;	
 	$EPrints::HANDLE->load_repository($repoid);
 	my @repos = values %{$EPrints::HANDLE->{repository}};
 

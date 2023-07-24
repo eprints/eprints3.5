@@ -97,6 +97,6 @@ if( $repo->dataset( 'epm' ) )
 print "\n";
 
 
-print "registry: " . join(", ",@{ $repo->includes } ) . "\n";
+print "includes: " . join(", ",@{ $repo->includes } ) . "\n";
 
 exit;
