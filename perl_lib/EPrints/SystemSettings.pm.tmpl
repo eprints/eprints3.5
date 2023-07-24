@@ -56,12 +56,25 @@ $EPrints::SystemSettings::conf = {
 	'executables' => {
 		'perl' => '/usr/bin/perl'
 	},
+	# Added to the include path of initial loading if archive cannot be determined and the includes from its cfg/package.yml can be loaded instead and herefore generally should not need to be modified.
 	'includes' => [
-		'ingredients/bazaar',
-		'ingredients/easy_pages',
-		'ingredients/prototypejs',
-		'ingredients/richtext',
-	],
+		{
+                	directory => 'ingredients/bazaar',
+			version => '>= 1.0',
+		},
+		{
+                        directory => 'ingredients/easy_pages',
+                        version => '>= 1.0',
+                },
+		{
+                        directory => 'ingredients/prototypejs',
+                        version => '>= 1.0',
+                },
+		{
+                        directory => 'ingredients/richtext',
+                        version => '>= 1.0',
+                },
+        ],
 	'perl_module_isolation' => 1, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
 	'indexer_daemon' => {
 		 'loglevel' => 1,

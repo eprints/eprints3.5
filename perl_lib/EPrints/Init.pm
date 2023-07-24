@@ -137,8 +137,13 @@ package configuration.
 sub get_includes
 {
         my ( $pkg_cfg ) = @_;
-
-	return $pkg_cfg->{includes};
+	
+	my @includes = ();
+	foreach my $include ( @{ $pkg_cfg->{includes} } )
+	{
+		push @includes, $include->{directory};
+	}
+	return \@includes;
 }
 
 
