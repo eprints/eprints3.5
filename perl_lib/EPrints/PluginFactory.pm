@@ -40,7 +40,7 @@ use File::Find qw();
 # lookup-table of system plugin types
 my %SYSTEM_PLUGINS;
 
-# luukup-table of archive plugin types
+# lookup-table of archive plugin types
 my %ARCHIVE_PLUGINS;
 
 =item $plugins = EPrints::PluginFactory->new( $repository )
@@ -81,7 +81,6 @@ sub new
   	my @plugins_to_disable = (); 
 
 	# system plugins (don't reload)
-	# TODO: Review if lib/ plugins should be treated as system plugins
 	if( !scalar keys %SYSTEM_PLUGINS )
 	{
 		$dir = $repository->config( "base_path" )."/perl_lib";
@@ -90,20 +89,20 @@ sub new
 		{
 			$self->_load_xslt_dir( \%SYSTEM_PLUGINS, $repository, $dir );
 		}
-	}
 
-	my @lib_order = EPrints::Init::get_lib_paths( $repository->{load_order}, 'plugins' );
+		my @lib_order = EPrints::Init::get_lib_paths( $repository->{load_order}, 'plugins' );
 
-	foreach $dir ( @lib_order )
-	{
-		my $plugins_set = \%SYSTEM_PLUGINS;
-		$plugins_set = \%ARCHIVE_PLUGINS if $dir =~ m!/archives/!;
-		my @dir_plugins = $self->_load_dir( $plugins_set, $repository, $dir );
-		push @plugins_to_disable, map { $_->get_id } @dir_plugins if $dir =~ m!/lib/!;
-		if( $use_xslt )
+		foreach $dir ( @lib_order )
 		{
-			my @dir_xslt_plugins = $self->_load_xslt_dir( $plugins_set, $repository, $dir );
-			push @plugins_to_disable, map { $_->get_id } @dir_xslt_plugins if $dir =~ m!/lib/!;
+			my $plugins_set = \%SYSTEM_PLUGINS;
+			$plugins_set = \%ARCHIVE_PLUGINS if $dir =~ m!/archives/!;
+			my @dir_plugins = $self->_load_dir( $plugins_set, $repository, $dir );
+			push @plugins_to_disable, map { $_->get_id } @dir_plugins if $dir =~ m!/lib/!;
+			if( $use_xslt )
+			{
+				my @dir_xslt_plugins = $self->_load_xslt_dir( $plugins_set, $repository, $dir );
+				push @plugins_to_disable, map { $_->get_id } @dir_xslt_plugins if $dir =~ m!/lib/!;
+			}
 		}
 	}
 
