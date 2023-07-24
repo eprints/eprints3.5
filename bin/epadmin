@@ -439,7 +439,7 @@ sub create
 	# Determine available flavours
 	my $conf = $EPrints::SystemSettings::conf;
 	my @flavours;
-	push @flavours, 'zero' if -f $conf->{base_path} . "/lib/package.yml";
+	push @flavours, 'zero' if -f $conf->{base_path} . "/lib/package.yml.tmpl";
 	opendir( DIR,  $conf->{base_path} . "/flavours" );
 	my @flavour_dirs = grep { ! /^\./ && -d $conf->{base_path} . "/flavours/" . $_ } readdir( DIR );
 	closedir( DIR );
@@ -447,7 +447,7 @@ sub create
 	{
 		my $flavour = $_;
 		$flavour =~ s/_lib$//;
-		push @flavours, $flavour if -f $conf->{base_path} . "/flavours/" . $_ . "/package.yml";
+		push @flavours, $flavour if -f $conf->{base_path} . "/flavours/" . $_ . "/package.yml.tmpl";
 	}
 
 	print "\n";
@@ -524,11 +524,11 @@ a number or underscore. examples: 'lemurprints', 'test3' or 'research_archive'
 	my $flavourfile = "$repodir/cfg/package.yml";
 	if ( $repo_type eq "zero" )
 	{
-		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/lib/package.yml", $flavourfile );
+		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/lib/package.yml.tmpl", $flavourfile );
 	}
 	else
 	{
-		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/flavours/" . $repo_type . "_lib/package.yml", $flavourfile );
+		EPrints::Utils::copy( EPrints::Config::get( "base_path" ) . "/flavours/" . $repo_type . "_lib/package.yml.tmpl", $flavourfile );
 	}
 	print "Wrote $flavourfile\n";
 
