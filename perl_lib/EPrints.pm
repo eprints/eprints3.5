@@ -67,6 +67,7 @@ package EPrints;
 my $conf;
 		
 use Cwd;
+use Term::ReadKey;
 
 BEGIN
 {
@@ -88,21 +89,71 @@ BEGIN
 		$conf->{base_path} = $base_path;
 	}
 
+	# Try to determine archive by some means
+	my $archives_path = $conf->{base_path} . "/archives/";
+	my $archive;
 
-	unshift @INC, $conf->{base_path} . "/lib/plugins";
-	unshift @INC, $conf->{base_path} . "/site_lib/plugins";
+	opendir( DIR, $archives_path );
+        my @arc_dirs = grep { ! /^\./ && -d $archives_path . $_ } readdir( DIR );
+	closedir( DIR );
 
-    # @INC looks like:[ site_lib/plugins ; lib/plugins; perl_lib ].  Searching of a module start from the head.
-    # Flavour libs can NOT overwrite core modules (core modules are loaded in the list of "use" statements below)
-    # To override core modules (hacking the core, not recommended), put them in the site_lib/plugins/.
-    # NOTE: overridden core modules are loaded in all repositories on the same server.
-    # 
-    # Flavour/ingredient libs can ADD perl modules outside the EPrints/Plugin (e.g. plugins/EPrints/Xapian.pm), and adding and overriding perl modules inside the EPrints/Plugin 
-    #    (e.g. plugins/EPrints/Plugin/Screen/myscreen.pm)
-    # Archive level plugin folder can only make changes inside the EPrints/Plugin level (adding and overriding), and it has the highest priority.
+	# Only one archive. Must be that.
+	if ( scalar @arc_dirs == 1 ) 
+	{
+		$archive = $arc_dirs[0];
+	}
+	# Called from a command line script
+	elsif ( @ARGV )
+	{
+		# Archive is first argument of the script and matches an archive directory
+		if ( $ARGV[0] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ && -d $archives_path . $ARGV[0] )
+		{	
+			$archive = $ARGV[0];
+		}
+		else
+		{
+			# Archive specified via an --archive flag or otherwise has real arguments not just flags.
+			my $real_args = 0;
+			for ( my $a = 0; $a < scalar @ARGV; $a++ )
+			{
+				if ( $ARGV[$a] =~ m/^--archive=[a-zA-Z][_a-zA-Z0-9]+$/ )
+				{
+					$archive = $ARGV[$a];
+					@ARGV = grep {!/$archive/} @ARGV;
+					$archive =~ s/^--archive=//;
+					last;
+				}
+				elsif ( $ARGV[$a] =~ m/^[^-]/ )
+				{
+					$real_args = 1;
+				}
+			}
 
+			# Warn and prompt for continuation if archive cannot be determined.
+			if ( ( !$archive || ! -d $archives_path . $archive ) && !$ENV{IGNORE_UNKNOWN_ARCHIVE} && $real_args )
+			{
+				print STDERR "\nWARNING: Could not determine archive for initial loading.  Try adding --archive=ARCHIVEID or setting \$ENV{IGNORE_UNKNOWN_ARCHIVE} environment variable to the BEGIN block of your script.\n\n";
+				print "Continue anyway? [Y/n]: ";
+				my $continue = Term::ReadKey::ReadLine(0); 
+				unless ( length( $continue ) == 0 || substr($continue, 0, 1) =~ m/y/i )
+				{
+					exit 1;
+				}
+			}
 
-#    print STDERR "[EPrints.pm::begin]:[ INC:",join("\n",@INC), "]\n";
+		}
+	}
+
+	my $archiveroot;
+	if ( $archive )
+	{
+		$archiveroot = $archives_path . $archive;
+	}
+
+	use EPrints::Init;
+	my $load_order = EPrints::Init::get_load_order( $conf->{base_path}, $archiveroot );
+	my @libpaths = EPrints::Init::get_lib_paths( $load_order, "plugins" );
+	EPrints::Init::update_inc_paths( \@libpaths, $conf->{base_path} ); 
 }
 
 use Data::Dumper;
@@ -473,12 +524,8 @@ sub post_config_handler_module_isolation
 	# check for configuration using methods removed from Apache2.4
  	my $check_security = !Apache2::Connection->can( 'remote_ip' );
 
-	$EPrints::HANDLE = EPrints->new;
-    
-#    print STDERR "[EPrints.pm]: INC:",join("\n",@INC);
-
-
-
+	# Load the chosen repository archive
+	$EPrints::HANDLE = EPrints->new;	
 	$EPrints::HANDLE->load_repository($repoid);
 	my @repos = values %{$EPrints::HANDLE->{repository}};
 

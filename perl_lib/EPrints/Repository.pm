@@ -278,6 +278,8 @@ sub init_from_thread
 	# force reload
 #	$self->{loadtime} = 0;
 
+	$self->{load_order} = EPrints::Init::get_load_order( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
+
 	$self->_load_workflows();
 	$self->_load_languages();
 	$self->_load_templates();
@@ -525,10 +527,6 @@ sub load_config
 
 	$load_xml = 1 if !defined $load_xml;
 
-	###load flavour/ingredient custom core modules here
-	$self->_load_core_modules() || return;
-
-
 	$self->{config} = EPrints::Config::load_repository_config_module( $self->{id} );
 
 	# add defaults
@@ -552,6 +550,8 @@ sub load_config
 
 	# If loading any of the XML config files then 
 	# abort loading the config for this repository.
+
+	$self->{load_order} = EPrints::Init::get_load_order( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
 	if( $load_xml )
 	{
 		# $self->generate_dtd() || return;
@@ -575,7 +575,7 @@ sub load_config
 		# print STDERR "checking deps for '$d'\n";
 		foreach my $i ( @{ $deps{$d} } )
 		{
-			my $has = $self->flavour_has($i);
+			my $has = $self->package_includes( $i );
 			print STDERR "'$d' has an unmet dependency upon '$i'\n" unless $has;
 		}
 	}
@@ -851,40 +851,16 @@ sub _load_workflows
 
 	$self->{workflows} = {};
 
-	# load system-level workflows
-	EPrints::Workflow::load_all( 
-		$self->config( "lib_path" )."/workflows",
-		$self->{workflows} );
+	my @lib_order = EPrints::Init::get_lib_paths( $self->{load_order}, 'workflows' );
 
-	# if( -e $self->config( "base_path" )."/site_lib/workflows" )
-	# {
-	# 	# load /site_lib/ workflows
-		# EPrints::Workflow::load_all( $self->config( "base_path" )."/site_lib/workflows", $self->{workflows} );
-	# }
-    
-	my $flavour = $self->config( "flavour" );
-	my $lib_order = $self->config('flavours')->{$flavour};
-	foreach ( @$lib_order )
+	foreach ( @lib_order )
 	{
-		my $dir = $self->config( "base_path" )."/$_/workflows";
-		if( ! -e $dir )
-		{
-			# $self->log("Could not load workflow from $dir.");
-			next;
-		}
-		EPrints::Workflow::load_all( $dir, $self->{workflows} );
-	}
-
-	if( -e $self->config( "config_path" )."/workflows" )
-	{	
-		# load repository-specific workflows (may overwrite)
-		EPrints::Workflow::load_all( 
-			$self->config( "config_path" )."/workflows",
-			$self->{workflows} );
+		EPrints::Workflow::load_all( $_, $self->{workflows} ) if -d $_;
 	}
 
 	return 1;
 }
+
 
 =begin InternalDoc
 
@@ -1005,32 +981,12 @@ sub _load_citation_specs
 
 	$self->{citations} = {};
 
-    ##first loaded takes priority
+	my @lib_order = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'citations' ) );
 
-	# load repository-specific citations
-	$self->_load_citation_dir( $self->config( "config_path" )."/citations" );
-
-    my $flavour = $self->config( "flavour" );
-    my @lib_order = reverse(@{  $self->config("flavours")->{$flavour}  });
-    foreach ( @lib_order )
-    {
-        my $dir = $self->config( "base_path" )."/$_/citations";
-        if( ! -e $dir )
+        foreach ( @lib_order )
         {
-#            $self->log("Could not load citations from $dir.");
-            next;
+		$self->_load_citation_dir( $_ );
         }
-        $self->_load_citation_dir( $dir );
-    }
-
-	# load system-level citations (won't overwrite)
-	$self->_load_citation_dir( $self->config( "lib_path" )."/citations" );
-
-
-#	if( -e $self->config( "base_path" )."/site_lib/citations" )
-#	{
-#		$self->_load_citation_dir( $self->config( "base_path" )."/site_lib/citations" );
-#	}
 
 	return 1;
 }
@@ -1390,22 +1346,7 @@ sub _load_namedsets
 {
 	my( $self ) = @_;
 
-	my @paths = ( 
-#		$self->config( "base_path" )."/site_lib/namedsets",
-		$self->config( "config_path" )."/namedsets",
-	);
-
-    my $flavour = $self->config( "flavour" ); ##get the repository flavour name, e.g. "pub"
-    my @lib_order =  reverse(@{  $self->config('flavours')->{$flavour}   }); ##use this name to retrieve the lib list
-    foreach (@lib_order)
-    {
-        unshift @paths, $self->config( "base_path" )."/$_/namedsets";
-    }
-    unshift @paths, $self->config( "base_path" )."/lib/namedsets";
-
-
-#    print STDERR "paths: ", join(", ",@paths);
-	# load /namedsets/* 
+        my @paths = EPrints::Init::get_lib_paths( $self->{load_order}, 'namedsets' );
 
 	foreach my $dir ( @paths )
 	{
@@ -1652,78 +1593,6 @@ sub exists_dataset
 
     return defined $ds;
 }
-
-
-######################################################################
-# 
-# $repository_config->_load_core_modules
-#
-# Load flavour core modules (e.g. custom Dataobj, Metafield etc).
-# It will NOT overwrite core modules. 
-# To overwrite core modules (DataObj.pm, Document.pm etc), put them in site_lib. 
-#
-######################################################################
-
-sub _load_core_modules
-{
-	my( $self ) = @_;
-
-	my $conf = $EPrints::SystemSettings::conf;
-
-	##load flavour from a local config, which is used to determine the flavour lib order. 
-	my $archives_path = $conf->{base_path}."/archives/";
-	my $_fpath = $archives_path.$self->{id}."/cfg/cfg.d/00_flavour.pl";
-	$_fpath = $conf->{'base_path'}."/cfg/cfg.d/00_flavour.pl" if( ! -e $_fpath );
-	if ( ! -e $_fpath )
-	{
-		opendir(my $dh, $archives_path);
-		my @dirs = grep {-d  $archives_path && ! /^\.{1,2}$/} readdir($dh);
-		closedir($dh);
-		$_fpath =  $archives_path . $dirs[0] . "/cfg/cfg.d/00_flavour.pl" if( defined $dirs[0] && -e $archives_path . $dirs[0] );
-	}
-	open (my $fh, $_fpath) or die "could not open file flavour config file at [$_fpath]: $! \n";
-	my $flavour;
-	while (my $row=<$fh>)
-	{
-		chomp $row;
-		next if not $row;
-		next if $row =~ /^\#/;
-		$flavour = (split(/\#/, $row))[0]; # remove the comment
-		$flavour = (split(/=/, $flavour))[1]; #get the value;
-		$flavour =~ s/[\" \; \']//g; # remove the quote and semi-colon
-		last;
-	}
-	close($fh);
-	my $lib_order = $conf->{'flavours'}->{$flavour};
-	foreach my $_lib (@{$lib_order})
-	{
-		my $_lib_path = $conf->{'base_path'}."/$_lib/plugins";
-		if( !grep { $_ eq $_lib_path } @INC )
-		{
-			unshift @INC, $_lib_path;
-		}
-	}
-#	print STDERR "[repository.pm]:>> INC:",join("\n",@INC);
-#	print STDERR "<<[repository.pm]";
-
-	return 1;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ######################################################################
@@ -2118,38 +1987,26 @@ sub template_dirs
 
 	my @dirs;
 
-	my $config_path = $self->config( "config_path" );
-	my $lib_path = $self->config( "lib_path" );
-
-	# themes path: /archives/[repoid]/cfg/lang/[langid]templates/
-	push @dirs, "$config_path/lang/$langid/templates";
-	# repository path: /archives/[repoid]/cfg/templates/
-	push @dirs, "$config_path/templates";
-
 	my $theme = $self->config( "theme" );
-	if( defined $theme )
-	{	
-		# themes path: /archives/[repoid]/cfg/themes/lang/[langid]templates/
-		push @dirs, "$config_path/themes/$theme/lang/$langid/templates";
-		# themes path: /archives/[repoid]/cfg/themes/lang/[langid]templates/
-		push @dirs, "$config_path/themes/$theme/templates";
-		push @dirs, "$lib_path/themes/$theme/templates";
-	}
+	if ( defined $theme )
+        {
+                my @ttdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/templates" ) );
+                my @tltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/lang/$langid/templates" ) );
+                for ( my $i = 0; $i < scalar @ttdirs; $i++ )
+                {
+                        push @dirs, $tltdirs[$i];
+                        push @dirs, $ttdirs[$i];
+                }
+        }
 
+        my @tdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'templates' ) );
+        my @ltdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order},"lang/$langid/templates" ) );
+        for ( my $i = 0; $i < scalar @tdirs; $i++ )
+        {
+               push @dirs, $ltdirs[$i];
+               push @dirs, $tdirs[$i];
+        }
 
-    my $flavour = $self->config( "flavour" );
-    my @lib_order = reverse(@{   $self->config('flavours')->{$flavour}   });
-    foreach (@lib_order)
-    {
-        push @dirs, $self->config( "base_path" )."/$_/lang/$langid/templates";
-        push @dirs, $self->config( "base_path" )."/$_/templates";
-    }
-
-
-
-	# system path: /lib/templates/
-	push @dirs, "$lib_path/lang/$langid/templates";
-	push @dirs, "$lib_path/templates";
 	return @dirs;
 }
 
@@ -2174,38 +2031,26 @@ sub get_static_dirs
 	my( $self, $langid ) = @_;
 
 	my @dirs;
-
-	my $config_path = $self->config( "config_path" );
-	my $lib_path = $self->config( "lib_path" );
-#	my $site_lib_path = $self->config( "base_path" )."/site_lib";
-
-	# repository path: /archives/[repoid]/cfg/static/
-	push @dirs, "$config_path/lang/$langid/static";
-	push @dirs, "$config_path/static";
-
-	# themes path: /archives/[repoid]/cfg/themes/
+        
 	my $theme = $self->config( "theme" );
-	if( defined $theme )
-	{	
-		push @dirs, "$config_path/themes/$theme/static";
-		push @dirs, "$lib_path/themes/$theme/static";
+        if ( defined $theme )
+        {
+                my @tsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/static" ) );
+                my @tlsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, "themes/$theme/lang/$langid/static" ) );
+		for ( my $i = 0; $i < scalar @tsdirs; $i++ )
+		{
+			push @dirs, $tlsdirs[$i];
+	       		push @dirs, $tsdirs[$i];
+		}
 	}
-   
-    my $flavour = $self->config( "flavour" );
-    my @lib_order = reverse(@{  $self->config('flavours')->{$flavour}  });
-    foreach (@lib_order)
-    {
-        push @dirs, $self->config( "base_path" )."/$_/lang/$langid/static";
-        push @dirs, $self->config( "base_path" )."/$_/static";
-    }
 
-	# site_lib
-#	push @dirs, "$site_lib_path/lang/$langid/static";
-#	push @dirs, "$site_lib_path/static";
-
-	# system path: /lib/static/
-	push @dirs, "$lib_path/lang/$langid/static";
-	push @dirs, "$lib_path/static";
+	my @sdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order}, 'static' ) );
+        my @lsdirs = reverse( EPrints::Init::get_lib_paths( $self->{load_order},"lang/$langid/static" ) );
+	for ( my $i = 0; $i < scalar @sdirs; $i++ )
+	{
+               push @dirs, $lsdirs[$i];
+               push @dirs, $sdirs[$i];
+      	}
 
 	return @dirs;
 }
@@ -5827,9 +5672,10 @@ sub cleanup
 
 =begin InternalDoc
 
-=item $Boolean = $repository->flavour_has("ingredients/bazaar")
+=item $Boolean = $repository->package_includes("ingredients/bazaar")
 
-return 1 or 0 if the given path is in the current inc file.
+return 1 or 0 if the given path is in the repository archive package
+configurations includes.
 
 =end InternalDoc
 
@@ -5837,13 +5683,60 @@ return 1 or 0 if the given path is in the current inc file.
 ######################################################################
 
 
-sub flavour_has
+sub package_includes
 {
-	my ($self, $module) = @_;
+        my ($self, $module) = @_;
 
-	my $inc_file = $self->config("flavours")->{ $self->config("flavour") };
+	return scalar ( grep { $_ eq $module } @{ $self->includes } );
+}
 
-	return scalar ( grep { $_ eq $module } @{$inc_file} );
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $flavour = $repository->flavour
+
+returns a string for the flavour used by the repository archive.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+
+sub flavour
+{
+	my ($self) = @_;
+
+	my $pkg_cfg = EPrints::Init::get_package_config( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
+
+	return $pkg_cfg->{flavour};
+}
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $includes = $repository->includes
+
+returns an array reference containng the includes paths used by the 
+repository archive.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+
+sub includes
+{
+        my ($self) = @_;
+
+        my $pkg_cfg = EPrints::Init::get_package_config( $self->config( 'base_path' ), $self->config( 'archiveroot' ) );
+
+        return EPrints::Init::get_includes( $pkg_cfg );
 }
 
 

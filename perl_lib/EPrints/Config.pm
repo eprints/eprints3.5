@@ -231,38 +231,14 @@ sub load_repository_config_module
 		print STDERR "Repository named '$id' disabled by configuration.\n";
 		exit 1;
 	}
-    ##cfg folder loaded latest takes priority. (latter overwrite earlier.)
-	my $libcfgd = $SYSTEMCONF->{"lib_path"}."/cfg.d";
-	my $repcfgd = $info->{archiveroot}."/cfg/cfg.d";
+
+	my $load_order = EPrints::Init::get_load_order( $info->{base_path}, $info->{archiveroot} );
+	my @incpaths = EPrints::Init::get_lib_paths( $load_order, "plugins" );
+	EPrints::Init::update_inc_paths( \@incpaths, $info->{base_path} );
+
+	my @libpaths = EPrints::Init::get_lib_paths( $load_order, "cfg.d" );
 	my %files_map = ();
-
-    ##load flavour from a local config, which is used to determine the flavour lib order. 
-    open (my $fh, "$repcfgd/00_flavour.pl") or die "could not open file flavour config file: $!";
-    my $flavour;
-    while (my $row=<$fh>)
-    {
-        chomp $row;
-        next if not $row;
-        next if $row =~ /^\#/;
-        $flavour = (split(/\#/, $row))[0]; # remove the comment
-        $flavour = (split(/=/, $flavour))[1]; #get the value;
-        $flavour =~ s/[\" \; \']//g; # remove the quote and semi-colon
-        last;
-    }
-    close($fh);
-
-    ##@libpaths contains a list of cfg to load. later ones overwrite early ones.
-
-    my @libpaths = ($libcfgd);
-    my $lib_order = $SYSTEMCONF->{"flavours"}->{$flavour};
-    foreach (@$lib_order)
-    {
-        push @libpaths, $SYSTEMCONF->{"base_path"}."/$_/cfg.d";
-    }
-
-    push @libpaths, $repcfgd;
-
-	foreach my $dir ( @libpaths)
+	foreach my $dir ( @libpaths )
 	{
 		next if( ! -e $dir );
 		opendir( my $dh, $dir ) || EPrints::abort( "Can't read cfg.d config files from $dir: $!" );
@@ -350,6 +326,7 @@ sub get
 
 	return $SYSTEMCONF->{$confitem};
 }
+
 
 1;
 
