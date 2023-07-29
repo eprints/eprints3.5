@@ -234,6 +234,7 @@ sub handler
 		##cgi path loaded earlier takes priority.
 
 		my @paths = reverse( EPrints::Init::get_lib_paths( $repository->{load_order}, 'cgi' ) );
+		push @paths, EPrints::Config::get( "cgi_path" ); ##system cgi path
 
 		PATH: foreach my $path (@paths)
 		{

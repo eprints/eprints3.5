@@ -171,7 +171,7 @@ sub get_lib_paths
         my @lib_paths = ();
         foreach my $lo ( @$load_order )
         {
-                if ( $lo =~ m!/archives/! )
+                if ( $lo =~ m!/archives/! && $sub_path ne "cgi" )
                 {
                         push @lib_paths, $lo . "/cfg/$sub_path";
                 }
