@@ -149,7 +149,6 @@ sub render_content
 	{
 		delete $self->{search};
 	}
-	
 	$out->appendChild( $self->_render_search );
 	
 	if( $self->{search} )
@@ -404,13 +403,11 @@ sub _render_subnode
 		}
 
 		$hide->setAttribute( "onclick", "
-EPJS_blur(event);
 EPJS_toggle_type('${id}_hide',false,'inline');
 EPJS_toggle_type('${id}_show',true,'inline');
 EPJS_toggleSlide('${id}_kids',false,'block'); " );
 
 		$show->setAttribute( "onclick", "
-EPJS_blur(event);
 EPJS_toggle_type('${id}_kids_loading',false,'block');
 EPJS_toggle_type('${id}_hide',false,'inline');
 EPJS_toggle_type('${id}_show',true,'inline');

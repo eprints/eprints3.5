@@ -95,7 +95,7 @@ sub render
 
 		my $contentid = $component->{prefix}."_content";
 		my $main_id = $component->{prefix};
-		my $col_link =  $self->{session}->make_element( "a", class=>"ep_sr_collapse_link", onclick => "EPJS_blur(event); EPJS_toggleSlideScroll('${contentid}',false,'${main_id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#" );
+		my $col_link =  $self->{session}->make_element( "a", class=>"ep_sr_collapse_link", onclick => "EPJS_toggleSlideScroll('${contentid}',false,'${main_id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#" );
 
 		$col_div->appendChild( $col_link );
 		$col_link->appendChild( $self->{session}->make_element( "img", alt=>"+", src=>"$imagesurl/style/images/plus.png", border=>0 ) );
@@ -106,7 +106,7 @@ sub render
 		$surround->appendChild( $col_div );
 
 		# alternate title to allow it to re-hide
-		my $recol_link =  $self->{session}->make_element( "a", onclick => "EPJS_blur(event); EPJS_toggleSlideScroll('${contentid}',false,'${main_id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#", class=>"ep_only_js ep_toggle ep_sr_collapse_link" );
+		my $recol_link =  $self->{session}->make_element( "a", onclick => "EPJS_toggleSlideScroll('${contentid}',false,'${main_id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#", class=>"ep_only_js ep_toggle ep_sr_collapse_link" );
 		$recol_link->appendChild( $self->{session}->make_element( "img", alt=>"-", src=>"$imagesurl/style/images/minus.png", border=>0 ) );
 		$recol_link->appendChild( $self->{session}->make_text( " " ) );
 		#use cloned title as we've already used it above. github #164
@@ -173,7 +173,7 @@ sub _render_help
 	my $action_div = $session->make_element( "div", class => "ep_only_js" );
 	$right->appendChild( $action_div );
 
-	my $jscript = "EPJS_blur(event); EPJS_toggleSlide('$prefix',false);EPJS_toggle('${prefix}_hide',false);EPJS_toggle('${prefix}_show',true);return false";
+	my $jscript = "EPJS_toggleSlide('$prefix',false);EPJS_toggle('${prefix}_hide',false);EPJS_toggle('${prefix}_show',true);return false";
 
 	foreach my $action (qw( show hide ))
 	{

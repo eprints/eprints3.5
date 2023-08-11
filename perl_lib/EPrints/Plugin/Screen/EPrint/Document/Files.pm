@@ -210,7 +210,7 @@ sub _render_add_file
 			class=>"ep_only_js",
 			style=>"display: block; height: 2em;",
 			href=>"#",
-			onclick => "EPJS_blur(event); if(!confirm(".$really_add.")) { return false; } EPJS_toggle('${doc_prefix}_af1',true);EPJS_toggle('${doc_prefix}_af2',false);return false",
+			onclick => "if(!confirm(".$really_add.")) { return false; } EPJS_toggle('${doc_prefix}_af1',true);EPJS_toggle('${doc_prefix}_af2',false);return false",
 		);
 		$hide_add_files->appendChild( $session->html_phrase( 
 			"Plugin/InputForm/Component/Documents:add_files",
