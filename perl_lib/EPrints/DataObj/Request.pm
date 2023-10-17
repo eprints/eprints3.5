@@ -57,9 +57,9 @@ The time at which this request will expires.
 
 The code for this request, which can be used to created private URLS.
 
-=item captcha (recaptcha)
+=item captcha (recaptcha3)
 
-The ReCAPTCHA field for the form for this request.
+The ReCAPTCHA v3 field for the form for this request.
 
 =item pin (text)
 
@@ -151,7 +151,7 @@ sub get_system_field_info
 
 		{ name=>"code", type=>"text", required=>0 },
 
-		{ name => "captcha",type => "recaptcha" },
+		{ name => "captcha",type => "recaptcha3" },
 
 		{ name=>"pin", type=>"text", required=>0 },
 	);
