@@ -260,7 +260,7 @@ sub update_auto
 
 	}
 
-	$out_of_date = 1 if !$out_of_date && -f $repo->config( 'config_path' )."package.yml" && (stat($repo->config( 'config_path' )."package.yml"))[9] > $target_time;
+	$out_of_date = 1 if !$out_of_date && -f $repo->config( 'config_path' )."/package.yml" && (stat($repo->config( 'config_path' )."/package.yml"))[9] > $target_time;
 	$out_of_date = 1 if !$out_of_date && -f $repo->config( 'base_path' )."/perl_lib/EPrints/SystemSettings.pm" && (stat($repo->config( 'base_path' )."/perl_lib/EPrints/SystemSettings.pm"))[9] > $target_time;
 
 	return $target unless $out_of_date;
