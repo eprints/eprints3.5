@@ -208,9 +208,11 @@ sub hidden_field
 {
 	my( $self, $name, $value, @opts ) = @_;
 
+	my %hopts = @opts;
+	push @opts, ( 'id', $name ) unless defined $hopts{id};
+
 	return $self->{repository}->xml->create_element( "input",
 		name => $name,
-		id => $name,
 		value => $value,
 		type => "hidden",
 		@opts );
@@ -902,7 +904,7 @@ sub tree2
 			if ( ref($key) eq "EPrints::DataObj::Subject" ) 
 			{
 				my $subjectid = $key->get_id;
-				$subjectid =~ s/[^a-zA-Z0-9_-]/_/g;
+				$subjectid = EPrints::Utils::sanitise_element_id( $subjectid );
 				$dt_attrs{id} = "ep_subj_title_" . $subjectid;
 				$dd_attrs{id} = "ep_subj_desc_" . $subjectid;
 			}

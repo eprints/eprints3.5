@@ -3572,7 +3572,7 @@ sub render_single_option
 
 =begin InternalDoc
 
-=item $xhtml_hidden = $repository->render_hidden_field( $name, $value )
+=item $xhtml_hidden = $repository->render_hidden_field( $name, $value, $id )
 
 Return the XHTML DOM describing an <input> element of type "hidden"
 and name and value as specified. eg.
@@ -3586,14 +3586,21 @@ and name and value as specified. eg.
 
 sub render_hidden_field
 {
-	my( $self, $name, $value ) = @_;
+	my( $self, $name, $value, $id ) = @_;
 
 	if( !defined $value ) 
 	{
 		$value = $self->param( $name );
 	}
 
-	return $self->xhtml->hidden_field( $name, $value );
+	my @opts = ();
+	if ( $id )
+	{
+		$id = EPrints::Utils::sanitise_element_id( $id );
+		push @opts, ( 'id', $id ) if $id;
+	}
+
+	return $self->xhtml->hidden_field( $name, $value, @opts );
 }
 
 sub render_input_field

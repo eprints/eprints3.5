@@ -242,6 +242,7 @@ sub render_edit_button
 			dataobj => $self->{processor}->{dataobj}->id,
 			stage => $stage->get_name,
 		},
+		idsuffix => "stage_" . $stage->get_name,
 	});
 
 	return $session->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:render_edit_button", { item => {
