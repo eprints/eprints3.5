@@ -583,29 +583,21 @@ sub render_action_list_bar
 
 sub render_action_list_icons
 {
-	my( $self, $list_id, $opts ) = @_;
+	my( $self, $list_id, $hidden ) = @_;
 
 	my $item = {
 		columns => []
 	};
 
-	my $idsuffix = $list_id;
-	my $hidden;
-	if ( ref( $opts ) eq "HASH" )
+	my @idfields = ( 'dataobj', 'eprintid' );
+	my $idsuffix;
+	foreach ( keys %$hidden )
 	{
-		if ( defined $opts->{eprintid} )
+		if ( grep( /^$_$/, @idfields ) )
 		{
-			$idsuffix = $list_id . "_" . $opts->{eprintid};
+			$idsuffix = $list_id . "_" . $hidden->{$_};
+			last;
 		}
-		elsif ( defined $opts->{dataobj} )
-		{
-			$idsuffix = $list_id . "_" . $opts->{dataobj};
-		}
-		$hidden = defined $opts->{hidden} ? $opts->{hidden} : undef;
-	}
-	elsif ( ref( $opts ) eq "" )
-	{
-		$hidden = $opts;
 	}
 
 	foreach my $params ($self->action_list( $list_id ))
