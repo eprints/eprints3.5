@@ -818,7 +818,7 @@ sub get_input
 		else
 		{
 			my $regexp_type = get_regexp_type( $regexp );
-                        print "Bad input. Not $regexp_type. Try again.\n";
+			print "Bad input. Not $regexp_type. Try again.\n";
 		}
 	}
 }
@@ -844,21 +844,21 @@ sub get_input_hidden
 
 	my $value = undef;
 	if ( defined $config )
-        {
-                $value = $config;
-                for ( my $a = 0; $a < scalar @$attr_path; $a++ )
-                {
-                        $value = $value->{$attr_path->[$a]};
-                        last unless defined $value;
-                }
-                return $value if defined $value && $value =~ m/^$regexp$/;
-        }
+	{
+		$value = $config;
+		for ( my $a = 0; $a < scalar @$attr_path; $a++ )
+		{
+			$value = $value->{$attr_path->[$a]};
+			last unless defined $value;
+		}
+		return $value if defined $value && $value =~ m/^$regexp$/;
+	}
 
 	if ( defined $value && $value !~ m/^$regexp$/ )
-        {
-                my $regexp_type = get_regexp_type( $regexp );
-                print "Bad input from config file. Not $regexp_type. Try entering manually.\n";
-        }
+	{
+		my $regexp_type = get_regexp_type( $regexp );
+		print "Bad input from config file. Not $regexp_type. Try entering manually.\n";
+	}
 
 	$prompt = "" if( !defined $prompt);
 	$prompt .= " [$default] " if( defined $default );
@@ -1070,7 +1070,7 @@ sub crypt_password {
 	
 	my( $value, $session ) = @_;
 
-        my $maxlength = $session->config( "password_maxlength" ) || 200;
+	my $maxlength = $session->config( "password_maxlength" ) || 200;
 		
 	return undef if !EPrints::Utils::is_set( $value ) || length( $value ) > $maxlength;
 
@@ -1092,42 +1092,60 @@ sub crypt
 	return undef if !EPrints::Utils::is_set( $value );
 
 	# backwards compatibility
-	if( UNIVERSAL::isa( $method, "EPrints::Repository" ) ) {
+	if( UNIVERSAL::isa( $method, "EPrints::Repository" ) )
+	{
 		$method = EP_CRYPT_CRYPT;
 	}
-	elsif( !defined $method ) {
-		$method = EP_CRYPT_SHA512;
+	elsif( !defined $method )
+	{
+		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+		{
+			$method = EP_CRYPT_BCRYPT;
+		}
+		else
+		{
+			$method = EP_CRYPT_SHA512;
+		}
 	}
 
-	srand;
-	my @saltset = ('a'..'z', 'A'..'Z', '0'..'9', '.', '/');
-	my $salt = join '', @saltset[
-			int(rand(scalar(@saltset))),
-			int(rand(scalar(@saltset)))
-		];
-
-	if( $method eq EP_CRYPT_SHA512 )
+	my $salt;
+	# EP_CRYPT_BCRYPT generates salt inside _crypt_bcrypt method.
+	if ( $method == EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 	{
-		# calculate the sha512 of the salt + value (avoids two identical
-		# passwords resulting in the same hash)
-		my $crypt = Digest::SHA::sha512( $salt . $value );
-
-		# repeatedly calculate the hash, which makes it computationally
-		# expensive to brute-force the resulting hash
-		my $rounds = 10000;
-		while(--$rounds) {
-			$crypt = Digest::SHA::sha512( $crypt );
-		}
-		# once more + hex to get $rounds in total
-		$crypt = Digest::SHA::sha512_hex( $crypt );
-
-		# store the crypt as a URI for easy serialisation
-		my $uri = URI->new;
-		$uri->query_form(
-			method => EP_CRYPT_SHA512,
-			salt => $salt,
-			digest => $crypt,
+		$salt = undef;
+	}
+	else
+	{
+		srand;
+		my @saltset = ('a'..'z', 'A'..'Z', '0'..'9', '.', '/');
+		$salt = join(
+			'',
+			@saltset[
+				int(rand(scalar(@saltset))),
+				int(rand(scalar(@saltset)))
+			],
 		);
+	}
+
+	use constant CRYPTS => [ EP_CRYPT_BCRYPT, EP_CRYPT_SHA512 ];
+	my $crypts = CRYPTS;
+	if( grep { $method eq $_ } @$crypts )
+	{
+
+		my ( $crypt, %params );
+		if( $method eq EP_CRYPT_BCRYPT )
+		{
+			$crypt = _crypt_bcrypt( $salt,  $value );
+			%params = ( method => $method, digest => $crypt );
+		}
+		else
+		{
+			$crypt = _crypt_sha512( $salt,  $value );
+			%params = ( method => $method, salt => $salt, digest => $crypt );
+		}
+
+		my $uri = URI->new;
+		$uri->query_form( %params );
 
 		return "$uri";
 	}
@@ -1160,21 +1178,80 @@ sub crypt_equals
 	my %q = URI->new( $crypt )->query_form;
 	( my $method, my $salt, $crypt ) = @q{ qw( method salt digest ) };
 
+	my $hash;
 	if( $method eq EP_CRYPT_SHA512 )
 	{
-		my $digest = Digest::SHA::sha512( $salt . $value );
-
-		my $rounds = 10000;
-		while(--$rounds) {
-			$digest = Digest::SHA::sha512( $digest );
-		}
-		$digest = Digest::SHA::sha512_hex( $digest );
-
-		return $crypt eq $digest;
+		$hash = _crypt_sha512( $salt, $value );
+	}
+	elsif ( $method eq EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+	{
+		$hash = Crypt::Eksblowfish::Bcrypt::bcrypt( $value, $crypt );
+	}
+	elsif ( $method eq EP_CRYPT_BCRYPT_REHASH && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+	{
+		my $init_hash = _crypt_sha512( $salt, $value );
+		$hash = Crypt::Eksblowfish::Bcrypt::bcrypt( $init_hash, $crypt );
 	}
 
-	EPrints->abort( "Unsupported or unknown crypt method: $method" );
+	EPrints->abort( "Unsupported or unknown crypt method: $method or Crypt::Eksblowfish::Bcrypt and/or Data::Entropy::Algorithms module(s) not available." ) unless defined $hash;
+
+	return $crypt eq $hash;
 }
+
+sub bcrypt_rehash
+{
+	my ( $method, $salt, $crypt ) = @_;
+
+	if( $method eq EP_CRYPT_SHA512 )
+	{
+		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+		{
+			my $new_crypt = _crypt_bcrypt( $salt, $crypt );
+			my %params = ( method => EP_CRYPT_BCRYPT_REHASH, salt => $salt, digest => $new_crypt );
+			my $uri = URI->new;
+		$uri->query_form( %params );
+			return $uri;
+		}
+		EPrints->abort( "Crypt::Eksblowfish::Bcrypt and/or Data::Entropy::Algorithms module(s) not available." );
+	}
+	EPrints->abort( "Crypt method: $method cannot be rehashed using bcrypt.");
+}
+
+sub _crypt_sha512
+{
+	my ( $salt, $value ) = @_;
+
+	my $digest = Digest::SHA::sha512( $salt . $value );
+
+	my $rounds = 10000;
+	while(--$rounds) {
+	    $digest = Digest::SHA::sha512( $digest );
+	}
+	$digest = Digest::SHA::sha512_hex( $digest );
+
+	return $digest;
+}
+
+sub _crypt_bcrypt
+{
+	my ( $unused, $value ) = @_;
+
+	my $salt = Data::Entropy::Algorithms::rand_bits(16*8);
+	my $cost = 12;
+
+	my $settings = {
+		key_nul => 1,
+		cost => $cost,
+		salt => $salt,
+	};
+
+	my $hash = Crypt::Eksblowfish::Bcrypt::bcrypt_hash( $settings, $value );
+
+	my $bcrypt_hash = "\$2a\$$cost\$" . Crypt::Eksblowfish::Bcrypt::en_base64( $salt ) . Crypt::Eksblowfish::Bcrypt::en_base64( $hash );
+
+	return $bcrypt_hash;
+}
+
 
 # Escape everything AFTER the last /
 
@@ -1581,38 +1658,38 @@ sub make_sitemap_url
 
 sub compare_version
 {
-        my ( $cmp, $version ) = @_;
+	my ( $cmp, $version ) = @_;
 	
-        $version =~ s/[^\d\.]//;
-        my @v_bits = split( /\./, $version );
-        my $vnum = 0;
-        for ( my $i = 0; $i < 3; $i++ )
-        {
-                $vnum *= 100;
-                $vnum += $v_bits[$i];
-        }
+	$version =~ s/[^\d\.]//;
+	my @v_bits = split( /\./, $version );
+	my $vnum = 0;
+	for ( my $i = 0; $i < 3; $i++ )
+	{
+		$vnum *= 100;
+		$vnum += $v_bits[$i];
+	}
 	my @cv_bits = split( /\./, EPrints->human_version );
-        my $cvnum = 0;
-        for ( my $i = 0; $i < 3 ; $i++ )
-        {
-                $cvnum *= 100;
-                $cvnum += $cv_bits[$i];
-        }
-        return $cvnum < $vnum if $cmp eq '<';
-        return $cvnum <= $vnum if $cmp eq '<=';
-        return $cvnum == $vnum if $cmp eq '=';
-        return $cvnum >= $vnum if $cmp eq '>=';
-        return $cvnum > $vnum if $cmp eq '>';
-        if ( $cmp eq '~')
-        {
-                for ( my $i = 0; $i < scalar @cv_bits; $i++ )
-                {
-                        return 1 unless defined $v_bits[$i];
-                        return 0 if $cv_bits[$i] != $v_bits[$i];
-                }
-                return 1;
-        }
-        return 0;
+	my $cvnum = 0;
+	for ( my $i = 0; $i < 3 ; $i++ )
+	{
+		$cvnum *= 100;
+		$cvnum += $cv_bits[$i];
+	}
+	return $cvnum < $vnum if $cmp eq '<';
+	return $cvnum <= $vnum if $cmp eq '<=';
+	return $cvnum == $vnum if $cmp eq '=';
+	return $cvnum >= $vnum if $cmp eq '>=';
+	return $cvnum > $vnum if $cmp eq '>';
+	if ( $cmp eq '~')
+	{
+		for ( my $i = 0; $i < scalar @cv_bits; $i++ )
+		{
+			return 1 unless defined $v_bits[$i];
+			return 0 if $cv_bits[$i] != $v_bits[$i];
+		}
+		return 1;
+	}
+	return 0;
 }
 
 # EPrints::Utils::validate_email( $email );
