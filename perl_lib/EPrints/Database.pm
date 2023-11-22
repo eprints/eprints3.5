@@ -2587,6 +2587,17 @@ sub get_dataobjs
 		my $dataobj = $dataset->make_dataobj( {} );
 		$dataobj->{data} = $epdata;
 		$epdata = $dataobj;
+
+		foreach my $field ( $dataset->get_fields )
+		{
+			if( $field->isa( "EPrints::MetaField::Subobject" ) )
+			{
+				if( $field->{cache_during_load} )
+				{
+					$dataobj->{data}->{$field->name} = $dataobj->get_value( $field->name );
+				}
+			}
+		}
 	}
 
 	return @data;
