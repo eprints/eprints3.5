@@ -67,6 +67,7 @@ sub get_property_defaults
 	$defaults{dataobj_fieldname} = "objectid";
 	$defaults{show_in_fieldlist} = 0;
 	$defaults{cache_during_load} = 0;
+	$defaults{cache_on_demand} = 0;
 	$defaults{match} = "IN";
 
 	return %defaults;
@@ -198,10 +199,20 @@ sub get_value
 
 	if( $self->get_property( "multiple" ) )
 	{
+		if( $self->{cache_on_demand} )
+		{
+			$self->set_value( $parent, \@records );
+		}
+
 		return \@records;
 	}
 	else
 	{
+		if( $self->{cache_on_demand} )
+		{
+			$self->set_value( $parent, $records[0] );
+		}
+
 		return $records[0];
 	}
 }

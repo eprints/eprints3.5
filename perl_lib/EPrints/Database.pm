@@ -2594,7 +2594,7 @@ sub get_dataobjs
 			{
 				if( $field->{cache_during_load} )
 				{
-					$dataobj->{data}->{$field->name} = $dataobj->get_value( $field->name );
+					$field->set_value( $dataobj, $dataobj->get_value( $field->name ) );
 				}
 			}
 		}
