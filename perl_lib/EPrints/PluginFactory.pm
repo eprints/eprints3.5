@@ -90,7 +90,7 @@ sub new
 			$self->_load_xslt_dir( \%SYSTEM_PLUGINS, $repository, $dir );
 		}
 
-		my @lib_order = EPrints::Init::get_lib_paths( $repository->{load_order}, 'plugins' );
+		my @lib_order = EPrints::Init::get_lib_paths( $repository->get_load_order, 'plugins' );
 
 		foreach $dir ( @lib_order )
 		{

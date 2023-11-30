@@ -93,7 +93,7 @@ sub new
 
 	$self->{data} = $SYSTEM_PHRASES{$langid} ||= { docs => {} };  ## system level phrases
 
-	my @lib_order = EPrints::Init::get_lib_paths( $repository->{load_order}, 'lang/' . $self->{id} . '/phrases' );
+	my @lib_order = EPrints::Init::get_lib_paths( $repository->get_load_order, 'lang/' . $self->{id} . '/phrases' );
 
 	foreach ( @lib_order )
 	{
