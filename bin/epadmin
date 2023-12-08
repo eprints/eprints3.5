@@ -441,6 +441,7 @@ sub create
 	# Determine available flavours
 	my $conf = $EPrints::SystemSettings::conf;
 	my @flavours;
+	my @missing_yaml = ();
 	push @flavours, 'zero' if -f $conf->{base_path} . "/lib/package.yml.tmpl";
 	opendir( DIR,  $conf->{base_path} . "/flavours" );
 	my @flavour_dirs = grep { ! /^\./ && -d $conf->{base_path} . "/flavours/" . $_ } readdir( DIR );
@@ -449,10 +450,17 @@ sub create
 	{
 		my $flavour = $_;
 		$flavour =~ s/_lib$//;
-		push @flavours, $flavour if -f $conf->{base_path} . "/flavours/" . $_ . "/package.yml.tmpl";
+		if ( -f $conf->{base_path} . "/flavours/" . $_ . "/package.yml.tmpl" )
+		{
+			push @flavours, $flavour; 
+		}
+		else
+		{	
+			push @missing_yaml, $flavour; 
+		}
 	}
-
 	print "\n";
+	print "The following flavours are missing package.yml.tmpl files; ", join("_lib, ", @missing_yaml),"_lib.\nEPrints3.5 replaces the flavours inc file with yaml configuration file.\n\n" if scalar @missing_yaml > 0;
 
 	my $repo_type = EPrints::Utils::get_input( '^('.join( '|', @flavours ).')$', 'Select a flavour ('.join( "|",@flavours).')', 'pub', $config, [ 'flavour' ] );
 
