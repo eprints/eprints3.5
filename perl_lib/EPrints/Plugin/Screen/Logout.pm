@@ -40,10 +40,8 @@ sub render_action_link
 {
 	my( $self, %opts ) = @_;
 
-	my $link = $self->SUPER::render_action_link( %opts );
-	$link->setAttribute( href => $self->{session}->config( "http_cgiroot" ) . "/logout" );
-
-	return $link;
+	$opts{uri} = $self->{session}->config( "http_cgiroot" ) . "/logout";
+	return $self->SUPER::render_action_link( %opts );
 }
 
 sub render

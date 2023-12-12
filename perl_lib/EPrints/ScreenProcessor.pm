@@ -275,8 +275,7 @@ sub render_toolbar
 {
 	my( $self ) = @_;
 
-	my $class = "ep_tm_key_tools";
-	$class = $self->{session}->config( "toolbar_class" ) if defined $self->{session}->config( "toolbar_class" );
+	my $class = $self->{session}->config( "toolbar_class" ) if defined $self->{session}->config( "toolbar_class" );
 
 	my $toolbar = $self->render_item_list( [
 		$self->list_items( "key_tools" ),
