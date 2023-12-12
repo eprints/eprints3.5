@@ -1,22 +1,93 @@
-<?xml version="1.0" encoding="iso-8859-1"  standalone="no"  ?>
-<!DOCTYPE page SYSTEM "entities.dtd" >
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE page SYSTEM "entities.dtd">
 <xpage:page xmlns="http://www.w3.org/1999/xhtml" xmlns:xpage="http://eprints.org/ep3/xpage" xmlns:epc="http://eprints.org/ep3/control">
-<xpage:head>
-  <link rel="alternate" type="application/rss+xml" title="Items in {phrase('archive_name')}" href="{$config{perl_url}}/latest_tool?output=RSS2"></link>
-  <link rel="alternate" type="application/atom+xml" title="Items in {phrase('archive_name')}" href="{$config{perl_url}}/latest_tool?output=Atom"></link>
-  <link rel="alternate" type="application/rdf+xml" title="Repository Summary RDF+XML" href="{$config{perl_url}}/export/repository/RDFXML/devel.rdf"></link>
-  <link rel="alternate" type="text/n3" title="Repository Summary RDF+N3" href="{$config{perl_url}}/export/repository/RDFN3/devel.n3"></link>
-</xpage:head>
-<xpage:title>Welcome to <epc:phrase ref="archive_name" /></xpage:title>
-<xpage:body>
-
-<div class="ep_msg_message">
-  <div class="ep_msg_message_content" style="display: table; width: 100%;">
-    <div class="ep_msg_message_icon" style="padding: 1em; display: table-cell; vertical-align: middle;">
-      <img alt="Message" src="{$config{rel_path}}/style/images/message.png" />
+  <xpage:head>
+    <link rel="alternate" type="application/rss+xml" title="Items in {phrase('archive_name')}" href="{$config{perl_url}}/latest_tool?output=RSS2"/>
+    <link rel="alternate" type="application/atom+xml" title="Items in {phrase('archive_name')}" href="{$config{perl_url}}/latest_tool?output=Atom"/>
+    <link rel="alternate" type="application/rdf+xml" title="Repository Summary RDF+XML" href="{$config{perl_url}}/export/repository/RDFXML/devel.rdf"/>
+    <link rel="alternate" type="text/n3" title="Repository Summary RDF+N3" href="{$config{perl_url}}/export/repository/RDFN3/devel.n3"/>
+  </xpage:head>
+  <xpage:title>Welcome to <epc:phrase ref="archive_name"/></xpage:title>
+  <xpage:body>
+    <div class="row g-5 py-5 row-cols-1 row-cols-lg-3" id="ep-homepage-menu" title="Homepage Menu">
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-dark fs-2 mb-2 p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-file-earmark-plus" viewBox="0 0 16 16">
+            <path d="M8 6.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 .5-.5"/>
+            <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
+          </svg>
+        </div>
+        <div class="fs-2 text-body-emphasis" id="latest-additions">Latest Additions</div>
+        <div>View items added to the repository in the past week.</div>
+        <a href="{$config{rel_cgipath}}/latest" class="icon-link mt-2">
+			See our Latest Additions
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-dark fs-2 mb-2 p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg>
+        </div>
+        <div class="fs-2 text-body-emphasis" id="search-repository">
+          Search Repository
+        </div>
+        <div>Search the repository using a full range of fields. Use the search field at the top of the page for a quick search.</div>
+        <a href="{$config{rel_cgipath}}/search/advanced" class="icon-link mt-2">
+			Search the Repository
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-dark fs-2 mb-2 p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-collection" viewBox="0 0 16 16">
+            <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z"/>
+          </svg>
+        </div>
+        <div class="fs-2 text-body-emphasis" id="browse-repository">
+          Browse Repository
+        </div>
+        <div>Browse the items in the repository by subject.</div>
+        <a href="{$config{rel_cgipath}}/view/subjects" class="icon-link mt-2">
+			Browse our Repository
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-dark fs-2 mb-2 p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+          </svg>
+        </div>
+        <div class="fs-2 text-body-emphasis" id="about-this-repository">
+			About this Repository
+	</div>
+        <div>More information about this site.</div>
+        <a href="{$config{rel_path}}/information.html" class="icon-link mt-2">
+			Read About this Repository
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+        </a>
+      </div>
+      <div class="feature col">
+        <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-dark fs-2 mb-2 p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
+            <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+            <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+          </svg>
+        </div>
+        <div class="fs-2 text-body-emphasis" id="repository-policies">
+          Repository Policies
+        </div>
+        <div>Policy for use of material in this repository.</div>
+        <a href="{$config{rel_path}}/policies.html" class="icon-link mt-2">
+			See our Policies
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
+        </a>
+      </div>
     </div>
-    <div class="ep_msg_message_text" style="padding: 1em; display: table-cell; vertical-align: middle; text-align: left;">Welcome to <epc:phrase ref="archive_name" />. <a rel="external" href="https://wiki.eprints.org/w/New_Repository" target="_blank">Start customising this repository</a>.</div>
-  </div>
+    <div class="alert alert-dark mt-5" role="alert"><epc:phrase ref="archive_name"/> supports <a href="https://www.openarchives.org"><abbr title="Open Archives Protocol for Metadata Harvesting v2.0">OAI 2.0</abbr></a> with a base URL of <a href="$config{perl_url}" style="color: #0027ff;font-size: .875em;word-wrap: break-word;"><epc:print expr="$config{perl_url}"/>/oai2</a>
 </div>
 
 <div style="text-align: right;">
