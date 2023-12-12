@@ -668,7 +668,7 @@ sub run_icon
 		elsif( $optv eq "NewWindow" ) { $args{new_window}=1; }
 		elsif( $optv eq "noNewWindow" ) { $args{new_window}=0; }
 		elsif( $optv eq "previewLeft" ) { $args{preview_side}='left'; }
-		elsif( $optv eq "previewRight" ) { $args{preview_side}='right'; }
+		elsif( $optv eq "LargeIcon" ) { $args{size}='lightbox'; }
 		else { $self->runtime_error( "Unknown option to doc->icon(): $optv" ); }
 	}
 
@@ -988,6 +988,13 @@ sub run_string_phrase
 	my( $self, $state, $phrase ) = @_;
 
 	return [ $state->{session}->phrase( $phrase->[0] ), "STRING" ];
+}
+
+sub run_text
+{
+	my( $self, $state, $phrase ) = @_;
+
+	return [ $state->{session}->make_text( $phrase->[0] ), "XHTML" ];
 }
 
 sub run_documents
