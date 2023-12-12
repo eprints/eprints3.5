@@ -23,6 +23,29 @@
   </ul>
 </epp:phrase>
 
+<!-- Action links (e.g. links in keytools) -->
+
+<epp:phrase id="view:EPrints/Plugin/ScreenProcessor:render_action_link">
+  <a href="{uri}" class="{if (class, class, 'ep_tm_key_tools_item_link')}">
+    <epc:foreach expr="opts" iterator="attr">
+      <epc:attribute name="{$attr{name}}">
+        <epc:print expr="$attr{value}"/>
+      </epc:attribute>
+    </epc:foreach>
+    <epc:print expr="title"/>
+  </a>
+</epp:phrase>
+
+<!-- Logged in as (e.g. keytools) -->
+
+<epp:phrase id="view:EPrints/Plugin/Screen/Login:render_title">
+  <span class="ep_tm_key_tools_item_link">
+    <epc:phrase ref="Plugin/Screen/Login:title:logged_in">
+      <epc:param name="user"><epc:print expr="user"/></epc:param>
+    </epc:phrase>
+  </span>
+</epp:phrase>
+
 <!-- DataSets screen ("Manage records") -->
 
 <epp:phrase id="view:EPrints/Plugin/Screen/DataSets:render">
