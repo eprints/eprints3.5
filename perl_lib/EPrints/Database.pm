@@ -2541,7 +2541,7 @@ sub get_dataobjs
 		{
 			$epdata->{$field->{name}} = $field->value_from_sql_row( $session, \@row );
 		}
-		next if !defined $epdata->{$key_name};
+		next if !defined $epdata->{$key_name} || !defined $lookup{$epdata->{$key_name}};
 		$data[$lookup{$epdata->{$key_name}}] = $epdata;
 	}
 
