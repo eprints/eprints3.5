@@ -2,6 +2,8 @@
 <!DOCTYPE phrases SYSTEM "entities.dtd">
 <epp:phrases xmlns="http://www.w3.org/1999/xhtml" xmlns:epp="http://eprints.org/ep3/phrase" xmlns:epc="http://eprints.org/ep3/control" xmlns:epv="http://eprints.org/ep3/view">
 
+<!-- BOOTSTRAP 5.3 Integration using new XML templating features in EPrints 3.5 -->
+
 <epp:phrase id="view:basic_test">
   Text only test entry.
 </epp:phrase>
@@ -9,9 +11,9 @@
 <!-- Toolbar (e.g. key tools) -->
 
 <epp:phrase id="view:EPrints/ScreenProcessor:render_item_list">
-  <ul class="{if (class, class, 'ep_tm_key_tools')}" id="{if (id, id, 'ep_tm_menu_tools')">
+  <ul class="{if (class, class, 'navbar-nav ms-auto')}" id="{if (id, id, 'ep_tm_menu_tools')">
     <epc:foreach expr="entries" iterator="entry">
-      <li class="ep_tm_key_tools_item">
+      <li class="nav-item">
         <epc:if test="$entry{class}">
           <epc:attribute name="class">
             <epc:print expr="$entry{class}"/>
@@ -21,6 +23,29 @@
       </li>
     </epc:foreach>
   </ul>
+</epp:phrase>
+
+<!-- Action links (e.g. links in keytools) --> 
+
+<epp:phrase id="view:EPrints/Plugin/ScreenProcessor:render_action_link">
+  <a href="{uri}" class="{if (class, class, 'nav-link')}">
+    <epc:foreach expr="opts" iterator="attr">
+      <epc:attribute name="{$attr{name}}">
+        <epc:print expr="$attr{value}"/>
+      </epc:attribute>
+    </epc:foreach>
+    <epc:print expr="title"/>
+  </a>
+</epp:phrase>
+
+<!-- Logged in as (e.g. keytools) -->
+
+<epp:phrase id="view:EPrints/Plugin/Screen/Login:render_title">
+  <span class="nav-link">
+    <epc:phrase ref="Plugin/Screen/Login:title:logged_in">
+      <epc:param name="user"><epc:print expr="user"/></epc:param>
+    </epc:phrase>
+  </span>
 </epp:phrase>
 
 <!-- DataSets screen ("Manage records") -->
