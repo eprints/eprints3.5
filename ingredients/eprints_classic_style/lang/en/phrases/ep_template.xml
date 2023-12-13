@@ -777,7 +777,7 @@
 
 <epp:phrase id="view:EPrints/Repository:render_row_with_help">
 
-  <div class="{class} ep_table_row" data-context="{if (context, context, 'none')}">
+  <div class="ep_table_row {class}" data-context="{if (context, context, 'none')}">
 
     <div class="ep_table_cell ep_multi_heading">
       <span id="{prefix}{if (uses_fieldset, '_legend', '')}_label">
