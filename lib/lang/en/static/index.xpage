@@ -87,7 +87,7 @@
         </a>
       </div>
     </div>
-    <div class="alert alert-dark mt-5" role="alert"><epc:phrase ref="archive_name"/> supports <a href="https://www.openarchives.org"><abbr title="Open Archives Protocol for Metadata Harvesting v2.0">OAI 2.0</abbr></a> with a base URL of <a href="{$config{perl_url}}" style="color: #0027ff;font-size: .875em;word-wrap: break-word;"><epc:print expr="$config{perl_url}"/>/oai2</a>
+    <div class="alert alert-dark mt-5" role="alert"><epc:phrase ref="archive_name"/> supports <a href="https://www.openarchives.org"><abbr title="Open Archives Protocol for Metadata Harvesting v2.0">OAI 2.0</abbr></a> with a base URL of <a href="{$config{perl_url}}/oai2" style="color: #0027ff;font-size: .875em;word-wrap: break-word;"><epc:print expr="$config{perl_url}"/>/oai2</a>
 </div>
 
 <div style="text-align: right;">
