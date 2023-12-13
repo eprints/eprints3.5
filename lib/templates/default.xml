@@ -67,8 +67,8 @@
             </div>
           </div>
         </nav>
-        <nav class="navbar navbar-expand-lg p-3 d-none d-md-block" style="background: #eeeeee;">
-          <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg ps-3 p-2 d-none d-md-block" style="background: #eeeeee;">
+          <div class="container-fluid" style="height: 31px;">
             <div class="d-flex">
               <div class="me-4">
                 <a href="/" class="text-decoration-none">
