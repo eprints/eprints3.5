@@ -28,7 +28,7 @@
 <!-- Action links (e.g. links in keytools) --> 
 
 <epp:phrase id="view:EPrints/Plugin/ScreenProcessor:render_action_link">
-  <a href="{uri}" class="{if (class, class, 'nav-link')}">
+  <a href="{uri}" class="{if (class, class, 'nav-link text-black')}">
     <epc:foreach expr="opts" iterator="attr">
       <epc:attribute name="{$attr{name}}">
         <epc:print expr="$attr{value}"/>
@@ -41,7 +41,7 @@
 <!-- Logged in as (e.g. keytools) -->
 
 <epp:phrase id="view:EPrints/Plugin/Screen/Login:render_title">
-  <span class="nav-link">
+  <span class="nav-link text-black">
     <epc:phrase ref="Plugin/Screen/Login:title:logged_in">
       <epc:param name="user"><epc:print expr="user"/></epc:param>
     </epc:phrase>
@@ -823,9 +823,9 @@
 
 <epp:phrase id="view:EPrints/Repository:render_row_with_help">
 
-  <div class="{class} ep_table_row" data-context="{if (context, context, 'none')}">
+  <div class="input-group w-100 mb-3 shadow-sm {class}" data-context="{if (context, context, 'none')}">
 
-    <div class="ep_table_cell ep_multi_heading">
+    <div class="input-group-text">
       <span id="{prefix}{if (uses_fieldset, '_legend', '')}_label">
         <epc:print expr="label"/>
       </span>
@@ -834,7 +834,7 @@
     <epc:choose>
       <epc:when test="has_help">
 
-        <div class="ep_multi_input ep_table_cell" colspan="{if (has_toggle, '1', '2')}" id="{help_prefix}_outer">
+        <div class="form-control" colspan="{if (has_toggle, '1', '2')}" id="{help_prefix}_outer">
           <div id="{help_prefix}" class="ep_multi_inline_help {if (has_toggle, 'ep_no_js')}">
             <div id="{help_prefix}_inner" role="definition" aria-labelledby="{prefix}_label">
               <epc:print expr="help"/>
@@ -845,7 +845,7 @@
 
       </epc:when>
       <epc:otherwise>
-        <div class="ep_multi_input ep_table_cell">
+        <div class="input-group-text">
           <epc:print expr="field"/>
         </div>
       </epc:otherwise>
@@ -854,7 +854,7 @@
     <epc:choose>
       <epc:when test="has_toggle">
 
-        <div class="ep_multi_help ep_only_js_table_cell ep_toggle ep_table_cell">
+        <div class="input-group-text">
           <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
             <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
               <img alt='{string_phrase("lib/session:show_help_alt")}'
@@ -1070,7 +1070,7 @@
     <epc:print expr="hidden_bits"/>
     <epc:print expr="preamble"/>
     <epc:print expr="controls"/>
-    <div class="ep_search_fields">
+    <div class="container-fluid p-3 border rounded bg-light">
       <epc:print expr="search_fields"/>
       <epc:print expr="anyall_field"/>
       <epc:print expr="order_field"/>
@@ -1080,6 +1080,12 @@
     </div>
     <epc:print expr="controls"/>
   </epv:form>
+</epp:phrase>
+
+<epp:phrase id="view:EPrints/Plugin/Screen/AbstractSearch:render_controls">
+	<div class="ep_search_buttons">
+		<epc:print expr="action_buttons"/>
+	</div>
 </epp:phrase>
 
 <epp:phrase id="view:EPrints/Plugin/Screen/AbstractSearch:render_search_fields">
