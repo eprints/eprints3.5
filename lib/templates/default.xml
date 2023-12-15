@@ -13,12 +13,13 @@
     <epc:pin ref="pagetop"/>
     <div id="wrapper">
       <header class="">
-        <nav class="navbar navbar-expand-lg p-0" style="background: #eeeeee;">
+        <nav class="navbar navbar-expand-lg p-0 d-none d-sm-block" style="background: #eeeeee;">
           <div class="container-fluid ">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav_keyTools" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
               <span class="navbar-toggler-icon"/>
             </button>
-            <div class="collapse navbar-collapse ps-3 text-nowrap" id="navbarNav_keyTools">
+	    <div class="collapse navbar-collapse ps-3 text-nowrap" id="navbarNav_keyTools">
+		    <hr class="d-none d-md-block my-1"/>
               <epc:pin ref="login_status"/>
             </div>
           </div>
@@ -32,7 +33,10 @@
               <span class="navbar-toggler-icon"/>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav_mainNav">
-              <ul role="menu" class="navbar-nav ms-auto">
+		    <ul role="menu" class="navbar-nav ms-auto">
+	  <hr class="d-block d-sm-none"/>
+		<div class="d-block d-sm-none"><epc:pin ref="login_status"/></div>
+			    <hr class="d-block d-sm-none"/>
                 <li class="nav-item me-4">
                   <a class="nav-link text-dark" href="{$config{rel_path}}/" title="{phrase('template/navigation:home:title')}" role="menuitem">
                     <p class="h6" style="font-weight: 900;">
@@ -47,7 +51,7 @@
                     </p>
                   </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none d-sm-block">
                   <a class="nav-link text-decoration-none text-dark d-flex" href="{$config{rel_path}}/view/" title="{phrase('template/navigation:browse:title')}" role="menuitem" menu="ep_tm_menu_browse" aria-owns="ep_tm_menu_browse">
                     <p class="h6" style="font-weight: 900;">
                       <epc:phrase ref="template/navigation:browse"/>
@@ -60,9 +64,16 @@
                     <a href="{$config{rel_path}}/view/subjects/" role="menuitem" class="list-group-item list-group-item-action p-3">
                       <epc:phrase ref="bin/generate_views:indextitleprefix"/>
                       <epc:phrase ref="viewname_eprint_subjects"/>
-                    </a>
+	      </a>
                   </ul>
-                </li>
+	  </li>
+                <li class="nav-item d-block d-sm-none">
+                  <a class="nav-link text-decoration-none text-dark d-flex" href="{$config{rel_path}}/view/" title="{phrase('template/navigation:browse:title')}" role="menuitem" menu="ep_tm_menu_browse" aria-owns="ep_tm_menu_browse">
+                    <p class="h6" style="font-weight: 900;">
+                      <epc:phrase ref="template/navigation:browse"/>
+                    </p>
+                  </a>
+          </li>
               </ul>
             </div>
           </div>
