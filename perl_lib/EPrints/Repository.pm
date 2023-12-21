@@ -3750,11 +3750,16 @@ sub _render_buttons_aux
 {
 	my( $self, $btype, %buttons ) = @_;
 
+	my %item = (
+		buttons => [],
+	);
+
 	#my $frag = $self->make_doc_fragment();
 	my $class;
 	if( defined $buttons{_class} )
 	{
 		$class = $buttons{_class};
+		$item{class} = $buttons{_class};
 	}
 	my $div = $self->make_element( "div", class=>$class );
 
@@ -3771,26 +3776,28 @@ sub _render_buttons_aux
 		# not buttons.
 		next if( $button_id eq '_class' );
 		next if( $button_id eq '_order' );
-		$div->appendChild(
-			$self->render_button( 
+
+		push @{ $item{buttons} }, { button => $self->render_button( 
 				name => "_".$btype."_".$button_id, 
 				class => "ep_form_".$btype."_button",
-				value => $buttons{$button_id} ) );
-
-		# Some space between buttons.
-		$div->appendChild( $self->make_text( " " ) );
+				value => $buttons{$button_id} )};
 	}
 
-	return( $div );
+	return $self->template_phrase( "view:EPrints/Repository:render_buttons_aux", { item => \%item } );
 }
 
 sub render_button
 {
 	my( $self, %opts ) = @_;
 
-	if( !defined $opts{class} )
+	my %item = {
+		opts => [],
+	};
+
+	if( defined $opts{class} )
 	{
-		$opts{class} = "ep_form_action_button";
+		$item{class} = $opts{class};
+		delete $opts{class};
 	}
 	if( !defined $opts{role} )
         {
@@ -3798,7 +3805,12 @@ sub render_button
         }
 	$opts{type} = "submit";
 
-	return $self->make_element( "input", %opts );
+	for my $opt_val ( keys %opts )
+	{
+		push @{ $item{opts} }, { name => $opt_val, value => $opts{$opt_val} };
+	}
+
+	return $self->template_phrase( "view:EPrints/Repository:render_button", { item => \%item } );
 }
 
 ######################################################################

@@ -1,4 +1,11 @@
 .bg-primary, .text-bg-primary, .btn-primary { background-color: #1b4b73 !important; }
 .bg-success, .text-bg-success { background-color: #2e7622 !important; }
-
+.btn-outline-primary {
+    color: #1d4e76;
+    border-color: #1d4e76;
+}
+.btn-outline-primary:hover { 
+    background-color: #1d4e76;
+    border-color: #1d4e76;
+}
 .navbar-toggler:focus { box-shadow: none; }
