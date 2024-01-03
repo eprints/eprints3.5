@@ -909,6 +909,7 @@
       </epc:foreach>
     </dl>
   </epp:phrase>
+
   <epp:phrase id="view:MetaField:render_search_input">
     <epc:if test="match != 'EX'">
       <epv:render_option_list name="{form_prefix}_merge" aria-labelledby="{text_options{labelled_by}}" values="text_options{values}" labels="text_options{labels}" default="{text_options{default}"/>
@@ -918,6 +919,11 @@
       <epv:render_hidden_field name="{form_prefix}_match" value="{match}"/>
     </epc:if>
   </epp:phrase>
+
+  <epp:phrase id="view:MetaField:Date:render_search_input">
+    <epv:render_input_field type="{type}" name="{name}" value="{value}" maxlength="{maxlength}" size="{size}" class="{class}" aria-labelledby="{aria-labelledby}"/> 
+  </epp:phrase> 
+
   <epp:phrase id="view:EPrints/Plugin/Screen/AbstractSearch:render_search_form">
     <epv:form method="get" action="{current_url()}">
       <epc:print expr="hidden_bits"/>
