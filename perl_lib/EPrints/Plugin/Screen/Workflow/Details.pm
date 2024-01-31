@@ -139,6 +139,11 @@ sub render
 	}
 
 	my @fields = $dataobj->dataset->fields;
+	my $field_orders = $workflow->{stages_field_orders};
+	my $rowshash = {};
+	my $unspechash = {};
+
+	# Organise fields into stages
 	foreach my $field ( @fields )
 	{
 		next unless( $field->get_property( "show_in_html" ) );
@@ -148,33 +153,69 @@ sub render
 		my $stage = $self->_find_stage( $name );
 		$stage = "" if !defined $stage;
 
-		my $rows = $stages{$stage}->{rows};
-		my $unspec = $stages{$stage}->{unspec};
+		$rowshash->{$stage} ||= {};
+		$unspechash->{$stage} ||= {};
 		$stages{$stage}->{count}++;
 
 		my $r_name = $self->_render_name_maybe_with_link( $field );
 
 		if( $dataobj->is_set( $name ) )
 		{
-			my $render_row = $session->render_row(
-				$r_name,
-				$dataobj->render_value( $field->get_name(), 1 ) );
-
-			push @$rows, {
-				name => $name,
-				render_row => $render_row,
-			};
+			if ( $stage )
+			{
+				$rowshash->{$stage}->{$field_orders->{$stage}->{$name}} = $name
+			}
+			else
+			{
+				$rowshash->{$stage}->{scalar keys %{$rowshash->{$stage}}} = $name;
+			}
 		}
 		else
 		{
-			push @$unspec, {
-				name => $name,
-				render_name => $r_name,
-			};
+			if ( $stage )
+			{
+				$unspechash->{$stage}->{$field_orders->{$stage}->{$name}} = $name;
+			}
+			else
+			{	
+				$unspechash->{$stage}->{scalar keys %{$unspechash->{$stage}}} = $name;
+			}
 		}
 	}
 
-	my $sections = [];
+    # Organise fields in each stage
+    foreach my $stage ( keys %stages )
+    {
+        my $rows = $stages{$stage}->{rows};
+        my $unspec = $stages{$stage}->{unspec};
+        foreach my $pos ( sort { $a <=> $b } keys %{$rowshash->{$stage}} )
+        {
+            my $fieldname = $rowshash->{$stage}->{$pos};
+            my $field = $dataobj->get_dataset->get_field( $fieldname );
+            my $r_name = $self->_render_name_maybe_with_link( $field );
+            push @$rows, $session->render_row(
+                $r_name,
+                $dataobj->render_value( $fieldname, 1 )
+            );
+        }
+        foreach my $pos ( sort { $a <=> $b } keys %{$unspechash->{$stage}} )
+        {
+            my $fieldname = $unspechash->{$stage}->{$pos};
+            my $field = $dataobj->get_dataset->get_field( $fieldname );
+            my $r_name = $self->_render_name_maybe_with_link( $field );
+            if( $unspec->hasChildNodes )
+            {
+                $unspec->appendChild( $session->make_text( ", " ) );
+            }
+            $unspec->appendChild( $r_name );
+        }
+    }
+
+	my $table = $session->make_element( "table",
+			border => "0",
+			cellpadding => "3",
+			class => "ep_view_details_table" );
+	$page->appendChild( $table );
 
 	foreach my $stage_id ($self->workflow->get_stage_ids, "")
 	{
