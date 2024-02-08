@@ -24,11 +24,10 @@
 
 .ep_preview img {
 	display: block;
-
 }
 
 .ep_preview_container .ep_preview > div {
-	display: none;
+	visibility: hidden;
 	position: absolute;
 	top: 0;
 	left: calc(100% + 12px);
@@ -46,11 +45,11 @@
 }
 
 .ep_preview_container:hover .ep_preview > div {
-	display: block;
+	visibility: visible;
 }
 
 .ep_preview_container .ep_preview > div:hover {
-	display: block;
+	visibility: visible;
 }
 
 .ep_preview_title {
