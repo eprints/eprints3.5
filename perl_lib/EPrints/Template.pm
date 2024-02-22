@@ -250,7 +250,7 @@ sub template_phrase
 		"epv:tabs" => sub {
 
 			my( $node, $process_child_nodes_func, %params ) = @_;
-	
+
 			$params{current_tabs} = {
 				index => 0,
 				labels => [],
@@ -329,11 +329,11 @@ sub template_phrase
 
 			if( $has_label == 0 )
 			{
-				EPrints::abort( "Tab is missing a label." );	
+				EPrints::abort( "Tab is missing a label." );
 			}
 
 			$params{current_tabs}->{contents}->[$tab_index] = &{$process_child_nodes_func}( $node, %params );
- 
+
  			$params{current_tabs}->{index}++;
 
 			return undef;
