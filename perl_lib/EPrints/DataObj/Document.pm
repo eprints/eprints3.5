@@ -1951,70 +1951,28 @@ sub render_icon_link
 		$opts{preview} = 0;
 	}
 
-	my %aopts;
-	$aopts{class} = "ep_document_link";
-	$aopts{target} = "_blank" if( $opts{new_window} );
-	$aopts{href} = $self->get_url;
-
-	my $preview_id = "doc_preview_".$self->get_id;
 	my $preview_url;
+
 	if( $opts{preview} )
 	{
 		$preview_url = $self->thumbnail_url( "preview" );
 		if( !defined $preview_url ) { $opts{preview} = 0; }
 	}
-	if( $opts{preview} )
-	{
-		$opts{preview_side} = 'right' unless defined $opts{preview_side};
-		$aopts{onmouseover} = "EPJS_ShowPreview( event, '$preview_id', '$opts{preview_side}' );";
-		$aopts{onmouseout} = "EPJS_HidePreview( event, '$preview_id', '$opts{preview_side}' );";
-		$aopts{onfocus} = "EPJS_ShowPreview( event, '$preview_id', '$opts{preview_side}' );";
-		$aopts{onblur} = "EPJS_HidePreview( event, '$preview_id', '$opts{preview_side}' );";
-	}
-	my $f = $self->{session}->make_doc_fragment;
+
 	my $img_alt = $self->value('main');
 	$img_alt = $self->value('formatdesc') if EPrints::Utils::is_set( $self->value('formatdesc') );
-	my $img = $self->{session}->make_element(
-		"img",
-		class=>"ep_doc_icon",
-		alt=>"[thumbnail of $img_alt]",
-		src=>$self->icon_url( public=>$opts{public} ),
-		border=>0 );
-	if ( $opts{with_link} )
-	{
-		my $a = $self->{session}->make_element( "a", %aopts );
-		$a->appendChild( $img );
-		$f->appendChild( $a );
-	}
-	else
-	{
-		$f->appendChild( $img );
-	}
-	if( $opts{preview} )
-	{
-		my $preview = $self->{session}->make_element( "div",
-				id => $preview_id,
-				class => "ep_preview", );
-		my $pdiv = $self->{session}->make_element( "div" );
-		$preview->appendChild( $pdiv );
-		my $cdiv = $self->{session}->make_element( "div" );
-		my $span = $self->{session}->make_element( "span" );
-		$cdiv->appendChild( $span );
-		$pdiv->appendChild( $cdiv );
-		$span->appendChild( $self->{session}->make_element( 
-			"img", 
-			class=>"ep_preview_image",
-			id=>$preview_id . "_img",
-			alt=>"",
-			src=>$preview_url,
-			border=>0 ));
-		my $tdiv = $self->{session}->make_element( "div", class=>"ep_preview_title" );
-		$tdiv->appendChild( $self->{session}->html_phrase( "lib/document:preview"));
-		$span->appendChild( $tdiv );
-		$f->appendChild( $preview );
-	}
 
-	return $f;
+	return $self->{session}->template_phrase( "view:DataObj/Document:render_icon_link", { item => {
+		id => $self->get_id,
+		preview => !!$opts{preview},
+		with_link => $opts{with_link},
+		preview_url => $preview_url,
+		preview_left => $opts{preview_side} ne "right",
+		url => $self->get_url,
+		icon_url => $self->icon_url( public=>$opts{public} ),
+		img_alt => $img_alt,
+		new_window => $opts{new_window},
+	} } );
 }
 
 

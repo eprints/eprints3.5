@@ -1,0 +1,4 @@
+#$c->{recaptcha3}->{private_key} = "CHANGE_ME";
+#$c->{recaptcha3}->{public_key} = "CHANGE_ME";
+#$c->{recaptcha3}->{min_score} = 0.5;
+#$c->{recaptcha3}->{timeout} = 5;

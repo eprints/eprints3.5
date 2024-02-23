@@ -93,30 +93,15 @@ sub new
 
 	$self->{data} = $SYSTEM_PHRASES{$langid} ||= { docs => {} };  ## system level phrases
 
+	my @lib_order = EPrints::Init::get_lib_paths( $repository->get_load_order, 'lang/' . $self->{id} . '/phrases' );
 
-    #When loading from the repository level phrase, phrase ids loaded later overwrites early ones.
-	$self->_read_phrases_dir(
-		$self->{data},
-		$repository->get_conf( "lib_path" ).
-			"/lang/".$self->{id}."/phrases" );
-
-    my $flavour = $repository->get_conf( "flavour" );
-    my @lib_order = @{  $repository->get_conf("flavours")->{$flavour}  };
-    foreach (@lib_order)
-    {
-        my $dir = $repository->config( "base_path" )."/$_/lang/".$self->{id}."/phrases";
-        if(-e $dir)
-        {
-            $self->_read_phrases_dir(
-                $self->{repository_data}, ##load into archive config
-                $dir);     
-        }
-    }
-
-	$self->_read_phrases_dir(
-		$self->{repository_data},
-		$repository->get_conf( "config_path" ).
-			"/lang/".$self->{id}."/phrases" );
+	foreach ( @lib_order )
+	{
+		if( -e $_ )
+		{
+			$self->_read_phrases_dir( $self->{repository_data}, $_ );
+		}
+	}
 
 	return( $self );
 }

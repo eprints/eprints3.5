@@ -336,6 +336,7 @@ sub render_set_input
 				$row->appendChild( $session->render_noenter_input_field(
 	                                type => $type,
         	                        name => $basename,
+					title => $labels->{$opt},
                 	                id => $basename."_".$opt,
                         	        value => $opt,
                                 	class => join(" ", @classes),

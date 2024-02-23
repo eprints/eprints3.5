@@ -40,6 +40,10 @@ Be more verbose (i.e. show functions that do have POD).
 
 =cut
 
+BEGIN {
+        $ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
+}
+
 use strict;
 use warnings;
 

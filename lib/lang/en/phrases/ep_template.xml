@@ -9,7 +9,7 @@
 <!-- Toolbar (e.g. key tools) -->
 
 <epp:phrase id="view:EPrints/ScreenProcessor:render_item_list">
-  <ul class="{if (class, class, 'ep_tm_key_tools')}" id="{if (id, id, 'ep_tm_menu_tools')" role="toolbar">
+  <ul class="{if (class, class, 'ep_tm_key_tools')}" id="{if (id, id, 'ep_tm_menu_tools')">
     <epc:foreach expr="entries" iterator="entry">
       <li class="ep_tm_key_tools_item">
         <epc:if test="$entry{class}">
@@ -308,7 +308,7 @@
 
                   </epc:when>
                   <epc:otherwise>
-                    <img src="{$config{rel_path}}/style/images/noicon.png"/>
+                    <img src="{$config{rel_path}}/style/images/noicon.png" alt="no icon"/>
                   </epc:otherwise>
                 </epc:choose>
               </div>
@@ -351,7 +351,7 @@
 
                   </epc:when>
                   <epc:otherwise>
-                    <img src="{$config{rel_path}}/style/images/noicon.png"/>
+                    <img src="{$config{rel_path}}/style/images/noicon.png" alt="no icon"/>
                   </epc:otherwise>
                 </epc:choose>
               </div>
@@ -417,7 +417,7 @@
 <epp:phrase id="view:EPrints/XHTML:action_list">
   <ul class="ep_action_list" role="toolbar">
     <epc:foreach expr="actions" iterator="action">
-      <epv:create_data_element tag="li" expr="$action"/>
+      <epv:create_data_element tag="li" expr="$action" role="none"/>
     </epc:foreach>
   </ul>
 </epp:phrase>
@@ -435,7 +435,11 @@
   <div class="ep_columns_add">
     <epv:form method="post" action="{current_url()}">
       <epc:print expr="hidden_bits"/>
-      <epc:print expr="add_column_option_list"/>
+      <label>
+        <epc:phrase ref="Plugin/Screen/Listing:add_label"/>
+        <epc:whitespace empty="preserve"> </epc:whitespace>
+        <epc:print expr="add_column_option_list"/>
+      </label>
       <epv:button class="ep_form_action_button" value="{string_phrase(concat('lib/paginate:add_column'))}" name="_action_add_col"/>
     </epv:form>
   </div>
@@ -596,13 +600,20 @@
 <epp:phrase id="view:EPrints/XHTML:tabs">
   <ul id="{basename}_tabs" class="ep_tab_bar" role="tablist">
     <epc:foreach expr="tabs" iterator="tab">
-      <li id="{$tab{tab_id}}" style="width: {$tab{width}}%" role="tab">
-        <epc:if test="$tab{current}">
-          <epc:attribute name="class">ep_tab_selected</epc:attribute>
-        </epc:if>
-        <epv:create_data_element class="ep_tab_link" tag="a" href="{$tab{href}}" onclick="{$tab{onclick}}">
-          <epc:print expr="$tab{label}"/>
-        </epv:create_data_element>
+	<li id="{$tab{tab_id}}" style="width: {$tab{width}}%" role="none">
+        <epc:choose>
+          <epc:when test="$tab{current}">
+            <epc:attribute name="class">ep_tab_selected</epc:attribute>
+	    <epv:create_data_element class="ep_tab_link" tag="a" href="{$tab{href}}" onclick="{$tab{onclick}}" role="tab" aria-controls="{$tab{tab_id}}" aria-selected="true" tabindex="-1">
+              <epc:print expr="$tab{label}"/>
+	    </epv:create_data_element>
+          </epc:when>
+	  <epc:otherwise>
+            <epv:create_data_element class="ep_tab_link" tag="a" href="{$tab{href}}" onclick="{$tab{onclick}}" role="tab" aria-controls="{$tab{tab_id}}" aria-selected="false" tabindex="-1">
+              <epc:print expr="$tab{label}"/>
+            </epv:create_data_element>
+	  </epc:otherwise>
+	</epc:choose>
       </li>
     </epc:foreach>
   </ul>
@@ -970,7 +981,7 @@
   <dl class="ep_action_list" id="{id}" role="menu">
     <epc:foreach expr="list" iterator="listitem">
       <epv:create_data_element tag="dt" expr="$listitem{action}" role="menuitem" aria-describedby="ep_{id}_desc_{$index}"/>
-      <epv:create_data_element tag="dd" expr="$listitem{definition}" id="ep_{id}_desc_{$index}" role="description"/>
+      <epv:create_data_element tag="dd" expr="$listitem{definition}" id="ep_{id}_desc_{$index}" role="none"/>
     </epc:foreach>
   </dl>
 </epp:phrase>
@@ -1021,6 +1032,37 @@
       </epv:help>
     </epv:render_row_with_help>
   </epc:foreach>
+</epp:phrase>
+
+<epp:phrase id="Plugin/Screen/Listing:add_label">Add Column</epp:phrase>
+
+<epp:phrase id="view:DataObj/Document:render_icon_link">
+  <div class="ep_preview_container">
+    <epc:choose>
+      <epc:when test="with_link">
+        <a class="ep_document_link" href="{url}">
+          <epc:if test="new_window">
+            <epc:attribute name="target">_blank</epc:attribute>
+          </epc:if>
+          <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" src="{icon_url}" border="0"/>
+        </a>
+      </epc:when>
+      <epc:otherwise>
+        <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" src="{icon_url}" border="0"/>
+      </epc:otherwise>
+    </epc:choose>
+
+    <epc:if test="preview">
+      <div class="ep_preview {if(preview_left, 'ep_preview_left')}">
+        <div>
+          <img class="ep_preview_image" alt="" src="{preview_url}" border="0"/>
+          <div class="ep_preview_title">
+            <epc:phrase ref="lib/document:preview"/>
+          </div>
+        </div>
+      </div>
+    </epc:if>
+  </div>
 </epp:phrase>
 
 </epp:phrases>

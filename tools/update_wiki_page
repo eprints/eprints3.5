@@ -40,6 +40,10 @@ Password to post to the wiki with.
 
 =cut
 
+BEGIN {
+        $ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
+}
+
 use Getopt::Long;
 use Pod::Usage;
 

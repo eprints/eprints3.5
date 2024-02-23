@@ -40,8 +40,8 @@ use File::Find qw();
 # lookup-table of system plugin types
 my %SYSTEM_PLUGINS;
 
-# list of plugins that should be disabled by default
-my @PLUGINS_TO_DISABLE;
+# lookup-table of archive plugin types
+my %ARCHIVE_PLUGINS;
 
 =item $plugins = EPrints::PluginFactory->new( $repository )
 
@@ -66,7 +66,7 @@ sub new
 
 	$self->{data} = \%SYSTEM_PLUGINS;
 
-	$self->{repository_data} = {};
+	$self->{repository_data} = \%ARCHIVE_PLUGINS;
 
 	$self->{xslt} = {};
 
@@ -78,7 +78,8 @@ sub new
 		$EPrints::XML::CLASS eq "EPrints::XML::LibXML" &&
 		EPrints::Utils::require_if_exists( "XML::LibXSLT" );
 
-   
+  	my @plugins_to_disable = (); 
+
 	# system plugins (don't reload)
 	if( !scalar keys %SYSTEM_PLUGINS )
 	{
@@ -89,55 +90,27 @@ sub new
 			$self->_load_xslt_dir( \%SYSTEM_PLUGINS, $repository, $dir );
 		}
 
+		my @lib_order = EPrints::Init::get_lib_paths( $repository->get_load_order, 'plugins' );
 
-		# extension plugins, bazaar
-		$dir = $repository->config( "base_path" )."/lib/plugins";
-		push @PLUGINS_TO_DISABLE, map { $_->get_id } $self->_load_dir( \%SYSTEM_PLUGINS, $repository, $dir );
-		if( $use_xslt )
+		foreach $dir ( @lib_order )
 		{
-			push @PLUGINS_TO_DISABLE,
-				map { $_->get_id }
-				$self->_load_xslt_dir( \%SYSTEM_PLUGINS, $repository, $dir );
-		} 
-
-	}
-
-
-
-	# flavour lib plugins
-	my $flavour = $repository->get_conf( "flavour" );
-	my @lib_order = @{  $repository->get_conf('flavours')->{$flavour}  };
-	foreach (@lib_order)
-	{
-		my $dir = $repository->config( "base_path" )."/$_/plugins";
-		$self->_load_dir(  $self->{repository_data}, $repository, $dir );
-		if( $use_xslt )
-		{
-			$self->_load_xslt_dir(  $self->{repository_data}, $repository, $dir );
+			my $plugins_set = \%SYSTEM_PLUGINS;
+			$plugins_set = \%ARCHIVE_PLUGINS if $dir =~ m!/archives/!;
+			my @dir_plugins = $self->_load_dir( $plugins_set, $repository, $dir );
+			push @plugins_to_disable, map { $_->get_id } @dir_plugins if $dir =~ m!/lib/!;
+			if( $use_xslt )
+			{
+				my @dir_xslt_plugins = $self->_load_xslt_dir( $plugins_set, $repository, $dir );
+				push @plugins_to_disable, map { $_->get_id } @dir_xslt_plugins if $dir =~ m!/lib/!;
+			}
 		}
 	}
 
-
-
- 
-	# repository-specific plugins
-	$dir = $repository->get_conf( "config_path" )."/plugins";
-	$self->_load_dir( $self->{repository_data}, $repository, $dir );
-	if( $use_xslt )
-	{
-		$self->_load_xslt_dir( $self->{repository_data}, $repository, $dir );
-	}
-
-
-
-
-
-    
-	if( scalar @PLUGINS_TO_DISABLE )
+	if( scalar @plugins_to_disable )
 	{
 		# default to disabled
 		my $conf = $repository->config( "plugins" );
-		foreach my $pluginid (@PLUGINS_TO_DISABLE)
+		foreach my $pluginid ( @plugins_to_disable )
 		{
 			my $plugin = $self->get_plugin( $pluginid );
 			if( defined $plugin && !defined $plugin->param( "disable" ) )
@@ -147,7 +120,7 @@ sub new
 		}
 	}
 
-	foreach my $plugin ($self->get_plugins)
+	foreach my $plugin ( $self->get_plugins )
 	{
 		# build a cheat-sheet of config-disabled plugins
 		my $pluginid = $plugin->get_id();
