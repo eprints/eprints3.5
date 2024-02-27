@@ -1004,14 +1004,15 @@ sub execute
 	{
 		$self->{session}->get_repository->log( "SQL ERROR (execute): $sql" );
 		$self->{session}->get_repository->log( "SQL ERROR (execute): ".$self->{dbh}->errstr );			
-		my $r = EPrints->request;
-	        $r->status( 500 );
-        	my $htmlerrmsg = $self->{dbh}->errstr;
-	        $htmlerrmsg=~s/&/&amp;/g;
-        	$htmlerrmsg=~s/>/&gt;/g;
-	        $htmlerrmsg=~s/</&lt;/g;
-        	$htmlerrmsg=~s/\n/<br \/>/g;
-	        $htmlerrmsg = <<END;
+		if ( my $r = EPrints->request )
+		{
+			$r->status( 500 );
+			my $htmlerrmsg = $self->{dbh}->errstr;
+			$htmlerrmsg=~s/&/&amp;/g;
+			$htmlerrmsg=~s/>/&gt;/g;
+			$htmlerrmsg=~s/</&lt;/g;
+			$htmlerrmsg=~s/\n/<br \/>/g;
+			$htmlerrmsg = <<END;
 <html>
 <head>
 <title>EPrints System Error</title>
@@ -1023,8 +1024,9 @@ sub execute
 </body>
 </html>
 END
-	        $r->custom_response( 500, $htmlerrmsg );
-		die;
+			$r->custom_response( 500, $htmlerrmsg );
+			die;
+		}
 	}
 
 	return $result;
