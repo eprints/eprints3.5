@@ -1297,38 +1297,38 @@ sub render_input_field_actual
 	{
 		my $x = 0;
 
-		my $row_info = {
-			row_index => $y,
-			cells => [],
-		};
-
-		foreach my $item ( @{$row} )
+		if ( ref( $row ) eq "ARRAY" )
 		{
-			my $cell_info = {
-				column_index => $x,
-				attrs => [],
-			};
+			my $tr = $session->make_element( "div" );
 
-			foreach my $prop ( keys %{$item} )
+			foreach my $item ( @{$row} )
+			{
+				my %opts = ( id=>$basename."_cell_".$x++."_".$y );
+				foreach my $prop ( keys %{$item} )
+				{
+					next if( $prop eq "el" );
+					$opts{$prop} = $item->{$prop};
+				}
+				my $td = $session->make_element( "div", %opts );
+				if( defined $item->{el} )
+				{
+					$td->appendChild( $item->{el} );
+				}
+				$tr->appendChild( $td );
+			}
+			$table->appendChild( $tr );
+		}
+		else {
+			my %opts = ( id=>$basename."_buttons" );
+			foreach my $prop ( keys %{$row} )
 			{
 				next if( $prop eq "el" );
-
-				push @{ $cell_info->{attrs} }, {
-					name => $prop,
-					value => $item->{$prop},
-				};
+				$opts{$prop} = $row->{$prop};
 			}
-
-			if( defined $item->{el} )
-			{
-				$cell_info->{item} = $item->{el};
-			}
-
-			push @{ $row_info->{cells} }, $cell_info;
-			$x++;
+			my $buttons = $session->make_element( "div", %opts );
+			$buttons->appendChild( $row->{el} );
+			$frag->appendChild( $buttons );
 		}
-
-		push @$rows, $row_info;
 		$y++;
 	}
  
@@ -1489,10 +1489,7 @@ sub get_input_elements
 		) );
 	}
 
-	my @row = ();
-	push @row, {} if( $self->{input_ordered} );
-	push @row, {el=>$more,colspan=>3,class=>"ep_form_input_grid_wide"};
-	push @{$rows}, \@row;
+	push @{$rows}, {el=>$more, class=>"ep_form_input_grid_wide"};
 
 	return $rows;
 }
