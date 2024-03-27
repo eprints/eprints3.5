@@ -814,6 +814,10 @@ sub tabs
 		{
 			$href = $links->{$label};
 		}
+		unless ( $href )
+		{
+			$href = "#";
+		}
 
 		my $tab = {};
 
