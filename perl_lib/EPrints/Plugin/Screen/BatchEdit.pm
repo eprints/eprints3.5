@@ -269,7 +269,7 @@ sub ajax_add_change
 					type => "image",
 					alt => "Remove",
 					src => $session->get_url( path => "static", "style/images/action_remove.png" ),
-					onclick => "\$('$prefix').remove(); return false;",
+					onclick => "document.getElementById('$prefix').remove(); return false;",
 				) );
 
 				# hint so we can work out how to retrieve the values
@@ -528,7 +528,7 @@ sub render
 	) );
 
 	$page->appendChild( $session->make_javascript( <<EOJ ) );
-Event.observe(window, 'load', function() {
+window.addEventListener('load', function() {
 	new Screen_BatchEdit ('$prefix');
 });
 EOJ

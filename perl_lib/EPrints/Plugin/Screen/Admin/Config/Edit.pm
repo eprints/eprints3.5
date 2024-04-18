@@ -1048,7 +1048,7 @@ sub config_edit
 		my $mode = $CODEMIRROR_MODES{$1};
 
 		$div->appendChild( $self->{session}->make_javascript(<<"EOJ") );
-Event.observe (window, "load", function() {
+window.addEventListener("load", function() {
 	var editor = CodeMirror.fromTextArea(\$('code'), {
 			mode: '$mode->{mode}',
 			theme: 'neat',
