@@ -1,3 +1,14 @@
+######################################################################
+#
+# EPrints::SystemSettings
+#
+######################################################################
+#
+#
+######################################################################
+
+=pod
+
 =head1 NAME
 
 EPrints::SystemSettings
@@ -16,63 +27,84 @@ EPrints::SystemSettings
 package EPrints::SystemSettings;
 
 $EPrints::SystemSettings::conf = {
-                                   'base_path' => '@PREFIX@',
-                                   'show_ids_in_log' => 0,
-                                   'version_history' => [
-                                                          'eprints-3.2.3',
-                                                          'eprints-3.3.6',
-                                                          'eprints-3.3.9',
-                                                          'eprints-3.3.10',
-                                                          'eprints-3.3.12',
-                                                          'eprints-3.3.13',
-                                                          'eprints-3.3.14',
-                                                          'eprints-3.3.15',
-							  'eprints-3.4.0',
-                                                        ],
-                                   'user' => '@INSTALL_USER@',
-                                   'group' => '@INSTALL_GROUP@',
-                                   'smtp_server' => '@SMTP_SERVER@',
-                                   'file_perms' => '0664',
-                                   'dir_perms' => '02775',
-                                   'invocation' => {},
-                                   'executables' => {
-                                                      'perl' => '@PERL_PATH@'
-                                                    },
-                                   'perl_module_isolation' => 0, #after changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
- 
-                              
-                                };
-
+	'version' => 'EPrints 3.5.0',
+	'version_id' => 'eprints-3.5.0',
+	'base_path' => '@PREFIX@',
+	'show_ids_in_log' => 0,
+	'group' => '@INSTALL_GROUP@',
+	'version_history' => [
+		'eprints-3.2.3',
+		'eprints-3.3.6',
+		'eprints-3.3.9',
+		'eprints-3.3.10',
+		'eprints-3.3.12',
+		'eprints-3.3.13',
+		'eprints-3.3.14',
+		'eprints-3.3.15',
+		'eprints-3.4.0',
+		'eprints-3.4.1',
+		'eprints-3.4.2',
+		'eprints-3.4.3',
+		'eprints-3.4.4',
+		'eprints-3.4.5',
+	],
+	'smtp_server' => '@SMTP_SERVER@',
+	'user' => '@INSTALL_USER@',
+	'file_perms' => '0664',
+	'invocation' => {},
+	'executables' => {
+		'perl' => '@PERL_PATH@'
+	},
+	'dir_perms' => '02775',
+	'flavours' => {
+		'zero' => [
+			## site_lib has been removed from the flavour path and now a special lib that can overwrite core modules.
+			'ingredients/bazaar',
+			'ingredients/prototypejs',
+		]
+	},
+	'perl_module_isolation' => 0, # After changing this setting, you need to bin/generate_apacheconf --system --replace, then restart apache
+	'indexer_daemon' => {
+		'loglevel' => 1,
+		'rollcount' => 5,
+		'maxwait' => 8, # 8 seconds
+		'interval' => 30, # 30 seconds
+		'respawn' => 86400, # 1 day
+		'timeout' => 600, # 10 minutes
+		'interrupt' => 0, # break out of any loops
+	},
+};
 
 1;
 
 
 =head1 COPYRIGHT
 
-=for COPYRIGHT BEGIN
+=begin COPYRIGHT
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright 2024 University of Southampton.
+EPrints 3.5 is supplied by EPrints Services.
 
-http://www.eprints.org/eprints-3.4/
+https://www.eprints.org/eprints-3.5/
 
-=for COPYRIGHT END
+=end COPYRIGHT
 
-=for LICENSE BEGIN
+=begin LICENSE
 
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
+This file is part of EPrints 3.5 L<https://www.eprints.org/>.
 
-EPrints 3.4 and this file are released under the terms of the
+EPrints 3.5 and this file are released under the terms of the
 GNU Lesser General Public License version 3 as published by
 the Free Software Foundation unless otherwise stated.
 
-EPrints 3.4 is distributed in the hope that it will be useful,
+EPrints 3.5 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
+License along with EPrints 3.5.
+If not, see L<https://www.gnu.org/licenses/>.
 
-=for LICENSE END
+=end LICENSE
+
