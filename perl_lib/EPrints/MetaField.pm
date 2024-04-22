@@ -1302,30 +1302,34 @@ sub render_input_field_actual
 			cells => [],
 		};
 
-		foreach my $item ( @{$row} )
+		if ( ref( $row ) eq "ARRAY" )
 		{
-			my $cell_info = {
-				column_index => $x,
-				attrs => [],
-			};
 
-			foreach my $prop ( keys %{$item} )
+			foreach my $item ( @{$row} )
 			{
-				next if( $prop eq "el" );
-
-				push @{ $cell_info->{attrs} }, {
-					name => $prop,
-					value => $item->{$prop},
+				my $cell_info = {
+					column_index => $x,
+					attrs => [],
 				};
-			}
 
-			if( defined $item->{el} )
-			{
-				$cell_info->{item} = $item->{el};
-			}
+				foreach my $prop ( keys %{$item} )
+				{
+					next if( $prop eq "el" );
 
-			push @{ $row_info->{cells} }, $cell_info;
-			$x++;
+					push @{ $cell_info->{attrs} }, {
+						name => $prop,
+						value => $item->{$prop},
+					};
+				}
+
+				if( defined $item->{el} )
+				{
+					$cell_info->{item} = $item->{el};
+				}
+
+				push @{ $row_info->{cells} }, $cell_info;
+				$x++;
+			}
 		}
 
 		push @$rows, $row_info;
@@ -1593,7 +1597,7 @@ sub get_basic_input_elements
 	# messy readonly flag values
  	# $self->{readonly} = yes if this is part of a readonly compound field
  	# $self->{readonly} = 1 if this is a standalone field
- 	my $readonly = ( $self->{readonly} == 1 || $self->{readonly} eq "yes" ) ? 1 : undef;
+ 	my $readonly = defined $self->{readonly} && ( $self->{readonly} == 1 || $self->{readonly} eq "yes" ) ? 1 : undef;
 
 	my $input;
 	if( defined $self->{render_input} )

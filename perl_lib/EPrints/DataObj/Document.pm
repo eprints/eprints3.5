@@ -1967,7 +1967,7 @@ sub render_icon_link
 		preview => !!$opts{preview},
 		with_link => $opts{with_link},
 		preview_url => $preview_url,
-		preview_left => $opts{preview_side} ne "right",
+		preview_left => !defined $opts{preview_side} || $opts{preview_side} ne "right",
 		url => $self->get_url,
 		icon_url => $self->icon_url( public=>$opts{public} ),
 		img_alt => $img_alt,
