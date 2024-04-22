@@ -558,6 +558,8 @@
     </epc:foreach>
 
   </div>
+  
+  <epc:print expr="buttons"/>
 
   <epc:print expr="javascript"/>
 

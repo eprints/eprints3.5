@@ -1291,6 +1291,7 @@ sub render_input_field_actual
 	}
 
 	my $elements = $self->get_input_elements( $session, $value, $staff, $obj, $basename, $one_field_component );
+	my $buttons = $session->make_doc_fragment;
 	my $y = 0;
 
 	foreach my $row ( @{$elements} )
@@ -1330,9 +1331,19 @@ sub render_input_field_actual
 				push @{ $row_info->{cells} }, $cell_info;
 				$x++;
 			}
+			push @$rows, $row_info;
 		}
-
-		push @$rows, $row_info;
+		else
+		{
+            my %opts = ( id=>$basename."_buttons" );
+            foreach my $prop ( keys %{$row} )
+            {
+                next if( $prop eq "el" );
+                $opts{$prop} = $row->{$prop};
+            }
+            $buttons = $session->make_element( "div", %opts );
+            $buttons->appendChild( $row->{el} );
+        }	
 		$y++;
 	}
  
@@ -1369,6 +1380,7 @@ EOJ
 		has_col_titles => !!$col_titles,
 		titles => $titles,
 		rows => $rows,
+		buttons => $buttons,
 		javascript => $javascript,
 	} } );
 }
