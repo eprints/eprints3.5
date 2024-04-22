@@ -1297,38 +1297,38 @@ sub render_input_field_actual
 	{
 		my $x = 0;
 
-		if ( ref( $row ) eq "ARRAY" )
-		{
-			my $tr = $session->make_element( "div" );
+		my $row_info = {
+			row_index => $y,
+			cells => [],
+		};
 
-			foreach my $item ( @{$row} )
-			{
-				my %opts = ( id=>$basename."_cell_".$x++."_".$y );
-				foreach my $prop ( keys %{$item} )
-				{
-					next if( $prop eq "el" );
-					$opts{$prop} = $item->{$prop};
-				}
-				my $td = $session->make_element( "div", %opts );
-				if( defined $item->{el} )
-				{
-					$td->appendChild( $item->{el} );
-				}
-				$tr->appendChild( $td );
-			}
-			$table->appendChild( $tr );
-		}
-		else {
-			my %opts = ( id=>$basename."_buttons" );
-			foreach my $prop ( keys %{$row} )
+		foreach my $item ( @{$row} )
+		{
+			my $cell_info = {
+				column_index => $x,
+				attrs => [],
+			};
+
+			foreach my $prop ( keys %{$item} )
 			{
 				next if( $prop eq "el" );
-				$opts{$prop} = $row->{$prop};
+
+				push @{ $cell_info->{attrs} }, {
+					name => $prop,
+					value => $item->{$prop},
+				};
 			}
-			my $buttons = $session->make_element( "div", %opts );
-			$buttons->appendChild( $row->{el} );
-			$frag->appendChild( $buttons );
+
+			if( defined $item->{el} )
+			{
+				$cell_info->{item} = $item->{el};
+			}
+
+			push @{ $row_info->{cells} }, $cell_info;
+			$x++;
 		}
+
+		push @$rows, $row_info;
 		$y++;
 	}
  
