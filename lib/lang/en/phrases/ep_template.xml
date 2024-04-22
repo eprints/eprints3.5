@@ -1044,11 +1044,11 @@
           <epc:if test="new_window">
             <epc:attribute name="target">_blank</epc:attribute>
           </epc:if>
-          <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" src="{icon_url}" border="0"/>
+          <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" title="{img_alt}" src="{icon_url}" border="0"/>
         </a>
       </epc:when>
       <epc:otherwise>
-        <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" src="{icon_url}" border="0"/>
+        <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" title="{img_alt}" src="{icon_url}" border="0"/>
       </epc:otherwise>
     </epc:choose>
 
