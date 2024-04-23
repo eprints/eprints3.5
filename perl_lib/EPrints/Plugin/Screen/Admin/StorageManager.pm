@@ -151,7 +151,7 @@ sub ajax_stats
 			onclick => "return js_admin_storagemanager_migrate(this);",
 			value => $self->phrase( "migrate" )
 			) );
-		my $select = $session->make_element( "select", name => "target", 'aria-labelledby' => $pluginid . "_migrate" );
+		my $select = $session->make_element( "select", name => "target", 'aria-labelledby' => $pluginid . "_" . $datasetid . "_migrate" );
 		$form->appendChild( $select );
 		my $option = $session->make_element( "option" );
 		$select->appendChild( $option );
