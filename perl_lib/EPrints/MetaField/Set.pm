@@ -221,7 +221,7 @@ sub render_set_input
 	push @classes, join('_', 'eptype', $self->{dataset}->base_id, $self->type);
 	push @classes, join('_', 'eptype', $self->{dataset}->base_id, $self->type, $input_style) if $input_style;
 	
-	my $readonly = ( $self->{readonly} && $self->{readonly} eq "1" || $self->{readonly} eq "yes" ) ? 1 : undef; # sorry
+	my $readonly = $self->{readonly} && ( $self->{readonly} eq "1" || $self->{readonly} eq "yes" ) ? 1 : undef; # sorry
  	push @classes, "ep_readonly" if $readonly;
 
 	if( 
@@ -446,6 +446,11 @@ sub split_search_value
 sub render_search_input
 {
 	my( $self, $session, $searchfield, %opts ) = @_;
+
+	if( defined $self->{render_search_input} )
+	{
+		return $self->call_property( "render_search_input", $self, $session, $searchfield );
+	}
 
 	my $frag = $session->make_doc_fragment;
 	

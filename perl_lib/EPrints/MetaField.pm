@@ -1291,6 +1291,7 @@ sub render_input_field_actual
 	}
 
 	my $elements = $self->get_input_elements( $session, $value, $staff, $obj, $basename, $one_field_component );
+	my $buttons = $session->make_doc_fragment;
 	my $y = 0;
 
 	foreach my $row ( @{$elements} )
@@ -1302,33 +1303,47 @@ sub render_input_field_actual
 			cells => [],
 		};
 
-		foreach my $item ( @{$row} )
+		if ( ref( $row ) eq "ARRAY" )
 		{
-			my $cell_info = {
-				column_index => $x,
-				attrs => [],
-			};
 
-			foreach my $prop ( keys %{$item} )
+			foreach my $item ( @{$row} )
 			{
-				next if( $prop eq "el" );
-
-				push @{ $cell_info->{attrs} }, {
-					name => $prop,
-					value => $item->{$prop},
+				my $cell_info = {
+					column_index => $x,
+					attrs => [],
 				};
-			}
 
-			if( defined $item->{el} )
-			{
-				$cell_info->{item} = $item->{el};
-			}
+				foreach my $prop ( keys %{$item} )
+				{
+					next if( $prop eq "el" );
 
-			push @{ $row_info->{cells} }, $cell_info;
-			$x++;
+					push @{ $cell_info->{attrs} }, {
+						name => $prop,
+						value => $item->{$prop},
+					};
+				}
+
+				if( defined $item->{el} )
+				{
+					$cell_info->{item} = $item->{el};
+				}
+
+				push @{ $row_info->{cells} }, $cell_info;
+				$x++;
+			}
+			push @$rows, $row_info;
 		}
-
-		push @$rows, $row_info;
+		else
+		{
+            my %opts = ( id=>$basename."_buttons" );
+            foreach my $prop ( keys %{$row} )
+            {
+                next if( $prop eq "el" );
+                $opts{$prop} = $row->{$prop};
+            }
+            $buttons = $session->make_element( "div", %opts );
+            $buttons->appendChild( $row->{el} );
+        }	
 		$y++;
 	}
  
@@ -1365,6 +1380,7 @@ EOJ
 		has_col_titles => !!$col_titles,
 		titles => $titles,
 		rows => $rows,
+		buttons => $buttons,
 		javascript => $javascript,
 	} } );
 }
@@ -1489,10 +1505,7 @@ sub get_input_elements
 		) );
 	}
 
-	my @row = ();
-	push @row, {} if( $self->{input_ordered} );
-	push @row, {el=>$more,colspan=>3,class=>"ep_form_input_grid_wide"};
-	push @{$rows}, \@row;
+	push @{$rows}, {el=>$more, class=>"ep_form_input_grid_wide"};
 
 	return $rows;
 }
@@ -1596,7 +1609,7 @@ sub get_basic_input_elements
 	# messy readonly flag values
  	# $self->{readonly} = yes if this is part of a readonly compound field
  	# $self->{readonly} = 1 if this is a standalone field
- 	my $readonly = ( $self->{readonly} == 1 || $self->{readonly} eq "yes" ) ? 1 : undef;
+ 	my $readonly = defined $self->{readonly} && ( $self->{readonly} == 1 || $self->{readonly} eq "yes" ) ? 1 : undef;
 
 	my $input;
 	if( defined $self->{render_input} )
@@ -2293,6 +2306,13 @@ sub render_search_input
 	
 	my %text_options;
 
+	if( defined $self->{render_search_input} )
+	{
+		return $self->call_property( "render_search_input", $self, $session, $searchfield );
+	}
+	        
+	my $frag = $session->make_doc_fragment;
+
 	if( $searchfield->get_match ne "EX" )
 	{
 		my @text_tags = ( "ALL", "ANY" );
@@ -2399,6 +2419,7 @@ sub get_property_defaults
 		export_as_xml 	=> EP_PROPERTY_TRUE,
 		false_first	=> EP_PROPERTY_FALSE,
 		fromform 	=> EP_PROPERTY_UNDEF,
+		fromsearchform  => EP_PROPERTY_UNDEF,
 		get_item	=> EP_PROPERTY_UNDEF,
 		import		=> EP_PROPERTY_TRUE,
 		input_add_boxes => EP_PROPERTY_FROM_CONFIG,
@@ -2407,6 +2428,7 @@ sub get_property_defaults
 		input_lookup_url 	=> EP_PROPERTY_UNDEF,
 		input_lookup_params 	=> EP_PROPERTY_UNDEF,
 		input_ordered 	=> EP_PROPERTY_TRUE,
+		join_phraseid   => EP_PROPERTY_UNDEF,
 		make_single_value_orderkey 	=> EP_PROPERTY_UNDEF,
 		make_value_orderkey 		=> EP_PROPERTY_UNDEF,
 		show_in_fieldlist	=> EP_PROPERTY_TRUE,
@@ -2416,8 +2438,10 @@ sub get_property_defaults
 		name 		=> EP_PROPERTY_REQUIRED,
 		show_in_html	=> EP_PROPERTY_TRUE,
 		render_input 	=> EP_PROPERTY_UNDEF,
+		render_search_input => EP_PROPERTY_UNDEF,
 		render_single_value 	=> EP_PROPERTY_UNDEF,
 		render_quiet	=> EP_PROPERTY_FALSE,
+		render_column_quiet    => EP_PROPERTY_FALSE,
 		render_magicstop	=> EP_PROPERTY_FALSE,
 		render_noreturn	=> EP_PROPERTY_FALSE,
 		render_dont_link	=> EP_PROPERTY_FALSE,

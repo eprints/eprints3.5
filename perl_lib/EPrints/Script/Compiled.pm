@@ -296,7 +296,7 @@ sub run_contains
         my( $self, $state, $string, $token, $length ) = @_;
         my $t = $token->[0];
 
-        return [ ($string->[0] =~ /$t/) ? "TRUE" : "FALSE", "BOOLEAN" ];
+        return [ $string->[0] =~ /$t/, "BOOLEAN" ];
 }
 
 sub run_is_set
@@ -669,6 +669,7 @@ sub run_icon
 		elsif( $optv eq "noNewWindow" ) { $args{new_window}=0; }
 		elsif( $optv eq "previewLeft" ) { $args{preview_side}='left'; }
 		elsif( $optv eq "previewRight" ) { $args{preview_side}='right'; }
+		elsif( $optv eq "LargeIcon" ) { $args{size}='lightbox'; }
 		else { $self->runtime_error( "Unknown option to doc->icon(): $optv" ); }
 	}
 
@@ -988,6 +989,13 @@ sub run_string_phrase
 	my( $self, $state, $phrase ) = @_;
 
 	return [ $state->{session}->phrase( $phrase->[0] ), "STRING" ];
+}
+
+sub run_text
+{
+	my( $self, $state, $phrase ) = @_;
+
+	return [ $state->{session}->make_text( $phrase->[0] ), "XHTML" ];
 }
 
 sub run_documents

@@ -331,7 +331,7 @@ sub render_children
 
 		my $idsuffix = EPrints::Utils::sanitise_element_id( $child->id . "_unlink" );
 		my $form = $td->appendChild( $self->render_form( $idsuffix ) );
-		$form->appendChild( $xhtml->hidden_field( childid => $child->id, $idsuffix ) );
+		$form->appendChild( $xhtml->hidden_field( childid => $child->id, id => "childid_" . $idsuffix ) );
 		$form->appendChild( $xhtml->action_button(
 			unlink => $self->phrase( "action_unlink" )
 		) );
@@ -507,8 +507,14 @@ sub action_remove
 	# already removed?
 	return if !defined $child;
 
-	$child->remove();
-	$self->{processor}->add_message( "message", $self->html_phrase( "removed" ) );
+	if ($child->remove())
+	{
+		$self->{processor}->add_message( "message", $self->html_phrase( "removed" ) );
+	}
+	else
+	{
+		$self->{processor}->add_message( "warning", $self->html_phrase( "has_child" ) );
+	}
 }
 
 sub from
