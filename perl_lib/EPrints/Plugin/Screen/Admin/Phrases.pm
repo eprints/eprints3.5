@@ -602,7 +602,7 @@ sub render_new_phrase
 			type => "submit", 
 			value => $self->phrase( "new_phrase" ),
 			id => "ep_phraseedit_add",
-			onclick => "return ep_phraseedit_addphrase(event,\$F('ep_phraseedit_newid'),'$csrf_token')",
+			onclick => "return ep_phraseedit_addphrase(event,document.getElementById('ep_phraseedit_newid').value,'$csrf_token')",
 		)
 	);
 	$f->appendChild( $add_div );

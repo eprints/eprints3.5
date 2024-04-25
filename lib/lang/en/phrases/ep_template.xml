@@ -789,14 +789,14 @@
 
         <div class="ep_multi_help ep_only_js_table_cell ep_toggle ep_table_cell">
           <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
-            <a onclick="EPJS_blur(event); EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
+            <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
               <img alt='{string_phrase("lib/session:show_help_alt")}'
                 title='{string_phrase("lib/session:show_help_title")}'
                 src='{string_phrase("lib/session:show_help_src")}'/>
             </a>
           </div>
           <div class="ep_sr_hide_help ep_hide" id="{help_prefix}_hide">
-            <a onclick="EPJS_blur(event); EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
+            <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
               <img alt='{string_phrase("lib/session:hide_help_alt")}'
                 title='{string_phrase("lib/session:hide_help_title")}'
                 src='{string_phrase("lib/session:hide_help_src")}'/>

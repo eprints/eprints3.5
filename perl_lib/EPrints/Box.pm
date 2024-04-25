@@ -114,7 +114,7 @@ sub EPrints::Box::render
 	$div_title->appendChild( $nojstitle );
 
 	my $collapse_bar = $session->make_element( "div", class=>"ep_only_js", id=>$colbarid );
-	my $collapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_blur(event); EPJS_toggleSlideScroll('${contentid}',true,'${id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#" );
+	my $collapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_toggleSlideScroll('${contentid}',true,'${id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#" );
 	$collapse_link->appendChild( $session->make_element( "img", alt=>"-", src=>$options{hide_icon_url}, border=>0 ) );
 	$collapse_link->appendChild( $session->make_text( " " ) );
 	$collapse_link->appendChild( $session->clone_for_me( $options{title},1 ) );
@@ -129,7 +129,7 @@ sub EPrints::Box::render
 		$a = "false";
 	}
 	my $uncollapse_bar = $session->make_element( "div", class=>"ep_only_js", id=>$barid );
-	my $uncollapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_blur(event); EPJS_toggleSlideScroll('${contentid}',false,'${id}');EPJS_toggle('${colbarid}',$a);EPJS_toggle('${barid}',$b);return false", href=>"#" );
+	my $uncollapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_toggleSlideScroll('${contentid}',false,'${id}');EPJS_toggle('${colbarid}',$a);EPJS_toggle('${barid}',$b);return false", href=>"#" );
 	$uncollapse_link->appendChild( $session->make_element( "img", alt=>"+", src=>$options{show_icon_url}, border=>0 ) );
 	$uncollapse_link->appendChild( $session->make_text( " " ) );
 	$uncollapse_link->appendChild( $session->clone_for_me( $options{title},1 ) );

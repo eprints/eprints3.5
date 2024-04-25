@@ -81,7 +81,7 @@ sub render
 	$reason_static->appendChild( $self->html_phrase( "reason" ) );
 	$reason_static->appendChild( $self->{session}->make_text( " " ));	
 	
-	my $edit_link = $self->{session}->make_element( "a", href=>"#", role=>"button", onclick => "EPJS_blur(event); EPJS_toggle('ep_mail_reason_fixed',true,'block');EPJS_toggle('ep_mail_reason_edit',false,'block');\$('ep_mail_reason_edit').focus(); \$('ep_mail_reason_edit').select(); return false", );
+	my $edit_link = $self->{session}->make_element( "a", href=>"#", role=>"button", onclick => "EPJS_toggle('ep_mail_reason_fixed',true,'block');EPJS_toggle('ep_mail_reason_edit',false,'block');\$('ep_mail_reason_edit').focus(); \$('ep_mail_reason_edit').select(); return false", );
 	$reason_static->appendChild( $self->{session}->html_phrase( "mail_edit_click",
 		edit_link => $edit_link,
 		change_field => $self->html_phrase( "reason_label" ) 
