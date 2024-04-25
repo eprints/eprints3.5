@@ -195,21 +195,28 @@ sub render
             my $fieldname = $rowshash->{$stage}->{$pos};
             my $field = $dataobj->get_dataset->get_field( $fieldname );
             my $r_name = $self->_render_name_maybe_with_link( $field );
-            push @$rows, $session->render_row(
+
+            my $render_row = $session->render_row(
                 $r_name,
                 $dataobj->render_value( $fieldname, 1 )
             );
+
+            push @$rows, {
+                name => $fieldname,
+                render_row => $render_row,
+            };
+
         }
         foreach my $pos ( sort { $a <=> $b } keys %{$unspechash->{$stage}} )
         {
             my $fieldname = $unspechash->{$stage}->{$pos};
             my $field = $dataobj->get_dataset->get_field( $fieldname );
             my $r_name = $self->_render_name_maybe_with_link( $field );
-            if( $unspec->hasChildNodes )
-            {
-                $unspec->appendChild( $session->make_text( ", " ) );
-            }
-            $unspec->appendChild( $r_name );
+
+            push @$unspec, {
+                name => $fieldname,
+                render_name => $r_name,
+            };
         }
     }
 
