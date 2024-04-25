@@ -78,7 +78,9 @@ sub add_dataset_trigger
 
 	my $priority = exists $opts{priority} ? $opts{priority} : 0;
 
-	push @{$self->{datasets}->{$datasetid}->{triggers}->{$type}->{$priority}}, $f;
+	my $id = determine_trigger_id( $opts{id}, $f );
+
+	$self->{datasets}->{$datasetid}->{triggers}->{$type}->{$priority}->{$id} = $f;
 }
 
 =item $c->add_trigger( TRIGGER_ID, $f, %opts )
@@ -106,7 +108,35 @@ sub add_trigger
 
 	my $priority = exists $opts{priority} ? $opts{priority} : 0;
 
-	push @{$self->{triggers}->{$type}->{$priority}}, $f;
+	my $id = determine_trigger_id( $opts{id}, $f );
+
+	$self->{triggers}->{$type}->{$priority}->{$id} = $f;
+}
+
+=item EPrints::RepositoryConfig::determine_triggerid ( $trigger_id, $code )
+
+Generates an ID for a trigger so it can be individually referenced.  If C<$trigger_id> is non-empty
+use this. If not, if C<B::Deparse> library is available and C<$code> is a code reference generate
+an md5sum of the function as a string. Otherwose just generate a random UUID.
+
+Returns the generated ID for the trigger.
+
+=cut
+
+sub determine_trigger_id
+{
+	my( $trigger_id, $code ) = @_;
+	
+	return $trigger_id if $trigger_id;
+
+	if ( EPrints::Utils::require_if_exists( 'B::Deparse' ) )
+	{
+		my $deparse = B::Deparse->new( "-p", "-sC" );
+		return Digest::MD5::md5_hex( $deparse->coderef2text( $code ) );
+	}
+	
+	$trigger_id .= sprintf("%x", rand 16) for 1..32;
+	return $trigger_id;
 }
 
 =item $c->add_dataset_field( $datasetid, $fielddata, %opts )

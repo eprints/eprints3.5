@@ -1512,8 +1512,10 @@ sub run_trigger
 
 	TRIGGER: foreach my $priority ( sort { $a <=> $b } keys %{$fs} )
 	{
-		foreach my $f ( @{$fs->{$priority}} )
+		my @ids = keys %{$fs->{$priority}};
+		foreach my $id ( @ids )
 		{
+			my $f = $fs->{$priority}->{$id};
 			$rc = &{$f}( %params );
 			last TRIGGER if defined $rc && $rc eq EP_TRIGGER_DONE;
 		}
