@@ -528,9 +528,9 @@ sub render
 	) );
 
 	$page->appendChild( $session->make_javascript( <<EOJ ) );
-window.addEventListener('load', function() {
+window.onload = () => {
 	new Screen_BatchEdit ('$prefix');
-});
+};
 EOJ
 
 	return $page;

@@ -245,7 +245,7 @@ sub render_content
 	my $f = $session->make_doc_fragment;
 	
 	$f->appendChild( $self->{session}->make_javascript(
-		"window.addEventListener('load', function() { new Component_Documents('".$self->{prefix}."') });"
+		"window.onload = () => { new Component_Documents('".$self->{prefix}."') };"
 	) );
 
 	my @docs = $eprint->get_all_documents;

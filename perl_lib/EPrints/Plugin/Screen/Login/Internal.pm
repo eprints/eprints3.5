@@ -88,7 +88,7 @@ sub render
 	$form->appendChild( $self->render_hidden_bits );
 	$form->appendChild( $repo->html_phrase( "cgi/login:page_layout", %bits ) );
 
-	my $script = $repo->make_javascript( '$("login_username").focus()' );
+	my $script = $repo->make_javascript( 'document.getElementById("login_username").focus()' );
 	$form->appendChild( $script );
 
 	return $form;

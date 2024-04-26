@@ -1049,14 +1049,14 @@ sub config_edit
 		my $mode = $CODEMIRROR_MODES{$1};
 
 		$div->appendChild( $self->{session}->make_javascript(<<"EOJ") );
-window.addEventListener("load", function() {
-	var editor = CodeMirror.fromTextArea(\$('code'), {
+window.onload = () => {
+	var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
 			mode: '$mode->{mode}',
 			theme: 'neat',
 			continuousScanning: 500,
 			lineNumbers: true
 		});
-});
+};
 EOJ
 	}
 	
@@ -1170,7 +1170,7 @@ sub image_edit
 			#$inner_panel->appendChild( $progress_bar );
 
 
-			my $script = $self->{session}->make_javascript( "EPJS_register_button_code( '_action_next', function() { el = \$('$ffname'); if( el.value != '' ) { return confirm( ".EPrints::Utils::js_string($self->phrase("really_next"))." ); } return true; } );" );
+			my $script = $self->{session}->make_javascript( "EPJS_register_button_code( '_action_next', function() { el = document.getElementById('$ffname'); if( el.value != '' ) { return confirm( ".EPrints::Utils::js_string($self->phrase("really_next"))." ); } return true; } );" );
 			$inner_panel->appendChild( $script);
 
 			$inner_panel->appendChild( $self->{session}->render_hidden_field( "screen", $self->{processor}->{screenid} ) );
@@ -1259,7 +1259,7 @@ sub html_edit
 	$inner_panel->appendChild( $progress_bar );
 
 	
-	my $script = $self->{session}->make_javascript( "EPJS_register_button_code( '_action_next', function() { el = \$('$ffname'); if( el.value != '' ) { return confirm( ".EPrints::Utils::js_string($self->phrase("really_next"))." ); } return true; } );" );
+	my $script = $self->{session}->make_javascript( "EPJS_register_button_code( '_action_next', function() { el = document.getElementById('$ffname'); if( el.value != '' ) { return confirm( ".EPrints::Utils::js_string($self->phrase("really_next"))." ); } return true; } );" );
 	$inner_panel->appendChild( $script);
 	
 	$inner_panel->appendChild( $self->{session}->render_hidden_field( "screen", $self->{processor}->{screenid} ) );
