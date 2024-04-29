@@ -1,7 +1,4 @@
 # Ignore everything in this directory
-/*
-# Except this file and included ingredients
+*/
+# Except this file
 !.gitignore
-!bazaar/
-!jquery/
-!prototypejs/

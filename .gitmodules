@@ -10,3 +10,6 @@
 [submodule "ingredients/bazaar"]
 	path = ingredients/bazaar
 	url = https://github.com/eprints/bazaar.git
+[submodule "ingredients/jquery4eprints"]
+	path = ingredients/jquery4eprints
+	url = https://github.com/eprints/jquery4eprints.git
