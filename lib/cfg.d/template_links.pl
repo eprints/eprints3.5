@@ -62,7 +62,7 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 	}
 
 	return;
-});
+}, id => 'generate_template_head_links' );
 
 =head1 COPYRIGHT
 

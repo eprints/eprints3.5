@@ -375,7 +375,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
 		    	   object => "<http://purl.org/ontology/bibo/status/$status>" );
 	}
 
-} );
+}, id => 'generate_eprint_bibo_main_rdf' );
 
 
 ##############################
@@ -525,7 +525,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
 		    	   object => $org_uri );
 	}
 		
-} );
+}, id => 'generate_eprint_bibo_contributors_rdf' );
 
 
 ##############################
@@ -599,7 +599,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
 		    	   object => $event_location,
 			     type => "xsd:string" );
 	}
-} );
+}, id => 'generate_eprint_bibo_event_rdf' );
 
 
 =head1 COPYRIGHT

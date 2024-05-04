@@ -80,7 +80,7 @@ $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
 	}
 
 	return 0;
-}, priority => 1000);
+}, priority => 1000, id => 'determine_mime_type_with_file' );
 
 # ffmpeg media info
 $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
@@ -142,7 +142,7 @@ $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
 	}
 
 	return 0;
-}, priority => 7000);
+}, priority => 7000, id => 'extract_media_metadata' );
 
 # by file extension
 $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
@@ -161,7 +161,7 @@ $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
 	}
 
 	return 0;
-}, priority => 5000);
+}, priority => 5000, id => 'determine_mime_type_with_mimemap' );
 
 # defaults
 $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
@@ -181,7 +181,7 @@ $c->add_trigger( EP_TRIGGER_MEDIA_INFO, sub {
 		) if !defined $epdata->{format};
 
 	return 0;
-}, priority => 10000);
+}, priority => 10000, id => 'determine_mime_type_with_guess_doc_type' );
 
 =head1 COPYRIGHT
 

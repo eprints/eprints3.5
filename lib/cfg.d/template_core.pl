@@ -102,7 +102,7 @@ EOJ
 	}
 
 	return;
-}, priority => 1000);
+}, priority => 1000, id =>'generate_template_head' );
 
 =head1 COPYRIGHT
 

@@ -18,7 +18,7 @@ $c->add_trigger( EP_TRIGGER_DOC_URL_REWRITE, sub {
 
 	$request->pnotes( dataobj => $doc );
 	$request->pnotes( filename => $filename );
-}, priority => 100 );
+}, priority => 100, id => 'document_relation_redirect' );
 
 =head1 COPYRIGHT
 

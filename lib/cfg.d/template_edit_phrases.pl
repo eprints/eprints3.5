@@ -40,7 +40,7 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 		page_title => $pins->{title} );
 
 	return;
-});
+}, id => 'generate_page_edit_phrases_page' );
 
 =head1 COPYRIGHT
 

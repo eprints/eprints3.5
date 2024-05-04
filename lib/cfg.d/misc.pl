@@ -92,7 +92,7 @@ $c->{cache_max} = 100;
 #        } ) );
 #
 #        return EP_TRIGGER_OK;
-#});
+#}, id => 'add_local_sitemap_urls' );
 
 
 =head1 COPYRIGHT

@@ -62,7 +62,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
   			   object => $eprint_uri );
 	}
 
-} );
+}, id => 'generate_eprint_formats_rdf' );
 
 
 =head1 COPYRIGHT

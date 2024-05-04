@@ -15,7 +15,7 @@
 #		${$o{return_code}} = EPrints::Apache::Rewrite::redir( $o{request}, "http://totl.net/" );
 #		return EP_TRIGGER_DONE;
 #	}
-# } );
+# }, id => 'testpath_to_totl', priority => 100 );
 
 
 =head1 COPYRIGHT

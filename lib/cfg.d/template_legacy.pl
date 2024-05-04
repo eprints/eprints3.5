@@ -12,7 +12,7 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 			$repo->call( [ "dynamic_template", "function" ], $repo, $pins );
 		}
 	}
-}, priority => 10000);
+}, priority => 10000, id => 'call_dynamic_template_function' );
 
 =head1 COPYRIGHT
 

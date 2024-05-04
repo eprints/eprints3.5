@@ -36,7 +36,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
 		}
 	}
 
-} );
+}, id => 'generate_eprint_subjects_rdf' );
 
 $c->add_dataset_trigger( "subject", EP_TRIGGER_RDF, sub {
 	my( %o ) = @_;
@@ -103,7 +103,7 @@ $c->add_dataset_trigger( "subject", EP_TRIGGER_RDF, sub {
 		}
 	}
 
-} );
+}, id => 'generate_subject_rdf' );
 
 
 =head1 COPYRIGHT

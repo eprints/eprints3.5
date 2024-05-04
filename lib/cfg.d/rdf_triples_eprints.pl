@@ -180,7 +180,7 @@ $c->add_dataset_trigger( "eprint", EP_TRIGGER_RDF, sub {
 		}
 	}	
 
-} );
+}, id => 'generate_eprint_rdf' );
 
 
 =head1 COPYRIGHT

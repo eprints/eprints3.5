@@ -44,7 +44,7 @@ $c->add_trigger( EP_TRIGGER_BOILERPLATE_RDF, sub {
 
 	# [ "<>", "dc:creator", $o{repository}->phrase( "archive_name" ), "literal" ];
 	# [ "<>", "dct:rightsHolder", $o{repository}->phrase( "archive_name" ), "literal" ];
-} );
+}, id => 'generate_boilerplate_rdf' );
 
 
 

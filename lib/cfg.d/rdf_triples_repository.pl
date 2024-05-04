@@ -156,7 +156,7 @@ $c->add_trigger( EP_TRIGGER_REPOSITORY_RDF, sub {
 	}
 
 
-} );
+}, id => 'generate_repository_rdf' );
 
 =head1 COPYRIGHT
 

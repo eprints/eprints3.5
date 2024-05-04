@@ -36,7 +36,7 @@ B<EPrints::RepositoryConfig> - Repository Configuration
 		}
 	
 		return EP_TRIGGER_OK;
-	});
+	}, id => 'blog_see_other', priority => 100 );
 
 =head1 DESCRIPTION
 
@@ -73,7 +73,7 @@ sub add_dataset_trigger
 
 	if( ref($f) ne "CODEREF" && ref($f) ne "CODE" )
 	{
-		EPrints->abort( "add_dataset_trigger expected a CODEREF but got '$f'" );
+		EPrints->abort( "add_dataset_trigger expected a CODEREF but got '".ref($f)."'" );
 	}
 
 	my $priority = exists $opts{priority} ? $opts{priority} : 0;
@@ -92,6 +92,7 @@ See L<EPrints::Const> for available triggers.
 Options:
 
 	priority - used to determine the order triggers are executed in (defaults to 0).
+	id - identifier for trigger, so it can be redefined in a later configuration file (defaults to hash of code string),
 
 =cut
 
@@ -103,7 +104,7 @@ sub add_trigger
 
 	if( ref($f) ne "CODEREF" && ref($f) ne "CODE" )
 	{
-		EPrints->abort( "add_trigger expected a CODEREF but got '$f'" );
+		EPrints->abort( "add_trigger expected a CODEREF but got '".ref($f)."'" );
 	}
 
 	my $priority = exists $opts{priority} ? $opts{priority} : 0;
@@ -113,7 +114,7 @@ sub add_trigger
 	$self->{triggers}->{$type}->{$priority}->{$id} = $f;
 }
 
-=item EPrints::RepositoryConfig::determine_triggerid ( $trigger_id, $code )
+=item EPrints::RepositoryConfig::determine_trigger_id ( $trigger_id, $code )
 
 Generates an ID for a trigger so it can be individually referenced.  If C<$trigger_id> is non-empty
 use this. If not, if C<B::Deparse> library is available and C<$code> is a code reference generate

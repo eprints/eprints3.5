@@ -35,7 +35,7 @@ $c->add_trigger( EPrints::Const::EP_TRIGGER_VALIDATE_FIELD, sub
                         maxlength => $maxlength_el,
                 );
         }
-}, priority => 1000 );
+}, priority => 1000, id => 'validate_password_maxlength' );
 
 $c->{login_monitoring}->{enabled} = 1;
 $c->{login_monitoring}->{fields} = [ 'timestamp', 'username', 'password_length', 'ip', 'user_agent', 'target', 'status', 'userid', 'securecode' ];

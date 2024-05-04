@@ -156,7 +156,7 @@ $c->add_trigger( EP_TRIGGER_INDEX_FIELDS, sub {
 	}
 
 	$db->replace_document_by_term( $key, $doc );
-});
+}, id => 'add_to_xapian_index' );
 
 $c->add_trigger( EP_TRIGGER_INDEX_REMOVED, sub {
 	my( %params ) = @_;
@@ -193,7 +193,7 @@ $c->add_trigger( EP_TRIGGER_INDEX_REMOVED, sub {
 	{
 		$db->delete_document( $matches[0]->get_docid );
 	}
-});
+}, id => 'remove_from_xapian_index' );
 
 
 
