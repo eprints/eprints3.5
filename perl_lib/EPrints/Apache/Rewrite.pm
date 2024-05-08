@@ -36,6 +36,9 @@ stale.
 package EPrints::Apache::Rewrite;
 
 use EPrints::Apache::AnApache; # exports apache constants
+use Fcntl qw(:flock SEEK_END);
+use JSON;
+use Time::HiRes;
 
 use strict;
 
@@ -78,6 +81,85 @@ sub handler
 	if( !defined $repository )
 	{
 		EPrints->abort( "'$repoid' is not a valid repository identifier:\nPerlSetVar EPrints_ArchiveID $repoid" );
+	}
+
+	if ( $repository->get_conf( 'rate_limit', 'enabled' ) )
+	{
+		my $start = [Time::HiRes::gettimeofday];
+		my $ip = $r->connection->client_ip;
+		my $log_file = $repository->get_conf( 'variables_path' ) . "/request_times.json";
+
+		if ( -f $log_file && open my $fh, '<', $log_file )
+		{
+			flock $fh, LOCK_EX;
+			my $json = <$fh>;
+			close $fh;
+            my $request_times = decode_json( $json );
+			if ( defined $request_times->{requests}->{$ip} &&  $request_times->{requests}->{$ip} / 1_000_000 > $repository->get_conf( "rate_limit", "max_secs" ) && $request_times->{depreciated} + $repository->get_conf( "rate_limit", "depreciate_secs" ) > $start->[0] && ! grep( /^$ip$/, @{ $repository->get_conf( "rate_limit", "allow_ips" ) } ) )
+			{
+				$r->err_headers_out->add( 'Retry-After', $repository->get_conf( "rate_limit", "depreciate_secs" ) );
+				return 429; # Too Many Requests 
+			}
+		}
+
+		$r->pool->cleanup_register(sub {
+
+			my $status = $r->status;
+			my $method = $r->method;
+			my $uri = $r->uri;
+			my $end = [Time::HiRes::gettimeofday];
+			my $duration = ( $end->[0] * 1_000_000 + $end->[1] ) - ( $start->[0] * 1_000_000 + $start->[1] );
+		
+			unless( -f $log_file )
+			{
+				open my $fh, '>', $log_file;
+				flock $fh, LOCK_EX;
+				print $fh "{}";
+				close $fh;
+			}
+			if ( open my $fh, '+<', $log_file )
+			{
+				flock $fh, LOCK_EX;
+				my $json = <$fh>;
+				my $request_times = decode_json( $json );
+				unless ( defined $request_times->{depreciated} )
+				{
+					$request_times->{depreciated} = $end->[0];
+				}
+				if ( $request_times->{depreciated} + $repository->get_conf( "rate_limit", "depreciate_secs" ) < $end->[0] )
+				{
+					foreach my $id ( keys %{$request_times->{requests}} )
+					{
+						$request_times->{requests}->{$id} =  $request_times->{requests}->{$id} * $repository->get_conf( "rate_limit", "depreciate_factor" );
+						# If time taken for requests after depreciation is now less than a millisecond drop from the list.
+						if ( $request_times->{requests}->{$id} < 1000 )
+						{
+							delete $request_times->{requests}->{$id};
+						}
+					}
+					$request_times->{depreciated} = $end->[0];
+				}
+
+				unless( defined $request_times->{requests} )
+				{
+					$request_times->{requests} = {};
+				}
+				if ( defined $request_times->{requests}->{$ip} )
+				{
+					$request_times->{requests}->{$ip} += $duration;
+				}
+				else
+				{
+					$request_times->{requests}->{$ip} = $duration;
+				}
+				seek $fh, 0, 0;
+				truncate $fh, 0;
+				print $fh encode_json( $request_times );
+				close $fh;
+			}
+			print $repository->log( $r->$method . " " . $r->$uri . " took $duration microseconds for " . $r->$status . " response." ) if ( -e $repository->config( 'variables_path' ) . "/developer_mode_on" && $repository->config( 'developer_mode', 'log_request_durations' ) );
+
+		}, $r);
 	}
 
 	my $esec = $r->dir_config( "EPrints_Secure" );
