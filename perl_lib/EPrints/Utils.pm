@@ -1647,7 +1647,7 @@ sub make_sitemap_url
 }
 
 # EPrints::Utils::compare_version( $cmp, $version );
-#  Compare the current EPrints version against a specific version number.
+#  Compare the current EPrints version (or a current version provided as the third argument) against a specific version number.
 #  Comparator can be one of 6 values:
 #   '<' is current version less than version specified
 #   '<=' is current version less than or equal to version specified
@@ -1658,7 +1658,7 @@ sub make_sitemap_url
 
 sub compare_version
 {
-	my ( $cmp, $version ) = @_;
+	my ( $cmp, $version, $current_version ) = @_;
 	
 	$version =~ s/[^\d\.]//;
 	my @v_bits = split( /\./, $version );
@@ -1666,14 +1666,15 @@ sub compare_version
 	for ( my $i = 0; $i < 3; $i++ )
 	{
 		$vnum *= 100;
-		$vnum += $v_bits[$i];
+		$vnum += $v_bits[$i] if defined $v_bits[$i];
 	}
+	$current_version ||= EPrints->human_version;
 	my @cv_bits = split( /\./, EPrints->human_version );
 	my $cvnum = 0;
 	for ( my $i = 0; $i < 3 ; $i++ )
 	{
 		$cvnum *= 100;
-		$cvnum += $cv_bits[$i];
+		$cvnum += $cv_bits[$i] if defined $cv_bits[$i];
 	}
 	return $cvnum < $vnum if $cmp eq '<';
 	return $cvnum <= $vnum if $cmp eq '<=';
