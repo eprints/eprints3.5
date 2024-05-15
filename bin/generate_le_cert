@@ -14,7 +14,7 @@ use lib "$FindBin::Bin/../perl_lib";
 
 =head1 NAME
 
-B<generate_le_cert> - Generates Let's Encrypt certificate and deploys it for an EPrints repository including appropriate Apache configuration
+B<generate_le_cert> - Generates Let's Encrypt certificate and deploys it for an EPrints repository including appropriate Apache configuration.
 
 =head1 SYNOPSIS
 
@@ -22,7 +22,18 @@ B<generate_sitemap> I<repository_id> [B<options>]
 
 =head1 DESCRIPTION
 
-I<TO BE WRITTEN>
+This script takes an existing EPrints repository that does not have HTTPS enabled and generates both a certificate from Let's Encrypt and the 
+appropriate Apache and EPrints configuration to make the repository available over HTTPS.  This requires HTTP to be publicly accessible so
+that ACME challenges can be checked.
+
+HTTPS Apache configuration and certificate, keys, etc. will be added to the C<ssl/> directoy of the archives. Also a certificate file for
+the account that manages generating and renewing certificate is added as C<cfg/lets_encrypt_account.pem> under the archive.
+
+If a certificate is already in place for the EPrints repository, this script will try to renew it but only if the certificate expires in
+fewer than 28 days. To automate renewals consider adding a cronjob similar to the one below to root's crontab, (substituting C<EPRINTS_PATH> 
+and C<ARCHIVE_ID> as appropriate):
+
+	01 23 * * * su -c "EPRINTS_PATH/bin/generate_le_cert ARCHIVE_ID --quiet" && apachectl graceful
 
 =head1 ARGUMENTS
 
@@ -31,6 +42,37 @@ I<TO BE WRITTEN>
 =item B<repository_id>
 
 The ID of the EPrints repository to generate a Let's Encrypt certificate.
+
+=back
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--staging>
+
+Only generate a certificate against Let's Encrypt staging server.  Useful to confirm things are working as expected before generating a certificate
+with a known issuer, which may be rate limited.
+
+=item B<--help>
+
+Print a brief help message and exit.
+
+=item B<--man>
+
+Print the full manual page and then exit.
+
+=item B<--quiet>
+
+Be vewwy vewwy quiet. This option will suppress all output unless an error occurs.
+
+=item B<--verbose>
+
+Explain in detail what is going on. May be repeated for greater effect.
+
+=item B<--version>
+
+Output version information and exit.
 
 =back
 
