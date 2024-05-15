@@ -327,7 +327,7 @@ unless ( $quiet )
 {
 	unless ( $renewal )
 	{
-		print "Successfully generated Let's Encrypt certificate and accompanying Apache configuration.  Be sure to add the following line to the appropriate configuration file (e.g. /etc/httpd/conf.d/eprints.conf or /etc/apache2/sites-available/eprints.conf) and then reload Apache:\n\n\tInclude $securevhost_file\n\n";
+		print "Successfully generated Let's Encrypt certificate and accompanying Apache configuration.  Be sure to add the following line to the appropriate configuration file (e.g. /etc/httpd/conf.d/eprints.conf or /etc/apache2/sites-available/eprints.conf) and then reload Apache:\n\n\tInclude $securevhost_file\n\nIf when you try to load the repository over HTTPS you get Apache's server test page, you may need to disable the default SSL virtualhost (e.g. in /etc/httpd/conf.d/ssl.conf).\n\n";
 	}
 	else
 	{
