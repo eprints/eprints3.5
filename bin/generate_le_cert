@@ -1,0 +1,331 @@
+#!/usr/bin/perl -w
+
+use FindBin;
+use lib "$FindBin::Bin/../perl_lib";
+
+######################################################################
+#
+#
+######################################################################
+
+=pod
+
+=for Pod2Wiki
+
+=head1 NAME
+
+B<generate_le_cert> - Generates Let's Encrypt certificate and deploys it for an EPrints repository including appropriate Apache configuration
+
+=head1 SYNOPSIS
+
+B<generate_sitemap> I<repository_id> [B<options>]
+
+=head1 DESCRIPTION
+
+I<TO BE WRITTEN>
+
+=head1 ARGUMENTS
+
+=over 8
+
+=item B<repository_id>
+
+The ID of the EPrints repository to generate a Let's Encrypt certificate.
+
+=back
+
+=cut
+
+use EPrints;
+use Crypt::LE ':errors', ':keys';
+use File::Path qw(make_path);
+use File::Slurp;
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+
+my $verbose = 0;
+my $quiet = 0;
+my $help = 0;
+my $man = 0;
+my $force = 0;
+my $staging = 0;
+my $config;
+
+Getopt::Long::Configure("permute");
+
+GetOptions(
+    'help|?' => \$help,
+    'man' => \$man,
+    'verbose+' => \$verbose,
+    'silent' => \$quiet,
+    'quiet' => \$quiet,
+    'staging' => \$staging,
+) || pod2usage( 2 );
+pod2usage( 1 ) if $help;
+pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
+pod2usage( 2 ) if( scalar @ARGV == 0 );
+
+my $noise = 0;
+$noise = -1 if( $quiet );
+$noise = $noise+$verbose if( $verbose );
+
+my $repositoryid = shift @ARGV;
+my $ep = EPrints->new;
+my $repo = $ep->repository($repositoryid);
+
+die "Could not load $repositoryid repository\n" unless $repo;
+
+my $live = $staging ? 0 : 1;
+
+my $le = Crypt::LE->new(
+	version => 2,
+	live => $live,
+	debug => $noise,
+);
+
+
+my $hostname = $repo->config( 'host' ) ? $repo->config( 'host' ) : $repo->config( 'securehost' );
+my @domains = ( $hostname );
+my $aliases = "ServerAlias";
+foreach my $alias ( @{ $repo->config( 'aliases' ) } )
+{
+    push @domains, $alias->{name};
+	$aliases .= $alias->{name}." ";
+}
+$aliases = "" if $aliases eq "ServerAlias";
+my $adminemail = $repo->config( 'adminemail' );
+my $hostname_filename = $hostname;
+$hostname_filename =~ s/\./_/g;
+
+my $account_key_file = $repo->config( 'config_path' ) . "/lets_encrypt_account.pem";
+my $ssl_dir = $repo->config( 'archiveroot' ) . "/ssl";
+my $securevhost_file = "$ssl_dir/securevhost.conf";
+my $apache_ssl_cfg_file = EPrints::Config::get( 'cfg_path' ) . "/apache_ssl/$repositoryid.conf";
+my $domain_csr_file = "$ssl_dir/$hostname_filename.csr";
+my $domain_key_file = "$ssl_dir/$hostname_filename.key";
+my $domain_crt_file = "$ssl_dir/$hostname_filename.crt";
+my $domain_ca_file = "$ssl_dir/$hostname_filename.ca-bundle";
+my $well_known_path =$repo->config( 'config_path' ) . "/static/.well-known";
+my $challenge_path = $well_known_path . "/acme-challenge";
+
+if ( ! -d $ssl_dir )
+{
+	mkdir $ssl_dir or die "ERROR: Could not create directory $ssl_dir\n";
+}
+my $securevhost_conf = <<END;
+<VirtualHost *:443>
+
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+ServerAdmin ${adminemail}
+
+ServerName ${hostname}
+${aliases}
+
+LogLevel warn
+
+SSLEngine on
+SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder on
+SSLCompression off
+SSLSessionTickets off
+SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+
+SSLCertificateFile ${domain_crt_file}
+SSLCertificateKeyFile ${domain_key_file}
+SSLCertificateChainFile ${domain_ca_file}
+
+Include $apache_ssl_cfg_file
+
+PerlTransHandler +EPrints::Apache::Rewrite
+
+</VirtualHost>
+END
+
+unless ( -s $securevhost_file )
+{
+	EPrints->system->write_config_file( $securevhost_file, $securevhost_conf, BACKUP => 1 );
+}
+
+if ( -r $account_key_file )
+{
+	$le->load_account_key( $account_key_file );
+}
+elsif ( $le->generate_account_key == OK && $le->account_key )
+{
+	EPrints->system->write_config_file( $account_key_file, $le->account_key, BACKUP => 1 );
+}
+else 
+{
+	print STDERR "ERROR: Could not load or generate account key!\n";
+	print STDERR "  DETAILS: ".$le->error_details."\n";
+	exit 1;
+}
+
+$le->set_account_email( $repo->config( 'adminemail' ) );
+if ( $le->register != OK )
+{
+	print STDERR "ERROR: Could not register account.\n";
+	print STDERR "  DETAILS: ".$le->error_details."\n";
+	exit 2;
+}
+if ($le->tos_changed and $le->tos ) 
+{
+	print STDERR "Terms of service has changed.  Be sure to check: ".$le->tos."\n";
+	if ( $le->accept_tos != OK )
+	{
+		print STDERR "ERROR: Could not accept terms of service.\n";
+	    print STDERR "  DETAILS: ".$le->error_details."\n";
+    	exit 3;
+	}
+}
+
+my $renewal = 0;
+if ( -s $domain_crt_file )
+{
+	$renewal = 1;
+	my $expires = $le->check_expiration( $domain_crt_file );
+	if ( $expires >= 28 ) 
+	{
+		print "Certificate already exists and does not expire for $expires days.\n" unless $quiet;
+		exit 10;
+	}
+}
+
+if ( $le->generate_csr( \@domains, KEY_RSA, 4096 ) == OK && $le->csr && $le->csr_key )
+{
+	EPrints->system->write_config_file( $domain_csr_file, $le->csr, BACKUP => 1 );
+	EPrints->system->write_config_file( $domain_key_file, $le->csr_key, BACKUP => 1 );
+}
+else
+{
+	print STDERR "ERROR: Could not generate CSR and key\n";
+	print STDERR "  DETAILS: ".$le->error_details."\n";
+	exit 4;
+}
+
+my $new_crt_status = $le->request_certificate;
+
+if ( $new_crt_status )
+{
+	if (  $le->request_challenge != OK )
+	{
+		print STDERR "ERROR: Request challenge was unsuccessful.\n";
+	    print STDERR "  DETAILS: ".$le->error_details."\n";
+		exit 5;
+	}
+
+	my %callback_data = (
+		api => $le->{version},
+	    live => $le->{live},
+	    debug => $le->{debug},
+		domains => \@domains,
+		key => $account_key_file,
+		csr => $domain_csr_file,
+		'csr-key' => $domain_key_file,
+		crt => $domain_crt_file,
+		path => $challenge_path,
+		well_known_path => $well_known_path,
+	);
+	
+	if ( $le->accept_challenge(  \&process_challenge, \%callback_data ) != OK )
+	{
+		print STDERR "ERROR: Accept challenge was unsuccessful.\n";
+    	print STDERR "  DETAILS: ".$le->error_details."\n";
+    	exit 6;
+	}
+
+	$le->new_nonce;
+
+	if ( $le->verify_challenge( \&process_verification, \%callback_data ) != OK )
+	{
+        print STDERR "ERROR: Verify challenge was unsuccessful.\n";
+        print STDERR "  DETAILS: ".$le->error_details."\n";
+        exit 7;
+	}
+}
+
+if ( $le->certificate || $le->request_certificate == OK )
+{
+	EPrints->system->write_config_file( $domain_crt_file, $le->certificate, BACKUP => 1 );
+}
+else
+{
+    print STDERR "ERROR: Unable to retrieve certificate.\n";
+    print STDERR "  DETAILS: ".$le->error_details."\n";
+    exit 8;
+
+}
+
+if ( $le->request_issuer_certificate == OK )
+{
+	EPrints->system->write_config_file( $domain_ca_file, $le->issuer, BACKUP => 1 );
+}
+else 
+{
+	print STDERR "ERROR: Request for certificate authority chain was unsuccessful.\n";
+	print STDERR "  DETAILS: ".$le->error_details."\n";
+    exit 9;
+}
+
+if ( ! defined $repo->config( 'securehost' ) )
+{
+	my $core_config_file = $repo->config( 'config_path' ) . "/cfg.d/10_core.pl";
+	my $core_config = read_file( $core_config_file );
+	$core_config =~ s/^\$c->\{securehost\}.*$/\$c->{securehost} = '$hostname';/m;
+	EPrints->system->write_config_file( $core_config_file, $core_config );
+	my $bin_path = EPrints::Config::get("bin_path");
+	system( "$bin_path/generate_apacheconf --system --replace --quiet" );
+}
+
+unless ( $quiet )
+{
+	unless ( $renewal )
+	{
+		print "Successfully generated Let's Encrypt certificate and accompanying Apache configuration.  Be sure to add the following line to the appropriate configuration file (e.g. /etc/httpd/conf.d/eprints.conf or /etc/apache2/sites-available/eprints.conf) and then reload Apache:\n\n\tInclude $securevhost_file\n\n";
+	}
+	else
+	{
+		print "Successfully generated Let's Encrypt certificate at $domain_crt_file.  Apache will need to be reloaded.";
+	}
+}
+exit 0;
+
+sub process_challenge 
+{
+    my ($challenge, $params) = @_;
+
+	my $text = "$challenge->{token}.$challenge->{fingerprint}";
+	if ( $params->{'path'} ) 
+	{	
+		my $path = $params->{'path'};
+        make_path( $path );
+		my $file = "$path/$challenge->{token}";
+		open( FH, '>', $file );
+		binmode( FH, ':utf8' );
+		print FH $text;
+		close( FH );
+		if ( ! -s $file ) 
+		{
+			return 0;
+		}
+		else 
+		{
+			return 1;
+		}
+	}
+	return 1;
+};
+
+
+sub process_verification 
+{
+	my ($results, $params) = @_;
+	my $path = $params->{'multiroot'} ? $params->{'multiroot'}->{$results->{domain}} : $params->{'path'};
+	my $file = $path ? "$path/$results->{token}" : $results->{token};
+	unlink $file, $params->{challenge_path}, $params->{well_known_path};             
+    return 1;
+}

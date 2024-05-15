@@ -66,6 +66,7 @@ sub apache_conf
 	my $virtualhost = $repo->config( "virtualhost" );
 	$virtualhost = "*" if !EPrints::Utils::is_set( $virtualhost );
 	my $base_path = EPrints::Config::get( "base_path" );
+	my $document_root = "  DocumentRoot " . $repo->config( "config_path" ) . "/static";
 
 	my $conf = <<EOC;
 #
@@ -105,6 +106,7 @@ EOC
   ServerName $host
 $aliases
   ServerAdmin $adminemail
+$document_root
 
 EOC
 
@@ -113,7 +115,7 @@ EOC
         if ( substr( $http_url, 0, 5 ) ne "https")
         {
 		# backwards compatibility
-		$conf .= "    Include $base_path/cfg/perl_module_isolation_vhost.conf\n\n";
+		$conf .= "  Include $base_path/cfg/perl_module_isolation_vhost.conf\n\n";
 		$conf .= _location( $http_root, $id );
 		my $apachevhost = $repo->config( "config_path" )."/apachevhost.conf";
 		if( -e $apachevhost )

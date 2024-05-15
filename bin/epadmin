@@ -881,26 +881,8 @@ Path";
 	$config{http_root} =~ s! ^/? !/!x;
 	$config{http_root} =~ s! /$ !!x;
 	$config{http_root} = undef if $config{http_root} eq "";
-
-	my $securehost_text = "
-
-If you will use https for your user pages (including login) enter the https hostname
-here, or leave blank when using http only.
-
-HTTPS Hostname";
-
-	$config{securehost} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_HOSTNAME_OR_UNSET, $securehost_text, $config{securehost}||"", $coreconf, [ 'securehost' ] );
-
-	if( $config{securehost} )
-	{
-		my $secureport_text = "
-
-Please enter the port of your secure (https) server. This is probably 443.
-
-Secure Webserver Port";
-
-		$config{secureport} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_NUMBER, $secureport_text, $config{secureport}, $coreconf, [ 'secureport' ] );
-	}
+	$config{securehost} = ? $coreconf->{securehost} ? $coreconf->{securehost} : undef;
+	$config{secureport} = ? $coreconf->{secureport} : $coreconf->{secureport} : 443;
 
 	$config{adminemail} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_EMAIL, 'Administrator Email',  $config{adminemail}, $coreconf, [ 'adminemail' ] );
 
