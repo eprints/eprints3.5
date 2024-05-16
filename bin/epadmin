@@ -881,8 +881,8 @@ Path";
 	$config{http_root} =~ s! ^/? !/!x;
 	$config{http_root} =~ s! /$ !!x;
 	$config{http_root} = undef if $config{http_root} eq "";
-	$config{securehost} = ? $coreconf->{securehost} ? $coreconf->{securehost} : undef;
-	$config{secureport} = ? $coreconf->{secureport} : $coreconf->{secureport} : 443;
+	$config{securehost} = $coreconf->{securehost} ? $coreconf->{securehost} : undef;
+	$config{secureport} = $coreconf->{secureport} ? $coreconf->{secureport} : 443;
 
 	$config{adminemail} = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_EMAIL, 'Administrator Email',  $config{adminemail}, $coreconf, [ 'adminemail' ] );
 
