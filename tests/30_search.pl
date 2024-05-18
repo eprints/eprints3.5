@@ -388,7 +388,7 @@ $searchexp = EPrints::Search->new(
 	satisfy_all => 0 );
 
 $searchexp->add_field( $dataset->field( "title" ), "waxing monkey", "IN" );
-$searchexp->add_field( $dataset->field( "date" ), "2000" );
+$searchexp->add_field( $dataset->field( "date" ), "2018" );
 
 $list = $searchexp->perform_search;
 

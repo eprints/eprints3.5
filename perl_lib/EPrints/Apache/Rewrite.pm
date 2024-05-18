@@ -83,7 +83,7 @@ sub handler
 		EPrints->abort( "'$repoid' is not a valid repository identifier:\nPerlSetVar EPrints_ArchiveID $repoid" );
 	}
 
-	if ( $repository->get_conf( 'rate_limit', 'enabled' ) )
+	if ( $repository->get_conf( 'rate_limit', 'enabled' ) && ref( $r ) eq "Apache2::RequestRec" )
 	{
 		my $start = [Time::HiRes::gettimeofday];
 		my $ip = $r->connection->client_ip;

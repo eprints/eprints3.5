@@ -188,7 +188,7 @@ sub get_basic_input_elements
  	my $default_index = 0;
  	foreach my $t ( @{$tags} )
  	{
- 	        last if $t eq $value;
+ 	        last if defined $value && $t eq $value;
  	        $default_index++;
 	}
 

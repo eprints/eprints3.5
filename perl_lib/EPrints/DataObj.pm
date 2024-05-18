@@ -1400,6 +1400,7 @@ sub is_set
 	{
 		$self->{session}->get_repository->log(
 			 "is_set( $fieldname ): Unknown field" );
+		return 0;
 	}
 
 	my $value = $self->get_value( $fieldname );

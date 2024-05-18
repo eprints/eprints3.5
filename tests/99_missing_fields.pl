@@ -64,9 +64,11 @@ foreach my $field_data ( @fields )
 		abstract => "blah blah",
 		publication => "Foo Journal",
 		event_title => "BLAH2005",
-		date => "2009",
 		isbn => "1234567890",
 		issn => "12345690",
+		dates => [
+			{ date => "2023-12-01", date_type => "accepted", }
+		],
 	} ); };
 	ok( !$@, "create eprint without '$field_name' field: $@" );
 

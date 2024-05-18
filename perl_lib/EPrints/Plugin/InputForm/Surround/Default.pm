@@ -43,8 +43,8 @@ sub render
 		id => $component->{prefix} );
 
 	my $label_id = $component->{prefix} . "_label";
-	$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_label" if defined $component->{config}->{field};
-	if ( defined $component->{config} && defined $component->{config}->{field} && ( $component->{config}->{field}->{form_input_style} eq "checkbox" || $component->{config}->{field}->{input_style} eq "checkbox" ) ) 
+	$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_label" if defined $component->{config}->{field} && $component->{config}->{field}->{name};
+	if ( defined $component->{config} && defined $component->{config}->{field} && ( ( defined $component->{config}->{field}->{form_input_style} &&  $component->{config}->{field}->{form_input_style} eq "checkbox" ) || ( $component->{config}->{field}->{input_style} && $component->{config}->{field}->{input_style} eq "checkbox" ) ) )
 	{
 		$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_legend_label";
 	} 

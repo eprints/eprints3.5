@@ -1701,7 +1701,7 @@ sub get_describedby
         $basename_top =~ s/$self->{name}/$parent->{name}/ unless $self->{name} eq $parent->{name};
         $basename_top =~ s/$parent->{name}// if $one_field_component;
         my @basename_bits = split( "_", $basename_top );
-        if ( $basename_bits[1] =~ m/^doc\d+/ || $basename_bits[0] eq "requester" )
+        if ( ( defined $basename_bits[1] && $basename_bits[1] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" )
         {
                 push @basename_bits, 'help';
         }

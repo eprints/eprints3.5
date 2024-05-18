@@ -298,7 +298,12 @@ __DATA__
     <full_text_status>public</full_text_status>
     <pres_type>paper</pres_type>
     <abstract>This is where the abstract of this record would appear. This is only demonstration data.</abstract>
-    <date>2005</date>
+    <dates>
+      <item>
+        <date>2023-06-28</date>
+        <date_type>accepted</date_type>
+      </item>
+    </dates>
     <event_title>Animal Data Conference</event_title>
     <event_location>London</event_location>
     <event_dates>23-25 November</event_dates>

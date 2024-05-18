@@ -64,7 +64,7 @@ $view->update_view_by_path(
 		do_lists => 1 );
 
 ok( -e "$viewdir/$langid/view/$test_id/index.page", "browse_view_menu");
-ok( -e "$viewdir/$langid/view/$test_id/2004.page", "browse_view_menu");
+ok( -e "$viewdir/$langid/view/$test_id/2022.page", "browse_view_menu");
 
 Test::More::diag( "\t update_view_by_path=" . EPrints::Test::human_mem_increase() );
 
