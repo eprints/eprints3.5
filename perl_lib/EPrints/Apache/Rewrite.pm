@@ -86,7 +86,7 @@ sub handler
 	if ( $repository->get_conf( 'rate_limit', 'enabled' ) && ref( $r ) eq "Apache2::RequestRec" )
 	{
 		my $start = [Time::HiRes::gettimeofday];
-		my $ip = $r->connection->client_ip;
+		my $ip = $repository->remote_ip;
 		my $log_file = $repository->get_conf( 'variables_path' ) . "/request_times.json";
 
 		if ( -f $log_file && open my $fh, '<', $log_file )
@@ -177,6 +177,36 @@ sub handler
 	if( $uri !~ /^(?:$urlpath)|(?:$cgipath)/ )
 	{
 		return DECLINED;
+	}
+
+	# Certain paths forbidden from certain IPs/subnets (maybe due to (D)DOS).
+	if ( $repository->get_conf( 'restrict_paths' ) && ref( $r ) eq "Apache2::RequestRec" )
+	{
+		my $restrict_paths = $repository->get_conf( 'restrict_paths' );
+		my $ip = $repository->remote_ip;
+		foreach my $restrict_path ( @$restrict_paths )
+		{
+			if ( $uri =~ /^$restrict_path->{path}/ )
+			{
+				foreach my $restrict_ip ( @{$restrict_path->{ips}} )
+				{
+					# Test if IPv4 or IPv6
+					if ( $restrict_ip =~ m/:/ )
+					{
+						$restrict_ip .= '$' if substr( $restrict_ip, -1 ) ne ':'; # avoid blocking 2001:1234:5678::9abc::1234 when blocking 2001:1234:5678:9abc::12 (i.e. 2001:1234:5678:9abc::0012).
+					}
+					else
+					{
+						$restrict_ip =~ s/\./\\./g;
+						$restrict_ip .= '$' if substr( $restrict_ip, -1 ) ne '.'; # avoid blocking 1.2.3.40 when blocking 1.2.3.4
+					}
+					if ( $ip =~ /^$restrict_ip/ )
+					{
+						return FORBIDDEN;
+					}
+				}
+			}
+		}
 	}
 
 	# Non-EPrints paths within our tree
