@@ -569,6 +569,21 @@ This field is required if no creators are listed.
     <epp:phrase id="eprint_fieldhelp_id_number.patent">The patent application number of this item.</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_id_number.monograph">The number, if any, of a technical report or similar item.</epp:phrase>
 
+    <epp:phrase id="validate:invalid_id_format"><epc:pin name="fieldname"/> has ID <epc:pin name="id_value"/> that is not a valid <epc:pin name="id_type"/>.</epp:phrase>
+    <epp:phrase id="validate:duplicate_id_type"><epc:pin name="fieldname"/> contains more than one <epc:pin name="id_type"/> ID.</epp:phrase>
+
+    <epp:phrase id="eprint_fieldname_ids">Identifiers</epp:phrase>
+    <epp:phrase id="eprint_fieldhelp_ids">Please enter at least one ID. Setting its type and an optional note (e.g. if the ISSN is print or online).</epp:phrase>
+
+    <epp:phrase id="eprint_fieldname_ids_id">ID</epp:phrase>
+    <epp:phrase id="eprint_fieldname_ids_id_type">Type</epp:phrase>
+    <epp:phrase id="eprint_fieldname_ids_id_note">Note</epp:phrase>
+
+    <epp:phrase id="eprint_fieldopt_ids_id_type_doi">DOI</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_ids_id_type_pmid">PubMed ID</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_ids_id_type_pmcid">PMCID</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_ids_id_type_isbn">ISBN</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_ids_id_type_issn">ISSN</epp:phrase>
 
     <epp:phrase id="eprint_fieldname_monograph_type">Monograph Type</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_monograph_type">Please select the specific type of this monograph.</epp:phrase>
