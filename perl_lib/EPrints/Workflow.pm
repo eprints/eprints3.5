@@ -585,10 +585,8 @@ sub load_all
 	foreach my $fn ( @filenames )
 	{
 		next if( $fn =~ m/^\./ );
-		next if( $fn eq "CVS" );
-		next if( $fn eq ".svn" );
 		my $filename = "$path/$fn";
-		if( -d $filename )
+		if( -d $filename && $path =~ m/workflows$/ )
 		{
 			$confhash->{$fn} = {} if( !defined $confhash->{$fn} );
 			load_all( $filename, $confhash->{$fn} );
@@ -607,7 +605,25 @@ sub load_workflow_file
 	my( $file, $id, $confhash ) = @_;
 
 	my $doc = EPrints::XML::parse_xml( $file );
-	$confhash->{$id}->{workflow} = $doc->documentElement();
+	my $root = $doc->documentElement;
+	my $stages_dir = $file;
+	$stages_dir =~ s/\.xml$//;
+	if ( -d $stages_dir )
+	{
+		my $dh;
+		opendir( $dh, $stages_dir ) || die "Could not open $stages_dir";
+		foreach my $sfn ( readdir( $dh ) )
+		{
+			next unless $sfn =~ m/^(.+)\.xml$/;
+			my $stage_filename = "$stages_dir/$sfn";
+			if ( -f $stage_filename )
+			{
+				my $stage_doc = EPrints::XML::parse_xml( $stage_filename );
+				$root->appendChild( $stage_doc->documentElement );
+			}
+		}
+	}
+	$confhash->{$id}->{workflow} = $root;
 	# assign id attributes to every component
 	my $i = 1;
 	foreach my $component ( $confhash->{$id}->{workflow}->getElementsByTagName( "component" ) )
