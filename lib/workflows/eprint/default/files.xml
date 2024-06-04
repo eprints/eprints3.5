@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<stage name="files" xmlns="http://eprints.org/ep3/workflow" xmlns:epc="http://eprints.org/ep3/control">
+  <component type="Upload" show_help="always" />
+  <component type="Documents">
+    <field ref="content" />
+    <field ref="format" />
+    <field ref="formatdesc" />
+    <field ref="security" />
+    <field ref="license" />
+    <field ref="date_embargo" />
+    <field ref="embargo_reason" />
+    <field ref="language" />
+  </component>
+</stage>
