@@ -610,16 +610,16 @@ sub load_workflow_file
 	$stages_dir =~ s/\.xml$//;
 	if ( -d $stages_dir )
 	{
-		my $dh;
-		opendir( $dh, $stages_dir ) || die "Could not open $stages_dir";
-		foreach my $sfn ( readdir( $dh ) )
+		my @stage_filenames = ();
+		foreach my $stage_node ( $doc->findnodes( '//*[local-name()="stage"]' ) )
 		{
-			next unless $sfn =~ m/^(.+)\.xml$/;
-			my $stage_filename = "$stages_dir/$sfn";
-			if ( -f $stage_filename )
+			next unless $stage_node->{ref};
+			my $stage_filename = "$stages_dir/" . $stage_node->{ref} . ".xml";
+			if ( -f $stage_filename && ! grep( /^$stage_filename$/, @stage_filenames )  )
 			{
 				my $stage_doc = EPrints::XML::parse_xml( $stage_filename );
 				$root->appendChild( $stage_doc->documentElement );
+				push @stage_filenames, $stage_filename;
 			}
 		}
 	}
