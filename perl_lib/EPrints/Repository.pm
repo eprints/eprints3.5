@@ -1744,25 +1744,25 @@ wants them to go. Printed to STDERR by default.
 
 sub log
 {
-	my( $self , $msg) = @_;
+	my( $self, $msg, %params ) = @_;
 
-	if( $self->config( 'show_timestamps_in_log' ) )
-        {
-                my @m2 = ();
-		my $timestamp = EPrints::Time::get_iso_timestamp();
-                foreach my $line ( split( '\n', $msg ) )
-                {
-                        push @m2,"[$timestamp] $line";
-                }
-                $msg = join("\n",@m2);
-        }
-
-	if( $self->config( 'show_ids_in_log' ) )
+	if( $self->config( 'show_ids_in_log' ) || $params{show_ids_in_log} )
 	{
 		my @m2 = ();
 		foreach my $line ( split( '\n', $msg ) )
 		{
 			push @m2,"[".$self->{id}."] ".$line;
+		}
+		$msg = join("\n",@m2);
+	}
+
+	if( $self->config( 'show_timestamps_in_log' ) || $params{show_timestamps_in_log} )
+	{
+		my @m2 = ();
+		my $timestamp = localtime();
+		foreach my $line ( split( '\n', $msg ) )
+		{
+			push @m2,"[$timestamp] $line";
 		}
 		$msg = join("\n",@m2);
 	}
