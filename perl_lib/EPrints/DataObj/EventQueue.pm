@@ -331,12 +331,20 @@ sub execute
 		}
 		if( !$self->is_set( "cleanup" ) || $self->value( "cleanup" ) eq "TRUE" )
 		{
+			if ( -e $self->{session}->config( 'variables_path' ) . "/developer_mode_on" && $self->{session}->config( 'developer_mode', 'log_successful_indexer_tasks' ) )
+			{
+				$self->message( "info", $self->{session}->xml->create_text_node( "with params = " . EPrints::Utils::tree_to_utf8( $self->render_value( 'params' ) ) . " succeeded." ) );
+			}
 			$self->remove();
 		}
 		else
 		{
 			if( $rc == EPrints::Const::HTTP_OK )
 			{
+				if ( -e $self->{session}->config( 'variables_path' ) . "/developer_mode_on" && $self->{session}->config( 'developer_mode', 'log_successful_indexer_tasks' ) )
+				{
+					$self->message( "info", $self->{session}->xml->create_text_node( "with params  = " . EPrints::Utils::tree_to_utf8( $self->render_value( 'params' ) ) . " succeeded." ) );
+				}
 				$self->set_value( "status", "success" );
 			}
 			else # NOT_FOUND
@@ -452,7 +460,7 @@ sub message
 		$self->{session}->xhtml->to_text_dump( $message ) );
 	$self->{session}->xml->dispose( $message );
 
-	$self->{session}->log( $msg );
+	$self->{session}->log( $msg, show_timestamps_in_log => 1, show_ids_in_log => 1 );
 }
 
 1;

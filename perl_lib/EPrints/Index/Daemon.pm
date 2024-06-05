@@ -629,6 +629,7 @@ sub run_index
 	MAINLOOP: while( 1 )
 	{
 		my $seen_action = 0;
+		my $always_respawn = 0;
 
 		foreach my $repo ( @repos )
 		{
@@ -637,6 +638,7 @@ sub run_index
 
 			# (re)init the repository object e.g. reconnect timed-out DBI
 			$repo->init_from_indexer( $self );
+			$always_respawn = 1 if ! $always_respawn && -f $repo->config( 'variables_path' ) . "/developer_mode_on" && $repo->config( 'developer_mode', 'always_respawn_indexer' );
 
 			# give the next code $timeout secs to complete
 			eval {
@@ -660,7 +662,7 @@ sub run_index
 		$self->tick;
 
 		# is it time to respawn yet?
-		last MAINLOOP if $self->should_respawn;
+		last MAINLOOP if $self->should_respawn || ( $always_respawn && $seen_action );
 
 		next MAINLOOP if $seen_action;
 
