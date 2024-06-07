@@ -608,7 +608,7 @@ sub load_workflow_file
 	my $root = $doc->documentElement;
 	my $stages_dir = $file;
 	$stages_dir =~ s/\.xml$//;
-	if ( -d $stages_dir )
+	if ( -d $stages_dir  && $doc->can( 'findnodes' ) )
 	{
 		my @stage_filenames = ();
 		foreach my $stage_node ( $doc->findnodes( '//*[local-name()="stage"]' ) )
