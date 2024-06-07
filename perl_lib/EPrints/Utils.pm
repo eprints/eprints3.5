@@ -81,7 +81,6 @@ $EPrints::Utils::REGEXP_ANY = '^.+$';
 
 BEGIN {
 	eval "use Term::ReadKey";
-	eval "use Compat::Term::ReadKey" if $@;
 }
 
 

@@ -160,7 +160,7 @@ use Data::Dumper;
 use Scalar::Util;
 use File::Temp;
 use JSON qw();
-eval { require Digest::SHA; 1 } || eval { require Compat::Digest::SHA; 1 };
+eval { require Digest::SHA; 1 };
 
 use Carp;
 
