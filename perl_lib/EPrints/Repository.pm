@@ -3561,7 +3561,7 @@ sub render_option_list
 
 =begin InternalDoc
 
-=item $option = $repository->render_single_option( $key, $desc, $selected )
+=item $option = $repository->render_single_option( $key, $desc, $selected, $disabled )
 
 Used by render_option_list.
 
@@ -3572,12 +3572,13 @@ Used by render_option_list.
 
 sub render_single_option
 {
-	my( $self, $key, $desc, $selected ) = @_;
+	my( $self, $key, $desc, $selected, $disabled ) = @_;
 
 	return $self->template_phrase( "view:Repository:render_single_option", { item => {
 		key => $key,
 		desc => $desc,
 		selected => $selected,
+		disabled => $disabled,
 	} } );
 }
 
