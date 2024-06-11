@@ -626,19 +626,21 @@ sub run_index
 		$self->{interrupt} = 1;
 	};
 
+	my $seen_previous_action = 0;
+
 	MAINLOOP: while( 1 )
 	{
 		my $seen_action = 0;
-		my $always_respawn = 0;
 
 		foreach my $repo ( @repos )
 		{
+			my $respawn_before_action = $repo->config( 'variables_path' ) . "/developer_mode_on" && $repo->config( 'developer_mode', 'always_respawn_indexer' ) && $seen_previous_action;
+
 			last MAINLOOP if $self->interrupted;
 			$self->log( 5, "** Processing queue from ".$repo->get_id );
 
 			# (re)init the repository object e.g. reconnect timed-out DBI
 			$repo->init_from_indexer( $self );
-			$always_respawn = 1 if ! $always_respawn && -f $repo->config( 'variables_path' ) . "/developer_mode_on" && $repo->config( 'developer_mode', 'always_respawn_indexer' );
 
 			# give the next code $timeout secs to complete
 			eval {
@@ -646,7 +648,14 @@ sub run_index
 				alarm($self->get_timeout);
 				my $indexer_did_something = $self->_run_index( $repo, {
 					loglevel => $self->{loglevel},
+					respawn_before_action => $respawn_before_action,
 				});
+				if ( $indexer_did_something == -1 )
+				{
+					$seen_previous_action = 0;
+					alarm(0);
+					last MAINLOOP;
+				}
 				$seen_action = 1 if $indexer_did_something;
 				alarm(0);
 			};
@@ -662,9 +671,13 @@ sub run_index
 		$self->tick;
 
 		# is it time to respawn yet?
-		last MAINLOOP if $self->should_respawn || ( $always_respawn && $seen_action );
+		last MAINLOOP if $self->should_respawn;
 
-		next MAINLOOP if $seen_action;
+		if ( $seen_action )
+		{
+			$seen_previous_action = 1;
+			next MAINLOOP if $seen_action;
+		}
 
 		# wait interval seconds. Check interrupt requests every 5 seconds.
 		my $stime = time();
@@ -701,18 +714,18 @@ sub run_index
 
 sub _run_index
 {
-	my( $self, $session ) = @_;
+	my( $self, $session, $opts ) = @_;
 
 	my $seen_action = 0;
 	my @events = $session->get_database->dequeue_events( 10 );
 	$self->log( 5, "** Empty task list" ) if !@events;
 	EVENT: foreach my $event (@events)
 	{
-		# reset events on interruption
-		if( $self->interrupted )
+		# reset events on interruption or developer mode wants respawn before running new events
+		if( $self->interrupted || $opts->{respawn_before_action} )
 		{
 			$event->set_value( "status", "waiting" );
-			$event->commit;
+			$event->commit( 1 );
 			next EVENT;
 		}
 		if( $self->{loglevel} >= 5 )
@@ -736,6 +749,7 @@ sub _run_index
 		$self->tick;
 	}
 
+	return -1 if $opts->{respawn_before_action} && @events;
 	return $seen_action; # seen action, even if it is to fail
 }
 

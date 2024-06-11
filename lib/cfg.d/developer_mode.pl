@@ -1,5 +1,5 @@
 $c->{developer_mode}->{always_reload_config} = 1;
-$c->{developer_mode}->{always_respawn_indexer} = 0;
+$c->{developer_mode}->{always_respawn_indexer} = 1;
 $c->{developer_mode}->{debug_sql} = 0;
 $c->{developer_mode}->{disable_abstracts_cache} = 1;
 $c->{developer_mode}->{disable_static_cache} = 1;
