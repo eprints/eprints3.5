@@ -83,206 +83,6 @@ The list of document content types.
 
 <!--
 
-The list of contributor types.
-
--->
-
-
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ACT">Actor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ADP">Adapter</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ANM">Animator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ANN">Annotator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/APP">Applicant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ARC">Architect</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ARR">Arranger</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ART">Artist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ASG">Assignee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ASN">Associated name</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ATT">Attributed name</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AUC">Auctioneer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AUT">Author</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AQT">Author in quotations or text extracts</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AFT">Author of afterword, colophon, etc.</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AUD">Author of dialog</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AUI">Author of introduction, etc.</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/AUS">Author of screenplay, etc.</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ANT">Bibliographic antecedent</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BND">Binder</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BDD">Binding designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BKD">Book designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BKP">Book producer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BJD">Bookjacket designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BPD">Bookplate designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/BSL">Bookseller</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CLL">Calligrapher</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTG">Cartographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CNS">Censor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CHR">Choreographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CNG">Cinematographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CLI">Client</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CLB">Collaborator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COL">Collector</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CLT">Collotyper</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CMM">Commentator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CWT">Commentator for written text</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COM">Compiler</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CPL">Complainant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CPT">Complainant-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CPE">Complainant-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CMP">Composer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CMT">Compositor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CCP">Conceptor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CND">Conductor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CSL">Consultant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CSP">Consultant to a project</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COS">Contestant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COT">Contestant-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COE">Contestant-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTS">Contestee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTT">Contestee-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTE">Contestee-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTR">Contractor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CTB">Contributor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CPC">Copyright claimant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CPH">Copyright holder</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CRR">Corrector</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CRP">Correspondent</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CST">Costume designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/COV">Cover designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CRE">Creator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/CUR">Curator of an exhibition</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DNC">Dancer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DTE">Dedicatee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DTO">Dedicator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DFD">Defendant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DFT">Defendant-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DFE">Defendant-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DGG">Degree grantor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DLN">Delineator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DPC">Depicted</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DPT">Depositor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DSR">Designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DRT">Director</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DIS">Dissertant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DST">Distributor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DNR">Donor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DRM">Draftsman</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/DUB">Dubious author</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/EDT">Editor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ELT">Electrotyper</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ENG">Engineer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/EGR">Engraver</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ETR">Etcher</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/EXP">Expert</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FAC">Facsimilist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FLM">Film editor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FPY">First party</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FRG">Forger</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FMO">Former owner</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/FND">Funder</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/HNR">Honoree</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/HST">Host</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ILU">Illuminator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ILL">Illustrator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/INS">Inscriber</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ITR">Instrumentalist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/IVE">Interviewee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/IVR">Interviewer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/INV">Inventor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LSA">Landscape architect</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LEN">Lender</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LIL">Libelant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LIT">Libelant-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LIE">Libelant-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LEL">Libelee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LET">Libelee-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LEE">Libelee-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LBT">Librettist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LSE">Licensee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LSO">Licensor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LGD">Lighting designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LTG">Lithographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/LYR">Lyricist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MFR">Manufacturer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MRK">Markup editor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MDC">Metadata contact</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MTE">Metal-engraver</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MOD">Moderator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MON">Monitor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/MUS">Musician</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/NRT">Narrator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/OPN">Opponent</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ORM">Organizer of meeting</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/ORG">Originator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/OTH">Other</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/OWN">Owner</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PPM">Papermaker</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PTA">Patent applicant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PTH">Patent holder</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PAT">Patron</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRF">Performer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PHT">Photographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PTF">Plaintiff</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PTT">Plaintiff-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PTE">Plaintiff-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PLT">Platemaker</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRT">Printer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/POP">Printer of plates</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRM">Printmaker</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRC">Process contact</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRO">Producer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRD">Production personnel</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PRG">Programmer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PFR">Proofreader</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PBL">Publisher</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PBD">Publishing director</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/PPT">Puppeteer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RCP">Recipient</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RCE">Recording engineer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RED">Redactor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/REN">Renderer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RPT">Reporter</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RTH">Research team head</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RTM">Research team member</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RES">Researcher</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RSP">Respondent</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RST">Respondent-appellant</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RSE">Respondent-appellee</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RPY">Responsible party</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RSG">Restager</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/REV">Reviewer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/RBR">Rubricator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SCE">Scenarist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SAD">Scientific advisor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SCR">Scribe</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SCL">Sculptor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SPY">Second party</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SEC">Secretary</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/STD">Set designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SGN">Signer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SNG">Singer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SPK">Speaker</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SPN">Sponsor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/STN">Standards body</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/STR">Stereotyper</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/STL">Storyteller</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/SRV">Surveyor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/TCH">Teacher</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/THS">Thesis advisor</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/TRC">Transcriber</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/TRL">Translator</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/TYD">Type designer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/TYG">Typographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/VDG">Videographer</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/VOC">Vocalist</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/WIT">Witness</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/WDE">Wood-engraver</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/WDC">Woodcutter</epp:phrase>
-    <epp:phrase id="contributor_type_typename_http://www.loc.gov/loc.terms/relators/WAM">Writer of accompanying material</epp:phrase>
-
-
-<!--
-
 The list of dc relations used by the relation field.
 
 -->
@@ -376,382 +176,8 @@ If it has a subtitle, it should be preceded with a colon [:]. Use capitals only 
     <epp:phrase id="eprint_fieldhelp_title">The title of the item. <epc:phrase ref="eprint_fieldname_title:hints"/></epp:phrase>
     <epp:phrase id="eprint_fieldhelp_title.book">The title of the book, usually found on the title page. <epc:phrase ref="eprint_fieldname_title:hints"/></epp:phrase>
 
-    <epp:phrase id="eprint_fieldname_abstract">Abstract</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_abstract">A summary of the items content. If the item has a formal abstract then that is what should be entered here. No complicated text formatting is possible.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_keywords">Uncontrolled Keywords</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_keywords">Natural language terms to describe the content of the item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_contributors">Contributors</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_contributors">Enter contributors' names along with type of contribution. If there are more than four contributors, click on the <em><epc:phrase ref="lib/metafield:more_spaces"/></em> button.</epp:phrase>
-    <epp:phrase id="eprint_fieldname_contributors_type">Contribution</epp:phrase>
-    <epp:phrase id="eprint_fieldname_contributors_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_contributors_name"/>
-    <epp:phrase id="eprint_fieldhelp_contributors_id"/>
-    <epp:phrase id="eprint_fieldhelp_contributors_name_family"/>
-    <epp:phrase id="eprint_fieldhelp_contributors_name_given"/>
-    <epp:phrase id="eprint_fieldhelp_contributors_type"/>
-
-    <epp:phrase id="eprint_fieldname_creators">Creators</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors">Editors</epp:phrase>
-<!-- tmp: new location after moving upward -->
-    <epp:phrase id="eprint_fieldhelp_editors">Specify the responsible person for publication.</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_name">Editors</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_editors_name">Please enter the names of the editors.<br/>This field is required if no creators are listed.</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_editors_id"/>
-    <epp:phrase id="eprint_fieldhelp_editors_name_family"/>
-    <epp:phrase id="eprint_fieldhelp_editors_name_given"/>
-<!-- tmp: new location after moving upward -->
-    <epp:phrase id="eprint_fieldname_editors_name_cite">(ed.)</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_names_cite">(eds.)</epp:phrase>
-    <epp:phrase id="eprint_fieldname_corp_creators">Corporate Creators</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_corp_creators">Companies that are considered authors of this item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_creators_name">Creators</epp:phrase>
-    <epp:phrase id="eprint_fieldname_creators_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_creators">Enter in the format given on the first page or title page. If there are more than four authors, click on the <em><epc:phrase ref="lib/metafield:more_spaces"/></em> button.
-<br/>Example: [<span class="ep_form_example">Smith</span>] [<span class="ep_form_example">J.P.</span>] [<span class="ep_form_example">j.smith@soton.ac.uk</span>]
-<br/>Example: [<span class="ep_form_example">Chance-Collins</span>] [<span class="ep_form_example">Chris</span>] [<span class="ep_form_example">chris@bar.com</span>]
-<br/>Example: [<span class="ep_form_example">Fu</span>] [<span class="ep_form_example">Yan-Li</span>] []
-<br/>Example: [<span class="ep_form_example">von Höpfner</span>] [<span class="ep_form_example">Ludwig G.</span>] []
-</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_creators_name"/>
-    <epp:phrase id="eprint_fieldhelp_creators_id"/>
-    <epp:phrase id="eprint_fieldhelp_creators_name_family"/>
-    <epp:phrase id="eprint_fieldhelp_creators_name_given"/>
-
-    <epp:phrase id="eprint_fieldname_pages">Number of Pages</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_pages">The total number of pages of the item.
-<br/>Example: <span class="ep_form_example">123</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_pagerange">Page Range</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_pagerange">Numerals only. The sequence of pages of the item. Do not enter <code>pp</code>.
-<br/>Example:  <span class="ep_form_example">21</span> to <span class="ep_form_example">34</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_series">Series Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_series">The name of the series to which the document belongs. Enter without punctuation.
-<br/>Example:  <span class="ep_form_example">Elsevier Oceanography Series</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_publication">Journal or Publication Title</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_publication">The title of a journal, publication or magazine.
-<br/>Example:  <span class="ep_form_example">Marine Biology</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_publisher">Publisher</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_publisher">A person, firm or corporate body responsible for placing an item on the market. Do not use abbreviations, enter in full.
-<br/>Example: <span class="ep_form_example">Oxford University Press</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_place_of_pub">Place of Publication</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_place_of_pub">Locality of the publisher. Use city or town then country. If city is not known then just use country.
-<br/>Example: <span class="ep_form_example">Southampton, UK</span>
-<br/>Example: <span class="ep_form_example">Brazil</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_event_location">Event Location</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_event_location">City or town then country where event was held. If city is not known then just use country.
-<br/>Example: <span class="ep_form_example">Rome, Italy</span>
-<br/>Example: <span class="ep_form_example">Greece</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_event_dates">Event Dates</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_event_dates">Start and end dates for the event
-<br/>Example: <span class="ep_form_example">13-15 Dec 2003</span>
-<br/>Example: <span class="ep_form_example">31 Oct - 02 Nov 1999</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_event_title">Event Title</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_event_title">The title of the conference or workshop.
-<br/>Example: <span class="ep_form_example">11th Conference of Pan-Hellenic Librarians</span>
-<br/>Example: <span class="ep_form_example">SIGIR 2001</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_event_type">Event Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_event_type">Specific type of the event.
-</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_event_type_conference">Conference</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_event_type_workshop">Workshop</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_event_type_other">Other</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_isbn">ISBN</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_isbn">Unique code identifying a book.
-<br/>Example: <span class="ep_form_example">1 871438 57 8</span>
-<br/>Example: <span class="ep_form_example">067157826X</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_issn">ISSN</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_issn">Unique code identifying a serial.
-<br/>Example: <span class="ep_form_example">1055-0143</span>
-<br/>Example: <span class="ep_form_example">0891-060X</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_pres_type">Presentation Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_pres_type">The type of the item presented at a conference or workshop.
-</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_paper">Paper</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_poster">Poster</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_speech">Speech</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_lecture">Lecture</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_keynote">Keynote</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pres_type_other">Other</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_book_title">Title of Book</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_book_title">Title usually found on the title page (first page of book).
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_official_url">Official URL</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_official_url">The canonical URL for this item. Some journals require you to provide a link to their version.
-<br/>Example: <span class="ep_form_example">http://www.stuffjournal.com/2003/3/</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_related_url">Related URLs</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_related_url">URLs that are related to this item.</epp:phrase>
-    <epp:phrase id="eprint_fieldname_related_url_url">URL</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_related_url_url"/>
-    <epp:phrase id="eprint_fieldname_related_url_type">URL Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_related_url_type"/>
-    <epp:phrase id="eprint_fieldopt_related_url_type_pub">Publisher</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_related_url_type_org">Organisation</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_related_url_type_author">Author</epp:phrase>
-<!-- tmp: moved upward
-    <epp:phrase id="eprint_fieldhelp_editors">Specify the responsible person for publication.</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_name">Editors</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_editors_name">Please enter the names of the editors.<br/>
-This field is required if no creators are listed.
-</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_name_cite">(ed.)</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_names_cite">(eds.)</epp:phrase>
-    <epp:phrase id="eprint_fieldname_editors_id">Email</epp:phrase>
-     moved upward -->
-<!-- tmp: moved downward
-    <epp:phrase id="eprint_typename_thesis_cite">thesis</epp:phrase>
-     moved downward -->
-    <epp:phrase id="eprint_fieldname_date">Date</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_date">The date this EPrint was completed, submitted to a publisher, published or submitted for a Ph.D.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_date_type">Date Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_date_type">The event to which the date applies.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_date_type_published">Publication</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_date_type_published_online">Publication Online</epp:phrase>
-	<epp:phrase id="eprint_fieldopt_date_type_accepted">Acceptance</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_date_type_submitted">Submission</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_date_type_completed">Completion</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_dates">Dates</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_dates">Please enter at least one date - for <strong><epc:phrase ref="eprint_typename_article"/></strong> and <strong><epc:phrase ref="eprint_typename_conference_item"/></strong> deposits, you will need to enter at least the <strong>Accepted</strong> date.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_dates_date">Date</epp:phrase>
-    <epp:phrase id="eprint_fieldname_dates_date_type">Event</epp:phrase>
-
-    <epp:phrase id="eprint_fieldopt_dates_date_type_published">Published</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_dates_date_type_published_online">Published Online</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_dates_date_type_accepted">Accepted</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_dates_date_type_submitted">Submitted</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_dates_date_type_deposited">Deposited</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_dates_date_type_completed">Completed</epp:phrase>
-
-    <epp:phrase id="validate:datesdatesdates:duplicate_date_type"><epc:pin name="fieldname"/> contains more than one <epc:pin name="date_type"/> Date.</epp:phrase>
-    <epp:phrase id="validate:datesdatesdates:missing_accepted_date">You must enter an <strong>Accepted Date</strong> in <epc:pin name="fieldname"/></epp:phrase>
-    <epp:phrase id="validate:datesdatesdates:incomplete_accepted_date">You must fully complete the <strong>Accepted Date</strong> in <epc:pin name="fieldname"/> with a year, month and day.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_volume">Volume</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_volume">Enter the volume number of the journal or series in which your item appeared.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_number">Number</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_number">Enter the issue number of the journal or series in which your item appeared.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_id_number">Identification Number</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_id_number">The unique (case-sensitive) identification number of this item, or a DOI.</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_id_number.patent">The patent application number of this item.</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_id_number.monograph">The number, if any, of a technical report or similar item.</epp:phrase>
-
-    <epp:phrase id="validate:invalid_id_format"><epc:pin name="fieldname"/> has ID <epc:pin name="id_value"/> that is not a valid <epc:pin name="id_type"/>.</epp:phrase>
-    <epp:phrase id="validate:duplicate_id_type"><epc:pin name="fieldname"/> contains more than one <epc:pin name="id_type"/> ID.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_ids">Identifiers</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_ids">Please enter at least one ID. Setting its type and an optional note (e.g. if the ISSN is print or online).</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_ids_id">ID</epp:phrase>
-    <epp:phrase id="eprint_fieldname_ids_id_type">Type</epp:phrase>
-    <epp:phrase id="eprint_fieldname_ids_id_note">Note</epp:phrase>
-
-    <epp:phrase id="eprint_fieldopt_ids_id_type_doi">DOI</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ids_id_type_pmid">PubMed ID</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ids_id_type_pmcid">PMCID</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ids_id_type_isbn">ISBN</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ids_id_type_issn">ISSN</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_monograph_type">Monograph Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_monograph_type">Please select the specific type of this monograph.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_technical_report">Technical Report</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_project_report">Project Report</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_documentation">Documentation</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_manual">Manual</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_working_paper">Working Paper</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_discussion_paper">Discussion Paper</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_monograph_type_other">Other</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_ispublished">Status</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_ispublished">Please state here whether your deposit has been published, is currently in the process of being published (<strong>in press</strong>), or has not been previously published.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ispublished_unpub">Unpublished</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ispublished_submitted">Submitted</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ispublished_inpress">In Press</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_ispublished_pub">Published</epp:phrase>
-
-
-    <epp:phrase id="eprint_fieldname_refereed">Refereed</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_refereed">Please indicate whether this version of the work been refereed below.</epp:phrase>
-    <epp:phrase id="eprint_radio_refereed_true">Yes, this version has been refereed.</epp:phrase>
-    <epp:phrase id="eprint_radio_refereed_false">No, this version has not been refereed.</epp:phrase>
-    <epp:phrase id="eprint_radio_refereed"><label><epc:pin name="true"/><epc:phrase ref="eprint_radio_refereed_true"/></label><br/><label><epc:pin name="false"/><epc:phrase ref="eprint_radio_refereed_false"/></label></epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_referencetext">References</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_referencetext">You are strongly encouraged to paste in the reference list of your item into the box below. It may be used to link your item to those it cites and to those that cite it.</epp:phrase>
-
     <epp:phrase id="eprint_fieldname_subjects">Subjects</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_subjects">Please select at least one main subject category, and optionally up to two other subject categories you think are appropriate for your submission, from the list below.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_note">Additional Information</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_note">If you think you can specify some useful information about your deposit that can't be entered anywhere else, please enter it here. This information <strong>will</strong> appear on the public summary page for this item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_suggestions">Comments and Suggestions</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_suggestions">Any comments to the editor. This information <strong>will not</strong> be displayed to the public.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_department">Department</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_department">Please enter the department from which the item originated.
-<br/>Example: <span class="ep_form_example">School of Electronics and Computer Science</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_institution">Institution</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_institution">Please enter the institution from which the item originated.
-<br/>Example: <span class="ep_form_example">University of Southampton</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_thesis_type">Thesis Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_thesis_type">Please select the thesis type.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_diploma">Diploma</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_masters">Masters</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_doctoral">Doctoral</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_postdoctoral">Post-Doctoral</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_type_other">Other</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_thesis_name">Thesis Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_thesis_name">Please select the thesis name.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_name_mphil">MPhil</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_name_phd">PhD</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_name_dphil">DPhil</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_thesis_name_other">Other</epp:phrase>
-
-
-    <epp:phrase id="eprint_fieldname_patent_applicant">Patent Applicant</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_patent_applicant">The name of the applicant to whom the patent was granted. May be a person or an organisation.
-<br/>Example: <span class="ep_form_example">Purdue Research Institute</span>
-<br/>Example: <span class="ep_form_example">John K. Ducklingson</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_full_text_status">Full Text Status</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_full_text_status"/>
-    <epp:phrase id="eprint_fieldopt_full_text_status_public">Public</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_full_text_status_none">None</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_full_text_status_restricted">Restricted</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_contact_email">Contact Email Address</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_contact_email">The contact email address for this item. If the full-text is not available to the public, then requests to view the full-text will be sent to this email. The email address will not be made public.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_funders">Funders</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_funders">The sponsoring bodies who contributed funding for the creation of this item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_projects">Projects</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_projects">The names or codes of the projects that created this item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_divisions">Divisions</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_divisions">The divisions with which this item should be associated.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_output_media">Media of Output</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_output_media">The media of output.
-<br/>Example: <span class="ep_form_example">CD-ROM</span>
-<br/>Example: <span class="ep_form_example">DVD</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_exhibitors">Exhibitors</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_exhibitors">The exhibitors</epp:phrase>
-    <epp:phrase id="eprint_fieldname_exhibitors_name">Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_exhibitors_name">The names of the exhibitors</epp:phrase>
-    <epp:phrase id="eprint_fieldname_exhibitors_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_exhibitors_id">Email of the exhibitors</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_num_pieces">Number of Pieces</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_num_pieces">The number of pieces exhibited.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_composition_type">Composition Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_composition_type">The type of the composition
-<br/>Example: <span class="ep_form_example">Concerto</span>
-<br/>Example: <span class="ep_form_example">Opera</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_producers">Producers</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_producers">The producers of the performance/composition</epp:phrase>
-    <epp:phrase id="eprint_fieldname_producers_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_producers_id">Email of the producers</epp:phrase>
-    <epp:phrase id="eprint_fieldname_producers_name">Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_producers_name">The name of the producers</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_conductors">Conductors</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_conductors">The conductors of the performance/composition</epp:phrase>
-    <epp:phrase id="eprint_fieldname_conductors_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_conductors_id">Email of the conductors</epp:phrase>
-    <epp:phrase id="eprint_fieldname_conductors_name">Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_conductors_name">The name of the conductors</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_accompaniment">Accompaniment</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_accompaniment">Example: <span class="ep_form_example">BBC Singers</span></epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_lyricists">Lyricists</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_lyricists">The lyricists of the composition</epp:phrase>
-    <epp:phrase id="eprint_fieldname_lyricists_id">Email</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_lyricists_id">Email of the lyricists</epp:phrase>
-    <epp:phrase id="eprint_fieldname_lyricists_name">Name</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_lyricists_name">Name of the lyricists</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_data_type">Type of Data</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_data_type">
-<br/>Example: <span class="ep_form_example">Geospatial</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_copyright_holders">Copyright Holders</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_copyright_holders">A person, firm or corporate body which holds the copyright for the item.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_pedagogic_type">Pedagogic Type</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_pedagogic_type">The pedagogic type that defines the resource.</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_presentation">Presentation</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_activity">Activity</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_case">Case</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_enquiry">Enquiry</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_problem">Problem</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_collaboration">Collaboration</epp:phrase>
-    <epp:phrase id="eprint_fieldopt_pedagogic_type_communication">Communication</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_completion_time">Completion Time</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_completion_time">The approximate learning time required to complete.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_task_purpose">Task Purpose</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_task_purpose">Outline of the main purpose of the tasks involved.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_skill_areas">Skill Areas</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_skill_areas">The skill areas covered.
-<br/>Example: <span class="ep_form_example">Language Learning</span>
-</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_learning_level">Learning Level</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_learning_level">The learning level. This should link to a national/international framework to allow easy comparison of resources.
-<br/>Example: <span class="ep_form_example">Breakthrough 1-3</span>
-<br/>Example: <span class="ep_form_example">GCSE</span>
-</epp:phrase>
-
 
 <!-- Sort Order names -->
 
@@ -767,62 +193,8 @@ This field is required if no creators are listed.
 
 <!-- Eprint Type Names, see also 'eprint' named set -->
 
-    <epp:phrase id="eprint_typename_book">Book</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_book">A book or a conference volume.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_book_section">Book Section</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_book_section">A chapter or section in a book.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_article">Article</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_article">An article in a journal, magazine, newspaper. Not necessarily peer-reviewed. May be an electronic-only medium, such as an online journal or news website.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_conference_item">Conference or Workshop Item</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_conference_item">A paper, poster, speech, lecture or presentation given at a conference, workshop or other event. If the conference item has been published in a journal or book then please use "Book Section" or "Article" instead.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_monograph">Monograph</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_monograph">A monograph. This may be a technical report, project report, documentation, manual, working paper or discussion paper.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_thesis">Thesis</epp:phrase>
-<!-- tmp: new location after moving downward -->
-    <epp:phrase id="eprint_typename_thesis_cite">thesis</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_thesis">A thesis or dissertation.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_patent">Patent</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_patent">A published patent. Do <em>not</em> include as yet unpublished patent applications.</epp:phrase>
-
     <epp:phrase id="eprint_typename_other">Other</epp:phrase>
     <epp:phrase id="eprint_optdetails_type_other">Something within the scope of the repository, but not covered by the other categories.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_artefact">Artefact</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_artefact">An artist's artefact or work product.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_exhibition">Show/Exhibition</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_exhibition">An artist's exhibition or site specific performance-based deposit.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_composition">Composition</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_composition">A musical composition.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_performance">Performance</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_performance">Performance of a musical event.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_image">Image</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_image">A digital photograph or visual image.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_video">Video</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_video">A digital video.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_audio">Audio</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_audio">A sound recording.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_dataset">Dataset</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_dataset">A bounded collection of quantitative data (e.g. spreadsheet or XML data file).</epp:phrase>
-
-    <epp:phrase id="eprint_typename_experiment">Experiment</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_experiment">Experimental data with intermediate analyses and summary results.</epp:phrase>
-
-    <epp:phrase id="eprint_typename_teaching_resource">Teaching Resource</epp:phrase>
-    <epp:phrase id="eprint_optdetails_type_teaching_resource">Lecture notes, exercises, exam papers or course syllabuses.</epp:phrase>
-
 
 
 <!-- Plugin/Screen/Admin/Config -->
@@ -1369,8 +741,10 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
 
         <epp:phrase id="eprint_fieldname_sword_depositor">SWORD Depositor</epp:phrase>
         <epp:phrase id="eprint_fieldhelp_sword_depositor">The username of the Depositor (for items sent through the SWORD interface)</epp:phrase>
+<!--
         <epp:phrase id="eprint_fieldname_sword_slug">SWORD Slug</epp:phrase>
         <epp:phrase id="eprint_fieldhelp_sword_slug">A (pseudo) unique ID suggested by the client when depositing through SWORD</epp:phrase>
+-->
 
 <!-- Dataset -->
 
@@ -2956,60 +2330,6 @@ Titles and Help for the System Fields
 </div>
 </div></epp:phrase>
 
-    <epp:phrase id="Plugin/Import/ExplodeArchive:input:form">Select an archive from your system: <epc:pin name="input_file_upload"/> e.g. my_photos.zip<br />
-Each file inside this archive will be created as an <b>individual</b> document inside the resulting eprint.</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import/DOI:help">Enter a DOI or DOIs, one per line e.g. doi:10.1006/jmbi.1998.2354</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import/DOI_UNIXREF:help" ref="Plugin/Screen/Import/DOI:help"/>
-    <epp:phrase id="Plugin/Screen/Import/ISIWoK:help">Enter an ISI query string:<br />
-AU = (Carr) and TI = (open access)<br />
-PY = 2006 and OG = (Cambridge)<br />
-</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import/ISIWoK:results">Results</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import/ISIWoK:duplicates"><strong>Possible duplicates: </strong></epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import/ISIWoK:action_import_single">Import</epp:phrase>
-
-    <epp:phrase id="Plugin/Import/DOI:bulk_input:form">
-<table>
-<tr>
-<td>Either enter DOIs (one per line):</td><td><epc:pin name="bulk_input_text_area"/></td>
-</tr><tr>
-<td><b>OR</b> select a file to import from:</td><td><epc:pin name="bulk_input_file_upload"/></td>
-</tr>
-</table>
-    </epp:phrase>
-    <epp:phrase id="Plugin/Import/BibTeX:input:form">
-<table>
-<tr>
-<td>Enter a BibTeX entry:</td><td><epc:pin name="input_text_area"/></td>
-</tr>
-</table>
-    </epp:phrase>
-    <epp:phrase id="Plugin/Import/BibTeX:bulk_input:form">
-<table>
-<tr>
-<td>Either cut-and-paste BibTeX entries into this box:</td><td><epc:pin name="bulk_input_text_area"/></td>
-</tr><tr>
-<td><b>OR</b> select a file to import from:</td><td><epc:pin name="bulk_input_file_upload"/></td>
-</tr>
-</table>
-    </epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import:input:form">
-<table>
-<tr>
-<td>Enter data to import:</td><td><epc:pin name="input_text_area"/></td>
-</tr>
-</table>
-    </epp:phrase>
-    <epp:phrase id="Plugin/Screen/Import:bulk_input:form">
-<table>
-<tr>
-<td><b>Either</b> paste data here:</td><td><epc:pin name="bulk_input_text_area"/></td>
-</tr><tr>
-<td><b>Or</b> select a file to import from:</td><td><epc:pin name="bulk_input_file_upload"/></td>
-</tr>
-</table>
-    </epp:phrase>
-
     <epp:phrase id="Plugin/Screen/Import:data">Paste data</epp:phrase>
     <epp:phrase id="Plugin/Screen/Import:data_help">Paste the data that you want to be imported in the text box below and then either test its validity or import the items it describes.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Import:upload">Upload from file</epp:phrase>
@@ -3037,11 +2357,6 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/Import:step2">Select import format</epp:phrase>
     <epp:phrase id="Plugin/Screen/Import:import_documents">Import full texts in addition to metadata if full text is available</epp:phrase>
 
-
-    <epp:phrase id="Plugin/Screen/Import/DOI_UNIXREF:data"/>
-    <epp:phrase id="Plugin/Screen/Import/DOI_UNIXREF:data_help"/>
-    <epp:phrase id="Plugin/Screen/Import/DOI:data"/>
-    <epp:phrase id="Plugin/Screen/Import/DOI:data_help"/>
     <epp:phrase id="Plugin/Screen/Import/Upload:upload" ref="Plugin/Screen/Import:upload"/>
     <epp:phrase id="Plugin/Screen/Import/Upload:upload_help" ref="Plugin/Screen/Import:upload_help"></epp:phrase>
     <epp:phrase id="Plugin/Screen/Import/Upload:encoding_label" ref="Plugin/Screen/Import:encoding_label"/>
@@ -3358,14 +2673,6 @@ PY = 2006 and OG = (Cambridge)<br />
 
     <!-- Import Plugins -->
 
-    <epp:phrase id="Plugin/Import/BibTeX:unsupported_cite_type">Skipping unsupported BibTeX citation type <epc:pin name="type"/></epp:phrase>
-    <epp:phrase id="Plugin/Import/BibTeX:skip_year">Skipping year '<epc:pin name="year"/>'</epp:phrase>
-    <epp:phrase id="Plugin/Import/BibTeX:skip_month">Skipping month '<epc:pin name="month"/>'</epp:phrase>
-
-    <epp:phrase id="Plugin/Import/EndNote:unsupported_cite_type">Skipping unsupported EndNote citation type <epc:pin name="type"/></epp:phrase>
-    <epp:phrase id="Plugin/Import/EndNote:bad_author">Could not parse author: <epc:pin name="author" /></epp:phrase>
-    <epp:phrase id="Plugin/Import/EndNote:bad_editor">Could not parse editor: <epc:pin name="editor" /></epp:phrase>
-
     <epp:phrase id="Plugin/Import/XML:unexpected_element">Unexpected element: &lt;<epc:pin name="name"/>&gt;</epp:phrase>
     <epp:phrase id="Plugin/Import/XML:unexpected_type">&lt;<epc:pin name="type"/>&gt; where &lt;<epc:pin name="expected"/>&gt; was expected inside &lt;<epc:pin name="fieldname"/>&gt;</epp:phrase>
     <epp:phrase id="Plugin/Import/XML:unknown_virtual">&lt;<epc:pin name="type"/>&gt; is an unknown virtual field inside &lt;<epc:pin name="fieldname"/>&gt;</epp:phrase>
@@ -3380,10 +2687,6 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Import/DefaultXML:invalid_xml_element">An Invalid XML/HTML element found, so field <code>&lt;<epc:pin name="field" />&gt;</code> could not be imported.</epp:phrase>
     <epp:phrase id="Plugin/Import/DefaultXML:file_imports_disabled">Attempt to import eprint with document data expressed as a local filename. This is a security hole in normal use, and is disabled. It *is* useful when bulk importing and may be enabled by setting <code>enable_file_imports</code>.</epp:phrase>
     <epp:phrase id="Plugin/Import/DefaultXML:file_not_exists">Could not locate file for import: <epc:pin name="href" />.</epp:phrase>
-    <epp:phrase id="Plugin/Import/DOI:invalid_doi">Unrecognised or invalid doi: <epc:pin name="doi" />.<br />Remote service status: <code><epc:pin name="status"/></code></epp:phrase>
-    <epp:phrase id="Plugin/Import/DOI:duplicate_doi"><strong>Duplicate DOI: <epc:pin name="doi" /></strong>.<br />This DOI already exists in the repository: <br /><epc:pin name="msg"/></epp:phrase>
-    <epp:phrase id="Plugin/Import/DOI_UNIXREF:invalid_doi" ref="Plugin/Import/DOI:invalid_doi"/>
-    <epp:phrase id="Plugin/Import/DOI_UNIXREF:duplicate_doi" ref="Plugin/Import/DOI:duplicate_doi"/>
 
     <!-- Convert plugins -->
 
@@ -4094,34 +3397,11 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="validate:embargo_check_security">An embargo date has been specified, but the document is visible to anyone. Check the <epc:pin name="fieldname">document visibility settings</epc:pin>.</epp:phrase>
 
 
-
-     <epp:phrase id="viewname_eprint_person">Person</epp:phrase>
-
-     <epp:phrase id="viewname_eprint_status">Status</epp:phrase>
-
      <epp:phrase id="viewname_eprint_subjects">Subject</epp:phrase>
      <!--<epp:phrase id="viewtitle_eprint_subjects_menu_1">Browse by Subject and Year</epp:phrase>-->
      <epp:phrase id="viewtitle_eprint_subjects_menu_2">Browse by Year where Subject is "<epc:pin name="value1" />"</epp:phrase>
      <!--<epp:phrase id="viewtitle_eprint_subjects_list">Items where Subject is "<epc:pin name="value1" />" and Year is <epc:pin name="value2" /></epp:phrase>-->
      <epp:phrase id="viewtitle_eprint_subjects_list">Items where Subject is "<epc:pin name="value1" />"</epp:phrase>
-
-     <epp:phrase id="viewname_eprint_year">Year</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_year_menu_1">Browse by Year</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_year_list">Items where Year is <epc:pin name="value1" /></epp:phrase>
-     <epp:phrase id="viewnull_eprint_year">Not Specified</epp:phrase>
-
-     <epp:phrase id="viewname_eprint_types">Type</epp:phrase>
-
-     <epp:phrase id="viewname_eprint_divisions">Division</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_divisions_menu_1">Browse by Division and Year</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_divisions_menu_2">Browse by Year where Division is "<epc:pin name="value1" />"</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_divisions_list">Items where Division is "<epc:pin name="value1" />" and Year is <epc:pin name="value2" /></epp:phrase>
-
-     <epp:phrase id="viewname_eprint_creators">Author</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_creators_menu_1">Browse by Author</epp:phrase>
-     <epp:phrase id="viewtitle_eprint_creators_list">Items where Author is "<epc:pin name="value1" />"</epp:phrase>
-
-
 
     <epp:phrase id="warnings:no_documents">You have not <span class="ep_problem_field:documents">uploaded any documents</span>. While this is not essential, it is strongly recommended.</epp:phrase>
     <epp:phrase id="warnings:no_contact_email">Not all the documents in this record are available to the general public. We suggest you provide a <span class="ep_problem_field:contact_email">contact email address</span> which will allow people to request a copy directly from you.</epp:phrase>
@@ -4138,38 +3418,17 @@ PY = 2006 and OG = (Cambridge)<br />
 
 <!-- Submission Form Page Titles -->
 
-    <epp:phrase id="metapage_title_type">Type</epp:phrase>
     <epp:phrase id="metapage_title_files">Upload</epp:phrase>
     <epp:phrase id="metapage_title_core">Details</epp:phrase>
-    <epp:phrase id="metapage_title_pubinfo">Publication</epp:phrase>
-    <epp:phrase id="metapage_title_status">Status</epp:phrase>
-    <epp:phrase id="metapage_title_event">Event</epp:phrase>
-    <epp:phrase id="metapage_title_abstract">Abstract</epp:phrase>
     <epp:phrase id="metapage_title_subjects">Subjects</epp:phrase>
-    <epp:phrase id="metapage_title_notes">Extras</epp:phrase>
-    <epp:phrase id="metapage_title_local">Custom</epp:phrase>
 
-    <epp:phrase id="archive:workflow:stage:type:title" ref="metapage_title_type"/>
     <epp:phrase id="archive:workflow:stage:files:title" ref="metapage_title_files"/>
     <epp:phrase id="archive:workflow:stage:core:title" ref="metapage_title_core"/>
-    <epp:phrase id="archive:workflow:stage:pubinfo:title" ref="metapage_title_pubinfo"/>
-    <epp:phrase id="archive:workflow:stage:status:title" ref="metapage_title_status"/>
-    <epp:phrase id="archive:workflow:stage:event:title" ref="metapage_title_event"/>
-    <epp:phrase id="archive:workflow:stage:abstract:title" ref="metapage_title_abstract"/>
     <epp:phrase id="archive:workflow:stage:subjects:title" ref="metapage_title_subjects"/>
-    <epp:phrase id="archive:workflow:stage:notes:title" ref="metapage_title_notes"/>
-    <epp:phrase id="archive:workflow:stage:local:title" ref="metapage_title_local"/>
 
-    <epp:phrase id="eprint:workflow:stage:type:title" ref="archive:workflow:stage:type:title"/>
     <epp:phrase id="eprint:workflow:stage:files:title" ref="archive:workflow:stage:files:title"/>
     <epp:phrase id="eprint:workflow:stage:core:title" ref="archive:workflow:stage:core:title"/>
-    <epp:phrase id="eprint:workflow:stage:pubinfo:title" ref="archive:workflow:stage:pubinfo:title"/>
-    <epp:phrase id="eprint:workflow:stage:status:title" ref="archive:workflow:stage:status:title"/>
-    <epp:phrase id="eprint:workflow:stage:event:title" ref="archive:workflow:stage:event:title"/>
-    <epp:phrase id="eprint:workflow:stage:abstract:title" ref="archive:workflow:stage:abstract:title"/>
     <epp:phrase id="eprint:workflow:stage:subjects:title" ref="archive:workflow:stage:subjects:title"/>
-    <epp:phrase id="eprint:workflow:stage:notes:title" ref="archive:workflow:stage:notes:title"/>
-    <epp:phrase id="eprint:workflow:stage:local:title" ref="archive:workflow:stage:local:title"/>
 
     <epp:phrase id="Plugin/Screen:render_action_img_suffix"> button</epp:phrase>
     <epp:phrase id="Plugin/Screen/Listing:title">View</epp:phrase>
@@ -4189,15 +3448,6 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/Workflow/Commit:save" ref="lib/submissionform:action_staff_save" />
     <epp:phrase id="Plugin/Screen/Workflow/Destroy:item_removed" ref="Plugin/Screen/EPrint/Remove:item_removed" />
     <epp:phrase id="Plugin/Screen/Workflow/Edit:form_must_post">Workflow forms can only update using POST method.</epp:phrase>
-
-    <epp:phrase id="eprint_fieldname_gscholar_datestamp">Datestamp</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_gscholar_datestamp"/>
-    <epp:phrase id="eprint_fieldname_gscholar_cluster">Cluster ID</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_gscholar_cluster"/>
-    <epp:phrase id="eprint_fieldname_gscholar_impact">Citations</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_gscholar_impact"/>
-    <epp:phrase id="eprint_fieldname_gscholar">Google Scholar</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_gscholar"/>
 
     <epp:phrase id="template/navigation:home">Home</epp:phrase>
     <epp:phrase id="template/navigation:about">About</epp:phrase>
@@ -4277,12 +3527,8 @@ PY = 2006 and OG = (Cambridge)<br />
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:help">Attempt to extract the following information from this document:</epp:phrase>
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:action_merge">Merge with existing data</epp:phrase>
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:action_replace">Replace existing data</epp:phrase>
-    <epp:phrase id="Plugin/Import/OpenXML:action_metadata">Metadata</epp:phrase>
-    <epp:phrase id="Plugin/Import/OpenXML:action_media">Generated media (images etc.)</epp:phrase>
-    <epp:phrase id="Plugin/Import/OpenXML:action_bibliography">Bibliography</epp:phrase>
-    <epp:phrase id="Plugin/Import/PDF:action_bibliography" ref="Plugin/Import/OpenXML:action_bibliography"/>
-    <epp:phrase id="Plugin/Import/PDF:action_metadata" ref="Plugin/Import/OpenXML:action_metadata"/>
-    <epp:phrase id="Plugin/Import/OpenXML:zip_failed">Failed to process file - perhaps it isn't an OpenXML document?</epp:phrase>
+    <epp:phrase id="Plugin/Import/PDF:action_bibliography">Bibliography</epp:phrase>
+    <epp:phrase id="Plugin/Import/PDF:action_metadata">Metadata</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:filename_label">Filename</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:add_file">Add File</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:add_directory">Add Directory</epp:phrase>
@@ -4451,9 +3697,6 @@ PY = 2006 and OG = (Cambridge)<br />
 
     <epp:phrase id="summary_page:actions"><h2 id="actions"><epc:phrase ref="Plugin/Screen/EPrint/Actions:title"/> (login required)</h2></epp:phrase>
     <epp:phrase id="summary_page:download">Download</epp:phrase>
-
-    <epp:phrase id="limit_names_shown">et al.</epp:phrase>
-	<epp:phrase id="limit_names_shown_label">Show All <epc:pin name="field"/></epp:phrase>
 
     <epp:phrase id="Plugin/Screen/Admin/TemplateTest:title">Template Tests</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/TemplateTest:description">View the template tests for this repository.</epp:phrase>
