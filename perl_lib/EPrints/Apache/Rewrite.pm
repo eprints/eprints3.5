@@ -157,7 +157,7 @@ sub handler
 				print $fh encode_json( $request_times );
 				close $fh;
 			}
-			print $repository->log( $r->$method . " " . $r->$uri . " took $duration microseconds for " . $r->$status . " response." ) if ( ref( $r ) eq "Apache2::RequestRec" && -e $repository->config( 'variables_path' ) . "/developer_mode_on" && $repository->config( 'developer_mode', 'log_request_durations' ) );
+			print $repository->log( $r->method . " " . $r->uri . " took $duration microseconds for " . $r->status . " response." ) if ( ref( $r ) eq "Apache2::RequestRec" && -e $repository->config( 'variables_path' ) . "/developer_mode_on" && $repository->config( 'developer_mode', 'log_request_durations' ) );
 
 		}, $r);
 	}
