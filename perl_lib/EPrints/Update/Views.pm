@@ -184,9 +184,6 @@ use Digest::MD5;
 use Unicode::Collate;
 use EPrints::Const qw/ :http /;
 
-# TODO replace this with a system config
-our $DEBUG = 0;
-
 use strict;
 
 my $MAX_ITEMS = 2000;
@@ -230,9 +227,6 @@ sub update_view_file
 			$age = undef if( $target_timestamp < $poketime );
 		}		
 	}
-
-# TODO replace this with a system config
-undef $age if $DEBUG;
 
 	# 'view', view-id, escaped path values
 	my( undef, $viewid, @view_path ) = split '/', $localpath;
