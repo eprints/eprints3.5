@@ -2221,7 +2221,7 @@ sub fieldlist_sizes
 	foreach my $menu_field ( @{$menus_fields->[$menu_level]} )
 	{
 		my $field = $dataset->field( $menu_field->name ) ;
-		if ( $field->{top} )
+		if ( $field->get_property( 'top' ) )
 		{
 			push @top_path_values, $field->{top};
 		}
