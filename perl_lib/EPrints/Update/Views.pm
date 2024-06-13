@@ -2220,10 +2220,10 @@ sub fieldlist_sizes
 	my @top_path_values = ();
 	foreach my $menu_field ( @{$menus_fields->[$menu_level]} )
 	{
-		my $field = $dataset->field( $menu_field->name ) ;
-		if ( $field->get_property( 'top' ) )
+		my $field = $dataset->field( $menu_field->name );
+		if ( $field->has_property( 'top' ) && $field->get_property( 'top' ) )
 		{
-			push @top_path_values, $field->{top};
+			push @top_path_values, $field->get_property( 'top' );
 		}
 	}
 	$path_values = \@top_path_values if scalar @top_path_values;
