@@ -164,9 +164,27 @@ sub perform_search
 	my $processor = $self->{processor};
 	my $search = $processor->{search};
 
-	# dirty hack to pass the internal search through to owned_eprints_list
+	my $session = $self->{session};
+
+    # Make sure you have the search order now as reorder expensive when many items
+	my $sort_order = $search->{order};
+	$sort_order = $session->param( "_buffer_order" ) unless $sort_order;
+	unless ( $sort_order )
+	{
+		my $ds = $session->dataset( 'eprint' );
+		my $columns = $self->get_sort_columns( $session, $ds );
+		foreach my $sort_col ( @$columns )
+		{
+			next if !defined $sort_col;
+			my $field = $ds->get_field( $sort_col );
+			next if !defined $field;
+			$sort_order = $field->should_reverse_order ? "-$sort_col" : $sort_col;
+			last;
+		}
+	}
+
 	my $list = $self->{session}->current_user->owned_eprints_list( %$search,
-		custom_order => $search->{order}
+		custom_order => $sort_order,
 	);
 
 	return $list;
@@ -230,15 +248,7 @@ sub render_items
 		};
 	}
 
-	my $columns = $session->current_user->get_value( "items_fields" );
-	@$columns = grep { $ds->has_field( $_ ) } @$columns;
-
-	if( !EPrints::Utils::is_set( $columns ) )
-	{
-		$columns = [ "eprintid","type","eprint_status","lastmod" ];
-		$session->current_user->set_value( "items_fields", $columns );
-		$session->current_user->commit;
-	}
+	my $columns = $self->get_sort_columns( $session, $ds );
 
 	my $final_row = {
 		columns => [],
@@ -360,6 +370,21 @@ sub render_items
 			add_column_option_list => $add_column_option_list,
 		}
 	});
+}
+
+sub get_sort_columns
+{
+	my ( $self, $session, $ds ) = @_;
+
+	my $columns = $session->current_user->get_value( "items_fields" );
+	@$columns = grep { $ds->has_field( $_ ) } @$columns;
+	if( !EPrints::Utils::is_set( $columns ) ) 
+	{
+		$columns = [ "eprintid","type","eprint_status","lastmod" ];
+		$session->current_user->set_value( "items_fields", $columns );
+		$session->current_user->commit;
+	}
+	return $columns;
 }
 
 
