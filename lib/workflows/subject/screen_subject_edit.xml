@@ -12,7 +12,7 @@ Use by Subject::Edit
   </flow>
 
   <stage name="main">
-	<component type="Field::Multi" show_help="never" surround="Default">
+	<component id="c_subject_details" type="Field::Multi" show_help="never" surround="Default">
 		<title><epc:print expr="subjectid" /></title>
 		<field ref="name" />
 		<field ref="depositable" />

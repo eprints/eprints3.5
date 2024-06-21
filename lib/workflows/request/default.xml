@@ -12,12 +12,12 @@ Use by cgi/request_doc
   </flow>
 
   <stage name="main">
-  	<component type="XHTML" surround="None">
+  	<component id="c_document_requested" type="XHTML" surround="None">
 		<div><epc:print expr="$eprint.citation()" /></div>
 		<epc:if test="is_set($document)"><div class="ep_block"><table style="margin: 0 auto;"><tr><td valign="center"><epc:print expr="$document.icon()" /></td><td><epc:print expr="$document.citation_link()" /><br /><epc:print expr="human_filesize($document.doc_size())" /></td></tr></table></div></epc:if>
 	</component>
-  	<component><field ref="requester_email" /></component>
-  	<component><field ref="reason" /></component>
+  	<component id="c_requester_email"><field ref="requester_email" /></component>
+  	<component id="c_reason"><field ref="reason" /></component>
 <!--
 
 To add a Captcha to document requests add a cfg.d containing:
@@ -28,7 +28,7 @@ $c->{recaptcha}->{public_key} = "your public key";
 
 Then uncomment the following line to add the captcha to the form:
 
-  	<component surround="None"><field ref="captcha" /></component>
+  	<component id="c_captcha" surround="None"><field ref="captcha" /></component>
 -->
   </stage>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <stage name="usertype" xmlns="http://eprints.org/ep3/workflow" xmlns:epc="http://eprints.org/ep3/control">
-    <component><field ref="usertype"/></component>
-    <component><field ref="username"/></component>
-    <component><field ref="roles"/></component>
+    <component id="c_usertype"><field ref="usertype"/></component>
+    <component id="c_username"><field ref="username"/></component>
+    <component id="c_roles"><field ref="roles"/></component>
 </stage>
