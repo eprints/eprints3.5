@@ -575,7 +575,7 @@ sub link_problem_xhtml
 
 sub load_all
 {
-	my( $path, $confhash ) = @_;
+	my( $path, $confhash, @lib_order ) = @_;
 
 	my $dh;
 	opendir( $dh, $path ) || die "Could not open $path";
@@ -589,37 +589,42 @@ sub load_all
 		if( -d $filename && $path =~ m/workflows$/ )
 		{
 			$confhash->{$fn} = {} if( !defined $confhash->{$fn} );
-			load_all( $filename, $confhash->{$fn} );
+			load_all( $filename, $confhash->{$fn}, @lib_order );
 			next;
 		}
 		if( $fn=~m/^(.*)\.xml$/ )
 		{
 			my $id = $1;
-			load_workflow_file( $filename, $id, $confhash );
+			load_workflow_file( $filename, $id, $confhash, @lib_order );
 		}
 	}
 }
 
 sub load_workflow_file
 {
-	my( $file, $id, $confhash ) = @_;
+	my( $file, $id, $confhash, @lib_order ) = @_;
 
 	my $doc = EPrints::XML::parse_xml( $file );
 	my $root = $doc->documentElement;
-	my $stages_dir = $file;
-	$stages_dir =~ s/\.xml$//;
-	if ( -d $stages_dir  && $doc->can( 'findnodes' ) )
+	if ( $doc->can( 'findnodes' ) )
 	{
-		my @stage_filenames = ();
-		foreach my $stage_node ( $doc->findnodes( '//*[local-name()="stage"]' ) )
+		my @stages_dirs = split( '/', $file );
+		my $stage_dir = $stages_dirs[-2] . '/' . $stages_dirs[-1];
+		$stage_dir =~ s/\.xml$//;
+		my @stages_found = ();
+                foreach my $stage_node ( $doc->findnodes( '//*[local-name()="stage"]' ) )
 		{
-			next unless $stage_node->{ref};
-			my $stage_filename = "$stages_dir/" . $stage_node->{ref} . ".xml";
-			if ( -f $stage_filename && ! grep( /^$stage_filename$/, @stage_filenames )  )
+			next unless $stage_node->{ref} && ! grep( /^$stage_node->{ref}$/, @stages_found );
+			foreach my $path ( reverse @lib_order )
 			{
-				my $stage_doc = EPrints::XML::parse_xml( $stage_filename );
-				$root->appendChild( $stage_doc->documentElement );
-				push @stage_filenames, $stage_filename;
+				my $stage_filename = "$path/$stage_dir/" . $stage_node->{ref} . ".xml";
+				if ( -f $stage_filename )
+				{
+					my $stage_doc = EPrints::XML::parse_xml( $stage_filename );
+					$root->appendChild( $stage_doc->documentElement );
+					push @stages_found, $stage_node->{ref};
+					last;
+				}
 			}
 		}
 	}

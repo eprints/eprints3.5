@@ -867,7 +867,7 @@ sub _load_workflows
 
 	foreach ( @lib_order )
 	{
-		EPrints::Workflow::load_all( $_, $self->{workflows} ) if -d $_;
+		EPrints::Workflow::load_all( $_, $self->{workflows}, @lib_order ) if -d $_;
 	}
 
 	return 1;
