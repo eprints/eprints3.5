@@ -201,7 +201,7 @@ sub render
 	my $list = $self->perform_search;
 
 	my $import_screen = $repo->plugin( "Screen::Import" );
-	my $has_eprints = $user->owned_eprints_list()->count > 0;
+	my $has_eprints = $list->count > 0 || $user->owned_eprints_list()->count > 0;
 
 	return $repo->template_phrase( "view:EPrints/Plugin/Screen/Items:render", { item => {
 		has_eprints => $has_eprints,
