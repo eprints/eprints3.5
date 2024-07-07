@@ -18,26 +18,15 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 	my $head = $repo->xml->create_document_fragment;
 
 	# dynamic CSS/JS settings
-	$head->appendChild( $repo->make_javascript(sprintf(<<'EOJ',
-var eprints_http_root = %s;
-var eprints_http_cgiroot = %s;
-var eprints_oai_archive_id = %s;
-var eprints_logged_in = %s;
-var eprints_logged_in_userid = %s; 
-var eprints_logged_in_username = %s; 
-var eprints_logged_in_usertype = %s; 
-var eprints_lang_id = %s;
-EOJ
-			(map { EPrints::Utils::js_string( $_ ) }
-				$repo->current_url( host => 1, path => 'static' ),
-				$repo->current_url( host => 1, path => 'cgi' ),
-				EPrints::OpenArchives::archive_id( $repo ) ),
-			defined $repo->current_user ? 'true' : 'false',
-			defined $repo->current_user ? $repo->current_user->get_id : 0,
-			defined $repo->current_user ? '"' . $repo->current_user->get_value("username") . '"' : '""',
-			defined $repo->current_user ? '"' . $repo->current_user->get_value("usertype") . '"' : '""', # is this safe to share?
-			defined $repo->{request} ? '"' . $repo->get_session_language( $repo->{request} ) . '"' : '""',
-		)) );
+	my $js_vars = "";
+	foreach my $var ( keys %{ $c->{template}->{js_vars} }  )
+	{
+		my $f = $c->{template}->{js_vars}->{$var};
+		my $value = &$f( $repo );
+		$value = EPrints::Utils::js_string( $value ) unless ( $value =~ m/^\d+$/ || $value =~ m/^(true|false)$/i );
+		$js_vars .= "var $var = $value;\n";
+	}
+	$head->appendChild( $repo->make_javascript( $js_vars ) );
 	$head->appendChild( $repo->xml->create_text_node( "\n    " ) );
 	my $style = $head->appendChild( $repo->xml->create_element( "style",
 			type => "text/css",
@@ -103,6 +92,19 @@ EOJ
 
 	return;
 }, priority => 1000, id =>'generate_template_head' );
+
+# JavaScript variables to be included in head
+$c->{template}->{js_vars} = {
+        eprints_http_root => sub { my ( $repo ) = @_;  return $repo->current_url( host => 1, path => 'static' ); },
+        eprints_http_cgiroot => sub { my ( $repo ) = @_;  return $repo->current_url( host => 1, path => 'cgi' ); },
+        eprints_oai_archive_id => sub { my ( $repo ) = @_; return EPrints::OpenArchives::archive_id( $repo ); },
+        eprints_logged_in => sub { my ( $repo ) = @_; return defined $repo->current_user ? 'true' : 'false'; },
+        eprints_logged_in_userid => sub { my ( $repo ) = @_; return defined $repo->current_user ? $repo->current_user->get_id : 0; },
+        eprints_logged_in_username => sub { my ( $repo ) = @_; return defined $repo->current_user ? $repo->current_user->get_value( 'username' ) : 0; },
+        eprints_logged_in_usertype => sub { my ( $repo ) = @_; return defined $repo->current_user ? $repo->current_user->get_value( 'usertype' ) : 0; },
+        eprints_staff_logged_in => sub { my ( $repo ) = @_; return defined $repo->current_user && $repo->current_user->is_staff ? 'true' :  'false'; },
+        eprints_lang_id => sub { my ( $repo ) = @_; return $repo->{request} ? $repo->get_session_language( $repo->{request} ) : '' },
+};
 
 =head1 COPYRIGHT
 
