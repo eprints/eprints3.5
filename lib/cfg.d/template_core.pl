@@ -19,7 +19,7 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 
 	# dynamic CSS/JS settings
 	my $js_vars = "";
-	my $template_js_vars = $repo->get_config( 'template', 'js_vars' );
+	my $template_js_vars = $repo->config( 'template', 'js_vars' );
 	foreach my $var ( keys %$template_js_vars )
 	{
 		my $f = $template_js_vars->{$var};
