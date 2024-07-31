@@ -19,9 +19,10 @@ $c->add_trigger( EP_TRIGGER_DYNAMIC_TEMPLATE, sub {
 
 	# dynamic CSS/JS settings
 	my $js_vars = "";
-	foreach my $var ( keys %{ $c->{template}->{js_vars} }  )
+	my $template_js_vars = $repo->get_config( 'template', 'js_vars' );
+	foreach my $var ( keys %$template_js_vars )
 	{
-		my $f = $c->{template}->{js_vars}->{$var};
+		my $f = $template_js_vars->{$var};
 		my $value = &$f( $repo );
 		$value = EPrints::Utils::js_string( $value ) unless ( $value =~ m/^\d+$/ || $value =~ m/^(true|false)$/i );
 		$js_vars .= "var $var = $value;\n";
