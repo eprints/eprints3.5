@@ -18,7 +18,7 @@ B<generate_le_cert> - Generates Let's Encrypt certificate and deploys it for an 
 
 =head1 SYNOPSIS
 
-B<generate_sitemap> I<repository_id> [B<options>]
+B<generate_le_cert> I<repository_id> [B<options>]
 
 =head1 DESCRIPTION
 
@@ -26,14 +26,14 @@ This script takes an existing EPrints repository that does not have HTTPS enable
 appropriate Apache and EPrints configuration to make the repository available over HTTPS.  This requires HTTP to be publicly accessible so
 that ACME challenges can be checked.
 
-HTTPS Apache configuration and certificate, keys, etc. will be added to the C<ssl/> directoy of the archives. Also a certificate file for
+HTTPS Apache configuration and certificate, keys, etc. will be added to the C<ssl/> directory of the archives. Also a certificate file for
 the account that manages generating and renewing certificate is added as C<cfg/lets_encrypt_account.pem> under the archive.
 
 If a certificate is already in place for the EPrints repository, this script will try to renew it but only if the certificate expires in
 fewer than 28 days. To automate renewals consider adding a cronjob similar to the one below to root's crontab, (substituting C<EPRINTS_PATH> 
 and C<ARCHIVE_ID> as appropriate):
 
-	01 23 * * * su -c "EPRINTS_PATH/bin/generate_le_cert ARCHIVE_ID --quiet" && apachectl graceful
+	01 23 * * * su -c "EPRINTS_PATH/bin/generate_le_cert ARCHIVE_ID --quiet" eprints && apachectl graceful
 
 =head1 ARGUMENTS
 
