@@ -81,7 +81,7 @@ Normally any attempt to define two fields with the same name will fail. However,
 #
 #  $self->{confid}
 #     The conf-id of the dataset to which this field belongs. If this
-#     field is not part of a dataset then this is just a string used 
+#     field is not part of a dataset then this is just a string used
 #     to find config info about this field. Most importantly the name
 #     and other information from the phrase file.
 #
@@ -124,7 +124,7 @@ $EPrints::MetaField::COLLATOR     = Unicode::Collate->new();
 
 =item $field = EPrints::MetaField->new( %properties )
 
-Create a new metafield. %properties is a hash of the properties of the 
+Create a new metafield. %properties is a hash of the properties of the
 field, with the addition of "dataset", or if "dataset" is not set then
 "confid" and "repository" must be provided instead.
 
@@ -146,7 +146,7 @@ sub new
 
 	###########################################
 	#
-	# Pre 2.4 compatibility 
+	# Pre 2.4 compatibility
 	#
 
 	# for when repository was called archive.
@@ -171,9 +171,9 @@ sub new
 
 	my $self = bless \%properties, $realclass;
 
-	if( defined $properties{dataset} ) 
-	{ 
-		$self->{confid} = $properties{dataset}->{confid}; 
+	if( defined $properties{dataset} )
+	{
+		$self->{confid} = $properties{dataset}->{confid};
 		$self->{repository} = $properties{dataset}->{repository};
 	}
 
@@ -331,14 +331,14 @@ END
 		# don't set a default, just leave it alone
 		return;
 	}
-	
+
 	if( $self->{field_defaults}->{$property} eq EP_PROPERTY_REQUIRED )
 	{
 		EPrints::abort( "Error in field property for ".$self->{dataset}->id.".".$self->{name}.": $property on a ".$self->{type}." metafield can't be undefined" );
 	}
 
 	if( $self->{field_defaults}->{$property} eq EP_PROPERTY_UNDEF )
-	{	
+	{
 		$self->{$property} = undef;
 		return;
 	}
@@ -425,7 +425,7 @@ sub render_name
 	# Allow for alternative field names for different types of eprint (or any data object with a type field).
 	if ( ref( $dataobj ) && $dataobj->can( 'exists_and_set' ) && $dataobj->exists_and_set('type') )
 	{
-		my $pos_phrasename = $dataobj->get_dataset_id . '_fieldname_' . $self->{name} . '.' . $dataobj->get_value('type'); 
+		my $pos_phrasename = $dataobj->get_dataset_id . '_fieldname_' . $self->{name} . '.' . $dataobj->get_value('type');
 		$phrasename = $pos_phrasename if $self->repository->get_lang->has_phrase( $pos_phrasename );
 	}
 
@@ -513,16 +513,35 @@ sub render_input_field
 
 	if( defined $self->{toform} )
 	{
-		$value = $self->call_property( "toform", $value, $session, $obj, $basename );
+		if ( $self->{multiple} )
+		{
+			my $new_value = [];
+			# Evaluate just in case toform function expects an arrayref
+			foreach my $v ( @$value )
+			{
+				eval {
+					$v = $self->call_property_eval( "toform", $v, $session, $obj, $basename );
+					push @$new_value, $v;
+				} or do {
+					$new_value = $self->call_property( "toform", $value, $session, $obj, $basename );
+					last;
+				};
+			}
+			$value = $new_value;
+		}
+		else
+		{
+			$value = $self->call_property( "toform", $value, $session, $obj, $basename );
+		}
 	}
 
 	if( defined $self->{render_input} )
 	{
 		return $self->call_property( "render_input",
 			$self,
-			$session, 
-			$value, 
-			$dataset, 
+			$session,
+			$value,
+			$dataset,
 			$staff,
 			$hidden_fields,
 			$obj,
@@ -530,10 +549,10 @@ sub render_input_field
 			$one_field_component );
 	}
 
-	return $self->render_input_field_actual( 
-			$session, 
-			$value, 
-			$dataset, 
+	return $self->render_input_field_actual(
+			$session,
+			$value,
+			$dataset,
 			$staff,
 			$hidden_fields,
 			$obj,
@@ -572,11 +591,6 @@ sub form_value
 	}
 
 	my $value = $self->form_value_actual( $session, $object, $basename );
-
-	if( defined $self->{fromform} )
-	{
-		$value = $self->call_property( "fromform", $value, $session, $object, $basename );
-	}
 
 	return $value;
 }
@@ -651,8 +665,8 @@ Field: $self->{name}, type: $self->{type}
 END
 	}
 
-	return( $self->{$property} ); 
-} 
+	return( $self->{$property} );
+}
 
 
 ######################################################################
@@ -691,10 +705,10 @@ sub is_type
 
 =item $xhtml = $field->render_value( $session, $value, [$alllangs], [$nolink], $object )
 
-Render the given value of this given string as XHTML DOM. If $alllangs 
+Render the given value of this given string as XHTML DOM. If $alllangs
 is true and this is a multilang field then render all language versions,
 not just the current language (for editorial checking). If $nolink is
-true then don't make this field a link, for example subject fields 
+true then don't make this field a link, for example subject fields
 might otherwise link to the subject view page.
 
 If render_value or render_single_value properties are set then these
@@ -711,11 +725,11 @@ sub render_value
 
 	if( defined $self->{render_value} )
 	{
-		return $self->call_property( "render_value", 
-			$session, 
-			$self, 
-			$value, 
-			$alllangs, 
+		return $self->call_property( "render_value",
+			$session,
+			$self,
+			$value,
+			$alllangs,
 			$nolink,
 			$object );
 	}
@@ -736,7 +750,7 @@ sub render_value_actual
 		else
 		{
 			# maybe should just return nothing
-			return $session->html_phrase( 
+			return $session->html_phrase(
 				"lib/metafield:unspecified",
 				fieldname => $self->render_name( $session ) );
 		}
@@ -744,10 +758,10 @@ sub render_value_actual
 
 	unless( $self->get_property( "multiple" ) )
 	{
-		return $self->render_value_no_multiple( 
-			$session, 
-			$value, 
-			$alllangs, 
+		return $self->render_value_no_multiple(
+			$session,
+			$value,
+			$alllangs,
 			$nolink,
 			$object );
 	}
@@ -756,7 +770,7 @@ sub render_value_actual
 
 	my $first = 1;
 	my $html = $session->make_doc_fragment();
-	
+
 	my @value = @{$value};
 	if( $self->{render_quiet} )
 	{
@@ -768,23 +782,23 @@ sub render_value_actual
 		if( $i > 0 )
 		{
 			my $phraseid = "lib/metafield:join_".$self->get_type;
-			if( $i == $#value && $session->get_lang->has_phrase( 
-						"$phraseid.last", $session ) ) 
-			{ 
+			if( $i == $#value && $session->get_lang->has_phrase(
+						"$phraseid.last", $session ) )
+			{
 				$phraseid .= ".last";
 			}
-			elsif( $i == 1 && $session->get_lang->has_phrase( 
-						"$phraseid.first", $session ) ) 
-			{ 
+			elsif( $i == 1 && $session->get_lang->has_phrase(
+						"$phraseid.first", $session ) )
+			{
 				$phraseid .= ".first";
 			}
 			$html->appendChild( $session->html_phrase( $phraseid ) );
 		}
-		$html->appendChild( 
-			$self->render_value_no_multiple( 
-				$session, 
-				$value[$i], 
-				$alllangs, 
+		$html->appendChild(
+			$self->render_value_no_multiple(
+				$session,
+				$value[$i],
+				$alllangs,
 				$nolink,
 				$object ) );
 	}
@@ -895,7 +909,7 @@ sub render_value_withopts
 		}
 		else
 		{
-			return $session->html_phrase( 
+			return $session->html_phrase(
 				"lib/metafield:unspecified",
 				fieldname => $self->render_name( $session ) );
 		}
@@ -920,8 +934,8 @@ sub render_value_withopts
 	if( defined $self->{render_single_value} )
 	{
 		return $self->call_property( "render_single_value",
-			$session, 
-			$self, 
+			$session,
+			$self,
 			$value,
 			$object );
 	}
@@ -935,7 +949,7 @@ sub render_value_withopts
 
 =item $out_list = $field->sort_values( $in_list, $langid )
 
-Sorts the in_list into order, based on the "order values" of the 
+Sorts the in_list into order, based on the "order values" of the
 values in the in_list. Assumes that the values are not a list of
 multiple values. [ [], [], [] ], but rather a list of single values.
 
@@ -975,6 +989,7 @@ sub sort_values
 	return \@out_list;
 }
 
+
 ######################################################################
 =pod
 
@@ -982,7 +997,7 @@ sub sort_values
 
 =item @values = $field->list_values( $value )
 
-Return a list of every distinct value in this field. 
+Return a list of every distinct value in this field.
 
  - for simple fields: return ( $value )
  - for multiple fields: return @{$value}
@@ -1010,7 +1025,6 @@ sub list_values
 
 	return $value;
 }
-
 
 
 ######################################################################
@@ -1043,10 +1057,68 @@ sub call_property
 	{
 		no strict 'refs';
 		return &{$v}(@args);
-	}	
+	}
 
 	return $self->{repository}->call( $v, @args );
 }
+
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $value2 = $field->call_property_eval( $property, @args )
+
+Call the method described by $property. Pass it the arguments and
+return the result. The methods assumes it is being called within an
+eval so will not handle any errors.  This may be useful if a user-
+defined function is being called where it is uncertain what @args
+it is expecting.
+
+The property may contain either a code reference, or the scalar name
+of a method.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+sub call_property_eval
+{
+    my( $self, $property, @args ) = @_;
+
+    my $v = $self->{$property};
+
+    return unless defined $v;
+
+    if( ref( $v ) eq "CODE" || $v =~ m/::/ )
+    {
+        no strict 'refs';
+        return &{$v}(@args);
+    }
+
+	my $fn = $self->{repository}->config( $v );
+
+	if( !defined $fn || ref $fn ne "CODE" )
+    {
+        # Can't log, as that could cause a loop.
+        Carp::carp( "Undefined or invalid function: $v\n" );
+        return;
+    }
+
+	my( $r, @r );
+    if( wantarray )
+    {
+        @r = &$fn( @args );
+    }
+    else
+    {
+        $r = &$fn( @args );
+    }
+    return wantarray ? @r : $r;
+}
+
 
 ######################################################################
 =pod
@@ -1199,7 +1271,7 @@ Return the columns that an index should be created over.
 sub get_sql_index
 {
 	my( $self ) = @_;
-	
+
 	return () unless( $self->get_property( "sql_index" ) );
 
 	return $self->get_sql_names;
@@ -1245,7 +1317,7 @@ this field.
 Unlike render_input_field, this function does not use the render_input
 property, even if it's set.
 
-The $obj is the current state of the object this field is associated 
+The $obj is the current state of the object this field is associated
 with, if any.
 
 =end InternalDoc
@@ -1341,10 +1413,10 @@ sub render_input_field_actual
             }
             $buttons = $session->make_element( "div", %opts );
             $buttons->appendChild( $row->{el} );
-        }	
+        }
 		$y++;
 	}
- 
+
 	my $extra_params = URI->new( 'http:' );
 	$extra_params->query( $self->{input_lookup_params} );
 	my @params = (
@@ -1392,15 +1464,15 @@ sub get_input_col_titles
 
 sub get_input_elements
 {
-	my( $self, $session, $value, $staff, $obj, $basename, $one_field_component ) = @_;	
+	my( $self, $session, $value, $staff, $obj, $basename, $one_field_component ) = @_;
 
 	my $n = length( $basename) - length( $self->{name}) - 1;
 	my $componentid = substr( $basename, 0, $n );
 
 	unless( $self->get_property( "multiple" ) )
 	{
-		return $self->get_input_elements_single( 
-				$session, 
+		return $self->get_input_elements_single(
+				$session,
 				$value,
 				$basename,
 				$staff,
@@ -1423,26 +1495,26 @@ sub get_input_elements
 		if( $self->{name} eq "editperms" )
 		{
 			$boxcount = $cnt;
-		}	
+		}
 		else
 		{
 			$boxcount = $cnt+$self->{input_add_boxes};
 		}
 	}
 	my $ibutton = $session->get_internal_button;
-	if( $ibutton eq $basename."_morespaces" ) 
+	if( $ibutton eq $basename."_morespaces" )
 	{
 		$boxcount += $self->{input_add_boxes};
 	}
 
 	my $imagesurl = $session->config( "rel_path" )."/style/images";
-	
+
 	my $rows = [];
 	for( my $i=1 ; $i<=$boxcount ; ++$i )
 	{
-		my $section = $self->get_input_elements_single( 
-				$session, 
-				$value->[$i-1], 
+		my $section = $self->get_input_elements_single(
+				$session,
+				$value->[$i-1],
 				$basename."_".$i,
 				$staff,
 				$obj,
@@ -1491,7 +1563,7 @@ sub get_input_elements
 	my $more = $session->make_doc_fragment;
 	$more->appendChild( $session->render_hidden_field(
 					$basename."_spaces",
-					$boxcount ) 
+					$boxcount )
 	);
 
 	if ($self->{input_add_boxes} > 0)
@@ -1566,7 +1638,7 @@ sub get_state_params
 	my $params = "";
 
 	my $ibutton = $session->get_internal_button;
-	if( $ibutton eq $basename."_morespaces" ) 
+	if( $ibutton eq $basename."_morespaces" )
 	{
 		my $spaces = $session->param( $basename."_spaces" );
 		$spaces += $self->{input_add_boxes};
@@ -1584,14 +1656,14 @@ sub get_input_elements_single
 {
 	my( $self, $session, $value, $basename, $staff, $obj, $one_field_component ) = @_;
 
-	return $self->get_basic_input_elements( 
-			$session, 
-			$value, 
-			$basename, 
+	return $self->get_basic_input_elements(
+			$session,
+			$value,
+			$basename,
 			$staff,
 			$obj,
 			$one_field_component );
-}	
+}
 
 
 
@@ -1601,7 +1673,7 @@ sub get_basic_input_elements
 
 	my $maxlength = $self->get_max_input_size;
 	my $size = ( $maxlength > $self->{input_cols} ?
-					$self->{input_cols} : 
+					$self->{input_cols} :
 					$maxlength );
 
 	# messy readonly flag values
@@ -1614,9 +1686,9 @@ sub get_basic_input_elements
 	{
 		$input = $self->call_property( "render_input",
 			$self,
-			$session, 
-			$value, 
-			$self->{dataset}, 
+			$session,
+			$value,
+			$self->{dataset},
 			$staff,
 			undef,
 			$obj,
@@ -1637,7 +1709,7 @@ sub get_basic_input_elements
 			push @classes, join('_', 'eptype', $self->{dataset}->base_id, $self->type);
 		}
 
-		$input = $session->render_noenter_input_field(  
+		$input = $session->render_noenter_input_field(
 			class=> join(' ', @classes),
                         name => $basename,
                         id => $basename,
@@ -1684,7 +1756,7 @@ sub get_describedby
 	my ( $self, $basename, $one_field_component ) = @_;
 
 	return "" if defined $self->{dataset} && !$self->repository->get_lang->has_non_empty_phrase( $self->{dataset}->confid . "_fieldhelp_" . $self->get_name );
-	return "" if defined $self->{parent} && !$self->repository->get_lang->has_non_empty_phrase( $self->{dataset}->confid . "_fieldhelp_" . $self->{parent}->get_name ); 
+	return "" if defined $self->{parent} && !$self->repository->get_lang->has_non_empty_phrase( $self->{dataset}->confid . "_fieldhelp_" . $self->{parent}->get_name );
 
 	my $basename_top = $basename;
         $basename_top =~ s/_\d+_/_/ if $self->{multiple} || ( defined $self->{parent} && $self->{parent}->{multiple} );
@@ -1715,7 +1787,7 @@ sub get_describedby
 
 
 ######################################################################
-# 
+#
 # $foo = $field->form_value_actual( $session, $object, $basename )
 #
 # undocumented
@@ -1757,7 +1829,7 @@ sub form_value_actual
 }
 
 ######################################################################
-# 
+#
 # $foo = $field->form_value_single( $session, $n, $object )
 #
 # undocumented
@@ -1769,12 +1841,22 @@ sub form_value_single
 	my( $self, $session, $basename, $object ) = @_;
 
 	my $value = $self->form_value_basic( $session, $basename, $object );
+
+        if( defined $self->{fromform} )
+        {
+		eval {
+	                $value = $self->call_property_eval( "fromform", $value, $session, $object, $basename );
+		} or do {
+			$value = $self->call_property( "fromform", [ $value ], $session, $object, $basename );
+		};
+        }
+
 	return undef unless( EPrints::Utils::is_set( $value ) );
 	return $value;
 }
 
 ######################################################################
-# 
+#
 # $foo = $field->form_value_basic( $session, $basename, $object )
 #
 # undocumented
@@ -1852,9 +1934,9 @@ sub is_browsable
 
 =item $values = $field->all_values( %opts )
 
-Return a reference to an array of all the values of this field. 
+Return a reference to an array of all the values of this field.
 For fields like "subject" or "set"
-it returns all the variations. For fields like "text" return all 
+it returns all the variations. For fields like "text" return all
 the distinct values from the database.
 
 Results are sorted according to the ordervalues of the current session.
@@ -1877,9 +1959,9 @@ sub get_values
 	my $langid = $opts{langid};
 	$langid = $session->get_langid unless( defined $langid );
 
-	my $unsorted_values = $self->get_unsorted_values( 
+	my $unsorted_values = $self->get_unsorted_values(
 		$session,
-		$dataset,	
+		$dataset,
 		%opts );
 
 	return $self->sort_values( $unsorted_values, $langid );
@@ -1953,7 +2035,7 @@ sub get_value_from_id
 =item $xhtml = $field->render_value_label( $value )
 
 Return an XHTML DOM object describing the given value. Normally this
-is just the value, but in the case of something like a "set" field 
+is just the value, but in the case of something like a "set" field
 this returns the name of the option in the current language.
 
 =end InternalDoc
@@ -1980,10 +2062,10 @@ sub get_value_label
 
 #	if( $self->is_type( "id" ) )
 #	{
-#		return $session->get_repository->call( 
-#			"id_label", 
-#			$self, 
-#			$session, 
+#		return $session->get_repository->call(
+#			"id_label",
+#			$self,
+#			$session,
 #			$value );
 #	}
 
@@ -2013,9 +2095,9 @@ sub ordervalue
 	{
 		no strict "refs";
 		return $self->call_property( "make_value_orderkey",
-			$self, 
-			$value, 
-			$session, 
+			$self,
+			$value,
+			$session,
 			$langid,
 			$dataset );
 	}
@@ -2025,7 +2107,7 @@ sub ordervalue
 		return $session->get_database->quote_ordervalue($self, $self->ordervalue_single( $value , $session , $langid, $dataset ));
 	}
 
-	my @r = ();	
+	my @r = ();
 	foreach( @$value )
 	{
 		push @r, $self->ordervalue_single( $_ , $session , $langid, $dataset );
@@ -2035,11 +2117,11 @@ sub ordervalue
 
 
 ######################################################################
-# 
+#
 # $ov = $field->ordervalue_single( $value, $session, $langid, $dataset )
-# 
+#
 # undocumented
-# 
+#
 ######################################################################
 
 sub ordervalue_single
@@ -2051,9 +2133,9 @@ sub ordervalue_single
 	if( defined $self->{make_single_value_orderkey} )
 	{
 		return $self->call_property( "make_single_value_orderkey",
-			$self, 
-			$value, 
-			$dataset ); 
+			$self,
+			$value,
+			$dataset );
 	}
 
 	return $self->ordervalue_basic( $value, $session, $langid );
@@ -2061,11 +2143,11 @@ sub ordervalue_single
 
 
 ######################################################################
-# 
+#
 # $ov = $field->ordervalue_basic( $value )
-# 
+#
 # undocumented
-# 
+#
 ######################################################################
 
 sub ordervalue_basic
@@ -2216,9 +2298,9 @@ sub characters
 
 	return if !$state->{in_value};
 
-	if ( $state->{depth} == 2 && !$self->property( "multiple" ) ) 
+	if ( $state->{depth} == 2 && !$self->property( "multiple" ) )
 	{
-		$self->{repository}->log( "Import Error: Field '".$self->{dataset}->id.".".$self->{name}."' is not a multiple field." );	
+		$self->{repository}->log( "Import Error: Field '".$self->{dataset}->id.".".$self->{name}."' is not a multiple field." );
 		return;
 	}
 
@@ -2301,21 +2383,21 @@ sub render_xml_schema_type
 sub render_search_input
 {
 	my( $self, $session, $searchfield, %opts ) = @_;
-	
+
 	my %text_options;
 
 	if( defined $self->{render_search_input} )
 	{
 		return $self->call_property( "render_search_input", $self, $session, $searchfield );
 	}
-	        
+
 	my $frag = $session->make_doc_fragment;
 
 	if( $searchfield->get_match ne "EX" )
 	{
 		my @text_tags = ( "ALL", "ANY" );
 
-		my %text_labels = ( 
+		my %text_labels = (
 			"ANY" => $session->phrase( "lib/searchfield:text_any" ),
 			"ALL" => $session->phrase( "lib/searchfield:text_all" ) );
 
@@ -2361,7 +2443,7 @@ sub from_search_form
 	}
 
 	return( $value, $match, $merge );
-}		
+}
 
 
 sub render_search_description
@@ -2387,10 +2469,10 @@ sub render_search_description
 		$value,
 		$merge,
 		$match );
-	
+
 	return $session->html_phrase(
 		$phraseid,
-		name => $sfname, 
+		name => $sfname,
 		value => $valuedesc );
 }
 
@@ -2399,9 +2481,9 @@ sub render_search_value
 	my( $self, $session, $value, $merge, $match ) = @_;
 
 	return $session->make_text( '"'.$value.'"' );
-}	
+}
 
-sub get_search_group { return 'basic'; } 
+sub get_search_group { return 'basic'; }
 
 
 # return system defaults for this field type
@@ -2527,7 +2609,7 @@ sub get_index_codes
 	}
 	my( $codes, $grepcodes, $ignored ) = ( [], [], [] );
 	foreach my $v (@{$value} )
-	{		
+	{
 		my( $c,$g,$i ) = $self->get_index_codes_basic( $session, $v );
 		push @{$codes},@{$c};
 		push @{$grepcodes},@{$g};
@@ -2558,7 +2640,7 @@ sub split_search_value
 {
 	my( $self, $session, $value ) = @_;
 
-#	return EPrints::Index::split_words( 
+#	return EPrints::Index::split_words(
 #			$session,
 #			EPrints::Index::apply_mapping( $session, $value ) );
 
@@ -2591,26 +2673,26 @@ sub get_search_conditions
 	if( $match eq "EX" )
 	{
 		if( !EPrints::Utils::is_set( $search_value ) )
-		{	
-			return EPrints::Search::Condition->new( 
-					'is_null', 
-					$dataset, 
+		{
+			return EPrints::Search::Condition->new(
+					'is_null',
+					$dataset,
 					$self );
 		}
 
-		return EPrints::Search::Condition->new( 
-				'=', 
-				$dataset, 
-				$self, 
+		return EPrints::Search::Condition->new(
+				'=',
+				$dataset,
+				$self,
 				$search_value );
 	}
 
 	return $self->get_search_conditions_not_ex(
-			$session, 
-			$dataset, 
-			$search_value, 
-			$match, 
-			$merge, 
+			$session,
+			$dataset,
+			$search_value,
+			$match,
+			$merge,
 			$search_mode );
 }
 
@@ -2628,20 +2710,20 @@ sub get_search_conditions_not_ex
 {
        my( $self, $session, $dataset, $search_value, $match, $merge,
                $search_mode ) = @_;
-       
+
        if( $match eq "EQ" )
        {
-               return EPrints::Search::Condition->new( 
-                       '=', 
+               return EPrints::Search::Condition->new(
+                       '=',
                        $dataset,
-                       $self, 
+                       $self,
                        $search_value );
        }
 
-       return EPrints::Search::Condition->new( 
+       return EPrints::Search::Condition->new(
                        'index',
                        $dataset,
-                       $self, 
+                       $self,
                        $search_value );
 }
 
@@ -2700,7 +2782,7 @@ sub validate
 	return @problems;
 }
 
-sub basename 
+sub basename
 {
   my ( $self, $prefix ) = @_;
 
