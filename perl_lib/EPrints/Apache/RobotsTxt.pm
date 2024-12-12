@@ -82,6 +82,41 @@ END
 		}
 	}
 
+	my @lines = split( '\n', $robots );
+	my $lineno = 0;
+	my $default_ua_config = "";
+	while ( lc( $lines[$lineno] // q() ) !~ /user-agent: \*/ )
+	{
+		$lineno++;
+  		last if $lineno >= @lines;
+	}
+	$lineno++;
+	while ( ( $lines[$lineno] // q() ) !~ /^\s*$/ )
+	{
+		$default_ua_config .= $lines[$lineno] ."\n";
+		$lineno++;
+	}
+
+	my $crawl_delay_default_secs = $repository->config( 'robotstxt', 'crawl_delay', 'default_seconds' ) || 0;
+	my $crawl_delay_secs = $repository->config( 'robotstxt', 'crawl_delay', 'seconds' ) || 10;
+	my $crawl_delay_uas = $repository->config( 'robotstxt', 'crawl_delay', 'user_agents' ) || [];
+	
+	$robots .= "\n" if $crawl_delay_default_secs || EPrints::Utils::is_set( $crawl_delay_uas );
+	
+	foreach my $ua ( @$crawl_delay_uas )
+	{
+		$robots .= "User-agent: $ua\n";
+	}
+	if ( EPrints::Utils::is_set( $crawl_delay_uas ) )
+	{
+		$robots .= "$default_ua_config" . "Crawl-delay: $crawl_delay_secs\n\n";	
+	}
+
+	if( $crawl_delay_default_secs )
+	{
+		$robots .= "User-agent: *\nCrawl-delay: $crawl_delay_default_secs\n\n";
+	}
+
 	my $sitemap = "Sitemap: ".$repository->config( 'base_url' )."/sitemap.xml";
 
 	# Only add standard sitemap if it is not already added.
