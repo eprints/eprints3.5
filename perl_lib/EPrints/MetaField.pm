@@ -1490,6 +1490,7 @@ sub get_input_elements
 	$value = [] if( !defined $value );
 	my $cnt = scalar @{$value};
 	#cjg hack hack hack
+	my $added_boxes = 0;
 	if( $boxcount<=$cnt )
 	{
 		if( $self->{name} eq "editperms" )
@@ -1499,10 +1500,11 @@ sub get_input_elements
 		else
 		{
 			$boxcount = $cnt+$self->{input_add_boxes};
+			$added_boxes = 1;
 		}
 	}
 	my $ibutton = $session->get_internal_button;
-	if( $ibutton eq $basename."_morespaces" )
+	if( $ibutton eq $basename."_morespaces" && !$added_boxes )
 	{
 		$boxcount += $self->{input_add_boxes};
 	}
