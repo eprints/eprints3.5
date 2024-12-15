@@ -232,7 +232,7 @@ sub load_repository_config_module
 		exit 1;
 	}
 
-	my $load_order = EPrints::Init::get_load_order( $info->{base_path}, $info->{archiveroot} );
+	my $load_order = EPrints::Init::get_load_order( $info->{base_path}, $info->{archiveroot}, 1 );
 	my @incpaths = EPrints::Init::get_lib_paths( $load_order, "plugins" );
 	EPrints::Init::update_inc_paths( \@incpaths, $info->{base_path} );
 

@@ -981,6 +981,14 @@ EOF
 END
 	close( ANAME );
 	print "Wrote $anamefile\n";
+
+	my $pkg_file = "$repodir/cfg/package.yml";
+	my $pkg_yml = YAML::Tiny->read( $pkg_file );
+	$pkg_yml->[0]->{id} = $repoid;
+	$pkg_yml->[0]->{name} = $config{archive_name};
+	$pkg_yml->write( $pkg_file );
+
+	print "Customised $pkg_file\n";
 }
 
 sub config_db

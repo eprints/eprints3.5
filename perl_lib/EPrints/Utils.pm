@@ -1671,7 +1671,7 @@ sub compare_version
 		$vnum += $v_bits[$i] if defined $v_bits[$i];
 	}
 	$current_version ||= EPrints->human_version;
-	my @cv_bits = split( /\./, EPrints->human_version );
+	my @cv_bits = split( /\./, $current_version );
 	my $cvnum = 0;
 	for ( my $i = 0; $i < 3 ; $i++ )
 	{

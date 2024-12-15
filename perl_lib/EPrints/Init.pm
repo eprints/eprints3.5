@@ -48,11 +48,12 @@ repository.
 
 sub get_load_order
 {
-        my ( $base_path, $archiveroot ) = @_;
+        my ( $base_path, $archiveroot, $test ) = @_;
 
-        my $includes = get_includes( get_package_config( $base_path, $archiveroot ) );
+        my $includes = get_includes( get_package_config( $base_path, $archiveroot, $test ) );
 
         my $load_order = [ $base_path . "/lib" ];
+
         foreach my $inc ( @{ $includes } )
         {
                 push @$load_order, $base_path . "/" . $inc;
@@ -81,33 +82,36 @@ from the YAML file.
 
 sub get_package_config
 {
-        my ( $base_path, $archiveroot ) = @_;
+	my ( $base_path, $archiveroot, $test ) = @_;
 
 	my $pkg_cfg;
+	my $repoid;
 
-        if ( $archiveroot )
-        {
-                my $pkg_filepath = $archiveroot . "/cfg/package.yml";
+	if ( $archiveroot )
+	{
+		my @arbits = split( '/', $archiveroot );
+		$repoid = $arbits[$#arbits];
+		my $pkg_filepath = $archiveroot . "/cfg/package.yml";
 
-	        if ( ! -f $pkg_filepath )
-        	{
-                	print STDERR "No file at: $pkg_filepath\n\n";
-	                exit 1;
-        	}
+		if ( ! -f $pkg_filepath )
+		{
+			print STDERR "ERROR: No file at: $pkg_filepath\n\n";
+			exit 1;
+		}
 
-	        my $yaml = YAML::Tiny->read( $pkg_filepath );
-        	if ( !defined $yaml || !defined $yaml->[0] )
-        	{
-                	print STDERR "Could not read YAML in $pkg_filepath file\n\n";
-	                exit 1;
-        	}
+		my $yaml = YAML::Tiny->read( $pkg_filepath );
+		if ( !defined $yaml || !defined $yaml->[0] )
+		{
+			print STDERR "ERROR: Could not read YAML in $pkg_filepath file\n\n";
+			exit 1;
+		}
 
-	        $pkg_cfg = $yaml->[0];
-        	if ( !defined $pkg_cfg->{flavour} || !defined $pkg_cfg->{name} || !defined $pkg_cfg->{includes} || !defined $pkg_cfg->{includes}->[0] )
-        	{
-                	print STDERR "Invalid file at: $pkg_filepath\n\n";
-	                exit 1;
-        	}
+		$pkg_cfg = $yaml->[0];
+		if ( !defined $pkg_cfg->{id} || !defined $pkg_cfg->{name} || !defined $pkg_cfg->{includes} || !defined $pkg_cfg->{includes}->[0] )
+		{
+			print STDERR "ERROR Invalid package file at: $pkg_filepath\n\n";
+			exit 1;
+		}
 	}
 	else
 	{
@@ -115,7 +119,81 @@ sub get_package_config
 		$pkg_cfg->{includes} = defined $conf->{includes} ? $conf->{includes} : [];
 	}
 
-        return $pkg_cfg;
+	return $pkg_cfg unless $test;
+
+	my %includes = ();
+	my $core_version = EPrints->VERSION =~ /^v/ ? substr(  EPrints->VERSION, 1 ) : join( '.', map { ord($_) } split( //,  EPrints->VERSION ) ) ;
+	my %inccomps = ( core => $core_version );
+	my @reqs = ();
+
+	foreach ( @{$pkg_cfg->{includes}} )
+	{
+		$includes{$_->{path}} = $_->{version};
+	}
+
+	foreach my $comp ( keys %includes )
+	{
+		my $comp_filepath = $base_path . '/' . $comp . '/' . 'component.yml';
+		unless ( -f $comp_filepath )
+		{
+			print STDERR "WARNING: No component.yml for path: $comp\n";
+			next;
+		}
+		my $cyaml = YAML::Tiny->read( $comp_filepath );
+		if ( !defined $cyaml || !defined $cyaml->[0] )
+		{
+			print STDERR "WARNING: Could not read YAML at: $comp_filepath\n";
+			next;
+		}
+		my $comp_cfg = $cyaml->[0];
+		if ( !defined $comp_cfg->{id} || !defined $comp_cfg->{name} || !defined $comp_cfg->{type} || !defined $comp_cfg->{version} )
+		{
+			print STDERR "WARNING: Invalid component file at: $comp_filepath\n";
+			next;
+		}
+		my ( $compare, $version ) = split( ' ', $includes{$comp} );
+		if ( !$version )
+		{
+			$version = $compare;
+			$compare = '=';
+		}
+		my $version_ok = EPrints::Utils::compare_version( $compare, $version, $comp_cfg->{version} );
+		unless ( $version_ok )
+		{
+			print STDERR "WARNING: Archive '$repoid' requires " . $includes{$comp} . " version $compare $version (got " . $comp_cfg->{version} . ").\n";
+		}
+		$inccomps{$comp_cfg->{id}} = $comp_cfg->{version};
+		if ( defined $comp_cfg->{requires} && defined $comp_cfg->{requires}->[0] )
+		{
+			foreach my $req ( @{$comp_cfg->{requires}} )
+			{
+				$req->{requirer} = $comp_cfg->{id};
+				push @reqs, $req;
+			}
+		}
+	}
+
+	foreach my $req ( @reqs )
+	{
+		unless ( $inccomps{$req->{component}} )
+		{
+			print STDERR "WARNING: Archive '$repoid' includes component '" . $req->{requirer} . "' that requires missing component '" . $req->{component} . "'.\n";
+			next;
+		}
+		my ( $compare, $version ) = split( ' ', $req->{version} );
+		if ( !$version )
+		{
+			$version = $compare;
+			$compare = '=';
+		}
+		my $version_ok = EPrints::Utils::compare_version( $compare, $version, $inccomps{$req->{component}} );
+		unless ( $version_ok )
+		{
+			print STDERR "WARNING: Archive '$repoid' includes component '" . $req->{requirer} ."' that requires '" . $req->{component} . "' version $compare $version (got " . $inccomps{$req->{component}} . ").\n";
+		}
+	}
+
+	return $pkg_cfg;
 }
 
 ######################################################################
@@ -141,7 +219,7 @@ sub get_includes
 	my @includes = ();
 	foreach my $include ( @{ $pkg_cfg->{includes} } )
 	{
-		push @includes, $include->{directory};
+		push @includes, $include->{path};
 	}
 	return \@includes;
 }

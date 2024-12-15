@@ -1,0 +1,13 @@
+---
+id: "core"
+name: "Core EPrints"
+type: "core"
+version: "3.5.0"
+version_alias: "TBD"
+maintainers: 
+  - name: "David R Newman"
+    email: "drn@ecs.soton.ac.uk"
+description: "This is the core codebase for EPrints."
+requires:
+usage: "Required for all EPrints installations."
+readme: "https://github.com/eprints/eprints3.5/blob/master/README.pod"
