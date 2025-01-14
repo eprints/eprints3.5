@@ -287,6 +287,7 @@ sub history_update_trigger
     revision=>$rev_number,
     action=>$action,
     details=>$details,
+    actor=>EPrints::Utils::tree_to_utf8( $user->render_description() )
   });
 
   $event->set_dataobj_xml( $obj ); # what is this?

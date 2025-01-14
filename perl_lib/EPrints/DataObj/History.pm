@@ -300,19 +300,22 @@ sub get_defaults
 	
 	$class->SUPER::get_defaults( $session, $data, $dataset );
 
-	my $user;
-	if( defined $data->{userid} )
+	if( !defined $data->{actor} )
 	{
-		$user = EPrints::DataObj::User->new( $session, $data->{userid} );
-	}
-	if( defined $user ) 
-	{
-		$data->{actor} = EPrints::Utils::tree_to_utf8( $user->render_description() );
-	}
-	else
-	{
-		# command line or not logged in. Store script name.
-		$data->{actor} = $0;
+		my $user;
+		if( defined $data->{userid} )
+		{
+			$user = EPrints::DataObj::User->new( $session, $data->{userid} );
+		}
+		if( defined $user )
+		{
+			$data->{actor} = EPrints::Utils::tree_to_utf8( $user->render_description() );
+		}
+		else
+		{
+			# command line or not logged in. Store script name.
+			$data->{actor} = $0;
+		}
 	}
 
 	return $data;
