@@ -875,6 +875,10 @@ sub remove
 		$saved_search->remove;
 	}
 
+	$self->{dataset}->run_trigger( EPrints::Const::EP_TRIGGER_REMOVED,
+		dataobj => $self,
+	);
+
 	# remove user record
 	my $user_ds = $self->{session}->get_repository->get_dataset( "user" );
 	$success = $success && $self->{session}->get_database->remove(
