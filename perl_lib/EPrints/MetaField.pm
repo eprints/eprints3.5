@@ -2112,7 +2112,8 @@ sub ordervalue
 	my @r = ();
 	foreach( @$value )
 	{
-		push @r, $self->ordervalue_single( $_ , $session , $langid, $dataset );
+		my $ovs = $self->ordervalue_single( $_ , $session , $langid, $dataset );
+		push @r, $ovs if defined $ovs;
 	}
 	return $session->get_database->quote_ordervalue($self, join( ":", @r ));
 }
