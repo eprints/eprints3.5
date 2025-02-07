@@ -278,6 +278,12 @@ sub history_update_trigger
   my $userid = defined $user ? $user->id : undef;
   my $rev_number = $obj->value( "rev_number" ) || 0;
 
+  my $actor;
+  if( defined $user )
+  {
+    $actor = EPrints::Utils::tree_to_utf8( $user->render_description() );
+  }
+
   my $event = $session->dataset( "history" )->create_dataobj(
   {
     _parent=>$obj,
@@ -287,6 +293,7 @@ sub history_update_trigger
     revision=>$rev_number,
     action=>$action,
     details=>$details,
+    actor=>$actor
   });
 
   $event->set_dataobj_xml( $obj ); # what is this?
