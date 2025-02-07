@@ -133,10 +133,6 @@ this record.
 The ID of the user who deposited this eprint (if any). Scripted importing
 could cause this not to be set.
 
-=item importid (itemref)
-
-The ID of the import from which this eprint was imported. (Rarely used).
-
 =item sword_depositor (itemref)
 
 The ID of the user who deposited this eprint through EPrints 
@@ -300,8 +296,6 @@ sub get_system_field_info
 
 	{ name=>"userid", type=>"itemref", 
 		datasetid=>"user", required=>0 },
-
-	{ name=>"importid", type=>"itemref", required=>0, datasetid=>"import" },
 
 	{ name=>"source", type=>"text", required=>0, },
 
