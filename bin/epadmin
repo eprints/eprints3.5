@@ -53,8 +53,6 @@ Where I<command> is one of:
 
 =item profile
 
-=item rebuild_triples
-
 =item recommit
 
 =item reorder
@@ -142,10 +140,6 @@ This is useful if you only setup the fulltext indexing after your repository is 
 =item B<epadmin> logout_all_users I<repository_id> [I<exclude_user_id>, I<exclude_user_id> ...]
 
 Logout all users from a repositiory.  Potentially excluding one or more user IDs.
-
-=item B<epadmin> rebuild_triples I<repository_id> [I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
-
-Queue all the records to have their RDF triple cache rebuilt. This may tie-up the indexer for some time on a large repository. Do this if you have made changes to the way RDF triples are produced from an EPrint. If a list of data object IDs are given then just rebuild triples for those. If an data object ID range is given (e.g. 10-20), then rebuild triples all existing items in that range.
 
 =item B<epadmin> recommit I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
 
@@ -378,7 +372,6 @@ else
 	elsif( $action eq "update_database_structure" ) { update_database_structure( $repoid ); }
 	elsif( $action eq "update" ) { update_database_structure( $repoid, $dry_run ); }
 	elsif( $action eq "upgrade_mysql_charset" ) { upgrade_mysql_charset( $repoid ); }
-	elsif( $action eq "rebuild_triples" ) { rebuild_triples( $repoid, @ARGV ); }
 	elsif( $action eq "recommit" ) 
 	{
 		my $datasetid = shift @ARGV;
@@ -1861,7 +1854,6 @@ You are about to erase from $repoid:
   - all eprints and documents data
   - all eprint files
   - all change history
-  - all rdf data
   - the document requests
   - the access logs
   - the generated html pages
@@ -1877,7 +1869,7 @@ END
 	}
 
 	erase_eprint_files( $repo );
-	foreach( "eprint", "history","access","request","document","file", "triple" )
+	foreach( "eprint", "history","access","request","document","file" )
 	{
 		reset_dataset( $repo, $_ );
 	}		
@@ -2312,52 +2304,6 @@ sub reorder
 		if( $noise >= 2 )
 		{
 			print STDERR "Re-ordered item: ".$dataset->id()."/".$item->id()."\n";
-		}
-	} );
-}
-
-sub rebuild_triples
-{
-	my( $repoid, $datasetid, @ids ) = @_;
-
-	my $repo = &repository( $repoid );
-
-	if( !defined $datasetid ) { $datasetid = "eprint"; }
-
-	my $dataset = $repo->dataset( $datasetid );
-	if( !defined $dataset )
-	{
-		print STDERR "Exiting due to unknown dataset.\n" if( $noise >= 1 );
-		exit 1;
-	}
-
-	my $list;
-	if( @ids )
-	{
-		@ids = expand_ids( $repo, $dataset, @ids ); 
-		$list = $dataset->list( \@ids );
-	}
-	else
-	{
-		$list = $dataset->search;
-	}
-
-	$list->map( sub {
-		my( $repository, $dataset, $item ) = @_;
-	
-		my $action = "clear_triples";
-		if( $item->get_value( "eprint_status" ) eq "archive" )
-		{
-			$action = "update_triples";
-		}
-		$repository->dataset( "event_queue" )->create_dataobj({
-			pluginid => "Event::RDF",
-			action => $action,
-			params => [$item->internal_uri],
-		});
-		if( $noise >= 2 )
-		{
-			print STDERR "Queued Triple Rebuild for item: ".$dataset->id()."/".$item->id()."\n";
 		}
 	} );
 }
@@ -3496,7 +3442,6 @@ sub upgrade_3_1_2_to_3_2_0
 
 	upgrade_cfg_files( $repo, [qw(
 	 	indexing.pl
-		rdf_license.pl
 	)]);
 
 	my $dataset = $repo->dataset( "subject" );
@@ -3523,28 +3468,11 @@ sub upgrade_3_2_1_to_3_2_2
 	my $dataset = $repo->dataset( "subject" );
 	$db->drop_table( $dataset->get_sql_rindex_table_name );
 
-	# Update new datasets (Triples)
+	# Update new datasets
 	update_datasets( $repo, $db );
 	update_counters( $repo, $db );
 
 	upgrade_add_files( $repo );
-
-	# Tell indexer to generate RDF dataset
-	my $all_eprints = $repo->dataset( "eprint" )->search;
-	$all_eprints->map( sub {
-			my( $repository, $dataset, $eprint ) = @_;
-	
-		my $action = "clear_triples";
-		if( $eprint->get_value( "eprint_status" ) eq "archive" )
-		{
-			$action = "update_triples";
-		}
-		$repository->dataset( "event_queue" )->create_dataobj({
-			pluginid => "Event::RDF",
-			action => $action,
-			params => [$eprint->internal_uri],
-		});
-	} );
 }
 
 sub upgrade_3_2_2_to_3_2_3

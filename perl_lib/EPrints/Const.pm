@@ -118,10 +118,6 @@ Continue normal processing.
 
 =item EP_TRIGGER_LOG
 
-=item EP_TRIGGER_BOILERPLATE_RDF
-
-=item EP_TRIGGER_REPOSITORY_RDF
-
 =item EP_TRIGGER_BEGIN
 
 =item EP_TRIGGER_BEGIN_REQUEST
@@ -160,8 +156,6 @@ Called after $dataset->create_dataobj( { ... } ).
 Called just before the object is removed from the database.
 
 	dataobj - the object being removed
-
-=item EP_TRIGGER_RDF
 
 =item EP_TRIGGER_DEFAULTS
 
@@ -317,8 +311,6 @@ use constant {
 # Repository triggers
 use constant {
 	EP_TRIGGER_LOG => 2,
-	EP_TRIGGER_BOILERPLATE_RDF => 3,
-	EP_TRIGGER_REPOSITORY_RDF => 4,
 	EP_TRIGGER_BEGIN => 5,
 	EP_TRIGGER_BEGIN_REQUEST => 6,
 	EP_TRIGGER_END_REQUEST => 7,
@@ -337,7 +329,6 @@ use constant {
 # Dataset triggers
 use constant {
 	EP_TRIGGER_CREATED => 100,
-	EP_TRIGGER_RDF => 101,
 	EP_TRIGGER_DEFAULTS => 102,
 	EP_TRIGGER_STATUS_CHANGE => 103,
 	EP_TRIGGER_BEFORE_COMMIT => 104,
@@ -452,8 +443,6 @@ use constant {
 	EP_TRIGGER_OK
 
 	EP_TRIGGER_LOG
-	EP_TRIGGER_BOILERPLATE_RDF
-	EP_TRIGGER_REPOSITORY_RDF
 	EP_TRIGGER_BEGIN
 	EP_TRIGGER_BEGIN_REQUEST
 	EP_TRIGGER_END_REQUEST
@@ -469,7 +458,6 @@ use constant {
 	EP_TRIGGER_THUMBNAIL_TYPES
 
 	EP_TRIGGER_CREATED
-	EP_TRIGGER_RDF
 	EP_TRIGGER_DEFAULTS
 	EP_TRIGGER_STATUS_CHANGE
 	EP_TRIGGER_BEFORE_COMMIT

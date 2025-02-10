@@ -451,32 +451,6 @@ sub handler
 		return OK;
 	}
 
-	# URI redirection
-	if( $uri =~ m! ^$urlpath/id/(repository|dump)$ !x )
-	{
-		my $file = $1;
-		my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
-		$accept = "application/rdf+xml" unless defined $accept;
-		my $can_accept = "list/triple";
-
-		my $plugin = content_negotiate_best_plugin( 
-			$repository, 
-			accept_header => $accept,
-			consider_summary_page => 0,
-			plugins => [$repository->get_plugins(
-				type => "Export",
-				is_visible => "all",
-				can_accept => $can_accept )]
-		);
-	
-		if( !defined $plugin )  { return NOT_FOUND; }
-
-		my $url = $repository->config( "perl_url" )."/export/$file/".
-			$plugin->get_subtype."/".$repository->get_id.$plugin->param("suffix");
-
-		return redir_see_other( $r, $url );
-	}
-
 	# Custom Handlers
 	if ( defined $repository->config( "custom_handlers" ) && keys %{$repository->config( "custom_handlers" )} )
 	{
@@ -489,33 +463,6 @@ sub handler
 				return $custom_handler->{function}->( $r );
 			}
 		}
-	}
-
-	if( $uri =~ m! ^$urlpath/id/([^\/]+)/(ext-.*)$ !x )
-	{
-		my $exttype = $1;
-		my $id = $2;
-		my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
-		$accept = "application/rdf+xml" unless defined $accept;
-
-		my $plugin = content_negotiate_best_plugin( 
-			$repository, 
-			accept_header => $accept,
-			consider_summary_page => 0,
-			plugins => [$repository->get_plugins(
-				type => "Export",
-				is_visible => "all",
-				can_accept => "list/triple" )]
-		);
-
-		if( !defined $plugin )  { return NOT_FOUND; }
-
-		my $fn = $id;
-		$fn=~s/\//_/g;
-		my $url = $repository->config( "perl_url" )."/export/$exttype/".
-			$id."/".$plugin->get_subtype."/$fn".$plugin->param("suffix");
-
-		return redir_see_other( $r, $url );
 	}
 
 	if ($repository->config("use_long_url_format"))

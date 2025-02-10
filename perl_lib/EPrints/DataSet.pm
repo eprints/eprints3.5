@@ -357,11 +357,6 @@ my $INFO = {
 		import => 1,
 		datestamp => "datestamp",
 	},
-	triple => {
-		sqlname => "triple",
-		class => "EPrints::DataObj::Triple",
-		import => 1,
-	},
 	request => {
 		sqlname => "request",	
 		class => "EPrints::DataObj::Request",

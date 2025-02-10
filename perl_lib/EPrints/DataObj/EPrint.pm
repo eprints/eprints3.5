@@ -614,23 +614,6 @@ sub update_triggers
 	if( $self->{non_volatile_change} )
 	{
 		$self->set_value( "lastmod", EPrints::Time::get_iso_timestamp() );
-
-		my $action = "clear_triples";
-		if( $self->value( "eprint_status" ) eq "archive" )
-		{
-			$action = "update_triples";
-		}
-
-		my $user = $self->{session}->current_user;
-		my $userid;
-		$userid = $user->id if defined $user;
-
-		EPrints::DataObj::EventQueue->create_unique( $self->{session}, {
-			pluginid => "Event::RDF",
-			action => $action,
-			params => [$self->internal_uri],
-			userid => $userid,
-		});
 	}
 }
 
@@ -1045,7 +1028,6 @@ If C<under_construction> is C<false>:
 
 If C<non_volatile_change> is C<true>:
  - B<lastmod> field updated
- - triples update queued
 
 If C<under_construction> is C<false> and C<non_volatile_change> is 
 C<true>:
