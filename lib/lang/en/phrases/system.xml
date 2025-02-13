@@ -2035,10 +2035,6 @@ Titles and Help for the System Fields
     <epp:phrase id="user_radio_mailempty_true">Yes, mail me when there is nothing under review within my scope.</epp:phrase>
     <epp:phrase id="user_radio_mailempty_false">No. Only mail me when there is something under review within my scope.</epp:phrase>
     <epp:phrase id="user_radio_mailempty"><label><epc:pin name="true"/><epc:phrase ref="user_radio_mailempty_true"/></label><br/><label><epc:pin name="false"/><epc:phrase ref="user_radio_mailempty_false"/></label></epp:phrase>
-    <epp:phrase id="user_fieldname_latitude">Latitude</epp:phrase>
-    <epp:phrase id="user_fieldname_longitude">Longitude</epp:phrase>
-    <epp:phrase id="user_fieldhelp_latitude">The Latitude associated with this user. Southern latitudes should be expressed as a negative.</epp:phrase>
-    <epp:phrase id="user_fieldhelp_longitude">The Longitude associated with this user. Western longitudes should be expressed as a negative.</epp:phrase>
 
     <epp:phrase id="document_fieldname_docid">ID of Document</epp:phrase>
     <epp:phrase id="document_fieldhelp_docid"/>
@@ -2247,6 +2243,16 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/NewUser:no_username">No username entered!</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewUser:user_exists">A user with the username "<epc:pin name="username"/>" already exists!</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewUser:db_error">Error registering user.</epp:phrase>
+
+    <epp:phrase id="Plugin/Screen/NewPerson:blurb"><p>Create a new real-world person.</p></epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:title">Create person</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:description">Create a new user account</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:action:create:title">Create Person</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:action:cancel:title">Cancel</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:no_id_value">No ID entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:no_id_type">No ID type entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:person_exists">A person with the ID "<epc:pin name="id_value"/>" of type  "<epc:pin name="id_type"/>" already exists!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:db_error">Error adding person.</epp:phrase>
 
 
     <epp:phrase id="Plugin/Screen/NewEPrint:title" ref="Plugin/Screen/NewEPrint:action:create:title"/>
@@ -3146,6 +3152,8 @@ Titles and Help for the System Fields
 <epp:phrase id="datasethelp_eprint">Used to store EPrints records</epp:phrase>
 <epp:phrase id="datasetname_user">Users</epp:phrase>
 <epp:phrase id="datasethelp_user">Used to store info on EPrints users</epp:phrase>
+<epp:phrase id="datasetname_person">People</epp:phrase>
+<epp:phrase id="datasethelp_person">Used to represent real-world people.</epp:phrase>
 <epp:phrase id="datasetname_subject">Subjects</epp:phrase>
 <epp:phrase id="datasethelp_subject">Used to store the hierarchical subject tree(s)</epp:phrase>
 <epp:phrase id="datasetname_document">Documents</epp:phrase>
@@ -3269,6 +3277,9 @@ Titles and Help for the System Fields
     <epp:phrase id="user_fieldhelp_name_given"/>
     <epp:phrase id="user_fieldhelp_name_family"/>
 
+    <epp:phrase id="user_fieldname_personid">Person</epp:phrase>
+    <epp:phrase id="user_fieldhelp_personid">The real-world person associated with this user account.</epp:phrase>
+
     <epp:phrase id="user_fieldname_os">Operating System</epp:phrase>
     <epp:phrase id="user_fieldhelp_os"/>
     <epp:phrase id="user_fieldopt_os_win">Windows/DOS</epp:phrase>
@@ -3282,22 +3293,6 @@ Titles and Help for the System Fields
     <epp:phrase id="user_radio_hideemail_false">Make email visible to all.</epp:phrase>
     <epp:phrase id="user_radio_hideemail_true">Hide email to all except repository administrators.</epp:phrase>
     <epp:phrase id="user_radio_hideemail"><label><epc:pin name="false"/><epc:phrase ref="user_radio_hideemail_false"/></label><br/><label><epc:pin name="true"/><epc:phrase ref="user_radio_hideemail_true"/></label></epp:phrase>
-
-
-    <epp:phrase id="user_fieldname_dept">Department</epp:phrase>
-    <epp:phrase id="user_fieldhelp_dept"/>
-
-    <epp:phrase id="user_fieldname_org">Organisation</epp:phrase>
-    <epp:phrase id="user_fieldhelp_org"/>
-
-    <epp:phrase id="user_fieldname_address">Address</epp:phrase>
-    <epp:phrase id="user_fieldhelp_address"/>
-
-    <epp:phrase id="user_fieldname_country">Country</epp:phrase>
-    <epp:phrase id="user_fieldhelp_country"/>
-
-    <epp:phrase id="user_fieldname_url">Homepage URL</epp:phrase>
-    <epp:phrase id="user_fieldhelp_url"/>
 
     <epp:phrase id="user_fieldname_expertise">Expertise</epp:phrase>
     <epp:phrase id="user_fieldhelp_expertise">Please list keyword/phrases describing your areas of specialisation using the terms likely to be used by someone searching for work in those areas. Avoid over-general terms (`chemistry') and over-particular terms (`my non-quantal theory of chemical reactions') that no one is likely to search on. Enter as many keyword/phrases as you wish.</epp:phrase>
@@ -3353,6 +3348,44 @@ Titles and Help for the System Fields
     <epp:phrase id="warnings:no_documents">You have not <span class="ep_problem_field:documents">uploaded any documents</span>. While this is not essential, it is strongly recommended.</epp:phrase>
     <epp:phrase id="warnings:no_contact_email">Not all the documents in this record are available to the general public. We suggest you provide a <span class="ep_problem_field:contact_email">contact email address</span> which will allow people to request a copy directly from you.</epp:phrase>
 
+
+<!-- Person Field names -->
+    <epp:phrase id="person_fieldname_personid">Person ID Number</epp:phrase>
+    <epp:phrase id="person_fieldname_ids">Identifiers </epp:phrase>
+    <epp:phrase id="person_fieldname_ids_id">Identifier Values</epp:phrase>
+    <epp:phrase id="person_fieldname_ids_id_type">Identifier Types</epp:phrase>
+    <epp:phrase id="person_fieldname_id_value">Primary Identifier</epp:phrase>
+    <epp:phrase id="person_fieldname_id_type">Primary Identifier Type</epp:phrase>
+    <epp:phrase id="person_id_type_typename_email">Email</epp:phrase>
+    <epp:phrase id="person_id_type_typename_username">Username</epp:phrase>
+    <epp:phrase id="person_fieldname_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_name_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_name_lang">Language</epp:phrase>
+    <epp:phrase id="person_fieldname_previous_names">Previous Names</epp:phrase>
+    <epp:phrase id="person_fieldname_previous_names_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_previous_names_from">From</epp:phrase>
+    <epp:phrase id="person_fieldname_previous_names_to">To</epp:phrase>
+    <epp:phrase id="person_fieldname_previous_names_lang">Language</epp:phrase>
+    <epp:phrase id="person_fieldname_dept">Department</epp:phrase>
+    <epp:phrase id="person_fieldname_org">Organisation</epp:phrase>
+    <epp:phrase id="person_fieldname_address">Address</epp:phrase>
+    <epp:phrase id="person_fieldname_country">Country</epp:phrase>
+    <epp:phrase id="person_fieldname_url">Homepage URL</epp:phrase>
+
+    <epp:phrase id="person_fieldhelp_name">The full name of the person.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_previous_names">The previous full names of the person and the date spans when they had these names.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_dept"/>
+    <epp:phrase id="person_fieldhelp_org"/>
+    <epp:phrase id="person_fieldhelp_address"/>
+    <epp:phrase id="person_fieldhelp_country"/>
+    <epp:phrase id="person_fieldhelp_url"/>
+
+
+    <epp:phrase id="person:workflow:stage:default:title">Names and Identifiers</epp:phrase>
+    <epp:phrase id="person_section_name">Names</epp:phrase>
+    <epp:phrase id="person_section_other">Other Details</epp:phrase>
+    <epp:phrase id="lib/citation:unnamed_person_id">Unnamed person with</epp:phrase>
 
 <!-- Submission Form Page Titles -->
 

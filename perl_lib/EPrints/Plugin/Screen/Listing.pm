@@ -364,8 +364,8 @@ sub show_columns
 	}
 	if( !defined $columns || @{$columns} == 0 )
 	{
-		$columns = [$dataset->fields];
-		splice(@$columns,4);
+		$columns = $self->get_columns( $dataset );
+		splice( @$columns, 4 );
 	}
 
 	return $columns;
@@ -473,11 +473,10 @@ sub render
 
 	# Add form
 	my %col_shown = map { $_->name() => 1 } @$columns;
+	my $fields = $self->get_columns( $ds, \%col_shown );
 	my $fieldnames = {};
-	foreach my $field ( $ds->fields )
+	foreach my $field ( @$fields )
 	{
-		next if !$field->get_property( "show_in_fieldlist" );
-		next if $col_shown{$field->name};
 		my $name = EPrints::Utils::tree_to_utf8( $field->render_name( $session ) );
 		my $parent = $field->get_property( "parent_name" );
 		if( defined $parent ) 
@@ -654,6 +653,20 @@ sub render_controls
 		search_buttons => $search_buttons,
 	} } );
 }
+
+sub get_columns
+{
+	my ( $self, $ds, $ignore_fieldnames ) = @_;
+	my $fields = [];
+	foreach my $field ( $ds->fields )
+	{
+		next if !$field->get_property( "show_in_fieldlist" );
+		next if $ignore_fieldnames->{$field->name};
+		push @$fields, $field;
+	}
+	return $fields;
+}
+
 
 1;
 

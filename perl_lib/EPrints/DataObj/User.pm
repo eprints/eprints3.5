@@ -89,7 +89,7 @@ appear to have been created at midnight.
 
 =item email (email)
 
-The email address of this user. Unique within the repository. 
+The email address of this user. Unique within the repository.
 
 =item lang (arclanguage) 
 
@@ -114,14 +114,6 @@ review. never, daily, weekly or monthly.
 Only relevant to staff accounts. If set to true then emails are 
 sent even if there are no items matching the scope.
 
-=item latitude (float)
-
-The latitude of the location where the user is based.
-
-=item longitude (float)
-
-The longitude of the location where the user is based.
-
 =item preference (storable)
 
 User preferences which need to be persistent. Stored as a 
@@ -137,6 +129,10 @@ similar forms from being spammed.
 =head1 REFERENCES AND RELATED OBJECTS
 
 =over 4
+
+=item personid (itemref)
+
+The ID number of the person associated with this user account.
 
 =item saved_searches (subobject, multiple)
 
@@ -238,6 +234,7 @@ my $PRIVMAP =
         "indexer/start",
         "indexer/force_start",
         "create_user",
+        "create_person",
         "subject/edit",
         "staff/user_search",
         "staff/history_search",
@@ -292,6 +289,11 @@ my $PRIVMAP =
         "user/destroy",
         "user/history",
         "user/staff/edit",
+        "person/destroy",
+        "person/details",
+        "person/edit",
+        "person/export",
+        "person/view",
         "repository/epm-submit", #EPrints Package Manager - Bazaar Package Submission
     ],
 
@@ -657,6 +659,8 @@ sub get_system_field_info
 
         { name=>"email", type=>"email", required=>1 },
 
+	{ name=>"personid", type=>"itemref", datasetid=>"person" },
+
         { name=>"lang", type=>"arclanguage", required=>0, input_rows=>1 },
 
         { name => "editperms",
@@ -680,10 +684,6 @@ sub get_system_field_info
 
         { name=>"items_fields", type=>"fields", datasetid=>"eprint",
             multiple=>1, input_ordered=>1, required=>1, volatile=>1 },
-
-        { name=>"latitude", type=>"float", required=>0 },
-
-        { name=>"longitude", type=>"float", required=>0 },
 
         {
             name => "preference",

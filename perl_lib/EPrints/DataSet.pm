@@ -364,6 +364,13 @@ my $INFO = {
 		index => 1,
 		datestamp => "datestamp",
 	},
+	person => {
+		sqlname => "person",
+		class => "EPrints::DataObj::Person",
+		import => 1,
+		index => 1,
+		order => 1,
+	},
 };
 
 ######################################################################

@@ -335,6 +335,8 @@ use EPrints::Citation;
 use EPrints::Citation::EPC;
 use EPrints::Citation::XSL;
 use EPrints::DataObj;
+use EPrints::DataObj::Entity;
+use EPrints::DataObj::Person;
 use EPrints::DataObj::SubObject;
 use EPrints::DataObj::Access;
 use EPrints::DataObj::Cachemap;
