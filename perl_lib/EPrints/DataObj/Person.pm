@@ -98,9 +98,10 @@ sub get_system_field_info
         type => 'id',
     },
 
-    {
+    { 
         name => 'id_type',
-        type => 'id',
+        type => 'namedset',
+        set_name => $class->get_dataset_id . "_id_type",
     },
 
 
@@ -125,21 +126,13 @@ sub get_system_field_info
 
     {
         name => 'name',
-        type => 'multilang',
-        fields=>[
-            {
-                sub_name => 'name',
-                type => 'name',
-                input_cols => 30,
-            },
-        ],
-        multiple => 1,
-        required => 1,
+        type => 'name',
+        input_cols => 30,
     },
 
     {
-    	name => 'previous_names',
-        type => 'multilang',
+    	name => 'names',
+        type => 'compound',
 		fields=>[
 	    	{
     	        sub_name => 'name',
@@ -150,12 +143,10 @@ sub get_system_field_info
             {
 		        sub_name => 'from',
         	    type => 'date',
-            	required => 1,
 		    },
 			{
             	sub_name => 'to',
 		        type => 'date',
-        	    required => 1,
             },
 		],
         multiple => 1,

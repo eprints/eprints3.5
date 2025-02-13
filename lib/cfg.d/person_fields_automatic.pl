@@ -29,6 +29,23 @@ $c->add_dataset_trigger( 'person', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 			$person->set_value( 'id_value', undef );
             $person->set_value( 'id_type', undef );
 	}
+
+	if( $person->is_set( "names" ) )
+    {
+		foreach my $name ( @{$person->get_value( 'names' )} )
+        {
+        	if ( ! EPrints::Utils::is_set( $name->{to} ) )
+            {
+            	$person->set_value( 'name', $name->{name} );
+                last;
+            }
+        }
+    }
+    else
+    {
+            $person->set_value( 'name', undef );
+    }
+
 },  id => 'update_id_fields', priority => 100 );
 
 

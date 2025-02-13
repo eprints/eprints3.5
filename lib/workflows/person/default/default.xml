@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <stage name="default" xmlns="http://eprints.org/ep3/workflow" xmlns:epc="http://eprints.org/ep3/control">
-  <component id="c_person_section_names" type="Field::Multi">
-    <title><epc:phrase ref="person_section_name" /></title>
-    <field ref="name"/>
-    <field ref="previous_names"/>
+  <component id="c_person_section_names">
+    <field ref="names"/>
   </component>
 
   <component id="c_person_section_ids">

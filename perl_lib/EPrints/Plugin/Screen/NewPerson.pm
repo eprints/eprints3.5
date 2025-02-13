@@ -163,14 +163,19 @@ sub render
     $idt_label->appendChild( $id_type_field->render_name( $session ) );
 	$div->appendChild( $idt_label );
     $div->appendChild( $session->make_text( ": " ) );
-    $div->appendChild(
-        $session->make_element(
-            "input",
-            "maxlength"=>"255",
+    my $select = $session->make_element(
+            "select",
             "name"=>"id_type",
             "id"=>"id_type",
-            "class"=>"ep_form_text",
-            "size"=>"20", ));
+            "class"=>"ep_form_select",
+    );
+	foreach my $idt ( @{$id_type_field->get_values} )
+	{
+		my $option = $session->make_element( "option", value => $idt );
+		$option->appendChild( $session->make_text( $session->phrase( 'person_id_type_typename_' . $idt ) ) );
+		$select->appendChild( $option );
+	}
+	$div->appendChild( $select );
 	$form->appendChild( $div );
 	$form->appendChild( $session->render_action_buttons( %buttons ) );
 	

@@ -3358,22 +3358,19 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldname_id_type">Primary Identifier Type</epp:phrase>
     <epp:phrase id="person_id_type_typename_email">Email</epp:phrase>
     <epp:phrase id="person_id_type_typename_username">Username</epp:phrase>
-    <epp:phrase id="person_fieldname_name">Name</epp:phrase>
-    <epp:phrase id="person_fieldname_name_name">Name</epp:phrase>
-    <epp:phrase id="person_fieldname_name_lang">Language</epp:phrase>
-    <epp:phrase id="person_fieldname_previous_names">Previous Names</epp:phrase>
-    <epp:phrase id="person_fieldname_previous_names_name">Name</epp:phrase>
-    <epp:phrase id="person_fieldname_previous_names_from">From</epp:phrase>
-    <epp:phrase id="person_fieldname_previous_names_to">To</epp:phrase>
-    <epp:phrase id="person_fieldname_previous_names_lang">Language</epp:phrase>
+    <epp:phrase id="person_fieldname_name">Primary Name</epp:phrase>
+    <epp:phrase id="person_fieldname_names">Names</epp:phrase>
+    <epp:phrase id="person_fieldname_names_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_names_from">From</epp:phrase>
+    <epp:phrase id="person_fieldname_names_to">To</epp:phrase>
     <epp:phrase id="person_fieldname_dept">Department</epp:phrase>
     <epp:phrase id="person_fieldname_org">Organisation</epp:phrase>
     <epp:phrase id="person_fieldname_address">Address</epp:phrase>
     <epp:phrase id="person_fieldname_country">Country</epp:phrase>
     <epp:phrase id="person_fieldname_url">Homepage URL</epp:phrase>
 
-    <epp:phrase id="person_fieldhelp_name">The full name of the person.</epp:phrase>
-    <epp:phrase id="person_fieldhelp_previous_names">The previous full names of the person and the date spans when they had these names.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_name" />
+    <epp:phrase id="person_fieldhelp_names">The full names of the person with option date spans fro names used in thge past.</epp:phrase>
     <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are.</epp:phrase>
     <epp:phrase id="person_fieldhelp_dept"/>
     <epp:phrase id="person_fieldhelp_org"/>
@@ -3382,8 +3379,7 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldhelp_url"/>
 
 
-    <epp:phrase id="person:workflow:stage:default:title">Names and Identifiers</epp:phrase>
-    <epp:phrase id="person_section_name">Names</epp:phrase>
+    <epp:phrase id="person:workflow:stage:default:title">Information</epp:phrase>
     <epp:phrase id="person_section_other">Other Details</epp:phrase>
     <epp:phrase id="lib/citation:unnamed_person_id">Unnamed person with</epp:phrase>
 
