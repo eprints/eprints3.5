@@ -370,6 +370,7 @@ my $INFO = {
 		import => 1,
 		index => 1,
 		order => 1,
+		datestamp => "lastmod",
 	},
 };
 

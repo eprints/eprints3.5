@@ -150,51 +150,25 @@ sub get_primary_id_and_type
 
 =over 4
 
-=item $path = $entity->get_name( [ $lang ] )
+=item $name = $entity->get_name( [ $date ] )
 
-Returns the name of the entity, optional for a specific C<$lang>
+Returns the name of the entity possibly at a particular point in time.
 
 =cut
 ######################################################################
 
 sub get_name
 {
-  my( $self, $lang ) = @_;
+  my( $self, $date ) = @_;
 
-  my $name_field = $self->{dataset}->get_field( 'name' );
-
-  return $name_field->lang_value( $lang, $self->value( 'name' ) );
-}
-
-######################################################################
-=pod
-
-=over 4
-
-=item $path = $entity->get_name_at( $date, $lang )
-
-Returns the name of the entity at a particular point in time
-
-=cut
-######################################################################
-
-sub get_name_at
-{
-  my( $self, $date, $lang ) = @_;
-
-  my $value = $self->value( 'name' );
-  my $name_field = $self->{dataset}->get_field( 'name' );
-  foreach my $prev_name ( @{$self->value( 'previous_names' )} )
+  return $self->value( 'name' ) unless $date;
+  foreach my $name ( @{$self->value( 'names' )} )
   {
-        if ( $date ge $prev_name->value( 'from' ) && $date le $prev_name->value( 'from' ) )
+        if ( ( !$name->{from} && !$name->{to} )  || ( $name->{from} && $date ge $name->value( 'from' ) && ( !defined $name->{to} || $date le $name->{to}) ) )
         {
-            $value = $prev_name->value( 'name' );
-            $name_field = $self->{dataset}->get_field( 'previous_name' )->{name};
-            last;
+			return $name->{name};
         }
   }
-
-  return $name_field->lang_value( $lang, $value );
 }
 
 ######################################################################
@@ -202,41 +176,121 @@ sub get_name_at
 
 =over 4
 
-=item $path = Eprints::DataObj::Entity::entity_with_id( $repo, $dataset, $id_value, $id_type )
+=item $entity = EPrints::DataObj::Entity::entity_with_id( $repo, $dataset, $id_value, $id_type )
 
-Returns the name of the entity at a particular point in time
+Returns an entity that matches the id and type provided
 
 =cut
 ######################################################################
 
 sub entity_with_id
 {
-    my( $repo, $dataset, $id_value, $id_type ) = @_;
+	my( $dataset, $id_value, $id_type ) = @_;
 
 
-    my $results = $dataset->search(
-        filters => [
-            {
-                meta_fields => [qw( ids_id )],
-                value => $id_value, match => "EX"
-            },
-            {
-                meta_fields => [qw( ids_id_type )],
-                value => $id_type, match => "EX"
-	    }
-        ]);
+	my $results = $dataset->search(
+		filters => [
+			{
+				meta_fields => [qw( ids_id )],
+				value => $id_value, 
+				match => "EX",
+			},
+			{
+				meta_fields => [qw( ids_id_type )],
+				value => $id_type,
+				match => "EX",
+			}
+		]
+	);
 
-    for( my $r = 0; $r < $results->count; $r++ )
-    {
-	my $res = $results->item( $r );
-	foreach my $id ( @{ $res->value( 'ids' ) } )
+	for( my $r = 0; $r < $results->count; $r++ )
 	{
-		if ( $id_value eq $id->{id} && $id_type eq $id->{id_type} )
+		my $res = $results->item( $r );
+		foreach my $id ( @{ $res->value( 'ids' ) } )
 		{
-			return $res;
+			if ( $id_value eq $id->{id} && $id_type eq $id->{id_type} )
+			{
+				return $res;
+			}
 		}
 	}
-   }
+}
+
+
+######################################################################
+=pod
+
+=over 4
+
+=item $path = Eprints::DataObj::Entity::entity_with_name( $dataset, $name )
+
+Returns the name of the entity at a particular point in time
+
+=cut
+######################################################################
+
+sub entity_with_name
+{
+	my( $dataset, $name ) = @_;
+
+	my $name_results = $dataset->search(
+		filters => [
+			{
+				meta_fields => [qw( name )],
+				value => $name,
+				match => "EX",
+			},
+		],
+		custom_order => "-lastmod",
+	);
+
+	return $name_results->item( 0 ) if $name_results->count > 0;
+
+	my $names_results = $dataset->search(
+		filters => [
+			{
+				meta_fields => [qw( names_name )],
+				value => $name,
+				match => "EX",
+			},
+		],
+		custom_order => "-lastmod",
+	);
+
+	my $latest_person;
+	my $latest_date;
+	my @name_bits = split( ' ', $name );
+	for( my $r = 0; $r < $names_results->count; $r++ )
+	{
+		my $res = $names_results->item( $r );
+		foreach my $name ( @{ $res->value( 'names' ) } )
+		{
+			my $found_given = 0;
+			my $found_family = 0;
+			foreach my $nb ( @name_bits )
+			{
+				if ( $nb =~ m/^$name->{name}->{given}$/i )
+				{
+					$found_given = 1;
+				}
+				elsif ( $nb =~ m/^$name->{name}->{family}$/i )
+				{
+					$found_family = 1;
+				}
+			}
+			next unless $found_given && $found_family;
+			if ( !$name->{to} )
+			{
+				return $res;
+			}
+			elsif ( $name->{to} gt $latest_date )
+			{
+				$latest_date = $name->{to};
+				$latest_person = $res;
+			}
+		}
+	}
+	return $latest_person;
 }
 
 

@@ -153,6 +153,16 @@ sub get_system_field_info
         input_boxes => 1,
     },
 
+    {
+		name=>"lastmod", 
+		type=>"timestamp", 
+		required=>0, 
+		import=>0,
+        render_res=>"minute", 
+		render_style=>"short", 
+		can_clone=>0, 
+		volatile=>1 
+	},
 
   	);
 }

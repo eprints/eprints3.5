@@ -7,6 +7,7 @@
 [submodule "flavours/pub_lib"]
 	path = flavours/pub_lib
 	url = https://github.com/eprints/pub_lib.git
+    branch = entities
 [submodule "ingredients/bazaar"]
 	path = ingredients/bazaar
 	url = https://github.com/eprints/bazaar.git

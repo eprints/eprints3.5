@@ -659,7 +659,7 @@ sub get_system_field_info
 
         { name=>"email", type=>"email", required=>1 },
 
-	{ name=>"personid", type=>"itemref", datasetid=>"person" },
+        { name=>"personid", type=>"itemref", datasetid=>"person" },
 
         { name=>"lang", type=>"arclanguage", required=>0, input_rows=>1 },
 
