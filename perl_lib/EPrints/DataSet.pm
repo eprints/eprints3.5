@@ -372,6 +372,14 @@ my $INFO = {
 		order => 1,
 		datestamp => "lastmod",
 	},
+	organisation => {
+		sqlname => "organisation",
+		class => "EPrints::DataObj::Organisation",
+		import => 1,
+		index => 1,
+		order => 1,
+		datestamp => "lastmod",
+	},
 };
 
 ######################################################################

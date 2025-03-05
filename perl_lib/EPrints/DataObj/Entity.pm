@@ -171,49 +171,71 @@ sub get_name
   }
 }
 
+
 ######################################################################
 =pod
 
 =over 4
 
-=item $entity = EPrints::DataObj::Entity::entity_with_id( $repo, $dataset, $id_value, $id_type )
+=item $name = $entity->get_url( [ $proto ] )
 
-Returns an entity that matches the id and type provided
+Returns the URL for the entity on EPrints.
 
 =cut
 ######################################################################
 
-sub entity_with_id
+sub get_url
 {
-	my( $dataset, $id_value, $id_type ) = @_;
+	my( $self , $proto ) = @_;
+
+    return( $self->url_stem( $proto ) );
+}
 
 
-	my $results = $dataset->search(
-		filters => [
-			{
-				meta_fields => [qw( ids_id )],
-				value => $id_value, 
-				match => "EX",
-			},
-			{
-				meta_fields => [qw( ids_id_type )],
-				value => $id_type,
-				match => "EX",
-			}
-		]
-	);
+######################################################################
+=pod
 
-	for( my $r = 0; $r < $results->count; $r++ )
-	{
-		my $res = $results->item( $r );
-		foreach my $id ( @{ $res->value( 'ids' ) } )
-		{
-			if ( $id_value eq $id->{id} && $id_type eq $id->{id_type} )
-			{
-				return $res;
-			}
-		}
-	}
+=item $url = $entity->url_stem
+
+Returns the URL to this entity's directory.
+
+N.B. This includes the trailing slash, unlike the local_path method.
+
+=cut
+######################################################################
+
+sub url_stem
+{
+    my( $self ) = @_;
+
+    my $repository = $self->{session}->get_repository;
+	my $dataset = $repository->get_dataset( $self->get_dataset_id );
+
+    my $url;
+    $url = $repository->get_conf( 'base_url' );
+    $url .= '/id/'.$dataset->id.'/';
+    $url .= $self->get_value( $dataset->key_field->get_name )+0;
+    $url .= '/';
+
+    return $url;
+}
+
+######################################################################
+=pod
+
+=item $serialised_name =  EPrints::DataObj::Entity->serialise_name( $name )
+
+Returns serialisation of an entity's <$name> to make it quicker to
+compare.
+
+=cut
+######################################################################
+
+sub serialise_name
+{
+	my( $self, $name ) = @_;
+
+	return $name;
 }
 
 
@@ -222,16 +244,97 @@ sub entity_with_id
 
 =over 4
 
-=item $path = Eprints::DataObj::Entity::entity_with_name( $dataset, $name )
+=item $entity = EPrints::DataObj::Entity::entity_with_id( $repo, $dataset, $id, [ $opts ] )
 
-Returns the name of the entity at a particular point in time
+Returns an entity that matches the id and type provided.
+
+Options:
+
+	type - ID provided must also match the specified type.
+	name - name should also try to match specified name.
+	strict_name - boolean making name have to match specified name.
+
+=cut
+######################################################################
+
+sub entity_with_id
+{
+	my( $dataset, $id, $opts ) = @_;
+
+	my $class = $dataset->get_object_class;
+
+	my $filters = [  
+		{
+			meta_fields => [qw( ids_id )],
+			value => $id,
+			match => "EX",
+		},
+	];
+
+	if ( $opts->{type} )
+	{
+		push @$filters, 
+		{
+			meta_fields => [qw( ids_id_type )],
+			value => $opts->{type},
+			match => "EX",
+		};
+	}
+
+	my $results = $dataset->search( filters => $filters );
+	my $match = undef;
+	for( my $r = 0; $r < $results->count; $r++ )
+	{
+		my $res = $results->item( $r );
+		foreach my $a_id ( @{ $res->value( 'ids' ) } )
+		{
+			# If ID matches and type matches when specified
+			if ( $id eq $a_id->{id} && ( !$opts->{type} || $opts->{type} eq $a_id->{id_type} ) )
+			{
+				# Return result unless trying to also match name
+				return $res unless $opts->{name};
+
+				# Unless must also match name store first result with matching ID.
+				$match = $res if !$match && !$opts->{strict_name};
+
+				foreach my $name ( @{ $res->value( 'names' ) } )
+				{
+					# If result also matches name then return it.
+					if ( $class->serialise_name( $name->{name} ) eq $class->serialise_name( $opts->{name} ) )
+					{
+						return $res;
+					}
+				}
+			}
+		}
+	}
+
+	# May have a suitable match may just return undef
+	return $match;
+}
+
+
+######################################################################
+=pod
+
+=over 4
+
+=item $path = Eprints::DataObj::Entity::entity_with_name( $dataset, $name, [ $opts ] )
+
+Returns the name of the entity at a particular point in time.
+
+Options:
+
+        no_id - boolean specifying entity must currently have no ID.
 
 =cut
 ######################################################################
 
 sub entity_with_name
 {
-	my( $dataset, $name ) = @_;
+	my( $dataset, $name, $opts ) = @_;
+
+	my $class = $dataset->get_object_class;
 
 	my $name_results = $dataset->search(
 		filters => [
@@ -244,8 +347,22 @@ sub entity_with_name
 		custom_order => "-lastmod",
 	);
 
-	return $name_results->item( 0 ) if $name_results->count > 0;
+	# If the result must not have an ID check each result and only return one without an ID set.
+	if ( $opts->{no_id} )
+	{
+		for ( my $r = 0; $r < $name_results->count; $r++ )
+		{
+			my $res = $name_results->item( $r );
+			return $res unless $res->get_value( 'id_value' );
+		}
+	}
+	else
+	{
+		# If there is any results that match the name then return the first one.
+		return $name_results->item( 0 ) if $name_results->count > 0;
+	}
 
+	# Search for name across all names for entity.
 	my $names_results = $dataset->search(
 		filters => [
 			{
@@ -257,40 +374,37 @@ sub entity_with_name
 		custom_order => "-lastmod",
 	);
 
-	my $latest_person;
-	my $latest_date;
-	my @name_bits = split( ' ', $name );
+	my $latest_entity = undef;
+	my $latest_date = 0;
 	for( my $r = 0; $r < $names_results->count; $r++ )
 	{
 		my $res = $names_results->item( $r );
-		foreach my $name ( @{ $res->value( 'names' ) } )
+		# Iterate over all names for the entity
+		foreach my $a_name ( @{ $res->value( 'names' ) } )
 		{
-			my $found_given = 0;
-			my $found_family = 0;
-			foreach my $nb ( @name_bits )
+			# If a name for the entity matches that provided
+			if ( $class->serialise_name( $a_name->{name} ) eq $class->serialise_name( $name ) )
 			{
-				if ( $nb =~ m/^$name->{name}->{given}$/i )
+				# If the result has and ID set and an entity without and ID is wanted, skip it.
+				next if $opts->{no_id} && $res->value( 'id_value' );
+
+				# If the name that has matched has no end date then return result
+				if ( !$a_name->{to} )
 				{
-					$found_given = 1;
+					return $res;
 				}
-				elsif ( $nb =~ m/^$name->{name}->{family}$/i )
+				# If the name that has matched has a later end date then current latest entity then update the latest entity.
+				elsif ( $a_name->{to} gt $latest_date )
 				{
-					$found_family = 1;
+					$latest_date = $name->{to};
+					$latest_entity = $res;
 				}
-			}
-			next unless $found_given && $found_family;
-			if ( !$name->{to} )
-			{
-				return $res;
-			}
-			elsif ( $name->{to} gt $latest_date )
-			{
-				$latest_date = $name->{to};
-				$latest_person = $res;
 			}
 		}
 	}
-	return $latest_person;
+
+	# Return the latest entity if one has been found, otherwise undef is returned.
+	return $latest_entity;
 }
 
 

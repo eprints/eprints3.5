@@ -1,6 +1,6 @@
 ######################################################################
 #
-# EPrints::DataObj::Person
+# EPrints::DataObj::Organisation
 #
 ######################################################################
 #
@@ -14,13 +14,13 @@
 
 =head1 NAME
 
-B<EPrints::DataObj::Person> - A data object that represents a person.
+B<EPrints::DataObj::Organisation> - A data object that represents a organisation.
 
 =head1 DESCRIPTION
 
 UNDER DEVELOPMENT
 
-Designed to extend L<EPrints::Entity> to represent a person.
+Designed to extend L<EPrints::Entity> to represent a organisation.
 
 =head1 CORE METADATA FIELDS
 
@@ -39,7 +39,7 @@ See L<EPrints::DataObj::Entity|EPrints::DataObj::Entity#INSTANCE_VARIABLES>.
 =cut
 ######################################################################
 
-package EPrints::DataObj::Person;
+package EPrints::DataObj::Organisation;
 
 @ISA = ( 'EPrints::DataObj::Entity' );
 
@@ -58,7 +58,7 @@ use strict;
 
 =over 4
 
-=item $dataset = EPrints::DataObj::Person->get_dataset_id
+=item $dataset = EPrints::DataObj::Organisation->get_dataset_id
 
 Returns the ID of the L<EPrints::DataSet> object to which this record
 belongs.
@@ -66,15 +66,15 @@ belongs.
 =cut
 ######################################################################
 
-sub get_dataset_id { "person" }
+sub get_dataset_id { "organisation" }
 
 
 ######################################################################
 =pod
 
-=item $system_field_info = EPrints::DataObj::Person->get_system_field_info
+=item $system_field_info = EPrints::DataObj::Organisation->get_system_field_info
 
-Returns an array describing the system metadata of the person dataset.
+Returns an array describing the system metadata of the organisation dataset.
 
 =cut
 ######################################################################
@@ -84,13 +84,13 @@ sub get_system_field_info
 	my( $class ) = @_;
 
 	return (
-	{
-		name=>"personid",
-		type=>"counter",
-		required=>1,
-		import=>0,
+	{ 
+		name=>"orgid", 
+		type=>"counter", 
+		required=>1, 
+		import=>0, 
 		can_clone=>0,
-		sql_counter=>"personid",
+		sql_counter=>"orgid" 
 	},
 
 	{
@@ -98,7 +98,7 @@ sub get_system_field_info
 		type => 'id',
 	},
 
-	{
+	{ 
 		name => 'id_type',
 		type => 'namedset',
 		set_name => $class->get_dataset_id . "_id_type",
@@ -110,7 +110,7 @@ sub get_system_field_info
 			type => 'compound',
 			multiple => 1,
 			fields => [
-				{
+				{ 
 					sub_name => 'id',
 					type => 'id',
 				},
@@ -126,18 +126,18 @@ sub get_system_field_info
 
 	{
 		name => 'name',
-		type => 'name',
+		type => 'text',
 		input_cols => 30,
 	},
 
 	{
 		name => 'names',
-		type => 'compound',
+		type => 'multilang',
 		fields=>[
 			{
 				sub_name => 'name',
-				type => 'name',
-				input_cols => 30,
+			type => 'text',
+			input_cols => 30,
 				required => 1,
 			},
 			{
@@ -154,14 +154,14 @@ sub get_system_field_info
 	},
 
 	{
-		name=>"lastmod",
-		type=>"timestamp",
-		required=>0,
+		name=>"lastmod", 
+		type=>"timestamp", 
+		required=>0, 
 		import=>0,
-		render_res=>"minute",
-		render_style=>"short",
-		can_clone=>0,
-		volatile=>1,
+		render_res=>"minute", 
+		render_style=>"short", 
+		can_clone=>0, 
+		volatile=>1 
 	},
 
   	);
@@ -177,29 +177,6 @@ sub get_system_field_info
 
 =cut
 ######################################################################
-
-######################################################################
-=pod
-
-=item $serialised_name = EPrints::DataObj::Person->serialise_name( $name )
-
-Returns serialisation of person's C<$name> to make it quicker to
-compare.
-
-=cut
-######################################################################
-
-sub serialise_name
-{
-	my( $class, $name ) = @_;
-
-	my $serialised_name = $name->{given} . " " . $name->{family};
-	$serialised_name =~ s/^\s+|\s+$//g;
-	$serialised_name = $name->{honourfic} . " " . $serialised_name if $name->{honourfic};
-	$serialised_name .= " " . $name->{lineage} if $name->{lineage};
-
-	return $serialised_name;
-}
 
 
 1;

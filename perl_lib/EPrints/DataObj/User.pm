@@ -235,6 +235,7 @@ my $PRIVMAP =
         "indexer/force_start",
         "create_user",
         "create_person",
+        "create_organisation",
         "subject/edit",
         "staff/user_search",
         "staff/history_search",
@@ -294,6 +295,11 @@ my $PRIVMAP =
         "person/edit",
         "person/export",
         "person/view",
+        "organisation/destroy",
+        "organisation/details",
+        "organisation/edit",
+        "organisation/export",
+        "organisation/view",
         "repository/epm-submit", #EPrints Package Manager - Bazaar Package Submission
     ],
 
