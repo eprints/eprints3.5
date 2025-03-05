@@ -368,6 +368,6 @@ sub process_verification
 	my ($results, $params) = @_;
 	my $path = $params->{'multiroot'} ? $params->{'multiroot'}->{$results->{domain}} : $params->{'path'};
 	my $file = $path ? "$path/$results->{token}" : $results->{token};
-	unlink $file, $params->{challenge_path}, $params->{well_known_path};             
+	unlink $file, $params->{path}, $params->{well_known_path};             
     return 1;
 }
