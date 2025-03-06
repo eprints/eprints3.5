@@ -152,7 +152,7 @@ sub get_primary_id_and_type
 
 =item $name = $entity->get_name( [ $date ] )
 
-Returns the name of the entity possibly at a particular point in time.
+Returns the name of the entity possibly on a particular date.
 
 =cut
 ######################################################################
@@ -164,13 +164,53 @@ sub get_name
   return $self->value( 'name' ) unless $date;
   foreach my $name ( @{$self->value( 'names' )} )
   {
-        if ( ( !$name->{from} && !$name->{to} )  || ( $name->{from} && $date ge $name->value( 'from' ) && ( !defined $name->{to} || $date le $name->{to}) ) )
+        if ( ( !$name->{from} && !$name->{to} ) || ( ( !defined $name->{from} || $date ge $name->{from} ) && ( !defined $name->{to} || $date le $name->{to} ) ) )
         {
 			return $name->{name};
         }
   }
 }
 
+######################################################################
+=pod
+
+=over 4
+
+=item $boolean = $entity->has_name( $name [ $date ] )
+
+Returns boolean for whether entity has a particular name, optionally 
+on a particular date.
+
+=cut
+######################################################################
+
+sub has_name
+{
+	my( $self, $name, $date ) = @_;
+
+	my $class = $self->dataset->get_object_class;
+	my $sname = $class->serialise_name( $name );
+
+	foreach my $a_name ( @{$self->value( 'names' )} )
+	{
+		my  $a_sname = $class->serialise_name( $a_name->{name} );
+		if ( $a_sname eq $sname )
+		{
+			if ( $date )
+			{
+				if ( ( !$a_name->{from} && !$a_name->{to} ) || ( ( !defined $a_name->{from} || $date ge $a_name->{from} ) && ( !defined $a_name->{to} || $date le $a_name->{to} ) ) )
+				{
+					return 1;
+				}
+			}
+			else
+			{
+				return 1;
+			}
+		}
+  	}
+	return 0;
+}
 
 ######################################################################
 =pod
