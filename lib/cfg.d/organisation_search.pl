@@ -1,20 +1,19 @@
 
-$c->{search}->{user} = 
+$c->{search}->{organisation} = 
 {
 	search_fields => [
 		{ meta_fields => [ "name", ] },
-		{ meta_fields => [ "username", ] },
-		{ meta_fields => [ "userid", ] },
-		{ meta_fields => [ "usertype", ] },
-		{ meta_fields => [ "email" ] },
+		{ meta_fields => [ "names_name", ] },
+		{ meta_fields => [ "id_value", ] },
+		{ meta_fields => [ "ids_id", ] },
+        { meta_fields => [ "address", "country" ] },
 	],
 	citation => "result",
 	page_size => 20,
 	order_methods => {
-		"byname" 	 =>  "name/joined",
-		"byjoin"	 =>  "joined/name",
-		"byrevjoin"  	 =>  "-joined/name",
-		"bytype" 	 =>  "usertype/name",
+		"byname" 	 =>  "name/lastmod",
+		"bylastmod"	 =>  "lastmod/name",
+		"byrevlastmod" =>  "-lastmod/name",
 	},
 	default_order => "byname",
 	show_zero_results => 1,
@@ -25,8 +24,8 @@ $c->{search}->{user} =
 
 =for COPYRIGHT BEGIN
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright 2025 University of Southampton.
+EPrints 3.5 is supplied by EPrints Services.
 
 http://www.eprints.org/eprints-3.4/
 
@@ -34,19 +33,19 @@ http://www.eprints.org/eprints-3.4/
 
 =for LICENSE BEGIN
 
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
+This file is part of EPrints 3.5 L<http://www.eprints.org/>.
 
-EPrints 3.4 and this file are released under the terms of the
+EPrints 3.5 and this file are released under the terms of the
 GNU Lesser General Public License version 3 as published by
 the Free Software Foundation unless otherwise stated.
 
-EPrints 3.4 is distributed in the hope that it will be useful,
+EPrints 3.5 is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
+License along with EPrints 3.5.
 If not, see L<http://www.gnu.org/licenses/>.
 
 =for LICENSE END

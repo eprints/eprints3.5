@@ -3367,7 +3367,7 @@ Titles and Help for the System Fields
 
 <!-- Person Field names -->
     <epp:phrase id="person_fieldname_personid">Person ID Number</epp:phrase>
-    <epp:phrase id="person_fieldname_ids">Identifiers </epp:phrase>
+    <epp:phrase id="person_fieldname_ids">Identifiers</epp:phrase>
     <epp:phrase id="person_fieldname_ids_id">Identifier Values</epp:phrase>
     <epp:phrase id="person_fieldname_ids_id_type">Identifier Types</epp:phrase>
     <epp:phrase id="person_fieldname_id_value">Primary Identifier</epp:phrase>
@@ -3380,7 +3380,7 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldname_names_from">From</epp:phrase>
     <epp:phrase id="person_fieldname_names_to">To</epp:phrase>
     <epp:phrase id="person_fieldname_dept">Department</epp:phrase>
-    <epp:phrase id="person_fieldname_org">Organisation</epp:phrase>
+    <epp:phrase id="person_fieldname_organisation">Organisation</epp:phrase>
     <epp:phrase id="person_fieldname_address">Address</epp:phrase>
     <epp:phrase id="person_fieldname_country">Country</epp:phrase>
     <epp:phrase id="person_fieldname_url">Homepage URL</epp:phrase>
@@ -3388,12 +3388,22 @@ Titles and Help for the System Fields
 
     <epp:phrase id="person_fieldhelp_name" />
     <epp:phrase id="person_fieldhelp_names">The full names of the person with option date spans fro names used in thge past.</epp:phrase>
-    <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are. (E.g. email address, website URL, etc.)</epp:phrase>
     <epp:phrase id="person_fieldhelp_dept"/>
     <epp:phrase id="person_fieldhelp_org"/>
     <epp:phrase id="person_fieldhelp_address"/>
     <epp:phrase id="person_fieldhelp_country"/>
     <epp:phrase id="person_fieldhelp_url"/>
+
+	<epp:phrase id="Plugin/Screen/Staff/PersonSearch:title">Search people</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Staff/PersonSearch:description">Search for people represented of this repository.</epp:phrase>
+	<epp:phrase id="searchfield_name_ids_id">All Identifiers</epp:phrase>
+	<epp:phrase id="searchfield_name_names_name">All Names</epp:phrase>
+	<epp:phrase id="searchfield_name_organisation.names_name">Organisation Name</epp:phrase>
+	<epp:phrase id="searchfield_name_organisation.ids_id">Organisation ID</epp:phrase>
+	<epp:phrase id="ordername_person_byname">By name</epp:phrase>
+	<epp:phrase id="ordername_person_bylastmod">By most recently modified</epp:phrase>
+	<epp:phrase id="ordername_person_byrevlastmod">By least recently modified</epp:phrase>
 
     <epp:phrase id="person:workflow:stage:default:title">Information</epp:phrase>
     <epp:phrase id="person_section_other">Other Details</epp:phrase>
@@ -3401,7 +3411,7 @@ Titles and Help for the System Fields
 
 <!-- Organisation Field names -->
     <epp:phrase id="organisation_fieldname_orgid">Organisation ID Number</epp:phrase>
-    <epp:phrase id="organisation_fieldname_ids">Identifiers </epp:phrase>
+    <epp:phrase id="organisation_fieldname_ids">Identifiers</epp:phrase>
     <epp:phrase id="organisation_fieldname_ids_id">Identifier Values</epp:phrase>
     <epp:phrase id="organisation_fieldname_ids_id_type">Identifier Types</epp:phrase>
     <epp:phrase id="organisation_fieldname_id_value">Primary Identifier</epp:phrase>
@@ -3421,12 +3431,18 @@ Titles and Help for the System Fields
 
     <epp:phrase id="organisation_fieldhelp_name">The name of the organisait.</epp:phrase>
     <epp:phrase id="organisation_fieldhelp_names">The names of the organisations and the date spans when they had these names.</epp:phrase>
-    <epp:phrase id="organisation_fieldhelp_ids">The identifiers for the organisation and the type of identifier they are.</epp:phrase>
+    <epp:phrase id="organisation_fieldhelp_ids">The identifiers for the organisation and the type of identifier they are. (E.g. Research Organization Registry (ROR) , website URL, email address, etc.) </epp:phrase>
     <epp:phrase id="organisation_fieldhelp_dept"/>
     <epp:phrase id="organisation_fieldhelp_org"/>
     <epp:phrase id="organisation_fieldhelp_address"/>
     <epp:phrase id="organisation_fieldhelp_country"/>
     <epp:phrase id="organisation_fieldhelp_url"/>
+
+    <epp:phrase id="Plugin/Screen/Staff/OrganisationSearch:title">Search organisations</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Staff/PersonSearch:description">Search for organisations represented of this repository.</epp:phrase>
+    <epp:phrase id="ordername_organisation_byname">By name</epp:phrase>
+    <epp:phrase id="ordername_organisation_bylastmod">By most recently modified</epp:phrase>
+    <epp:phrase id="ordername_organisation_byrevlastmod">By least recently modified</epp:phrase>
 
     <epp:phrase id="organisation:workflow:stage:default:title">Names and Identifiers</epp:phrase>
     <epp:phrase id="organisation_section_name">Names</epp:phrase>

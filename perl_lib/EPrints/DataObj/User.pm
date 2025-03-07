@@ -238,6 +238,8 @@ my $PRIVMAP =
         "create_organisation",
         "subject/edit",
         "staff/user_search",
+        "staff/person_search",
+        "staff/organisation_search",
         "staff/history_search",
         "staff/issue_search",
         "config/view",

@@ -5,8 +5,9 @@ push @{$c->{fields}->{person}},
 },
 
 {
-    name => 'org',
-    type => 'text',
+    name => 'organisation',
+    type => 'itemref',
+ 	datasetid => 'organisation',
 },
 
 {
