@@ -67,6 +67,8 @@ Where I<command> is one of:
 
 =item refresh_citations
 
+=item refresh_entities
+
 =item refresh_views
 
 =item rehash
@@ -172,6 +174,10 @@ Tell the webserver that all views pages must be regenerated. The webserver will 
 =item B<epadmin> refresh_abstracts I<repository_id>
 
 Tell the webserver that all abstract summary pages must be regenerated. The webserver will update them next , but won't update them again unless something on the EPrint changes or you re-run refresh abstracts. Also causes config to be reloaded.
+
+=item B<epadmin> refresh_entities I<repository_id>
+
+Tell the webserver that all entity pages must be regenerated. The webserver will update them next , but won't update them again unless something on the Entity changes or you re-run refresh entities. Also causes config to be reloaded.
 
 =item B<epadmin> refresh_citations I<repository_id>
 
@@ -362,6 +368,7 @@ else
 	elsif( $action eq "reload" ) { reload( $repoid ); }
 	elsif( $action eq "refresh_abstracts" ) { refresh_abstracts( $repoid ); }
 	elsif( $action eq "refresh_citations" ) { refresh_citations( $repoid ); }
+	elsif( $action eq "refresh_entities" ) { refresh_entities( $repoid ); }
 	elsif( $action eq "refresh_views" ) { refresh_views( $repoid ); }
 	elsif( $action eq "redo_hash" ) { redo_hash( $repoid, @ARGV ); }
 	elsif( $action eq "redo_mime_type" ) { redo_mime_type( $repoid, @ARGV ); }
@@ -1740,6 +1747,41 @@ END
 	}
 
 	reload( $repoid );
+}
+
+
+sub refresh_entities
+{
+    my( $repoid ) = @_;
+
+    my $repo = &repository( $repoid );
+
+    my $file = $repo->config( "variables_path" )."/entities.timestamp";
+    unless( open( CHANGEDFILE, ">$file" ) )
+    {
+        EPrints::abort( "Cannot write to file $file" );
+    }
+    print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+    close CHANGEDFILE;
+    if( $noise > 0 )
+    {
+        print <<END;
+Entity pages will be updated when they are requested. The
+webserver will now be told to reload the apache configuration, although
+restarting the server at this point is slightly more efficient.
+
+END
+        if ( defined $repo->config( "citation_caching", "enabled" ) && $repo->config( "citation_caching", "enabled" ) )
+        {
+            print <<END;
+You will also need to run "refresh_citations" if you have made changes
+to any of the citation files that are used by entity pages.
+
+END
+        }
+    }
+
+    reload( $repoid );
 }
 
 

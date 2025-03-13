@@ -263,6 +263,193 @@ sub url_stem
 ######################################################################
 =pod
 
+=item $person->generate_static
+
+Generate the static version of the abstract/summary web page. In a
+multi-language repository this will generate one version per language.
+
+If called on eprints in the C<inbox> or C<buffer>, remove the
+abstract/summary page.
+
+=cut
+######################################################################
+
+sub generate_static
+{
+    my( $self ) = @_;
+
+    $self->remove_static;
+
+    # We is going to temporarily change the language of our session to
+    # render the abstracts in each language.
+    my $real_langid = $self->{session}->get_langid;
+
+    my @langs = @{$self->{session}->get_repository->get_conf( "languages" )};
+    foreach my $langid ( @langs )
+    {
+        $self->{session}->change_lang( $langid );
+        my $full_path = $self->_htmlpath( $langid );
+
+        my @created = EPrints::Platform::mkdir( $full_path );
+
+        my( $page, $title, $links, $template ) = $self->render;
+
+        my $link = $self->{session}->make_element(
+            "link",
+            rel=>"canonical",
+            href=>$self->url_stem
+        );
+        $links = $self->{session}->make_doc_fragment() if( !defined $links );
+        $links->appendChild( $link );
+        $links->appendChild( $self->{session}->make_text( "\n" ) );
+
+        my @plugins = $self->{session}->plugin_list(
+                    type=>"Export",
+                    can_accept=>"dataobj/".$self->{dataset}->confid,
+                    is_advertised => 1,
+                    is_visible=>"all" );
+        if( scalar @plugins > 0 ) {
+            foreach my $plugin_id ( @plugins )
+            {
+                $plugin_id =~ m/^[^:]+::(.*)$/;
+                my $id = $1;
+                my $plugin = $self->{session}->plugin( $plugin_id );
+                my $link = $self->{session}->make_element(
+                    "link",
+                    rel=>"alternate",
+                    href=>$plugin->dataobj_export_url( $self ),
+                    type=>$plugin->param("mimetype"),
+                    title=>EPrints::XML::to_string( $plugin->render_name ), );
+                $links->appendChild( $link );
+                $links->appendChild( $self->{session}->make_text( "\n" ) );
+            }
+        }
+        $self->{session}->write_static_page(
+            $full_path . "/index",
+            {title=>$title, page=>$page, head=>$links, template=>$self->{session}->make_text($template) },
+             );
+    }
+    $self->{session}->change_lang( $real_langid );
+}
+
+
+######################################################################
+=pod
+
+=item $person->remove_static
+
+Remove the static web page or pages.
+
+=cut
+######################################################################
+
+sub remove_static
+{
+    my( $self ) = @_;
+
+    my $langid;
+    foreach $langid
+        ( @{$self->{session}->get_repository->get_conf( "languages" )} )
+    {
+        EPrints::Utils::rmtree( $self->_htmlpath( $langid ) );
+    }
+}
+
+######################################################################
+#
+# $path = $eprint->_htmlpath( $langid )
+#
+# return the filesystem path in which the static files for this eprint
+# are stored.
+#
+######################################################################
+
+sub _htmlpath
+{
+    my( $self, $langid ) = @_;
+
+    return $self->{session}->get_repository->get_conf( "htdocs_path" ).
+        "/".$langid."/".$self->get_dataset_id."/".
+        $self->store_path;
+}
+
+
+######################################################################
+=pod
+
+=item $path = $eprint->store_path
+
+Get the storage path for this eprint data object.
+
+=cut
+######################################################################
+
+sub store_path
+
+{
+    my( $self ) = @_;
+
+    return entityid_to_path( $self->id );
+}
+
+######################################################################
+=pod
+
+=item $path = EPrints::DataObj::Entity::entityid_to_path( $id )
+
+Returns path of the storage directory based on the eprint C<$id>
+provided.
+
+=cut
+######################################################################
+
+sub entityid_to_path
+{
+    my( $id ) = @_;
+
+    my $path = sprintf("%08d", $id);
+    $path =~ s#(..)#/$1#g;
+    substr($path,0,1) = '';
+
+    return $path;
+}
+
+######################################################################
+=pod
+
+=item ( $description, $title, $links ) = $eprint->render( $preview )
+
+Render the eprint. If C<$preview> is C<true> then render a preview of
+the eprint data object
+
+The 3 returned values are references to XHTML DOM
+objects. C<$description> is the public viewable description of this
+eprintthat appears as the body of the abstract page. C<$title> is the
+title of the abstract page for this eprint. C<$links> is any elements
+which should go in the C<head> elemeny of this HTML page.
+
+Calls L</eprint_render> to actually render the C<$eprint>, if it isn't
+in the C<deleted> dataset.
+
+=cut
+######################################################################
+
+sub render
+{
+    my( $self, $preview ) = @_;
+
+    my( $dom, $title, $links, $template );
+
+	return $self->{session}->get_repository->call(
+        	$self->get_dataset_id . "_render",
+            $self, $self->{session}, $preview 
+		);
+}
+
+
+######################################################################
+=pod
+
 =item $serialised_name =  EPrints::DataObj::Entity->serialise_name( $name )
 
 Returns serialisation of an entity's <$name> to make it quicker to
@@ -359,7 +546,7 @@ sub entity_with_id
 
 =over 4
 
-=item $path = Eprints::DataObj::Entity::entity_with_name( $dataset, $name, [ $opts ] )
+=item $path = EPrints::DataObj::Entity::entity_with_name( $dataset, $name, [ $opts ] )
 
 Returns the name of the entity at a particular point in time.
 

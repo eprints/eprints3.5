@@ -636,6 +636,46 @@ sub handler
 		}
 	}##if use_long_url_format
 
+	#this will serve a entity pages (e.g. people or organisations).
+    my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
+    my $method = eval {$r->method} || "";
+	my $entities = "";
+	my $ent_ds = $repository->get_conf( "entities", "datasets" );
+	if ( ref( $ent_ds ) eq "ARRAY" )
+	{
+		$entities = join( '|', @$ent_ds );
+	}
+
+	if ( ( $method eq "GET" || $method eq "HEAD" ) ## request method must be GET or HEAD
+			&& $entities
+            &&  (index(lc($accept), "text/html") != -1 || index(lc($accept), "text/*") != -1 || index(lc($accept),"*/*") != -1 || $accept eq ""  )   ## header must be text/html, text/*, */* or undef
+            &&  ($uri !~ m!^${urlpath}/id/($entities)/0*[1-9][0-9]*/contents$! )   ## uri must not be id/ENTITY/XX/contents
+            &&  ($uri =~ s! ^${urlpath}/id/($entities)/(0*)([1-9][0-9]*)\b !!x )     ## uri must be id/ENTITY/XX
+        )
+	{
+		my $datasetid = $1;
+		my $entityid = $3;
+		my $entity = $repository->dataset( $datasetid )->dataobj( $entityid );
+		if( !defined $entity )
+		{
+			return NOT_FOUND;
+		}
+		my $path = "/$datasetid/" . $entity->store_path();
+		EPrints::Update::Entity::update( $repository, $lang, $datasetid, $entityid, $path );
+		if( $uri =~ m! /$ !x )
+        	{
+				$uri .= "index.html";
+		}
+		$r->filename( $entity->_htmlpath( $lang ) . $uri );
+		if( $uri =~ /\.html$/ )
+		{
+			$r->pnotes( entity => $entity );
+			$r->handler('perl-script');
+			$r->set_handlers(PerlResponseHandler => [ 'EPrints::Apache::Template' ] );
+		}
+		return OK; ## /id/ENTITY/XX
+	}
+
 	if( $uri =~ s! ^$urlpath/id/(?:
 			contents | ([^/]+)(?:/([^/]+)(?:/([^/]+))?)?
 		)$ !!x )
