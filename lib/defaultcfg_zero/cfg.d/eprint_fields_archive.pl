@@ -1,8 +1,8 @@
 
-push @{$c->{fields}->{eprint}},
+#push @{$c->{fields}->{eprint}},
 
 #{
-#	Add archive specific fields here.  To override an existing field use 'replace_core => 1'
+#	Add archive specific fields here, after uncommenting push line above.  To override an existing field use 'replace_core => 1'
 #},
 
 ;
