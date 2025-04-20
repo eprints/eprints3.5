@@ -1,16 +1,16 @@
 [submodule "ingredients/easy_pages"]
 	path = ingredients/easy_pages
-	url = https://github.com/eprints/easy_pages.git
+	url = ../easy_pages.git
 [submodule "ingredients/richtext"]
 	path = ingredients/richtext
-	url = https://github.com/eprints/richtext.git
+	url = ../richtext.git
 [submodule "flavours/pub_lib"]
 	path = flavours/pub_lib
-	url = https://github.com/eprints/pub_lib.git
+	url = ../pub_lib.git
     branch = entities
 [submodule "ingredients/bazaar"]
 	path = ingredients/bazaar
-	url = https://github.com/eprints/bazaar.git
+	url = ../bazaar.git
 [submodule "ingredients/jquery4eprints"]
 	path = ingredients/jquery4eprints
-	url = https://github.com/eprints/jquery4eprints.git
+	url = ../jquery4eprints.git
