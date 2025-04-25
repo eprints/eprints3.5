@@ -462,7 +462,65 @@ sub serialise_name
 {
 	my( $self, $name ) = @_;
 
+	if ( !defined $name && $self->can( 'get_value' ) )
+	{
+		$name = $self->get_value( 'name' );
+	}
+
 	return $name;
+}
+
+
+######################################################################
+=pod
+
+=item $human_serialised_name =  EPrints::DataObj::Entity->human_serialise_name( $name )
+
+Returns human serialisation of an entity's <$name> to make it quicker 
+to transfrom between some other data object input field and an entity 
+data object.
+
+=cut
+######################################################################
+
+sub human_serialise_name
+{
+    my( $self, $name ) = @_;
+
+	if ( !defined $name && $self->can( 'get_value' ) ) 
+	{
+		$name = $self->get_value( 'name' );
+	}
+
+	if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_serialise_name' ) )
+	{
+		return &$f( $self, $name );
+	}
+
+    return $name;
+}
+
+######################################################################
+=pod
+
+=item $human_deserialised_name =  EPrints::DataObj::Entity->human_deserialise_name( $name )
+
+Returns deserialisation of an entity's <$serialised_name> so this
+can be saved to an entity record's name field.
+
+=cut
+######################################################################
+
+sub human_deserialise_name
+{
+    my( $self, $serialised_name ) = @_;
+
+    if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_deserialise_name' ) )
+    {
+        return &$f( $self, $serialised_name );
+    }
+
+    return $serialised_name;
 }
 
 

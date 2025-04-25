@@ -2574,7 +2574,7 @@ sub render_fileinfo
 ######################################################################
 =pod
 
-=item $path = EPrints::DataObj::eprintid_to_path( $id )
+=item $path = EPrints::DataObj::EPrint::eprintid_to_path( $id )
 
 Returns path of the storage directory based on the eprint C<$id> 
 provided.

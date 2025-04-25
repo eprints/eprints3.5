@@ -29,14 +29,6 @@
     </tr>
   </table>
 
-  <epc:if test="!$flags{preview}">
-    <epc:phrase ref="entity_page:actions"/>
-    <dl class="ep_entity_page_actions">
-    <epc:foreach expr="action_list('person_entity_page_actions',$item)" iterator="action">
-      <dt><epc:print expr="$action.action_icon()" /></dt>
-      <dd><epc:print expr="$action.action_title()" /></dd>
-    </epc:foreach>
-    </dl>
-  </epc:if>
+  <epc:phrase ref="entity_page:publications_list" entity_type="person" entity_id="{$item.id()}" />
 
 </cite:citation>

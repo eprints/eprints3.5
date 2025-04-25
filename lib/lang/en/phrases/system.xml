@@ -1905,6 +1905,8 @@ Titles and Help for the System Fields
     <epp:phrase id="eprint_fieldname_contributions">Contributions</epp:phrase>
     <epp:phrase id="eprint_fieldname_contributions_type">Type</epp:phrase>
     <epp:phrase id="eprint_fieldname_contributions_contributor">Contributor</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_datasetid_person">Person</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_datasetid_organisation">Organisation</epp:phrase>
 	<epp:phrase id="eprint_fieldname_contributions_contributor_datasetid">Entity Type</epp:phrase>
 	<epp:phrase id="eprint_fieldname_contributions_contributor_entityid">Entity ID</epp:phrase>
     <epp:phrase id="eprint_fieldname_source">Source</epp:phrase>
@@ -3417,7 +3419,7 @@ Titles and Help for the System Fields
     <epp:phrase id="organisation_fieldname_ids_id_type">Identifier Types</epp:phrase>
     <epp:phrase id="organisation_fieldname_id_value">Primary Identifier</epp:phrase>
     <epp:phrase id="organisation_fieldname_id_type">Primary Identifier Type</epp:phrase>
-	<epp:phrase id="organisation_id_type_typename_ror">Research Organization Registry (ROR)</epp:phrase>
+    <epp:phrase id="organisation_id_type_typename_ror">ROR</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_url">URL</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_email">Email</epp:phrase>
     <epp:phrase id="organisation_fieldname_name">Primary Name</epp:phrase>
