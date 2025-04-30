@@ -123,6 +123,73 @@
 <epp:phrase id="view:EPrints/Paginate:paginate_list/controls">
   <div>
     <epc:if test="has_main_controls">
+      <epc:choose>
+
+        <epc:when test="n_results gt 0">
+          <epc:phrase ref="lib/searchexpression:results">
+            <epc:param name="from"><span class="ep_search_number"><epc:print expr="from"/></span></epc:param>
+            <epc:param name="to"><span class="ep_search_number"><epc:print expr="to"/></span></epc:param>
+            <epc:param name="n"><span class="ep_search_number"><epc:print expr="n_results"/></span></epc:param>
+          </epc:phrase>
+          <epc:whitespace empty="preserve"> </epc:whitespace>
+          <epc:if test="page_size != ''">
+            <epc:phrase ref="lib/searchexpression:results_page_size">
+              <epc:param name="n_10"><epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link></epc:param>
+              <epc:param name="n_25"><epv:link uri="{url}&amp;{basename}page_size=25">25</epv:link></epc:param>
+              <epc:param name="n_100"><epv:link uri="{url}&amp;{basename}page_size=100">100</epv:link></epc:param>
+              <epc:param name="n_all" singleElement="singleElement"><epv:link uri="{url}&amp;{basename}page_size={n_results}"/></epc:param>
+            </epc:phrase>
+          </epc:if>
+        </epc:when>
+
+        <epc:otherwise>
+          <epc:phrase ref="lib/searchexpression:noresults"/>
+        </epc:otherwise>
+
+      </epc:choose>
+
+      <if test="array_length(control_links) gt 0">
+        <br/>
+      </if>
+
+      <epc:foreach expr="control_links" iterator="control_link">
+
+        <epc:if test="$index gt 0">
+          <epc:phrase ref="lib/searchexpression:separator"/>
+        </epc:if>
+
+        <span class="ep_search_control">
+          <epc:choose>
+            <epc:when test="$control_link{type} = 'before'">
+              <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
+            </epc:when>
+            <epc:when test="$control_link{type} = 'previous'">
+              <epv:link uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:prev"/></epv:link>
+            </epc:when>
+            <epc:when test="$control_link{type} = 'current'">
+              <strong><epc:print expr="$control_link{label}"/></strong>
+            </epc:when>
+            <epc:when test="$control_link{type} = 'jump'">
+              <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
+            </epc:when>
+            <epc:when test="$control_link{type} = 'next'">
+              <epv:link class="ep_next ep_hide" uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:next"/></epv:link>
+            </epc:when>
+          </epc:choose>
+        </span>
+      </epc:foreach>
+
+    </epc:if>
+
+    <epc:if test="controls_after">
+      <epc:print expr="controls_after"/>
+    </epc:if>
+  </div>
+</epp:phrase>
+
+<epp:phrase id="view:EPrints/Paginate:infinite_search_list/controls">
+  <div>
+    <epc:if test="has_main_controls">
 
       <epc:if test="n_results lt 1">
         <epc:phrase ref="lib/searchexpression:noresults"/>
