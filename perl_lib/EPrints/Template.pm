@@ -30,19 +30,27 @@ sub template_phrase
 		},
 
 		"epv:link" => sub {
+                        my( $node, $process_child_nodes_func, %params ) = @_;
 
-			my( $node, $process_child_nodes_func, %params ) = @_;
+                        my $uri = $node->getAttribute( 'uri' );
+                        my $target = $node->getAttribute( 'target' );
 
-			my $link = $params{session}->render_link( $node->getAttribute( 'uri' ), $node->getAttribute( 'target' ) );
+                        my %attributes;
 
-			EPrints::XML::EPC::expand_attributes( $link, %params );
+                        foreach my $attr ( $node->getAttributes )
+                        {
+                                $attributes{$attr->nodeName} = $attr->nodeValue if $attr->nodeName ne "uri" and $attr->nodeName ne "uri";
+                        }
+                        my $link = $params{session}->render_link( $uri, $target, %attributes );
 
- 			if( $node->hasChildNodes )
-			{
-				$link->appendChild( &{$process_child_nodes_func}( $node, %params ) );
-			}
+                        EPrints::XML::EPC::expand_attributes( $link, %params );
 
-			return $link;
+                        if( $node->hasChildNodes )
+                        {
+                                $link->appendChild( &{$process_child_nodes_func}( $node, %params ) );
+                        }
+
+                        return $link;
 		},
 
 		"epv:render_row" => sub {
