@@ -1,0 +1,66 @@
+.ep_search_result_area {
+    display: flex;
+}
+
+.ep_facet_list {
+    width: 200px;
+}
+
+.ep_search_result_list {
+    width: calc(100% - 200px);
+}
+
+.ep_facet_count::before {
+    content: " (";
+}
+
+.ep_facet_count::after {
+    content: ")";
+}
+
+.ep_facet_remove::before {
+    content: " ";
+}
+
+ul.ep_facet_entries {
+    padding: 0;
+    list-style-type: none;
+}
+
+.ep_facet_entry input {
+    margin-right: 0.5em;
+}
+
+.ep_facet_unspecified .ep_facet_label {
+    font-style: italic;
+}
+
+/* Demo style */
+
+li.ep_facet_entry {
+    display: flex;
+    align-items: flex-start;
+    margin-right: 3em;
+    margin-top: 2px;
+}
+
+li.ep_facet_entry>input {
+    flex: 0;
+}
+
+li.ep_facet_entry>.ep_facet_label {
+    width: 100%;
+    margin-right: 1em;
+}
+
+li.ep_facet_entry>.ep_facet_count {
+    flex: 0;
+}
+
+.ep_facet_count::before {
+    content: "";
+}
+
+.ep_facet_count::after {
+    content: "";
+}
