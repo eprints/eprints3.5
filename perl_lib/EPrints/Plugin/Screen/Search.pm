@@ -586,6 +586,24 @@ sub from
 	}
 }
 
+sub render_results
+{
+        my( $self ) = @_;
+
+        my $page = $self->{session}->make_doc_fragment;
+
+        my $results = $self->{session}->make_element("div", "class" => "ep_search_result_area");
+
+        my $results_area = $self->{session}->make_element("div", "class" => "ep_search_result_list");
+        $results_area->appendChild( $self->SUPER::render_results );
+
+        $results->appendChild( $results_area );
+
+        $page->appendChild( $results );
+
+        return $page;
+}
+
 1;
 
 =head1 COPYRIGHT
