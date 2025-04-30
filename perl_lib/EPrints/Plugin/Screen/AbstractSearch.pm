@@ -680,7 +680,7 @@ sub render_results
 	my $page = $self->{session}->make_doc_fragment;
 	$page->appendChild( $self->render_results_intro );
 	$page->appendChild( 
-		EPrints::Paginate->paginate_list( 
+		EPrints::Paginate->infinite_search_list( 
 			$self->{session}, 
 			"search", 
 			$self->{processor}->{results}, 
