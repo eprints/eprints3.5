@@ -15,11 +15,11 @@ B<EPrints::Search> - Represents a single search
 
 =head1 DESCRIPTION
 
-The Search object represents the conditions of a single 
+The Search object represents the conditions of a single
 search.
 
 It used to also store the results of the search, but now it returns
-an L<EPrints::List> object. 
+an L<EPrints::List> object.
 
 A search expression can also render itself as a web-form, populate
 itself with values from that web-form and render the results as a
@@ -98,17 +98,17 @@ Either the L<EPrints::DataSet> to search, or the ID of it.
 
 =item allow_blank (default 0)
 
-Unless this is set, a search with no conditions will return zero records 
+Unless this is set, a search with no conditions will return zero records
 rather than all records.
 
 =item satisfy_all (default 1)
 
-If this is true than all search-fields much be satisfied, if false then 
+If this is true than all search-fields much be satisfied, if false then
 results matching any search-field will be returned.
 
 =item search_fields
 
-A reference to an array of search field configuration structures. Each 
+A reference to an array of search field configuration structures. Each
 takes the form { id=>"...", default=>"..", meta_fields=>"..." } where
 the meaning is the same as for search configuration in ArchiveConfig.
 
@@ -124,7 +124,7 @@ of orders available to this dataset, defined in ArchiveConfig.pm
 
 "order" limits you to the orders specified in ArchiveConfig, and is
 usually used by the web page based searching. custom_order allows
-you to specify any order you like. The format is 
+you to specify any order you like. The format is
 foo/-bar. This means that the results will be sorted
 by foo and then any with equal foo values will be reverse sorted
 by bar. More than 2 fields can be specified.
@@ -132,7 +132,7 @@ by bar. More than 2 fields can be specified.
 =item keep_cache
 
 If true then the search results produced will be stored in the database
-even after the current script ends. This is useful for speeding up 
+even after the current script ends. This is useful for speeding up
 page 2 onwards of a search.
 
 keep_cache may get set to true anyway for various reasons, but setting
@@ -143,8 +143,8 @@ the parameter makes certain of it.
 The ID of a cached search. The cache contains both the results of the
 search, and the parameters used for the search.
 
-If the cache still exists, it will set the default values of the 
-search fields, and when the search is performed it will skip the 
+If the cache still exists, it will set the default values of the
+search fields, and when the search is performed it will skip the
 search and build a search results object directly from the cache.
 
 =item limit
@@ -188,10 +188,10 @@ being mentioned in the description of the search.
 ######################################################################
 
 @EPrints::Search::OPTS = (
-	"session", 	"dataset", 	"allow_blank", 	
-	"satisfy_all", 	"staff", 	
-	"custom_order", "keep_cache", 	"cache_id", 	
-	"prefix", 	"defaults", 	"filters", 
+	"session", 	"dataset", 	"allow_blank",
+	"satisfy_all", 	"staff",
+	"custom_order", "keep_cache", 	"cache_id",
+	"prefix", 	"defaults", 	"filters",
 	"search_fields","show_zero_results", "show_help",
 	"limit", "offset",
 );
@@ -199,7 +199,7 @@ being mentioned in the description of the search.
 sub new
 {
 	my( $class, %data ) = @_;
-	
+
 	my $self = {};
 	bless $self, $class;
 	# only session & table are required.
@@ -208,17 +208,17 @@ sub new
 	$data{satisfy_all} = 1 if ( !defined $data{satisfy_all} );
 	$data{prefix} = "" if ( !defined $data{prefix} );
 
-	if( 
-		defined $data{use_cache} || 
-		defined $data{use_oneshot_cache} || 
+	if(
+		defined $data{use_cache} ||
+		defined $data{use_oneshot_cache} ||
 		defined $data{use_private_cache} )
 	{
 		my ($package, $filename, $line) = caller;
 		print STDERR <<END;
 -----------------------------------------------------------------------
 EPRINTS WARNING: The old cache parameters to Search have been
-deprecated. Everything will probably work as expected, but you should 
-maybe check your scripts. (if it's in the core code, please email 
+deprecated. Everything will probably work as expected, but you should
+maybe check your scripts. (if it's in the core code, please email
 support\@eprints.org
 
 Deprecated: use_oneshot_cache use_private_cache use_cache
@@ -226,7 +226,7 @@ Deprecated: use_oneshot_cache use_private_cache use_cache
 Please use instead: keep_cache
 
 All cache's are now private. oneshot caches will be created and
-destroyed automatically if "order" or "custom_order" is set or if a 
+destroyed automatically if "order" or "custom_order" is set or if a
 range of results is requested.
 -----------------------------------------------------------------------
 The deprecated parameter was passed to Search->new from
@@ -258,15 +258,15 @@ END
 		foreach my $fieldname ( @{$fielddata->{meta_fields}} )
 		{
 			# Put the MetaFields in a list
-			push @meta_fields, 
+			push @meta_fields,
 	EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
 		}
 
 		my $id =  $fielddata->{id};
 		if( !defined $id )
 		{
-			$id = join( 
-				"/", 
+			$id = join(
+				"/",
 				@{$fielddata->{meta_fields}} );
 		}
 
@@ -291,10 +291,10 @@ END
 		foreach my $fieldname ( @{$filterdata->{meta_fields}} )
 		{
 			# Put the MetaFields in a list
-			push @meta_fields, 
+			push @meta_fields,
 	EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
 		}
-	
+
 		my %opts = %$filterdata;
 		$opts{value} = delete $opts{default}
 			if exists $opts{default};
@@ -311,10 +311,10 @@ END
 	{
 		unless( $self->from_cache( $self->{cache_id} ) )
 		{
-			return; #cache gone 
+			return; #cache gone
 		}
 	}
-	
+
 	return( $self );
 }
 
@@ -407,9 +407,9 @@ sub _add_field
 =item $searchfield = $searchexp->get_searchfield( $sf_id )
 
 Return a L<EPrints::Search::Field> belonging to this Search with
-the given id. 
+the given id.
 
-Return undef if not searchfield of that ID belongs to this search. 
+Return undef if not searchfield of that ID belongs to this search.
 
 =end InternalDoc
 
@@ -438,12 +438,12 @@ Resets satisfy_all to true.
 sub clear
 {
 	my( $self ) = @_;
-	
+
 	foreach my $sf ( $self->get_non_filter_searchfields )
 	{
 		$sf->clear();
 	}
-	
+
 	$self->{satisfy_all} = 1;
 }
 
@@ -456,7 +456,7 @@ sub clear
 =item $bool = $searchexp->get_satisfy_all
 
 Return true if this search requires that all the search fields with
-values are satisfied. 
+values are satisfied.
 
 =cut
 ######################################################################
@@ -537,7 +537,7 @@ sub serialise
 		}
 	}
 	# This inserts an "-" field which we use to spot the join between
-	# the properties and the fields, so in a pinch we can add a new 
+	# the properties and the fields, so in a pinch we can add a new
 	# property in a later version without breaking when we upgrade.
 	push @parts,
 		"-",
@@ -551,12 +551,12 @@ sub serialise
 		# up the original.
 		my $bit = $_;
 		$bit="" unless defined( $bit );
-		$bit =~ s/[\\\|]/\\$&/g; 
+		$bit =~ s/[\\\|]/\\$&/g;
 		$bit =~ s/\\\\/\\/g; # Avoid double-escaping
 		push @escapedparts,$bit;
 	}
 	return join( "|" , @escapedparts );
-}	
+}
 
 
 ######################################################################
@@ -565,7 +565,7 @@ sub serialise
 =item $searchexp->from_string( $string )
 
 Unserialises the contents of $string but only into the fields alrdeady
-existing in $searchexp. Set the order and satisfy_all mode but do not 
+existing in $searchexp. Set the order and satisfy_all mode but do not
 affect the dataset or allow blank.
 
 =cut
@@ -581,13 +581,13 @@ sub from_string
 	$field_string = "" unless( defined $field_string ); # avoid a warning
 
 	my @parts = split( /\|/ , $pstring );
-	$self->{satisfy_all} = $parts[1]; 
+	$self->{satisfy_all} = $parts[1];
 	$self->{custom_order} = $parts[2];
 	delete $self->{custom_order} if( $self->{custom_order} eq "" );
-	
+
 # not overriding these bits
 #	$self->{allow_blank} = $parts[0];
-#	$self->{dataset} = $self->{session}->get_repository->get_dataset( $parts[3] ); 
+#	$self->{dataset} = $self->{session}->get_repository->get_dataset( $parts[3] );
 
 	foreach( split /\|/ , $field_string )
 	{
@@ -623,12 +623,12 @@ sub from_string_raw
 	$filter_string = "" unless( defined $filter_string ); # avoid a warning
 
 	my @parts = split( /\|/ , $pstring );
-	$self->{satisfy_all} = $parts[1]; 
+	$self->{satisfy_all} = $parts[1];
 	$self->{custom_order} = $parts[2];
 	delete $self->{custom_order} if( $self->{custom_order} eq "" );
 # not overriding these bits
 #	$self->{allow_blank} = $parts[0];
-#	$self->{dataset} = $self->{session}->get_repository->get_dataset( $parts[3] ); 
+#	$self->{dataset} = $self->{session}->get_repository->get_dataset( $parts[3] );
 
 	foreach( split /\|/ , $field_string )
 	{
@@ -675,7 +675,7 @@ sub clone
 	my( $self ) = @_;
 
 	my $clone = EPrints::Search->new( %{$self} );
-	
+
 	foreach my $sf_id ( keys %{$self->{searchfieldmap}} )
 	{
 		my $sf = $self->{searchfieldmap}->{$sf_id};
@@ -776,7 +776,12 @@ sub get_conditions
 		}
 		$cond = EPrints::Search::Condition->new( "AND", $fcond, $cond );
 	}
-	
+
+	if( defined( $self->{condition_filter_function} ) )
+	{
+		$cond = &{$self->{condition_filter_function}}( $cond );
+	}
+
 	return $cond->optimise(
 		session => $self->{session},
 		dataset => $self->{dataset},
@@ -860,7 +865,7 @@ sub render_description
 =item $xhtml = $searchexp->render_conditions_description
 
 Return an XHTML DOM description of this search expressions conditions.
-ie title is "foo" 
+ie title is "foo"
 
 =cut
 ######################################################################
@@ -889,7 +894,7 @@ sub render_conditions_description
 	{
 		if( $i>0 )
 		{
-			$frag->appendChild( $self->{session}->html_phrase( 
+			$frag->appendChild( $self->{session}->html_phrase(
 				$joinphraseid ) );
 		}
 		$frag->appendChild( $bits[$i] );
@@ -941,7 +946,7 @@ sub render_order_description
 		order => $frag );
 
 }
-	
+
 
 ######################################################################
 =pod
@@ -977,11 +982,11 @@ sub get_searchfields
 	my( $self ) = @_;
 
 	my @search_fields = ();
-	foreach my $id ( @{$self->{searchfields}} ) 
-	{ 
-		push @search_fields, $self->get_searchfield( $id ); 
+	foreach my $id ( @{$self->{searchfields}} )
+	{
+		push @search_fields, $self->get_searchfield( $id );
 	}
-	
+
 	return @search_fields;
 }
 
@@ -1001,12 +1006,12 @@ sub get_non_filter_searchfields
 	my( $self ) = @_;
 
 	my @search_fields = ();
-	foreach my $id ( @{$self->{searchfields};} ) 
-	{ 
+	foreach my $id ( @{$self->{searchfields};} )
+	{
                 next if( $self->{filtersmap}->{$id} );
-		push @search_fields, $self->get_searchfield( $id ); 
+		push @search_fields, $self->get_searchfield( $id );
 	}
-	
+
 	return @search_fields;
 }
 
@@ -1020,7 +1025,7 @@ sub get_non_filter_searchfields
 =item @search_fields = $searchexp->get_set_searchfields
 
 Return the searchfields belonging to this search expression which
-have a value set. 
+have a value set.
 
 =cut
 ######################################################################
@@ -1052,7 +1057,7 @@ if known.
 sub get_cache_id
 {
 	my( $self ) = @_;
-	
+
 	return $self->{cache_id};
 }
 
@@ -1076,11 +1081,11 @@ sub perform_search
 	# cjg hmmm check cache still exists?
 	if( defined $self->{cache_id} )
 	{
-		return EPrints::List->new( 
+		return EPrints::List->new(
 			session => $self->{session},
 			dataset => $self->{dataset},
 			encoded => $self->serialise,
-			cache_id => $self->{cache_id}, 
+			cache_id => $self->{cache_id},
 			searchexp => $self,
 			order => $self->{custom_order},
 		);
@@ -1105,7 +1110,7 @@ sub perform_search
 		$cachemap->create_sql_table( $self->{dataset} );
 	}
 
-	my $unsorted_matches = $self->get_conditions->process( 
+	my $unsorted_matches = $self->get_conditions->process(
 		session => $self->{session},
 		cachemap => $cachemap,
 		order => $self->{custom_order},
@@ -1114,12 +1119,12 @@ sub perform_search
 		offset => $self->{offset},
 	);
 
-	my $results = EPrints::List->new( 
+	my $results = EPrints::List->new(
 		session => $self->{session},
 		dataset => $self->{dataset},
 		encoded => $self->serialise,
 		keep_cache => $self->{keep_cache},
-		ids => $unsorted_matches, 
+		ids => $unsorted_matches,
 		cache_id => (defined $cachemap ? $cachemap->get_id : undef ),
 		searchexp => $self,
 		order => $self->{custom_order},
@@ -1141,7 +1146,7 @@ sub perform_distinctby
 	my( $self, $fields ) = @_;
 
 	# we don't do any caching of DISTINCT BY
-	return $self->get_conditions->process_distinctby( 
+	return $self->get_conditions->process_distinctby(
 			session => $self->{session},
 			dataset => $self->{dataset},
 			fields => $fields,
@@ -1161,7 +1166,7 @@ sub perform_groupby
 	my( $self, $field ) = @_;
 
 	# we don't do any caching of GROUP BY
-	return $self->get_conditions->process_groupby( 
+	return $self->get_conditions->process_groupby(
 			session => $self->{session},
 			dataset => $self->{dataset},
 			field => $field,
@@ -1206,7 +1211,7 @@ sub count
 sub get_records
 {
 	my( $self , $offset , $count ) = @_;
-	
+
 	EPrints->deprecated();
 
 	return $self->perform_search->slice( $offset, $count );
@@ -1215,7 +1220,7 @@ sub get_records
 sub get_ids
 {
 	my( $self , $offset , $count ) = @_;
-	
+
 	EPrints->deprecated();
 
 	return $self->perform_search->ids( $offset, $count );
@@ -1223,7 +1228,7 @@ sub get_ids
 
 sub map
 {
-	my( $self, $function, $info ) = @_;	
+	my( $self, $function, $info ) = @_;
 
 	EPrints->deprecated();
 

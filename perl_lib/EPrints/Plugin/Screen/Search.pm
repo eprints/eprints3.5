@@ -16,7 +16,7 @@ sub new
 	my( $class, %params ) = @_;
 
 	my $self = $class->SUPER::new(%params);
-	
+
 	$self->{appears} = [];
 	push @{$self->{actions}}, "advanced", "savesearch";
 
@@ -65,7 +65,7 @@ sub can_be_viewed
 	my( $self ) = @_;
 
 	# note this method is also used by $self->datasets()
-	
+
 	my $dataset = $self->{processor}->{dataset};
 	return 0 if !defined $dataset;
 
@@ -135,7 +135,7 @@ sub get_controls_before
 sub hidden_bits
 {
 	my( $self ) = @_;
-	
+
 	my %bits = $self->SUPER::hidden_bits;
 
 	my @datasets = $self->datasets;
@@ -167,7 +167,7 @@ sub render_result_row
 
 	if( $staff )
 	{
-		return $result->render_citation_link_staff( $citation, 
+		return $result->render_citation_link_staff( $citation,
 			%params );
 	}
 	else
@@ -184,7 +184,7 @@ sub export_url
 	my $plugin = $self->{session}->plugin( "Export::".$format );
 	if( !defined $plugin )
 	{
-		EPrints::abort( "No such plugin: $format\n" );	
+		EPrints::abort( "No such plugin: $format\n" );
 	}
 
 	my $url = URI->new( $self->{session}->current_url() . "/export_" . $self->{session}->get_repository->get_id . "_" . $format . $plugin->param( "suffix" ) );
@@ -248,7 +248,7 @@ sub action_savesearch
 	else
 	{
 		$screen = "Edit";
-		$savedsearch = $ds->create_dataobj( { 
+		$savedsearch = $ds->create_dataobj( {
 			userid => $self->{session}->current_user->id,
 			name => $self->{session}->xml->text_contents_of( $name ),
 			spec => $searchexp->freeze
@@ -397,7 +397,7 @@ sub properties_from
 	$sconf = $self->default_search_config if !%$sconf;
 
 	$processor->{sconf} = $sconf;
-	$processor->{template} = $sconf->{template} if defined $sconf->{template};
+	$processor->{template} = $sconf->{template};
 }
 
 sub default_search_config
@@ -579,29 +579,373 @@ sub from
 		if( $self->{processor}->{action} eq "search" )
 		{
 			$self->{processor}->add_message( "warning",
-				$self->{session}->html_phrase( 
+				$self->{session}->html_phrase(
 					"lib/searchexpression:least_one" ) );
 		}
 		$self->{processor}->{search_subscreen} = "form";
 	}
 }
 
+sub get_facet_config
+{
+	my( $self ) = @_;
+
+	return [
+		{
+			field_id => "type"
+		},
+		{
+			field_id => "department"
+		},
+		{
+			field_id => "ispublished"
+		},
+		{
+			field_id => "publisher"
+		},
+		{
+			field_id => "publication"
+		},
+		{
+			field_id => "date"
+		},	];
+}
+
+sub get_facet_parameters
+{
+	my( $self ) = @_;
+
+	my $session = $self->{session};
+	my $facets = {};
+
+	foreach my $key ( $session->param() )
+	{
+		if( $key =~ /^facet_/ )
+		{
+			my @values = split( /\|/, $session->param( $key ) );
+
+			$key =~ s/^facet_//;
+
+			$facets->{$key} = \@values;
+		}
+
+	}
+
+	return $facets;
+}
+
+sub get_facet_conditions
+{
+	my( $self, $ignore_facet ) = @_;
+
+	my $search = $self->{processor}->{search};
+	my $dataset = $self->{processor}->{dataset};
+
+	my $facet_conditions;
+
+	my $facets = $self->get_facet_parameters();
+
+	foreach my $field_name ( keys %{ $facets } )
+	{
+		my $field = $dataset->get_field( $field_name );
+
+		my $values = $facets->{$field_name};
+
+		if( scalar @$values == 1 )
+		{
+			push @$facet_conditions, EPrints::Search::Condition::Comparison->new(
+				"=", $dataset, $field, $values->[0]
+			);
+		}
+		else
+		{
+			my @sub_conditions;
+
+			foreach my $value ( @$values )
+			{
+				push @sub_conditions, EPrints::Search::Condition::Comparison->new(
+					"=", $dataset, $field, $value
+				);
+			}
+
+			push @$facet_conditions, EPrints::Search::Condition::Or->new( @sub_conditions );
+		}
+	}
+
+	return $facet_conditions;
+}
+
+sub add_facets
+{
+	my( $self, $condition, $exclude ) = @_;
+
+	my $search = $self->{processor}->{search};
+	my $dataset = $self->{processor}->{dataset};
+
+	my @facet_conditions = $condition;
+
+	my $facet_conditions2 = $self->get_facet_conditions;
+
+	my $facets = $self->get_facet_parameters();
+
+	foreach my $field_name ( keys %{ $facets } )
+	{
+		if(( defined( $exclude )) && ( $field_name eq $exclude ))
+		{
+			next;
+		}
+
+		my $field = $dataset->get_field( $field_name );
+
+		my $values = $facets->{$field_name};
+
+		if( scalar @$values == 1 )
+		{
+			push @facet_conditions, EPrints::Search::Condition::Comparison->new(
+				"=", $dataset, $field, $values->[0]
+			);
+		}
+		else
+		{
+			my @sub_conditions;
+
+			foreach my $value ( @$values )
+			{
+				push @sub_conditions, EPrints::Search::Condition::Comparison->new(
+					"=", $dataset, $field, $value
+				);
+			}
+
+			push @facet_conditions, EPrints::Search::Condition::Or->new( @sub_conditions );
+		}
+	}
+
+	if( scalar @facet_conditions > 1 )
+	{
+		$condition = EPrints::Search::Condition::And->new( @facet_conditions );
+	}
+
+	return $condition;
+}
+
+sub run_search
+{
+	my( $self ) = @_;
+
+	$self->{processor}->{search}->{condition_filter_function} = sub {
+		return $self->add_facets( @_ );
+	};
+
+	$self->SUPER::run_search;
+}
+
+
+sub render_facet_list
+{
+	my( $self, $facet_config ) = @_;
+
+	my $max_facet_list_length = 6;
+
+	my $facet = $facet_config->{field_id};
+
+	my $session = $self->{session};
+
+	my $search = $self->{processor}->{search};
+	my $dataset = $self->{processor}->{dataset};
+
+	my %current_values;
+	my $existing_param = $session->param( "facet_$facet" );
+
+	if( defined( $existing_param ) )
+	{
+		foreach my $current_value (split( /\|/, $existing_param ))
+		{
+			$current_values{$current_value} = 1;
+		}
+	}
+
+	my $base_url = $self->{session}->current_url( host => 1, query => 1 );
+	my @query = $base_url->query_form;
+
+	foreach my $i (reverse(0 .. int($#query/2)))
+	{
+		splice(@query, $i*2, 2) if $query[$i*2] eq "facet_$facet";
+	}
+
+	$base_url->query_form( @query );
+	$base_url->query( undef ) if !@query;
+
+	# print STDERR "Without $facet: $base_url\n";
+
+	my $field = $self->{processor}->{dataset}->get_field( $facet );
+
+	my $list = $session->make_element( "div" );
+
+
+	my $old_condition_filter_function = $search->{condition_filter_function};
+
+
+	$search->{condition_filter_function} = sub {
+		return $self->add_facets( @_, $facet );
+	};
+
+
+	my $entries = $session->make_element( "ul", "class" => "ep_facet_entries", "data-ep-facet", $facet );
+
+	my( $values, $counts ) = $search->perform_groupby( $field );
+
+	my @result;
+	my $num_results = scalar @{$counts};
+
+	for (my $index = 0; $index < $num_results; $index++)
+	{
+		push @result, { count => $counts->[$index], value => $values->[$index] };
+	}
+
+	my @sorted_result = sort { $b->{count} <=> $a->{count} } @result;
+
+
+	my $show_this_facet = 0;
+
+	foreach my $result (@sorted_result)
+	{
+		if( defined( $result->{value} ) )
+		{
+			$show_this_facet = 1;
+		}
+	}
+
+	if( $show_this_facet )
+	{
+		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
+		$heading->appendChild( $session->make_text( $field->render_name ) );
+
+		my @defined_results;
+
+		foreach my $result (@sorted_result)
+		{
+			if( defined( $result->{value} ) )
+			{
+				push @defined_results, $result;
+			}
+		}
+
+		my $show_expander = scalar( @defined_results) > $max_facet_list_length;
+
+		for my $index (0 .. $#defined_results)
+		{
+			my $result = $defined_results[$index];
+
+			# Show expander.
+
+			if( $show_expander && ( $index == ( $max_facet_list_length - 1 ) ) )
+			{
+				my $expander = $session->make_element( "a", "class" => "ep_facet_show_more", "href" => "#" );
+
+				my $num = 1 + scalar( @defined_results ) - $max_facet_list_length;
+
+				$expander->appendChild( $session->make_text( "Show $num more...") );
+
+				$entries->appendChild( $expander );
+			}
+
+			# Show facet list entry.
+
+			my $entry = $session->make_element( "li",
+				"style" => ( $show_expander && ( $index >= ( $max_facet_list_length - 1 ) ? "display: none" : undef) ),
+				"class" => "ep_facet_entry" . ( defined( $result->{value} ) ? "" : " ep_facet_unspecified" ),
+				"data-ep-facet-value" => defined( $result->{value} ) ? $result->{value} : "");
+
+			my $checkbox = $session->make_element( "input",
+				"title" => $result->{value},
+				"type" => "checkbox",
+				"checked" => $current_values{$result->{value}} );
+
+			# my $label = $session->make_element( "span", "class" => "ep_facet_label" );
+			my $label = $session->make_element( "a", "class" => "ep_facet_label", "href" => "#" );
+
+			my $label_content;
+			my $field_type = $field->type;
+
+			if( ( $field_type eq "namedset" ) || ( $field_type eq "set" ) )
+			{
+				$label_content = $field->render_option( $session, $result->{value} );
+			}
+			else
+			{
+				$label_content = $result->{value};
+			}
+
+			if ( !defined( $label_content ) )
+			{
+				$label_content = "Unspecified";
+			}
+
+			$label->appendChild( $session->make_text( $label_content ) );
+
+			my $count = $session->make_element( "span", "class" => "ep_facet_count" );
+			$count->appendChild( $session->make_text( $result->{count} ) );
+
+			$entry->appendChild( $checkbox );
+			$entry->appendChild( $label );
+			$entry->appendChild( $count );
+
+			$entries->appendChild( $entry );
+		}
+
+		$list->appendChild( $heading );
+		$list->appendChild( $entries );
+	}
+
+	$search->{condition_filter_function} = $old_condition_filter_function;
+
+	return $list;
+}
+
+sub render_facet_lists
+{
+	my( $self ) = @_;
+
+	my $facets = $self->get_facet_parameters();
+
+	my $lists = $self->{session}->make_doc_fragment;
+
+	# $lists->appendChild( $self->{session}->make_text( Data::Dumper->Dump([$facets], ['$facets']) ) );
+
+	my $facet_config = $self->get_facet_config;
+
+	foreach my $facet (@$facet_config)
+	{
+		$lists->appendChild( $self->render_facet_list( $facet ) );
+	}
+
+	return $lists;
+}
+
 sub render_results
 {
-        my( $self ) = @_;
+	my( $self ) = @_;
 
-        my $page = $self->{session}->make_doc_fragment;
+	my $page = $self->{session}->make_doc_fragment;
 
-        my $results = $self->{session}->make_element("div", "class" => "ep_search_result_area");
+	my $results = $self->{session}->make_element("div", "class" => "ep_search_result_area");
 
-        my $results_area = $self->{session}->make_element("div", "class" => "ep_search_result_list");
-        $results_area->appendChild( $self->SUPER::render_results );
+	if( $self->{processor}->{searchid} eq "advanced" )
+	{
+		my $facets_area = $self->{session}->make_element("div", "class" => "ep_facet_list");
+		$facets_area->appendChild( $self->render_facet_lists() );
 
-        $results->appendChild( $results_area );
+		$results->appendChild( $facets_area );
+	}
 
-        $page->appendChild( $results );
+	my $results_area = $self->{session}->make_element("div", "class" => "ep_search_result_list");
+	$results_area->appendChild( $self->SUPER::render_results );
 
-        return $page;
+	$results->appendChild( $results_area );
+
+	$page->appendChild( $results );
+
+	return $page;
 }
 
 1;
