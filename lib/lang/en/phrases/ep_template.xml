@@ -173,7 +173,7 @@
               <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
             </epc:when>
             <epc:when test="$control_link{type} = 'next'">
-              <epv:link class="ep_next ep_hide" uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:next"/></epv:link>
+              <epv:link uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:next"/></epv:link>
             </epc:when>
           </epc:choose>
         </span>
@@ -197,7 +197,7 @@
       </epc:if>
 
       <epc:if test="n_results gt 1">
-        <epc:phrase ref="lib/searchexpression:results">
+        <epc:phrase ref="lib/searchexpression:results_only">
           <epc:param name="n"><span class="ep_search_number"><epc:print expr="n_results"/></span></epc:param>
         </epc:phrase>
         <br/>
