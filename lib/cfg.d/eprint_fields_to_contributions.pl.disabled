@@ -1,0 +1,63 @@
+$c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
+{
+    my( %args ) = @_;
+    my( $repo, $eprint, $changed ) = @args{qw( repository dataobj changed )};
+
+    my $primary_id_types = $repo->config( 'entities', 'primary_id_types' );
+	my $all_contrib_fields =  $repo->config( 'entities', 'field_contribution_types', 'eprint' );
+
+    my @contributions = ();
+
+    foreach my $contrib_fields_id ( keys %$all_contrib_fields )
+    {
+        my $dataset = $repo->dataset( $contrib_fields_id );
+        my $contrib_fields = $all_contrib_fields->{$contrib_fields_id};
+        foreach my $contrib_field ( keys %{$all_contrib_fields->{$contrib_fields_id}} )
+        {
+            next unless $eprint->exists_and_set( $contrib_field );
+            my $values = $eprint->value( $contrib_field );
+            $values = [ $values ] unless ref( $values );
+            my $contrib_type = $contrib_fields->{$contrib_field};
+            foreach my $value ( @$values )
+            {
+                my $contrib_name = ref( $value ) ? $value->{name} : $value;
+                $contrib_type = $value->{type} unless $contrib_type;
+                my $entity = undef;
+                $entity = EPrints::DataObj::Entity::entity_with_id( $dataset, $value->{id}, { type => $primary_id_types->{$contrib_fields_id}, name => $contrib_name } ) if ref( $value ) && $value->{id};
+                if ( $entity )
+                {
+                    unless ( $entity->has_name( $contrib_name ) )
+                    {
+                        my $names = $entity->get_value( 'names' );
+                        unshift @$names, { name => $contrib_name };
+                        $entity->set_value( 'names', $names );
+                        $entity->commit;
+                    }
+                }
+                else
+                {
+                    # Find an entity that matches the entity's name but does not already have an ID.
+                    $entity = EPrints::DataObj::Entity::entity_with_name( $dataset, $contrib_name, { no_id => 1 } );
+
+                    # If an entity is found but the entered field row has an ID, create a new entity including that ID.
+                    if( $entity && ref( $value ) && $value->{id} )
+                    {
+                        my $entity_data = { names => [ { name => $contrib_name } ], ids => [ { id => $value->{id}, id_type => $primary_id_types->{$contrib_fields_id} } ] };
+                        $entity = $dataset->create_dataobj( $entity_data );
+                        $entity->commit( 1 );
+                    }
+                    elsif ( !$entity )
+                    {
+                        my $entity_data = { names => [ { name => $contrib_name } ] };
+                        $entity_data->{ids} = [ { id => $value->{id}, id_type => $primary_id_types->{$contrib_fields_id} } ] if ref( $value ) && $value->{id} ;
+                        $entity = $dataset->create_dataobj( $entity_data );
+                        $entity->commit( 1 );
+                    }
+                }
+                push @contributions, { contributor => { entityid => $entity->id, datasetid => $contrib_fields_id }, type => $contrib_type };
+            }
+        }
+    }
+
+    $eprint->set_value( "contributions", \@contributions );
+}, id => 'update_contributions', priority => 100 );

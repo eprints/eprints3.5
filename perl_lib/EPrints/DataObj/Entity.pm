@@ -417,9 +417,9 @@ sub entityid_to_path
 ######################################################################
 =pod
 
-=item ( $description, $title, $links ) = $eprint->render( $preview )
+=item ( $description, $title, $links ) = $entity->render( $preview )
 
-Render the eprint. If C<$preview> is C<true> then render a preview of
+Render the entity. If C<$preview> is C<true> then render a preview of
 the eprint data object
 
 The 3 returned values are references to XHTML DOM
@@ -450,7 +450,7 @@ sub render
 ######################################################################
 =pod
 
-=item $serialised_name =  EPrints::DataObj::Entity->serialise_name( $name )
+=item $serialised_name =  $entity->serialise_name( $name )
 
 Returns serialisation of an entity's <$name> to make it quicker to
 compare.
@@ -474,7 +474,7 @@ sub serialise_name
 ######################################################################
 =pod
 
-=item $human_serialised_name =  EPrints::DataObj::Entity->human_serialise_name( $name )
+=item $human_serialised_name = $entity->human_serialise_name( $name )
 
 Returns human serialisation of an entity's <$name> to make it quicker 
 to transfrom between some other data object input field and an entity 
@@ -494,7 +494,7 @@ sub human_serialise_name
 
 	if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_serialise_name' ) )
 	{
-		return &$f( $self, $name );
+		return &$f( $name );
 	}
 
     return $name;
@@ -503,7 +503,7 @@ sub human_serialise_name
 ######################################################################
 =pod
 
-=item $human_deserialised_name =  EPrints::DataObj::Entity->human_deserialise_name( $name )
+=item $human_deserialised_name =  $entity->human_deserialise_name( $name )
 
 Returns deserialisation of an entity's <$serialised_name> so this
 can be saved to an entity record's name field.
@@ -517,7 +517,7 @@ sub human_deserialise_name
 
     if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_deserialise_name' ) )
     {
-        return &$f( $self, $serialised_name );
+        return &$f( $serialised_name );
     }
 
     return $serialised_name;
@@ -529,7 +529,7 @@ sub human_deserialise_name
 
 =over 4
 
-=item $entity = EPrints::DataObj::Entity::entity_with_id( $repo, $dataset, $id, [ $opts ] )
+=item $entity = EPrints::DataObj::Entity::entity_with_id( $dataset, $id, [ $opts ] )
 
 Returns an entity that matches the id and type provided.
 
