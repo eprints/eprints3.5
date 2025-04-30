@@ -775,8 +775,6 @@ sub render_facet_list
 	$base_url->query_form( @query );
 	$base_url->query( undef ) if !@query;
 
-	# print STDERR "Without $facet: $base_url\n";
-
 	my $field = $self->{processor}->{dataset}->get_field( $facet );
 
 	my $list = $session->make_element( "div" );
@@ -909,8 +907,6 @@ sub render_facet_lists
 	my $facets = $self->get_facet_parameters();
 
 	my $lists = $self->{session}->make_doc_fragment;
-
-	# $lists->appendChild( $self->{session}->make_text( Data::Dumper->Dump([$facets], ['$facets']) ) );
 
 	my $facet_config = $self->get_facet_config;
 
