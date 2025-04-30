@@ -197,38 +197,6 @@ sub paginate_list
 		push @controls, { url => $prevurl, type => 'previous' };
 	}
 
-	# Page jumps
-	my $pages_to_show = $opts{pagejumps} || 10; # TODO: get default from somewhere?
-	my $cur_page = $offset / $pagesize;
-	my $num_pages = int( $n_results / $pagesize );
-	$num_pages++ if $n_results % $pagesize;
-	$num_pages--; # zero based
-
-	my $start_page = $cur_page - ( $pages_to_show / 2 );
-	my $end_page = $cur_page + ( $pages_to_show / 2 );
-
-	if( $start_page < 0 )
-	{
-		$end_page += -$start_page; # end page takes up slack
-	}
-	if( $end_page > $num_pages )
-	{
-		$start_page -= $end_page - $num_pages; # start page takes up slack
-	}
-
-	$start_page = 0 if $start_page < 0; # normalise
-	$end_page = $num_pages if $end_page > $num_pages; # normalise
-	unless( $start_page == $end_page ) # only one page, don't need jumps
-	{
-		for my $page_n ( $start_page..$end_page )
-		{
-			my $jumpurl = "$url&$basename\_offset=" . $page_n * $pagesize;
-
-			push @controls, { url => $jumpurl, label => $page_n + 1,
-				type => $page_n != $cur_page ? "jump" : "current" };
-		}
-	}
-
 	# Next page link
 	if( $offset + $pagesize < $n_results )
 	{
