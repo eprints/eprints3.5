@@ -18,7 +18,15 @@ Installation guide: B<https://wiki.eprints.org/w/Installation>.
 
 For more information see B<https://www.eprints.org/software/>.
 
-NOTE:
+=head1 35 DEVELOPER NOTES
+
+=head2 BOOTSTRAP INTEGRATION
+
+As standard EPrints35 will leverage bootsrap classes and structures within the new xml template fragments, for a better user experience.
+
+If you wish to revert back to the original styling (still using xml template fragments) then add the ingredient classic_eprints_styling to the package.yml in your archive. 
+
+See the README in ingredients/classic_eprints_styling for more information.
 
 =head1 DESCRIPTION
 
