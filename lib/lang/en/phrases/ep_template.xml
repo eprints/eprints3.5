@@ -918,43 +918,6 @@
       </epc:foreach>
     </tr>
   </epp:phrase>
-  <epp:phrase id="view:EPrints/Repository:render_row_with_help">
-    <div class="input-group w-100 mb-3 {class}" data-context="{if (context, context, 'none')}">
-      <div class="input-group-text w-25">
-        <span id="{prefix}{if (uses_fieldset, '_legend', '')}_label">
-          <epc:print expr="label"/>
-        </span>
-      </div>
-      <epc:choose>
-        <epc:when test="has_help">
-            <epc:print expr="field"/>
-        </epc:when>
-        <epc:otherwise>
-            <epc:print expr="field"/>
-        </epc:otherwise>
-      </epc:choose>
-      <epc:choose>
-        <epc:when test="has_toggle">
-          <div class="input-group-text">
-            <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
-              <a onclick="EPJS_blur(event); EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
-                <img alt="{string_phrase(&quot;lib/session:show_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:show_help_title&quot;)}" src="{string_phrase(&quot;lib/session:show_help_src&quot;)}"/>
-              </a>
-            </div>
-            <div class="ep_sr_hide_help ep_hide" id="{help_prefix}_hide">
-              <a onclick="EPJS_blur(event); EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
-                <img alt="{string_phrase(&quot;lib/session:hide_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:hide_help_title&quot;)}" src="{string_phrase(&quot;lib/session:hide_help_src&quot;)}"/>
-              </a>
-            </div>
-          </div>
-        </epc:when>
-        <epc:otherwise>
-          <div class="ep_table_cell"/>
-        </epc:otherwise>
-      </epc:choose>
-    </div>
-  </div>
-</epp:phrase>
 
 <epp:phrase id="view:Repository:render_option_list/dropdown">
   <select name="{name}{if (readonly, '_disabled')}" id="{name}{if (readonly, '_disabled')}">
