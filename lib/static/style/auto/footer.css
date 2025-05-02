@@ -1,0 +1,14 @@
+#wrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
+#main_content {
+  padding-bottom: 10rem;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

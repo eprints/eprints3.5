@@ -856,15 +856,13 @@ sub render_controls
 {
 	my( $self ) = @_;
 
-	my $div = $self->{session}->make_element( 
-		"div" , 
-		class => "ep_search_buttons" );
-	$div->appendChild( $self->{session}->render_action_buttons( 
-		_order => [ "search", "newsearch" ],
-		newsearch => $self->{session}->phrase( "lib/searchexpression:action_reset" ),
-		search => $self->{session}->phrase( "lib/searchexpression:action_search" ) )
- 	);
-	return $div;
+	my $action_buttons = $self->{session}->render_action_buttons(
+                _order => [ "search", "newsearch" ],
+                newsearch => $self->{session}->phrase( "lib/searchexpression:action_reset" ),
+                search => $self->{session}->phrase( "lib/searchexpression:action_search" ) 
+	);
+
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/AbstractSearch:render_controls", { item => { "action_buttons" => $action_buttons } } );
 }
 
 sub render_order_field

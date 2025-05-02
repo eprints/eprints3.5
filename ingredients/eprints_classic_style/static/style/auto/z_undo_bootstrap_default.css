@@ -1,0 +1,14 @@
+*, ::after, ::before {
+    box-sizing: unset !important;
+}
+
+button, input, optgroup, select, textarea {
+    margin: unset !important;
+    font-family: unset !important;
+    font-size: revert-layer !important;
+    line-height: normal !important;
+}
+
+body {
+    line-height: unset !important;
+}
