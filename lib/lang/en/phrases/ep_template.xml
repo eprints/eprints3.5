@@ -825,7 +825,9 @@
         </div>
       </epc:otherwise>
     </epc:choose>
+    </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow/Details:render">
     <table border="0" cellpadding="3" class="ep_view_details_table">
       <epc:foreach expr="sections" iterator="section">
@@ -1122,8 +1124,6 @@
   </epc:foreach>
 </epp:phrase>
 
-<epp:phrase id="Plugin/Screen/Listing:add_label">Add Column</epp:phrase>
-
 <epp:phrase id="view:DataObj/Document:render_icon_link">
   <div class="ep_preview_container">
     <epc:choose>
@@ -1149,9 +1149,13 @@
           </div>
         </div>
       </div>
-    </div>
-  </epp:phrase>
-  <epp:phrase id="view:Repository:render_option_list/dropdown">
+    </epc:if>
+  </div>
+</epp:phrase>
+
+<epp:phrase id="Plugin/Screen/Listing:add_label">Add Column</epp:phrase>
+
+<epp:phrase id="view:Repository:render_option_list/dropdown">
     <select name="{name}{if (readonly, '_disabled')}" id="{name}{if (readonly, '_disabled')}" style="{if (name = 'satisfyall' or name = 'order', '', 'border-radius:unset;')">
       <epc:attribute name="class">
 	<epc:print expr="if (multiple, 'form-control', 'btn btn-outline-secondary dropdown-toggle')"/>
