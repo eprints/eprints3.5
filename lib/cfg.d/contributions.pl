@@ -266,6 +266,8 @@ $c->{render_input_contributions} = sub {
 		my $eivf_value = undef;
 		my $eitf_name = $ef_basename . "_id_type";
 		my $eitf_value = undef;
+		my $eu_name = $ef_basename . "_unset";
+		my $es_name = $ef_basename . "_span";
 		my $contributor_datasetid = $value->[$y]->{contributor}->{datasetid};
 		my $contributor_entityid = $value->[$y]->{contributor}->{entityid};
 		if ( $contributor_datasetid && $contributor_entityid )
@@ -281,8 +283,8 @@ $c->{render_input_contributions} = sub {
 			name => $enf_name,
 			id => $enf_name,
 			value => $enf_value,
-			size => 30,
-			maxlength => 60,
+			size => 25,
+			autocomplete => "off",
 			'aria-labelledby' => $self->get_labelledby( $enf_name ),
 			'aria-describedby' => $self->get_describedby( $enf_name, $one_field_component ),
 		);
@@ -292,8 +294,8 @@ $c->{render_input_contributions} = sub {
 			name => $eivf_name,
 			id => $eivf_name,
 			value => $eivf_value,
-			size => 30,
-			maxlength => 60,
+			size => 25,
+			autocomplete => "off",
 			'aria-labelledby' => $self->get_labelledby( $eivf_name ),
 			'aria-describedby' => $self->get_describedby( $eivf_name, $one_field_component ),
 		);
@@ -309,10 +311,24 @@ $c->{render_input_contributions} = sub {
 			'aria-describedby' => $self->get_describedby( $eitf_name, $one_field_component ),
 		);
 		$entity_field->appendChild( $eitf_input );
+		my $entity_span = $session->make_element( 'span', id => $es_name, class => "ep_entity_span" );
 
-		my $eif_name = $ef_basename . "id";
-		my $entityid_input = $session->xhtml->input_field( id => $eif_name, type => 'hidden', name => $eif_name, value => $contributor_entityid );
-		$entity_field->appendChild( $entityid_input );
+		if ( $contributor_entityid )
+		{
+			my $entity = $datasets->{$contributor_datasetid}->dataobj( $contributor_entityid );
+			my $entity_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
+			$entity_link->appendChild( $session->html_phrase( 'eprint_fieldopt_contributions_contributor_datasetid_' . $contributor_datasetid ) ); 
+			$entity_link->appendChild( $session->make_text( ' ' . $contributor_entityid ) );
+			$entity_span->appendChild( $entity_link );
+		}
+		$entity_field->appendChild( $entity_span );
+		my $eu_button = $session->make_element( 'a', href => '#', id => $eu_name, value => $session->phrase( 'contributions:unset' ), onclick => "unset_entity( event, '${basename}_${yp1}_' )" );
+		my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.png', alt => $session->phrase( 'contributions:unset' ) );
+        $eu_button->appendChild( $eu_button_img );
+        $entity_field->appendChild( $eu_button );
+        my $eif_name = $ef_basename . "id";
+        my $entityid_input = $session->xhtml->input_field( $eif_name, $contributor_entityid, type => 'hidden', id => $eif_name );
+        $entity_field->appendChild( $entityid_input );
 
 		my $entity_cell =  {
 			item => $entity_field,
@@ -325,6 +341,7 @@ $c->{render_input_contributions} = sub {
 
 	my $extra_params = URI->new( 'http:' );
 	$extra_params->query( $self->{input_lookup_params} );
+	my %defaults = ( 'type' => '', contributor_datasetid => '', contributor_entity_id_type => '' );
 	my @params = (
 		$extra_params->query_form,
 		field => $self->name
@@ -336,6 +353,10 @@ $c->{render_input_contributions} = sub {
 	if( defined $self->{dataset} )
 	{
 		push @params, dataset => $datasetid;
+		my $contrib_fields = $self->{dataset}->get_field( 'contributions' )->get_property( 'fields' );
+		$defaults{type} = $contrib_fields->[0]->{default_value} if defined $contrib_fields->[0]->{default_value};
+		$defaults{contributor_datasetid} = $contrib_fields->[1]->{fields}->[0]->{default_value} if defined $contrib_fields->[1]->{fields}->[0]->{default_value};
+		$defaults{contributor_entity_id_type} = $contrib_fields->[1]->{fields}->[2]->{default_value} if defined $contrib_fields->[1]->{fields}->[2]->{default_value};
 	}
 	$extra_params->query_form( @params );
 	$extra_params = "&" . $extra_params->query;
@@ -349,6 +370,24 @@ new Metafield ('$componentid', '$self->{name}', {
 	input_lookup_url: $url,
 	input_lookup_params: $params
 });
+
+function unset_entity( e, base_id ) {
+	e.preventDefault();
+	const subfields = [ 'type', 'contributor_datasetid', 'contributor_entity_name', 'contributor_entity_id_value', 'contributor_entity_id_type', 'contributor_entityid', 'contributor_entity_span' ];
+	const subfield_values = [ '$defaults{type}', '$defaults{contributor_datasetid}', '', '', '$defaults{contributor_entity_id_type}', '', '' ];
+	for (let sf = 0; sf < subfields.length; sf++) {
+		var entity_field = document.getElementById(base_id + subfields[sf]);
+		if ( entity_field.tagName == 'SPAN' )
+		{
+			entity_field.innerHTML = subfield_values[sf];
+		}
+		else
+		{
+			entity_field.value = subfield_values[sf];
+		}
+	}
+}
+
 EOJ
 
 	return $self->repository->template_phrase( "view:MetaField/render_input_field_actual", { item => {
@@ -410,9 +449,10 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 				{
 					my $field = $dataset->field( $field_name );
 					my $field_value;
-					if ( my $subfields = $field->get_property( 'fields_cache' ) )
+					if ( $field->has_property( 'fields_cache' ) )
 					{
 						next unless $entity_contrib_maps->{$field_name};
+						my $subfields = $field->get_property( 'fields_cache' );
 						foreach my $subfield ( @$subfields )
 						{
 							if ( my $map = $entity_contrib_maps->{$field_name}->{$subfield->{sub_name}} )

@@ -446,6 +446,28 @@ sub render
 		);
 }
 
+######################################################################
+=pod
+
+=item $url = $entity->get_control_url
+
+Return the URL of the control page for this entity.
+
+=cut
+######################################################################
+
+sub get_control_url
+{
+    my( $self ) = @_;
+
+	my $dataset = $self->{session}->get_repository->get_dataset( $self->get_dataset_id );
+	my $key_field_name = $dataset->key_field->get_name;
+
+	return $self->{session}->get_repository->get_conf( "perl_url" ).
+		"/users/home?screen=Workflow::View&" . $key_field_name . "=" .
+		$self->get_value( $key_field_name );
+}
+
 
 ######################################################################
 =pod

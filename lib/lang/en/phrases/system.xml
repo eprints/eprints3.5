@@ -1909,6 +1909,7 @@ Titles and Help for the System Fields
     <epp:phrase id="eprint_fieldopt_contributions_contributor_datasetid_organisation">Organisation</epp:phrase>
 	<epp:phrase id="eprint_fieldname_contributions_contributor_datasetid">Entity Type</epp:phrase>
 	<epp:phrase id="eprint_fieldname_contributions_contributor_entityid">Entity ID</epp:phrase>
+    <epp:phrase id="contributions:unset">Unset</epp:phrase>
     <epp:phrase id="eprint_fieldname_source">Source</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_source"/>
     <epp:phrase id="eprint_fieldname_dir">Directory</epp:phrase>
@@ -3442,7 +3443,7 @@ Titles and Help for the System Fields
     <epp:phrase id="organisation_fieldhelp_url"/>
 
     <epp:phrase id="Plugin/Screen/Staff/OrganisationSearch:title">Search organisations</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Staff/PersonSearch:description">Search for organisations represented of this repository.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Staff/OrganisationSearch:description">Search for organisations represented of this repository.</epp:phrase>
     <epp:phrase id="ordername_organisation_byname">By name</epp:phrase>
     <epp:phrase id="ordername_organisation_bylastmod">By most recently modified</epp:phrase>
     <epp:phrase id="ordername_organisation_byrevlastmod">By least recently modified</epp:phrase>
