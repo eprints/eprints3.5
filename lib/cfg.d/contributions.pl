@@ -49,7 +49,6 @@ $c->{contributions_fromform} = sub {
 			}
 			else
 			{
-				# TODO What if a new contributor has been set for a field that has entity_id set but is hidden so the user cannot see that will be updating this now adding a new entry,
 				unless ( $entity_from_id->has_name( $deserialised_name ) )
 				{
 					my $entity_names = $entity_from_id->get_values( 'names' );
@@ -268,6 +267,7 @@ $c->{render_input_contributions} = sub {
 		my $eitf_value = undef;
 		my $eu_name = $ef_basename . "_unset";
 		my $es_name = $ef_basename . "_span";
+		my $eif_name = $ef_basename . "id";
 		my $contributor_datasetid = $value->[$y]->{contributor}->{datasetid};
 		my $contributor_entityid = $value->[$y]->{contributor}->{entityid};
 		if ( $contributor_datasetid && $contributor_entityid )
@@ -326,7 +326,6 @@ $c->{render_input_contributions} = sub {
 		my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.png', alt => $session->phrase( 'contributions:unset' ) );
         $eu_button->appendChild( $eu_button_img );
         $entity_field->appendChild( $eu_button );
-        my $eif_name = $ef_basename . "id";
         my $entityid_input = $session->xhtml->input_field( $eif_name, $contributor_entityid, type => 'hidden', id => $eif_name );
         $entity_field->appendChild( $entityid_input );
 
@@ -437,6 +436,24 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 
 		my $contributions = $eprint->get_value( "contributions" );
 		my $changes = {};
+
+
+		foreach my $entity_type ( keys %$all_contrib_fields )
+		{		
+			foreach my $field_name ( keys %{$all_contrib_fields->{$entity_type}} )
+			{
+				my $field = $dataset->field( $field_name );
+				if ( $field->get_property( 'multiple' ) )
+				{
+					$changes->{$field_name} = [];
+				}
+				else
+				{
+					$changes->{$field_name} = undef;
+				}
+			}
+		}
+
 		foreach my $contribution ( @$contributions )
 		{
 			my $entity_contrib_fields = $all_contrib_fields->{$contribution->{contributor}->{datasetid}};
@@ -507,12 +524,11 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 					}
 					if ( $field->get_property( 'multiple' ) )
 					{
-						$changes->{$field_name} = [] unless defined $changes->{$field_name};
 						push @{$changes->{$field_name}}, $field_value;
 					}
 					else
 					{
-						$changes->{$field_name} =  $field_value;
+						$changes->{$field_name} = $field_value;
 					}
 					last;
 				}
@@ -521,7 +537,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 
 		foreach my $field_name ( keys %$changes )
 		{
-		$eprint->set_value( $field_name, $changes->{$field_name} );
+			$eprint->set_value( $field_name, $changes->{$field_name} );
 		}
 	}
 	else

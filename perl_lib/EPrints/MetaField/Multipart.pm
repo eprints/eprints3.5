@@ -40,6 +40,7 @@ sub new
 
 	foreach my $fconf (@{$self->property( "fields" )})
 	{
+		next unless $fconf->{sub_name};
 		my $field = EPrints::MetaField->new(
 				%$fconf,
 				name => join('_', $self->name, $fconf->{sub_name}),
