@@ -1107,7 +1107,7 @@ sub crypt
 	}
 	elsif( !defined $method )
 	{
-		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Crypt::URandom' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 		{
 			$method = EP_CRYPT_BCRYPT;
 		}
@@ -1119,7 +1119,7 @@ sub crypt
 
 	my $salt;
 	# EP_CRYPT_BCRYPT generates salt inside _crypt_bcrypt method.
-	if ( $method == EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+	if ( $method == EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Crypt::URandom' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 	{
 		$salt = undef;
 	}
@@ -1192,17 +1192,17 @@ sub crypt_equals
 	{
 		$hash = _crypt_sha512( $salt, $value );
 	}
-	elsif ( $method eq EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+	elsif ( $method eq EP_CRYPT_BCRYPT && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Crypt::URandom' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 	{
 		$hash = Crypt::Eksblowfish::Bcrypt::bcrypt( $value, $crypt );
 	}
-	elsif ( $method eq EP_CRYPT_BCRYPT_REHASH && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+	elsif ( $method eq EP_CRYPT_BCRYPT_REHASH && require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Crypt::URandom' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 	{
 		my $init_hash = _crypt_sha512( $salt, $value );
 		$hash = Crypt::Eksblowfish::Bcrypt::bcrypt( $init_hash, $crypt );
 	}
 
-	EPrints->abort( "Unsupported or unknown crypt method: $method or Crypt::Eksblowfish::Bcrypt and/or Data::Entropy::Algorithms module(s) not available." ) unless defined $hash;
+	EPrints->abort( "Unsupported or unknown crypt method: $method or Crypt::Eksblowfish::Bcrypt and/or Crypt::URandom and/or Data::Entropy::Algorithms module(s) not available." ) unless defined $hash;
 
 	return $crypt eq $hash;
 }
@@ -1213,7 +1213,7 @@ sub bcrypt_rehash
 
 	if( $method eq EP_CRYPT_SHA512 )
 	{
-		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
+		if ( require_if_exists( 'Crypt::Eksblowfish::Bcrypt' ) && require_if_exists( 'Crypt::URandom' ) && require_if_exists( 'Data::Entropy::Algorithms' ) )
 		{
 			my $new_crypt = _crypt_bcrypt( $salt, $crypt );
 			my %params = ( method => EP_CRYPT_BCRYPT_REHASH, salt => $salt, digest => $new_crypt );
@@ -1221,7 +1221,7 @@ sub bcrypt_rehash
 		$uri->query_form( %params );
 			return $uri;
 		}
-		EPrints->abort( "Crypt::Eksblowfish::Bcrypt and/or Data::Entropy::Algorithms module(s) not available." );
+		EPrints->abort( "Crypt::Eksblowfish::Bcrypt and/or Crypt::URandom and/or Data::Entropy::Algorithms module(s) not available." );
 	}
 	EPrints->abort( "Crypt method: $method cannot be rehashed using bcrypt.");
 }
