@@ -1,0 +1,14 @@
+---
+id: "ingredient:eprints_classic_style"
+name: "EPrints Classic Style Ingredient"
+type: "ingredient"
+version: 1.0
+maintainers: 
+  - name: "Ed Oakley"
+    email: "E.J.Oakley@soton.ac.uk"
+description: "This is an ingredient that allows you to retain the styling of EPrints as it was in 3.4.x."
+requires:
+  - component: "core"
+    version: ">= 3.5.0"
+usage: "This can be installed by dropping into the ingredients sub-directory and adding to your archive's package.yml."
+readme: "https://github.com/eprints/eprints3.5/blob/master/ingredients/eprints_classic_style/README.md"
