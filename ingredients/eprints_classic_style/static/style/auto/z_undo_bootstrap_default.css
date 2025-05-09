@@ -12,3 +12,7 @@ button, input, optgroup, select, textarea {
 body {
     line-height: unset !important;
 }
+
+#wrapper {
+        min-height: auto;
+}
