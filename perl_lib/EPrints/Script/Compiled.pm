@@ -1204,6 +1204,56 @@ sub run_homepage_menu
 	return [ $homepage_menu, "XHTML" ];
 }
 
+=item [$encoded, 'STRING'] = run_url_encode( $self, $state, $text )
+
+Creates the C<url_encode> method which applies url encoding to the given string.
+
+This is used by C<bundle_export> because it accesses local files via a browser so
+if the files include things like backslashes, speech marks or double spaces it
+would fail to open them.
+
+=cut
+
+sub run_url_encode
+{
+        my( $self, $state, $text ) = @_;
+
+        my $encoded = URI::Escape::uri_escape_utf8(
+                $text->[0],
+                "^A-Za-z0-9\-\._~\/" # don't escape /
+        );
+
+        return [ $encoded, 'STRING' ];
+}
+
+=item [$boolean, 'BOOLEAN'] = run_current_user_can_view( $self, $state, $doc )
+
+Creates the C<current_user_can_view> method which checks whether the current user
+can view the given C<DataObj::Document>.
+
+If there is no current user then it checks if the document is public.
+
+This will always return C<true> if called from the command line.
+
+=cut
+
+sub run_current_user_can_view
+{
+        my( $self, $state, $doc ) = @_;
+
+        my $session = $state->{session};
+
+        if( !defined $doc->[0] || ref($doc->[0]) ne "EPrints::DataObj::Document" )
+        {
+                $self->runtime_error( "Can only call can_current_user_view() on Document objects not ". ref($doc->[0]) );
+        }
+
+        return [ 1, 'BOOLEAN' ] if !$session->is_online;
+        return [ 1, 'BOOLEAN' ] if $doc->[0]->is_public;
+
+        return [ defined $session->current_user && $doc->[0]->user_can_view( $session->current_user ), 'BOOLEAN' ];
+}
+
 1;
 
 =head1 COPYRIGHT
