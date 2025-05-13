@@ -38,10 +38,31 @@ $c->{indexing}->{freetext_stop_words} = {
 
 # Words to always index, despite their length.
 $c->{indexing}->{freetext_always_words} = {
-		"ok" => 1,
+	"ok" => 1,
 };
 
+# Whether or not we should index the passed in word
+$c->{indexing}->{freetext_should_index} = sub {
+	my( $word ) = @_;
+	my $wordlen = length $word;
 
+	# If the word is longer than 128 characters then this is too long to index
+	# and is unlikely to be worth truncating so it can be indexed.
+	return 0 if $wordlen > 128;
+
+	# Consult list of "always words". Words which should always be indexed.
+	return 1 if $c->{indexing}->{freetext_always_words}->{lc $word};
+
+	# Consult list of "never words". Words which should never be indexed.
+	return 0 if $c->{indexing}->{freetext_stop_words}->{lc $word};
+
+	# If this word is at least 2 chars long and all capitals it is assumed to
+	# be an acronym and thus should be indexed.
+	return 1 if $word =~ m/^[A-Z][A-Z0-9]+$/;
+
+	# The final check is whether this word is over or equal to the minimum size.
+	return $wordlen >= $c->{indexing}->{freetext_min_word_size};
+};
 
 # Chars which separate words. Pretty much anything except
 # A-Z a-z 0-9 and single quote '
@@ -111,42 +132,9 @@ $c->{extract_words} = sub
 		# skip if this is nothing but whitespace;
 		next if ($word =~ /^\s*$/);
 
-		# calculate the length of this word
-		my $wordlen = length $word;
-
 		# $ok indicates if we should index this word or not
+		my $ok = $c->{indexing}->{freetext_should_index}->( $word );
 
-		# First approximation is if this word is over or equal
-		# to the minimum size set in SiteInfo.
-		my $ok = $wordlen >= $c->{indexing}->{freetext_min_word_size};
-	
-		# If this word is at least 2 chars long and all capitals
-		# it is assumed to be an acronym and thus should be indexed.
-		if( $word =~ m/^[A-Z][A-Z0-9]+$/ )
-		{
-			$ok=1;
-		}
-
-		# Consult list of "never words". Words which should never
-		# be indexed.	
-		if( $c->{indexing}->{freetext_stop_words}->{lc $word} )
-		{
-			$ok = 0;
-		}
-		# Consult list of "always words". Words which should always
-		# be indexed.	
-		if( $c->{indexing}->{freetext_always_words}->{lc $word} )
-		{
-			$ok = 1;
-		}
-		# If the word is longer than 128 characters then this is
-		# too long to index and is unlikely to be worth truncating
-		# so it can be indexed.
-		if ( $ok && $wordlen > 128 )
-		{
-			$ok = 0;
-		}
-	
 		# Add this word to the good list or the bad list
 		# as appropriate.	
 		unless( $ok )
