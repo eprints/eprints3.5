@@ -165,6 +165,17 @@ sub render_result_row
 
 	$params{n} = [$n,"INTEGER"];
 
+	# Embed text that matches the search into the search result so that it can be highlighted
+	my $embedded;
+	if( $self->{repository}->config( 'highlighted_search_enabled' ) ) {
+		my @embeddable_fields = @{$self->{repository}->config( 'highlighted_search_embeddable' )};
+		for my $field_name (@embeddable_fields) {
+			$embedded = $self->{processor}->{search}->find_embeddable_text( $result->value( $field_name ), $field_name );
+			last if $embedded;
+		}
+	}
+	$params{embedded} = [$embedded, 'STRING'];
+
 	if( $staff )
 	{
 		return $result->render_citation_link_staff( $citation,
@@ -942,6 +953,152 @@ sub render_results
 	$page->appendChild( $results );
 
 	return $page;
+}
+
+sub render
+{
+	my $self = shift;
+	my $page = $self->SUPER::render( @_ );
+
+	# Add highlighting for any matched search terms
+	my $repo = $self->{repository};
+	if( $repo->config( 'highlighted_search_enabled' ) ) {
+		my @search_fields = $self->{processor}->{search}->get_highlightable_search_fields();
+
+		my %facet_fields = %{$self->get_facet_parameters()};
+		for my $key (keys %facet_fields) {
+			push @search_fields, { text => $facet_fields{$key}, field_name => $key, no_stemming => 1 };
+		}
+
+		$page = $self->render_search_highlights( $page, \@search_fields )
+	}
+
+	return $page;
+}
+
+=encoding UTF-8
+
+=over 4
+
+=item $page = $screen->render_search_highlights( $page, $search_fields: [{text => <string/array[string]>, (field_name => <string>, ignore_apostrophes => <bool>, no_stemming => <bool>)?}, ...] )
+
+Adds the necessary javascript for search highlighting to the bottom of the $page.
+
+=over 4
+
+=item C<text> is the text we are highlighting. If this is a list of strings then it will search for each string, otherwise it will split into words and search for those
+
+=item C<field_name> is the field C<text> is being searched on ('undef' if it should apply generally)
+
+=item C<ignore_apostrophes> tells us to ignore apostrophes (both ' and ’) placed anywhere throughout the word
+
+=item C<no_stemming> tells us not to apply stemming (which currently just makes a following 's' optional)
+
+=back
+
+=back
+
+=cut
+sub render_search_highlights
+{
+	my( $self, $page, $search_fields ) = @_;
+	my $repo = $self->{repository};
+
+	my $javascript = '';
+	for my $search_field (@{$search_fields}) {
+		my $regex = $self->generate_regex( $search_field->{text}, $search_field );
+
+		my $config = $repo->config( 'highlighted_search_selection' );
+		my $field_name = $search_field->{field_name};
+		# If the config doesn't exist then we want to use '*' but if it was set to 'undef' then we don't want to try to highlight
+		if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
+			my $selection = $config->{$field_name};
+			# Don't select marks because 'search_highlighter.js' handles them specially.
+			$javascript .= "    highlightRegExp(element.querySelectorAll('$selection:not(mark)'), $regex);\n";
+		}
+	}
+
+	if( $javascript ) {
+		$page->appendChild( $repo->make_javascript(
+			undef,
+			src => $repo->current_url( path => 'static', 'javascript/search_highlighter.js' ),
+		));
+
+		$javascript = "highlightSearch((element) => {\n$javascript});";
+		$page->appendChild( $repo->make_javascript( $javascript ) );
+	}
+
+	return $page;
+}
+
+sub generate_regex
+{
+	my( $self, $text, $settings ) = @_;
+	my $repo = $self->{repository};
+
+	my @words;
+	my $joined_with_spaces = ref( $text ) ne 'ARRAY'; # Join them with spaces if they are entered as a string
+	if( ref( $text ) eq 'ARRAY' ) {
+		@words = @{$text};
+	} else {
+		@words = split /[^\w']+/, $text;
+	}
+
+	# Require a match to start with a word boundary (we can't use \b because it doesn't handle unicode well)
+	my $regex = '/(?<=^|[^\p{L}\p{N}])(?:';
+	my $last_word;
+	for my $word (@words) {
+		my $regex_word = $self->generate_regex_word( $word, $settings );
+		if( $joined_with_spaces ) {
+			if( !$repo->config( 'indexing', 'freetext_should_index' )->( $word ) ) {
+				if( $last_word ) {
+					# If a word is ignored we only want to highlight it if it is prefaced by a matching word
+					$regex .= "(?:(?<=$last_word)[^\\p{L}\\p{N}]*$regex_word(?=\$|[^\\p{L}\\p{N}]))?";
+					$last_word = $regex_word;
+				}
+			} else {
+				# Capture any spaces preceding a word, iff the last word is correctly the word before this,
+				# this allows it to join up words that follow each other in the search.
+				$regex .= "(?:(?:(?<=$last_word)[^\\p{L}\\p{N}]*)?" if $last_word;
+				$regex .= $regex_word . '(?=$|[^\p{L}\p{N}]))?';
+				$last_word = $regex_word;
+			}
+		} else {
+			$regex .= '|' if $last_word;
+			$regex .= $regex_word;
+			$last_word = $regex_word;
+		}
+	}
+
+	if( $joined_with_spaces ) {
+		# Require a match to have text before it (prevents zero-width matches)
+		$regex .= '(?<=[\p{L}\p{N}])';
+	} else {
+		# Require a match to end on a (unicode) word boundary
+		$regex .= ')(?=$|[^\p{L}\p{N}])';
+	}
+
+	return $regex . '/gmiu';
+}
+
+sub generate_regex_word
+{
+	my( $self, $word, $settings ) = @_;
+	my $repo = $self->{repository};
+
+	if( $settings->{ignore_apostrophes} ) {
+		my @letters = split //, $word;
+		# If we are ignoring apostrophes (simple search) then we add optional apostrophe between every character
+		$word = join '[\'’]?', @letters;
+	}
+
+	if( !$settings->{no_stemming} ) {
+		# Remove an s off the end of words and add an optional s back
+		$word =~ s/s$//;
+		$word .= '(?:[\'’]?s)?';
+	}
+
+	return $word;
 }
 
 1;
