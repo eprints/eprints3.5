@@ -4,6 +4,8 @@ package EPrints::Plugin::Search;
 
 use strict;
 
+use List::Util qw( first );
+
 =head1 NAME
 
 EPrints::Plugin::Search - pluggable search engines
@@ -533,6 +535,58 @@ sub describe
 	my( $self ) = @_;
 
 	return "[No description available]";
+}
+
+=item @search_fields = $searchexp->get_highlightable_search_fields()
+
+Returns a list of all the fields involved in this search and some information as to how the search worked.
+
+Each item is {text => $text, field => $field_name (or C<undef>), ignore_apostrophes => C<bool>, no_stemming => C<bool>}.
+
+=cut
+sub get_highlightable_search_fields
+{
+	return ();
+}
+
+=item $embeddable = $searchexp->find_embeddable_text( $field_text, $search_field )
+
+Returns a block of text from $field_text that is embeddable into the search results, where $field_text is the taken from $search_field.
+
+This will generally return a sentence of the given $field_text that matches the search or ''.
+
+=cut
+sub find_embeddable_text
+{
+	return '';
+}
+
+=item $substring = $searchexp->find_matching_embed( $full_text, $search )
+
+Finds a sentence of the $full_text that contains at least one of the words in $search or returns ''.
+
+=cut
+sub find_matching_embed
+{
+	my( $self, $full_text, $search ) = @_;
+	my $repo = $self->{repository};
+
+	my @regex_parts = ();
+	for my $word (split ' ', $search) {
+		# We shouldn't pick a sentence purely because it contains ignored words
+		next if !$repo->config( 'indexing', 'freetext_should_index' )->( $word );
+
+		$word =~ s/s$//;
+		push @regex_parts, $word.'s?';
+	}
+	return '' if scalar(@regex_parts) == 0;
+	my $regex = join '|', @regex_parts;
+
+	my $substring = first { /\b$regex\b/i } split /\.(\W|$)/, $full_text;
+	$substring =~ s/^\s*//;
+	$substring .= '.' if $substring;
+
+	return $substring;
 }
 
 1;
