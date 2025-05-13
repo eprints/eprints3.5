@@ -533,6 +533,7 @@
         </div>
       </epc:foreach>
     </div>
+    <epc:print expr="buttons"/>
     <epc:print expr="javascript"/>
   </epp:phrase>
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow:render">
