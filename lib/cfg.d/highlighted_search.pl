@@ -1,4 +1,4 @@
-$c->{highlighted_search_enabled} = 0;
+$c->{highlighted_search_enabled} = 1;
 
 $c->{highlighted_search_selection} = {};
 
