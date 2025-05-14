@@ -18,14 +18,14 @@ File::Slurp 9999.32
 HTTP::Headers       7.00
 HTTP::Headers::Util 7.00
 
-Image::ExifTool 13.25
+Image::ExifTool 13.25 - Used by PDF metadata import and sometimes used for thumbnails
 
 IO::String 1.08
 
 JSON 4.10
 
 LWP::MediaTypes      6.04
-LWP::Protocol::https 6.14
+LWP::Protocol::https 6.14 - Used by DataCite to register DOIs
 LWP::Simple          6.78
 LWP::UserAgent       6.78
 
@@ -37,10 +37,10 @@ Search::Xapian 1.2.25.5
 
 Term::ReadKey 2.38
 
-TeX::Encode 2.010
+TeX::Encode 2.010 - Used by BibTeX export
 
 Text::Extract::Word 0.04
-Text::Refer         1.106
+Text::Refer         1.106 - Used by EndNote import
 Text::Unidecode     1.30
 
 URI          5.31

@@ -17,6 +17,7 @@ umask( 0022 );
 
 print "Attempting to install PERL modules required by GNU EPrints...\n";
 
+# Lives in <eprint_path>/perl_lib/EPrints/Bundle/EPrints.pm
 install( 'Bundle::EPrints' );
 
 CPAN::Shell->notest( 'install', 'XML::LibXSLT' ); # Test will complain even though install is successful
