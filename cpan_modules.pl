@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 BEGIN { # Add the path to INC so that it can find 'Bundle::EPrints'
 	my $path = $0;
