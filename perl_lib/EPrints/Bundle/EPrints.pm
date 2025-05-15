@@ -64,6 +64,8 @@ DBD::mysql 5.012 - This still has to be installed with a package manager for con
 Digest::MD5 2.51 - Included in Perl v5.16.1 (latest is 2.59)
 Digest::SHA 5.71 - Included in Perl v5.16.1 (latest is 6.04)
 
+File::Temp 0.22 - Included in Perl v5.16.1 (latest is 0.2311)
+
 List::Util 1.25 - Included in Perl v5.16.1 (latest is 1.68_01)
 
 Net::SMTP 2.31 - Included in Perl v5.16.1 (latest is 3.15)
