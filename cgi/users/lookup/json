@@ -63,7 +63,7 @@ if( !$search_term || length( $search_term ) < 2 || !$field ) {
 			$escaped_val =~ s/"/&quot;/g;
 			# for JSON fields, need to trigger change to get the parent field updated
 			# for better or for worse, fieldnames are ep_eprint_${field}_${json_field} even when parent is ep_approval_${field}...
-			my $click_script = "jQuery('.ep_eprint_${field}_$json_field').val('$escaped_val');jQuery('.ep_eprint_${field}_$json_field').trigger('change');return true";
+			my $click_script = "document.querySelector('.ep_eprint_${field}_$json_field').value = '$escaped_val';document.querySelector('.ep_eprint_${field}_$json_field').dispatchEvent(new Event('change'));return true";
 			if( $first )
 			{
 				print "<li class='ep_first' onclick=\"$click_script\">";
