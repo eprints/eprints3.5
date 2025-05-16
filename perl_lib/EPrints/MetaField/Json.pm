@@ -32,9 +32,7 @@ BEGIN
 
 use EPrints::MetaField::Longtext;
 use EPrints::Const qw( :metafield );
-use HTML::Entities;
 use JSON;
-use JSON::Parse 'parse_json';
 use List::Util qw( any );
 use Try::Tiny;
 
@@ -172,7 +170,7 @@ sub generate_javascript
 	{
 		# If someone has put non-JSON into a JSON field, let's clear it
 		eval {
-			$value_obj = parse_json( $value );
+			$value_obj = from_json( $value );
 		} or do {
 			$value = undef;
 			$js_string .= "${target_field}.val('');";
@@ -685,7 +683,7 @@ sub form_value
 	if( $value )
 	{
 		eval {
-			parse_json( $value );
+			from_json( $value );
 		} or do {
 			$value = undef;
 		};
@@ -863,7 +861,7 @@ sub validate
 		{
 			# If someone has put non-JSON into a JSON field, let's clear it
 			eval {
-				$value_obj = parse_json( $value );
+				$value_obj = from_json( $value );
 			};
 		}
 
@@ -898,7 +896,7 @@ sub parse
 	if( defined $json_str )
 	{
 		try {
-			$object = parse_json $json_str;
+			$object = from_json $json_str;
 		} catch {
 			print STDERR "Exception parsing $json_str: @_\n";
 		};
