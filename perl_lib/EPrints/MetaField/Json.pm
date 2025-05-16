@@ -35,6 +35,7 @@ use EPrints::Const qw( :metafield );
 use HTML::Entities;
 use JSON;
 use JSON::Parse 'parse_json';
+use List::Util qw( any );
 use Try::Tiny;
 
 # Taken from MetaField.pm, altered to add in JavaScript after the element is rendered (changes commented)
@@ -427,7 +428,7 @@ sub generate_javascript_field
 	my $field = $field_config->{name};
 	my $field_div = "jQuery('div[name=\"div_${attribute_name}_${field}\"]')";
 
-	if( $field ~~ @{$hidden_fields} )
+	if( any {$_ eq $field} @{$hidden_fields} )
 	{
 		return "";
 	}
@@ -457,7 +458,7 @@ sub generate_javascript_field
 	my $type = $field_config->{type};
 
 	my $readonly = "";
-	if( ( $self->{readonly} && ( $self->{readonly} eq 1 || $self->{readonly} eq "yes" ) ) || $field ~~ @{$readonly_fields} )
+	if( ( $self->{readonly} && ( $self->{readonly} eq 1 || $self->{readonly} eq "yes" ) ) || any {$_ eq $field} @{$readonly_fields} )
 	{
 		$readonly = "readonly = 'readonly'";
 	}
