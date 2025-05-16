@@ -58,10 +58,12 @@ if( !$search_term || length( $search_term ) < 2 || !$field ) {
 	{
 		foreach my $target_val( sort { "\L$a" cmp "\L$b" } keys %{$results} )
 		{
+			my $escaped_val = $target_val;
+			$escaped_val =~ s/(['\\])/\\$1/g;
+			$escaped_val =~ s/"/&quot;/g;
 			# for JSON fields, need to trigger change to get the parent field updated
 			# for better or for worse, fieldnames are ep_eprint_${field}_${json_field} even when parent is ep_approval_${field}...
-			my $click_script = "jQuery('.ep_eprint_${field}_${json_field}').val('${target_val}');jQuery('.ep_eprint_${field}_${json_field}').trigger('change');return true";
-			$click_script = EPrints::HtmlEscapeHelper::html_attr_escape( $click_script );
+			my $click_script = "jQuery('.ep_eprint_${field}_$json_field').val('$escaped_val');jQuery('.ep_eprint_${field}_$json_field').trigger('change');return true";
 			if( $first )
 			{
 				print "<li class='ep_first' onclick=\"$click_script\">";
@@ -72,15 +74,14 @@ if( !$search_term || length( $search_term ) < 2 || !$field ) {
 				print "<li onclick=\"$click_script\">";
 				print "<li>";
 			}
-	# a random ul stops the autocompleter JS from complaining
-		print <<FRAGMENT
+			# a random ul stops the autocompleter JS from complaining
+			print <<FRAGMENT
  <ul><li>$target_val</li></ul> <div class="journal_lookup">
     <div class="journal">$target_val</div>
     <div style="clear: both"></div>
   </div>
 </li>
 FRAGMENT
-	;
 		}
 	}
 }
