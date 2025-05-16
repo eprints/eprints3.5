@@ -1,0 +1,47 @@
+.json_field {
+  width: 100%;
+}
+
+.json_field table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.json_field table td,
+.json_field table th {
+  border: 1px solid #888;
+  padding: 4px;
+  vertical-align: top;
+}
+
+.json_field table th {
+  background: #ccc;
+  color: #666;
+  font-weight: normal;
+}
+
+.json_field table td {
+  word-wrap: anywhere;
+  width: 200px;
+}
+
+.json_field table td label {
+  white-space: normal;
+}
+
+.json_field {
+  white-space: pre-wrap;
+}
+
+.json_field_list table th {
+  text-align: left;
+  font-size: 100%;
+}
+
+.json_field_list .ep_sr_component {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  margin-right: 100px;
+}
+
