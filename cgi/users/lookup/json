@@ -48,7 +48,7 @@ if( !$search_term || length( $search_term ) < 2 || !$field ) {
 		my $parsed = EPrints::MetaField::Json::parse( $res, {} );
 		my $target_val = $parsed->{$json_field};
 
-		if( $target_val && $target_val =~ /$search_term/mi )
+		if( $target_val && $target_val =~ /\Q$search_term/mi )
 		{
 			$results->{$target_val} = 1;
 		}

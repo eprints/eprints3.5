@@ -204,7 +204,9 @@ sub generate_javascript
 				if( !defined $width ) {
 					$width = (100 / scalar @$config) . '%';
 				}
-				$js_string .= "${table}.find( 'thead' ).find( 'tr' ).append( '<th style=\"width:${width}\">" . $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" ) . "</th>' );";
+				my $field_name = $session->html_phrase( "eprint_fieldname_${parent_name}_$field" );
+				$field_name =~ s/(['\\])/\\$1/g;
+				$js_string .= "${table}.find( 'thead' ).find( 'tr' ).append( '<th style=\"width:${width}\">" . $field_name . "</th>' );";
 			}
 
 			$js_string .= "${table}.append( '<tbody>' );";
@@ -444,11 +446,13 @@ sub generate_javascript_field
 		{
 			$field_name = $session->html_phrase( "sys:ep_form_required", label => $field_name );
 		}
-		$field_name =~ s/(\r\n|\r|\n)//g;
+		$field_name =~ s/\r\n|\r|\n//g;
+		$field_name =~ s/(['\\])/\\$1/g;
 		$js_string .= "${field_div}.append( '<div class=\"ep_sr_title\">" . $field_name . "</div>');";
 
 		my $field_help = $session->html_phrase( "eprint_fieldhelp_${parent_name}_${field}" );
-		$field_help =~ s/(\r\n|\r|\n)//g;
+		$field_help =~ s/\r\n|\r|\n//g;
+		$field_help =~ s/(['\\])/\\$1/g;
 		$js_string .= "${field_div}.append( '<div class=\"ep_sr_help\">" . $field_help . "</div>');";
 	}
 
@@ -760,17 +764,20 @@ sub generate_javascript_field_render_only
 	if( !$self->{render_table} && !$self->{display_as_list} && !$self->{render_view_as_table} )
 	{
 		my $field_name = $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" );
-		$field_name =~ s/(\r\n|\r|\n)//g;
+		$field_name =~ s/\r\n|\r|\n//g;
+		$field_name =~ s/(['\\])/\\$1/g;
 		$js_string .= "${field_div}.append( '<div class=\"ep_sr_title\">" . $field_name . "</div>');";
 
 		my $field_help = $session->html_phrase( "eprint_fieldhelp_${parent_name}_${field}" );
-		$field_help =~ s/(\r\n|\r|\n)//g;
+		$field_help =~ s/\r\n|\r|\n//g;
+		$field_help =~ s/(['\\])/\\$1/g;
 		$js_string .= "${field_div}.append( '<div class=\"ep_sr_help\">" . $field_help . "</div>');";
 	}
 	elsif( $self->{render_view_as_table} )
 	{
 		my $field_name = $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" );
-		$field_name =~ s/(\r\n|\r|\n)//g;
+		$field_name =~ s/\r\n|\r|\n//g;
+		$field_name =~ s/(['\\])/\\$1/g;
 		$js_string .= "${field_div}.append( '<th>" . $field_name . "</th><td></td>');";
 	}
 
