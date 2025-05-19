@@ -340,7 +340,8 @@ EOJ
 	}
 	elsif( $self->{display_as_list} )
 	{
-		$js_string .= "$target_area.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\"><table name=\"table_${attribute_name}\"></table></div>');";
+		$js_string .= "$target_area.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\">');";
+		$js_string .= "const table_$attribute_name = $target_area.lastChild.appendChild(createElement('<table name=\"table_$attribute_name\">'));";
 
 		$js_string .= "table_$attribute_name.insertAdjacentHTML('beforeend', '<tbody>');";
 
@@ -356,15 +357,17 @@ EOJ
 			if( !(defined $table_rows[$row_index]) )
 			{
 				$js_string .= "table_$attribute_name.lastChild.insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${field}\">');";
-				$table_rows[$row_index] = "table_$attribute_name.lastChild.children[$field]";
+				$table_rows[$row_index] = "table_$attribute_name.lastChild.children[$row_index]";
 			}
 
 			my $table_row = $table_rows[$row_index];
 
-			$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<th>" . $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" ) . "</th>');";
+			my $field_name = $session->html_phrase( "eprint_fieldname_${parent_name}_$field" );
+			$field_name =~ s/(['\\])/\\$1/g;
+			$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<th>$field_name</th>');";
 
 			$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<td>');";
-			my $table_cell = "$table_row.lastChild.lastChild";
+			my $table_cell = "$table_row.lastChild";
 			my $value = $value_obj->{$field};
 
 			if( $render_only )
