@@ -201,6 +201,8 @@ sub generate_javascript
 			for my $field_config( @{$config} )
 			{
 				my $field = $field_config->{name};
+				next if any { $_ eq $field } @hidden_fields;
+
 				my $width = $field_config->{table_width};
 				if( !defined $width ) {
 					$width = (100 / scalar @$config) . '%';
@@ -235,6 +237,8 @@ sub generate_javascript
 				for my $field_config( @{$config} )
 				{
 					my $field_name = $field_config->{name};
+					next if any { $_ eq $field_name } @hidden_fields;
+
 					$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<td name=\"table_${attribute_name}_row_${row}_field_${field_name}\">');";
 					my $table_cell = "$table_row.lastChild";
 
@@ -348,11 +352,18 @@ EOJ
 		my @table_rows;
 		my $row_index = 0;
 		my $cols = $self->{display_as_list_cols};
-		my $split_point = scalar @{$config} / $cols;
+
+		my $item_count = scalar @{$config};
+		my %unique_hidden_fields = map { $_ => undef } @hidden_fields;
+		for my $hidden_field( keys %unique_hidden_fields ) {
+			$item_count-- if any {$_->{name} eq $hidden_field} @{$config};
+		}
+		my $split_point = $item_count / $cols;
 
 		for my $field_config( @{$config} )
 		{
 			my $field = $field_config->{name};
+			next if any {$_ eq $field} @hidden_fields;
 
 			if( !(defined $table_rows[$row_index]) )
 			{
@@ -653,7 +664,7 @@ sub get_property_defaults
 	$defaults{hidden_fields} = EP_PROPERTY_UNDEF;
 
 	$defaults{render_table} = 0;
-	$defaults{table_row_count} = 0;
+	$defaults{table_row_count} = 1;
 	$defaults{table_dynamic_row_count} = 0;
 	$defaults{table_allow_hide_rows} = 0;
 	$defaults{table_show_hide_rows} = 1;
