@@ -426,6 +426,8 @@ EOJ
 					}
 
 					$js_string .= "hide_rows_$attribute_name.insertAdjacentHTML('beforeend', '<option value=\"$row\" ${selected}>${title}</option>');";
+					# If the first item changes we also want to update the option in the 'hide rows' selector
+					$js_string .= "input_${attribute_name}_row_${row}_$first_attribute_name.addEventListener('change', () => { hide_rows_$attribute_name.children[$row].innerText = input_${attribute_name}_row_${row}_$first_attribute_name.value });";
 				}
 
 				if( !$render_only ) {
