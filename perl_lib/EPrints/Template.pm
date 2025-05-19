@@ -112,9 +112,10 @@ sub template_phrase
 				$attributes{$attr->nodeName} = $attr->nodeValue;
 			}
 
-			my $button = $params{session}->render_button( %attributes );
+			$attributes{value} = EPrints::XML::EPC::expand_attribute( $attributes{value}, 'value', \%params ) if exists $attributes{value};
 
-			EPrints::XML::EPC::expand_attributes( $button, %params );
+			my $button = $params{session}->render_button( %attributes );
+			EPrints::XML::EPC::expand_attributes( $node, %params );
 
  			if( $node->hasChildNodes )
 			{
