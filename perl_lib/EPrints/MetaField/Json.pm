@@ -285,7 +285,8 @@ EOJ
 			}
 			else
 			{
-				$js_string .= "const hide_rows_$attribute_name = div_$attribute_name.insertBefore(createElement('<select name=\"hide_rows_$attribute_name\" multiple=\"multiple\" style=\"margin-bottom: 10px;\">'), div_$attribute_name.firstChild);";
+				my $disabled = $render_only ? 'disabled' : '';
+				$js_string .= "const hide_rows_$attribute_name = div_$attribute_name.insertBefore(createElement('<select name=\"hide_rows_$attribute_name\" multiple=\"multiple\" style=\"margin-bottom: 10px;\" $disabled>'), div_$attribute_name.firstChild);";
 				$js_string .= "div_$attribute_name.insertAdjacentHTML('afterbegin', '<p>" . $session->html_phrase( "MetaField/Json:hide_rows" ) . "</p>');";
 
 				my $first_attribute_name = $config->[0]->{name};
@@ -309,7 +310,8 @@ EOJ
 					$js_string .= "hide_rows_$attribute_name.insertAdjacentHTML('beforeend', '<option value=\"$row\" ${selected}>${title}</option>');";
 				}
 
-				$js_string .= <<"EOJ"; 
+				if( !$render_only ) {
+					$js_string .= <<"EOJ";
 hide_rows_$attribute_name.addEventListener('change', function() {
   var json_str = $target_field.value;
   var json = {};
@@ -334,6 +336,7 @@ hide_rows_$attribute_name.addEventListener('change', function() {
 });
 hide_rows_$attribute_name.dispatchEvent(new Event('change'));
 EOJ
+				}
 			}
 		}
 	}
