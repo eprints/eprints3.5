@@ -3799,6 +3799,13 @@ sub render_button
 		$item{class} = $opts{class};
 		delete $opts{class};
 	}
+	if( defined $opts{workflow} )
+	{
+		$item{workflow} = $opts{workflow};
+		$item{selected} = $opts{selected};
+		delete $opts{workflow};
+		delete $opts{selected};
+	}
 	if( !defined $opts{role} )
         {
                 $opts{role} = "button";

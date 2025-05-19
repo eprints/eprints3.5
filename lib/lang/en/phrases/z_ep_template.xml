@@ -1065,7 +1065,17 @@
   <epp:phrase id="view:EPrints/Repository:render_button">
     <input>
       <epc:attribute name="class">
-        <epc:print expr="'btn btn-outline-primary'"/>
+        <epc:if test="workflow">
+          <epc:if test="selected">
+            <epc:print expr="'btn btn-primary'"/>
+          </epc:if>
+          <epc:if test="!selected">
+            <epc:print expr="'btn btn-outline-primary'"/>
+          </epc:if>
+        </epc:if>
+        <epc:if test="!workflow">
+          <epc:print expr="'btn btn-primary btn-sm m-1'"/>
+        </epc:if>
       </epc:attribute>
       <epc:foreach expr="opts" iterator="attr">
         <epc:attribute name="{$attr{name}}">
@@ -1075,13 +1085,31 @@
     </input>
   </epp:phrase>
   <epp:phrase id="view:EPrints/Repository:render_buttons_aux">
-    <div class="btn-group">
+    <div class="p-3 w-100 d-flex justify-content-center">
+    <div>
       <epc:attribute name="class">
-        <epc:print expr="'btn-group'"/>
+        <epc:print expr="''"/>
       </epc:attribute>
       <epc:foreach expr="buttons" iterator="button">
         <epc:print expr="$button{button}"/>
       </epc:foreach>
+    </div>
+    </div>
+  </epp:phrase>
+  <epp:phrase id="view:EPrints/Plugin/Screen/EPrint:render_blister">
+    <div class="">
+      <div class="d-flex m-auto justify-content-center">
+      <epc:foreach expr="stages" iterator="stage">
+        <epc:if test="!$stage{first}">
+          <div class="my-auto px-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+            </svg>
+          </div>
+        </epc:if>
+        <epc:print expr="$stage{stage}"/>
+      </epc:foreach>
+      </div>
     </div>
   </epp:phrase>
 </epp:phrases>
