@@ -1363,4 +1363,16 @@
       </epc:foreach>
     </div>
   </epp:phrase>
+  <epp:phrase id="view:EPrints/Plugin/Screen/EPrint:render_blister">
+    <div class="ep_blister_bar">
+      <div>
+      <epc:foreach expr="stages" iterator="stage">
+        <epc:if test="!$stage{first}">
+          <div class="ep_blister_join"/>
+        </epc:if>
+        <epc:print expr="$stage{stage}"/>
+      </epc:foreach>
+      </div>
+    </div>
+  </epp:phrase>
 </epp:phrases>

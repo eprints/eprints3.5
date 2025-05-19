@@ -960,7 +960,17 @@
   <epp:phrase id="view:EPrints/Repository:render_button">
     <input>
       <epc:attribute name="class">
-        <epc:print expr="if (class, class, 'ep_form_action_button')"/>
+	<epc:if test="workflow">
+	  <epc:if test="selected">
+            <epc:print expr="'ep_blister_node_selected'"/>
+	  </epc:if>
+	  <epc:if test="!selected">
+            <epc:print expr="'ep_blister_node'"/>
+	  </epc:if>
+	</epc:if>
+	<epc:if test="!workflow">
+          <epc:print expr="'ep_form_action_button'"/>
+	</epc:if>
       </epc:attribute>
       <epc:foreach expr="opts" iterator="attr">
         <epc:attribute name="{$attr{name}}">
@@ -977,6 +987,18 @@
       <epc:foreach expr="buttons" iterator="button">
         <epc:print expr="$button{button}"/>
       </epc:foreach>
+    </div>
+  </epp:phrase>
+  <epp:phrase id="view:EPrints/Plugin/Screen/EPrint:render_blister">
+    <div class="ep_blister_bar">
+      <div>
+      <epc:foreach expr="stages" iterator="stage">
+        <epc:if test="!$stage{first}">
+          <div class="ep_blister_join"/>
+        </epc:if>
+        <epc:print expr="$stage{stage}"/>
+      </epc:foreach>
+      </div>
     </div>
   </epp:phrase>
 </epp:phrases>

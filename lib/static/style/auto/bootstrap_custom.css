@@ -1,4 +1,4 @@
-.bg-primary, .text-bg-primary, .btn-primary { background-color: #1b4b73 !important; }
+.bg-primary, .text-bg-primary, .btn-primary { background-color: #1b4b73 !important; border-color: #1d4e76; }
 .bg-success, .text-bg-success { background-color: #2e7622 !important; }
 .btn-outline-primary {
     color: #1d4e76;
