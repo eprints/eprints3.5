@@ -253,10 +253,8 @@ sub generate_javascript
 
 			if( !$render_only )
 			{
-				my $reset_fields = $session->html_phrase( "MetaField/Json:reset_fields" );
 				my $add_row = $session->html_phrase( "MetaField/Json:add_row" );
 				$js_string .= <<"EOJ";
-$target_area.insertAdjacentHTML('beforeend', '<div style="float: right; margin-top: -10px;"><a onclick="tinyMCEResetAllEditors()">$reset_fields</a></div>');
 $target_area.insertAdjacentHTML('beforeend', '<div style="float: right; margin-top: -10px;"><a>$add_row</a></div>');
 $target_area.lastChild.addEventListener('click', function() {
 	var json_str = ${target_field}.value;

@@ -371,7 +371,6 @@ Phrases related to the Manage Metadata Fields tool.
     <epp:phrase id="Plugin/Screen/MetaField/Listing:remove_failed">Failed to remove the field. You should ensure the web server has write access to the fields configuration file for this repository.</epp:phrase>
     <epp:phrase id="Plugin/Screen/MetaField/Listing:create_field">Create a Field</epp:phrase>
 
-    <epp:phrase id="MetaField/Json:reset_fields">Reset fields</epp:phrase>
     <epp:phrase id="MetaField/Json:hide_rows">You can use the below select box to decide which rows should appear in the table.</epp:phrase>
     <epp:phrase id="MetaField/Json:add_row">Add row</epp:phrase>
 
