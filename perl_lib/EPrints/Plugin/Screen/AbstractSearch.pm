@@ -679,12 +679,24 @@ sub render_results
 
 	my $page = $self->{session}->make_doc_fragment;
 	$page->appendChild( $self->render_results_intro );
-	$page->appendChild( 
-		EPrints::Paginate->infinite_search_list( 
-			$self->{session}, 
-			"search", 
-			$self->{processor}->{results}, 
-			%opts ) );
+	if ( $self->{page_result_style} eq "paginate" )
+	{
+		$page->appendChild( 
+			EPrints::Paginate->paginate_list( 
+				$self->{session}, 
+				"search", 
+				$self->{processor}->{results}, 
+				%opts ) );
+	}
+	else
+	{
+		$page->appendChild( 
+			EPrints::Paginate->infinite_search_list( 
+				$self->{session}, 
+				"search", 
+				$self->{processor}->{results}, 
+				%opts ) );
+	}
 
 	return $page;
 }
