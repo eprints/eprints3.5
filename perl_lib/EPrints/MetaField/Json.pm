@@ -14,7 +14,123 @@
 B<EPrints::MetaField::Json> - a compound which stores a number of fields in a JSON object
 
 =head1 DESCRIPTION
+
+Like a Compound field, this field is designed to have a number of subfields which are all stored and displayed under the same parent field. However, unlike the Compound field, instead of storing each one in its own field or table, we store all the subfields in a single database field as a JSON string.
+
+=head2 Usage
+The field works by providing a (required) C<json_config> parameter, for example:
+ {
+	name => "fieldname",
+	type => "json",
+	json_config => [
+		{
+			name => "subfield1",
+			type => "text"
+		},
+		{
+			name => "subfield2",
+			type => "number"
+		},
+		{
+			name => "subfield3",
+			type => "richtext"
+		},
+		{
+			name => "subfield4",
+			type => "namedset"
+			set_name => "example_set"
+		}
+	],
+ }
+
+=head2 Field types
+
+For the subfield type, the following fields are currently compatible:
+
 =over 4
+
+=item B<text> - A single line text field (i.e. <input type="text">)
+
+=item B<number> - A numerical text field (i.e. <input type="number">)
+
+=item B<longtext> - A multi-line text field (i.e. <textarea>)
+
+=item B<boolean> - A checkbox field (i.e. <input type="checkbox">)
+
+=item B<richtext> - A multi-line text field with a WYSIWYG editor (requires the C<richtext> ingredient)
+
+=item B<namedset> - A set of options (i.e. <select>), expects a C<set_name> parameter
+
+=back
+
+These all render as their standard EPrints counterparts would, however are rendered by JavaScript instead of the standard EPrints form renderer.
+
+The corresponding phrases for each subfield are in the format:
+
+=over 4
+
+=item C<eprint_fieldname_${fieldname}_${subfieldname}>
+
+=item C<eprint_fieldhelp_${fieldname}_${subfieldname}>
+
+=back
+
+The same convention is used for the C<ep_eprint> classes added to inputs
+
+=head2 Table view
+
+The JSON field can also be used to render a table, with a fixed number of rows. In this scenario, the JSON string stored is a JSON array.
+
+Use C<render_table> to turn on the table mode, and C<table_row_count> to specify the number of rows. If you want the user to be able to add rows you should set C<table_dynamic_row_count> to 1.
+
+In some tables, you may want to skip certain subfields - e.g. the third row doesn't have subfield 3. If the value of the subfield is C<__json_field_control__skip>, the subfield will not render.
+
+If you set C<table_allow_hide_rows> to be true, you get a select to select which rows you want to appear and which not. C<table_show_hide_rows> default is true. This will show the selector. Allows you to hide on some views, e.g. allowing certain workflows to determine rows shown, and certain to edit values
+
+If you set C<table_hide_table> to be true, the table is hidden, e.g. allowing certain workflows to determine rows shown, and certain to edit values
+
+If you set C<table_hide_rows_render_js>, you can provide custom JS to render the hide rows selector and how the json is updated.
+
+## List view
+The JSON field can also be used to display the fields in multiple columns, instead of the standard one-after-the-other. This is helpful in scenarios where you have lots of small fields, e.g. a series of boolean checkboxes.
+
+Use C<display_as_list> to turn on the list mode, and C<display_as_list_cols> to specify the number of columns you want (defaults to 2).
+
+=head2 Other parameters
+
+You can also specify the following:
+
+=over 4
+
+=item C<richtext_init_fun> - determines the function which initialises the TinyMCE richtext field. Default is C<initTinyMCE>, as defined in C<98_richtext.js>
+
+=item C<richtext_init_fun_readonly> - determines the function which initialises the TinyMCE richtext field when readonly is true. Default is C<initTinyMCEReadOnly>, as defined in C<98_richtext.js>
+
+=item C<readonly> - set all fields readonly
+
+=item C<readonly_fields> - string of (space separated) fields you want to be readonly
+
+=item C<hidden_fields> - string of (space separated) fields you want to be hidden
+
+=back
+
+=head2 Lookup
+
+You can provide an C<input_lookup_url> as per standard MetaFields.
+
+When added, each subfield will have lookup capabilities. It will send the following as parameters to the C<input_lookup_url>:
+
+=over 4
+
+=item C<q> - the query
+
+=item C<field> - the json field name
+
+=item C<json_field> - the subfield name, per the json_config
+
+=back
+
+A basic CGI script that accepts these parameters and uses them to lookup on a particular subfield is provided.
 
 =cut
 
