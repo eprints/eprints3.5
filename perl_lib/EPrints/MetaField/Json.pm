@@ -151,9 +151,14 @@ sub generate_javascript
 	my( $self, $session, $value, $attribute_name, $frag, $render_only ) = @_;
 
 	my $parent_name = $self->{name};
-	my $target_field = "document.querySelector('textarea[name=\"${attribute_name}\"]')";
-	my $target_area = "${target_field}.parentElement";
-	my $js_string = "${target_field}.style.display = 'none';";
+	my $target_field = "target_field_$attribute_name";
+	my $target_area = "$target_field.parentElement";
+
+	# Creates an HTML element (or elements) from a string and returns it, this won't work for elements which must be contained in another element like '<tr>'
+	my $js_string = "function createElement(text) { return document.createRange().createContextualFragment(text).firstChild; }";
+	$js_string .= "const target_field_$attribute_name = document.querySelector('textarea[name=\"$attribute_name\"]');";
+	$js_string .= "$target_field.style.display = 'none';";
+
 	my @readonly_fields;
 	if( defined( $self->{readonly_fields} ) )
 	{
@@ -173,16 +178,15 @@ sub generate_javascript
 			$value_obj = from_json( $value );
 		} or do {
 			$value = undef;
-			$js_string .= "${target_field}.val('');";
+			$js_string .= "$target_field.value = '';";
 		}
 	}
 
 	my $config = $self->{json_config};
 
-	my $table = "document.querySelector('table[name=\"table_${attribute_name}\"]')";
 	if( $self->{render_table} )
 	{
-		$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div class=\"json_field\" name=\"div_${attribute_name}\">');";
+		$js_string .= "const div_$attribute_name = $target_area.appendChild(createElement('<div class=\"json_field\" name=\"div_${attribute_name}\">'));";
 
 		my $table_row_count = $self->{table_row_count};
 		if( $self->{table_dynamic_row_count} && defined $value_obj )
@@ -192,9 +196,8 @@ sub generate_javascript
 
 		if( !$self->{table_hide_table} )
 		{
-			$js_string .= "document.querySelector('div[name=\"div_${attribute_name}\"]').insertAdjacentHTML('beforeend', '<table name=\"table_${attribute_name}\">');";
-			$js_string .= "${table}.insertAdjacentHTML('beforeend', '<thead>');";
-			$js_string .= "${table}.querySelector('thead').insertAdjacentHTML('beforeend', '<tr>');";
+			$js_string .= "const table_$attribute_name = div_$attribute_name.appendChild(createElement('<table name=\"table_$attribute_name\">'));";
+			$js_string .= "table_$attribute_name.insertAdjacentHTML('beforeend', '<thead><tr></tr></thead>');";
 			for my $field_config( @{$config} )
 			{
 				my $field = $field_config->{name};
@@ -204,10 +207,11 @@ sub generate_javascript
 				}
 				my $field_name = $session->html_phrase( "eprint_fieldname_${parent_name}_$field" );
 				$field_name =~ s/(['\\])/\\$1/g;
-				$js_string .= "${table}.querySelector('thead tr').insertAdjacentHTML('beforeend', '<th style=\"width:${width}\">" . $field_name . "</th>');";
+				$js_string .= "table_$attribute_name.firstChild.firstChild.insertAdjacentHTML('beforeend', '<th style=\"width:${width}\">$field_name</th>');";
 			}
 
-			$js_string .= "${table}.insertAdjacentHTML('beforeend', '<tbody>');";
+			$js_string .= "table_$attribute_name.insertAdjacentHTML('beforeend', '<tbody>');";
+			$js_string .= "const tbody_$attribute_name = table_$attribute_name.lastChild;";
 
 			my $first_attribute_name = $config->[0]->{name};
 			my $parent_row_num = 0;
@@ -226,13 +230,13 @@ sub generate_javascript
 					$style = "display:none;";
 				}
 
-				$js_string .= "${table}.querySelector('tbody').insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${row}\" class=\"table_${attribute_name}_parent_row_${parent_row_num}\" style=\"${style}\">');";
-				my $table_row = "$table.querySelector('tr[name=\"table_${attribute_name}_row_${row}\"]')";
+				$js_string .= "tbody_$attribute_name.insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${row}\" class=\"table_${attribute_name}_parent_row_${parent_row_num}\" style=\"${style}\">');";
+				my $table_row = "tbody_$attribute_name.lastChild";
 				for my $field_config( @{$config} )
 				{
 					my $field_name = $field_config->{name};
-					$js_string .= "${table_row}.insertAdjacentHTML('beforeend', '<td name=\"table_${attribute_name}_row_${row}_field_${field_name}\">');";
-					my $table_cell = "$table.querySelector('td[name=\"table_${attribute_name}_row_${row}_field_${field_name}\"]')";
+					$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<td name=\"table_${attribute_name}_row_${row}_field_${field_name}\">');";
+					my $table_cell = "$table_row.lastChild";
 
 					my $value = $value_obj->[$row]->{$field_name};
 
@@ -249,10 +253,12 @@ sub generate_javascript
 
 			if( !$render_only )
 			{
-				$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div style=\"float: right;margin-top: -10px;\"><a onclick=\"tinyMCEResetAllEditors()\">" . $session->html_phrase( "MetaField/Json:reset_fields" ) . "</a></div>');";
-				$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div style=\"float: right;margin-top: -10px;\"><a id=\"table_${attribute_name}_add_row\">" . $session->html_phrase( "MetaField/Json:add_row" ) . "</a></div>');";
+				my $reset_fields = $session->html_phrase( "MetaField/Json:reset_fields" );
+				my $add_row = $session->html_phrase( "MetaField/Json:add_row" );
 				$js_string .= <<"EOJ";
-document.querySelector('#table_${attribute_name}_add_row').addEventListener('click', function() {
+$target_area.insertAdjacentHTML('beforeend', '<div style="float: right; margin-top: -10px;"><a onclick="tinyMCEResetAllEditors()">$reset_fields</a></div>');
+$target_area.insertAdjacentHTML('beforeend', '<div style="float: right; margin-top: -10px;"><a>$add_row</a></div>');
+$target_area.lastChild.addEventListener('click', function() {
 	var json_str = ${target_field}.value;
 	var json = {};
 	if( json_str ) {
@@ -279,9 +285,8 @@ EOJ
 			}
 			else
 			{
-				$js_string .= "document.querySelector('div[name=\"div_${attribute_name}\"]').insertAdjacentHTML('afterbegin', '<select name=\"hide_rows_${attribute_name}\" multiple=\"multiple\" style=\"margin-bottom: 10px;\">');";
-			
-				$js_string .= "document.querySelector('div[name=\"div_${attribute_name}\"]').insertAdjacentHTML('afterbegin', '<p>" . $session->html_phrase( "MetaField/Json:hide_rows" ) . "</p>');";
+				$js_string .= "const hide_rows_$attribute_name = div_$attribute_name.insertBefore(createElement('<select name=\"hide_rows_$attribute_name\" multiple=\"multiple\" style=\"margin-bottom: 10px;\">'), div_$attribute_name.firstChild);";
+				$js_string .= "div_$attribute_name.insertAdjacentHTML('afterbegin', '<p>" . $session->html_phrase( "MetaField/Json:hide_rows" ) . "</p>');";
 
 				my $first_attribute_name = $config->[0]->{name};
 				for( my $row = 0; $row < $table_row_count; $row++ )
@@ -301,12 +306,12 @@ EOJ
 						$selected = "selected";
 					}
 
-					$js_string .= "document.querySelector('select[name=\"hide_rows_${attribute_name}\"]').insertAdjacentHTML('beforeend', '<option value=\"$row\" ${selected}>${title}</option>');";
+					$js_string .= "hide_rows_$attribute_name.insertAdjacentHTML('beforeend', '<option value=\"$row\" ${selected}>${title}</option>');";
 				}
 
 				$js_string .= <<"EOJ"; 
-document.querySelector('select[name=\"hide_rows_${attribute_name}\"]').addEventListener('change', function() {
-  var json_str = ${target_field}.value;
+hide_rows_$attribute_name.addEventListener('change', function() {
+  var json_str = $target_field.value;
   var json = {};
   if( json_str ) {
     json = JSON.parse(json_str.prepare_json_parse());
@@ -314,29 +319,29 @@ document.querySelector('select[name=\"hide_rows_${attribute_name}\"]').addEventL
     return;
   }
 
-  document.querySelectorAll('select[name=\"hide_rows_${attribute_name}\"] option').forEach(function(element) {
-    var val = element.value;
+  for (const element of hide_rows_$attribute_name.children) {
+    const val = element.value;
     if(element.selected) {
-      document.querySelector('tr.table_${attribute_name}_parent_row_' + val).style.display = 'block';
+      tbody_$attribute_name.children[val].style.display = '';
       delete json[val]['__hidden'];
     } else {
-      document.querySelector('tr.table_${attribute_name}_parent_row_' + val).style.display = 'none';
+      tbody_$attribute_name.children[val].style.display = 'none';
       json[val]['__hidden'] = 1;
     }
-  });
+  }
 
   ${target_field}.value = JSON.stringify(json);
 });
-document.querySelector('select[name=\"hide_rows_${attribute_name}\"]').dispatchEvent(new Event('change'));
+hide_rows_$attribute_name.dispatchEvent(new Event('change'));
 EOJ
 			}
 		}
 	}
 	elsif( $self->{display_as_list} )
 	{
-		$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\"><table name=\"table_${attribute_name}\"></table></div>');";
+		$js_string .= "$target_area.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\"><table name=\"table_${attribute_name}\"></table></div>');";
 
-		$js_string .= "${table}.insertAdjacentHTML('beforeend', '<tbody>');";
+		$js_string .= "table_$attribute_name.insertAdjacentHTML('beforeend', '<tbody>');";
 
 		my @table_rows;
 		my $row_index = 0;
@@ -349,16 +354,16 @@ EOJ
 
 			if( !(defined $table_rows[$row_index]) )
 			{
-				$js_string .= "${table}.querySelector('tbody').insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${field}\">');";
-				$table_rows[$row_index] = "$table.querySelector('tr[name=\"table_${attribute_name}_row_${field}\"]')";
+				$js_string .= "table_$attribute_name.lastChild.insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${field}\">');";
+				$table_rows[$row_index] = "table_$attribute_name.lastChild.children[$field]";
 			}
 
 			my $table_row = $table_rows[$row_index];
 
-			$js_string .= "${table_row}.insertAdjacentHTML('beforeend', '<th>" . $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" ) . "</th>');";
+			$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<th>" . $session->html_phrase( "eprint_fieldname_${parent_name}_${field}" ) . "</th>');";
 
-			$js_string .= "${table_row}.insertAdjacentHTML('beforeend', '<td>');";
-			my $table_cell = "${table_row}.querySelector('td').lastChild";
+			$js_string .= "$table_row.insertAdjacentHTML('beforeend', '<td>');";
+			my $table_cell = "$table_row.lastChild.lastChild";
 			my $value = $value_obj->{$field};
 
 			if( $render_only )
@@ -382,8 +387,8 @@ EOJ
 	}
 	elsif( $render_only && $self->{render_view_as_table} )
 	{
-		$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\"><table name=\"table_${attribute_name}\"></table></div>');";
-		$js_string .= "${table}.insertAdjacentHTML('beforeend', '<tbody>');";
+		$js_string .= "$target_area.insertAdjacentHTML('beforeend', '<div class=\"json_field_list\"><table name=\"table_${attribute_name}\"></table></div>');";
+		$js_string .= "table_$attribute_name.insertAdjacentHTML('beforeend', '<tbody>');";
 		for my $field_config( @{$config} )
 		{
 			my $field_name = $field_config->{name};
@@ -425,7 +430,7 @@ sub generate_javascript_field
 	}
 
 	my $field = $field_config->{name};
-	my $field_div = "document.querySelector('div[name=\"div_${attribute_name}_${field}\"]')";
+	my $field_div = "div_${attribute_name}_$field";
 
 	if( any {$_ eq $field} @{$hidden_fields} )
 	{
@@ -434,7 +439,7 @@ sub generate_javascript_field
 
 	my $js_string = "";
 	my $div_class = "ep_sr_component json_$parent_name";
-	$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div class=\"${div_class}\" name=\"div_${attribute_name}_${field}\">');";
+	$js_string .= "const div_${attribute_name}_$field = $target_area.appendChild(createElement('<div class=\"$div_class\" name=\"div_${attribute_name}_$field\">'));";
 
 	if( !$self->{render_table} && !$self->{display_as_list} )
 	{
@@ -461,7 +466,7 @@ sub generate_javascript_field
 	my $readonly = "";
 	if( ( $self->{readonly} && ( $self->{readonly} eq 1 || $self->{readonly} eq "yes" ) ) || any {$_ eq $field} @{$readonly_fields} )
 	{
-		$readonly = "readonly = 'readonly'";
+		$readonly = "readonly";
 	}
 
 	my $js_input_string;
@@ -482,7 +487,7 @@ sub generate_javascript_field
 	{
 		if( $readonly ne "" )
 		{
-			$readonly = "disabled = 'disabled'";
+			$readonly = "disabled";
 		}
 		$js_input_string = "<input type='checkbox' class='ep_eprint_${parent_name}_${field}' ${readonly}>";
 		$js_parsing_addition = "value_str = this.checked";
@@ -504,7 +509,7 @@ sub generate_javascript_field
 	{
 		if( $readonly ne "" )
 		{
-			$readonly = "disabled = 'disabled'";
+			$readonly = "disabled";
 		}
 
 		my $multiple = "";
@@ -533,7 +538,7 @@ sub generate_javascript_field
 		return "";
 	}
 
-	$js_string .= "const $js_input_name = document.createRange().createContextualFragment(\"$js_input_string\").firstElementChild;";
+	$js_string .= "const $js_input_name = createElement(\"$js_input_string\");";
 	$js_string .= "$field_div.appendChild($js_input_name);";
 
 	if( $field_value )
@@ -731,18 +736,18 @@ sub generate_javascript_field_render_only
 
 
 	my $field = $field_config->{name};
-	my $field_div = "document.querySelector('div[name=\"div_${attribute_name}_${field}\"]')";
+	my $field_div = "div_${attribute_name}_$field";
 
 	my $js_string = "";
 	my $div_class = "ep_sr_component json_$parent_name";
 	if( $self->{render_view_as_table} )
 	{
-		$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<tr name=\"div_${attribute_name}_${field}\">');";
-		$field_div = "document.querySelector('tr[name=\"div_${attribute_name}_${field}\"]')";
+		$js_string .= "const tr_${attribute_name}_$field = $target_area.appendChild(createElement('<tr name=\"div_${attribute_name}_$field\">'));";
+		$field_div = "tr_${attribute_name}_$field";
 	}
 	else
 	{
-		$js_string .= "${target_area}.insertAdjacentHTML('beforeend', '<div class=\"${div_class}\" name=\"div_${attribute_name}_${field}\">');";
+		$js_string .= "const div_${attribute_name}_$field = $target_area.appendChild(createElement('<div class=\"$div_class\" name=\"div_${attribute_name}_$field\">'));";
 	}
 
 	if( !$self->{render_table} && !$self->{display_as_list} && !$self->{render_view_as_table} )
@@ -799,8 +804,8 @@ sub generate_javascript_field_render_only
 	}
 	elsif( $type eq "boolean" )
 	{
-		my $readonly = "disabled='disabled'";
-		my $checked = $field_value eq '' ? '' : "checked='checked'";
+		my $readonly = "disabled";
+		my $checked = $field_value eq '' ? '' : "checked";
 		$js_input_string = "<input type='checkbox' class='ep_eprint_${parent_name}_$field' $readonly $checked>";
 	}
 	else
@@ -808,15 +813,15 @@ sub generate_javascript_field_render_only
 		return "";
 	}
 
-	$js_string .= "$js_input_name = document.createRange().createContextualFragment(`$js_input_string`);";
+	$js_string .= "$js_input_name = createElement(`$js_input_string`);";
 
 	if( $self->{render_view_as_table} )
 	{
-		$js_string .= "${field_div}.querySelector('td').appendChild($js_input_name);";
+		$js_string .= "$field_div.lastChild.appendChild($js_input_name);";
 	}
 	else
 	{
-		$js_string .= "${field_div}.appendChild($js_input_name);";
+		$js_string .= "$field_div.appendChild($js_input_name);";
 	}
 
 	return $js_string;
