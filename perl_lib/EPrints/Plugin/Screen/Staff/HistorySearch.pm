@@ -24,7 +24,7 @@ sub new
 		},
 	];
 
-	$self->{page_result_style} = 'paginate';
+	$self->{search_result_style} = 'paginate';
 
 	return $self;
 }
