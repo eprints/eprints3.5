@@ -603,11 +603,11 @@ sub generate_javascript_field
 	my $js_input_string;
 	if( $type eq "text" )
 	{
-		$js_input_string = "<input type='text' id='${js_input_name}' class='ep_eprint_${parent_name}_${field}' size='50' ${readonly}>";
+		$js_input_string = "<input type='text' id='${js_input_name}' class='ep_eprint_${parent_name}_${field}' size='50' ${readonly} onkeypress='return EPJS_block_enter(event)'>";
 	}
 	elsif( $type eq "number" )
 	{
-		$js_input_string = "<input type='number' id='${js_input_name}' class='ep_eprint_${parent_name}_${field}' ${readonly}>";
+		$js_input_string = "<input type='number' id='${js_input_name}' class='ep_eprint_${parent_name}_${field}' ${readonly} onkeypress='return EPJS_block_enter(event)'>";
 	}
 	elsif( $type eq "longtext" )
 	{
