@@ -251,7 +251,7 @@ sub generate_javascript
 				}
 			}
 
-			if( !$render_only )
+			if( !$render_only && $self->{table_dynamic_row_count} )
 			{
 				my $add_row = $session->html_phrase( "MetaField/Json:add_row" );
 				$js_string .= <<"EOJ";
