@@ -150,7 +150,6 @@ use EPrints::MetaField::Longtext;
 use EPrints::Const qw( :metafield );
 use JSON;
 use List::Util qw( any );
-use Try::Tiny;
 
 # Taken from MetaField.pm, altered to add in JavaScript after the element is rendered (changes commented)
 # The main textarea here will be hidden in the UI, but will be used by the added JavaScript to store the up-to-date JSON object
@@ -999,9 +998,10 @@ sub parse
 
 	if( defined $json_str )
 	{
-		try {
+		eval {
 			$object = from_json $json_str;
-		} catch {
+			1;
+		} or do {
 			print STDERR "Exception parsing $json_str: @_\n";
 		};
 	}
@@ -1016,12 +1016,13 @@ sub parse_and_get_field
 	my $object = EPrints::MetaField::Json::parse( $json_str );
 	my $value = $default_value;
 
-	try {
+	eval {
 		if( defined $object && $object->{$field_name} )
 		{
 			$value = $object->{$field_name};
 		}
-	} catch {
+		1;
+	} or do {
 		print STDERR "Exception getting $field_name from $json_str: @_\n";		
 	};
 
@@ -1034,9 +1035,10 @@ sub encode
 
 	my $value = $default_value;
 
-	try {
+	eval {
 		$value = to_json( $obj );
-	} catch {
+		1;
+	} or do {
 		print STDERR "Exception - failed encode: @_\n";
 	};
 
