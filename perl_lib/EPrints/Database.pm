@@ -116,6 +116,7 @@ use constant {
 	SQL_TIME => DBI::SQL_TIME,
 	SQL_CLOB => DBI::SQL_CLOB,
 	SQL_DECIMAL => DBI::SQL_DECIMAL,
+	SQL_JSON => 999,
 };
 
 %EXPORT_TAGS = (
@@ -135,6 +136,7 @@ use constant {
 		SQL_DOUBLE
 		SQL_DATE
 		SQL_TIME
+		SQL_JSON
 		)],
 );
 Exporter::export_tags( qw( sql_types ) );
@@ -647,6 +649,14 @@ sub type_info
 			TYPE_NAME => "bigint",
 			CREATE_PARAMS => "",
 			COLUMN_SIZE => 19,
+		};
+	}
+	elsif( $data_type eq SQL_JSON )
+	{
+		return {
+			TYPE_NAME => "json",
+			CREATE_PARAMS => "",
+			COLUMN_SIZE => 2 ** 31,
 		};
 	}
 	else

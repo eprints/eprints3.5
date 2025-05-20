@@ -151,6 +151,20 @@ use EPrints::Const qw( :metafield );
 use JSON;
 use List::Util qw( any );
 
+sub get_sql_type
+{
+	my( $self, $session ) = @_;
+
+	return $session->get_database->get_column_type(
+		$self->get_sql_name(),
+		EPrints::Database::SQL_JSON,
+		!$self->get_property( "allow_null" ),
+		undef,
+		undef,
+		$self->get_sql_properties,
+	);
+}
+
 # Taken from MetaField.pm, altered to add in JavaScript after the element is rendered (changes commented)
 # The main textarea here will be hidden in the UI, but will be used by the added JavaScript to store the up-to-date JSON object
 sub render_input_field_actual
