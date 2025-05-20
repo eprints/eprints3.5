@@ -162,7 +162,7 @@ sub paginate_list
 		from => $offset + 1,
 		to => $plast,
 		n_results => $n_results,
-		page_size => $opts{page_size},
+		page_size => $pagesize,
 	};
 
 	my $results_info = {
@@ -171,17 +171,6 @@ sub paginate_list
 		rows => [],
 		rows_after => $opts{rows_after},
 	};
-
-	if( scalar $n_results > 0 )
-	{
-		if( !$opts{page_size} )
-		{
-			if( defined $session->param( "${basename}page_size" ) )
-			{
-				$url->query_form( @param_list, $basename."page_size" => $pagesize );
-			}
-		}
-	}
 
 	my @controls; # page controls
 
