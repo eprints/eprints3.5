@@ -275,6 +275,13 @@ sub generate_javascript
 	$js_string .= "const target_field_$attribute_name = document.querySelector('textarea[name=\"$attribute_name\"]');";
 	$js_string .= "$target_field.style.display = 'none';";
 
+	my $field_default = '{}';
+	if( $self->{render_table} )
+	{
+		$field_default = '[' . join( ',', ('{}') x $self->{table_row_count} ) . ']';
+	}
+	$js_string .= "if ($target_field.value === '') { $target_field.value = '$field_default'; }";
+
 	my @readonly_fields;
 	if( defined( $self->{readonly_fields} ) )
 	{
@@ -377,18 +384,9 @@ sub generate_javascript
 				$js_string .= <<"EOJ";
 $target_area.insertAdjacentHTML('beforeend', '<input value="$add_row" class="ep_form_internal_button" type="button" role="button" style="float: right; margin-top: -10px !important;" />');
 $target_area.lastChild.addEventListener('click', function() {
-	var json_str = ${target_field}.value;
-	var json = {};
-	if( json_str ) {
-		json = JSON.parse(json_str.prepare_json_parse());
-	} else {
-		json = [];
-		for( var i = 0; i < ${table_row_count}; i++ ) {
-			json[i] = {};
-		}
-	}
+	var json = JSON.parse($target_field.value.prepare_json_parse());
 	json[${table_row_count}] = {};
-	${target_field}.value = JSON.stringify(json);
+	$target_field.value = JSON.stringify(json);
 	document.querySelector('input[name="_action_save"]').dispatchEvent(new Event('click'));
 });
 EOJ
@@ -433,13 +431,7 @@ EOJ
 				if( !$render_only ) {
 					$js_string .= <<"EOJ";
 hide_rows_$attribute_name.addEventListener('change', function() {
-  var json_str = $target_field.value;
-  var json = {};
-  if( json_str ) {
-    json = JSON.parse(json_str.prepare_json_parse());
-  } else {
-    return;
-  }
+  var json = JSON.parse($target_field.value.prepare_json_parse());
 
   for (const element of hide_rows_$attribute_name.children) {
     const val = element.value;
@@ -452,7 +444,7 @@ hide_rows_$attribute_name.addEventListener('change', function() {
     }
   }
 
-  ${target_field}.value = JSON.stringify(json);
+  $target_field.value = JSON.stringify(json);
 });
 hide_rows_$attribute_name.dispatchEvent(new Event('change'));
 EOJ
@@ -699,34 +691,21 @@ sub generate_javascript_field
 	if( $self->{render_table} )
 	{
 		$js_json_parsing = <<"EOJ";
-var json_str = ${target_field}.value;
-var json = {};
-if( json_str ) {
-	json = JSON.parse(json_str.prepare_json_parse());
-} else {
-	json = [];
-	for( var i = 0; i < ${table_row_count}; i++ ) {
-		json[i] = {};
-	}
-}
+var json = JSON.parse($target_field.value.prepare_json_parse());
 var value_str = $js_input_name.value;
 ${js_parsing_addition}
 json[${row}]['$field'] = value_str;
-${target_field}.value = JSON.stringify(json);
+$target_field.value = JSON.stringify(json);
 EOJ
 	}
 	else
 	{
 		$js_json_parsing = <<"EOJ";
-var json_str = ${target_field}.value;
-var json = {};
-if( json_str ) {
-	json = JSON.parse(json_str.prepare_json_parse());
-}
+var json = JSON.parse($target_field.value.prepare_json_parse());
 var value_str = $js_input_name.value;
 ${js_parsing_addition}
 json['$field'] = value_str;
-${target_field}.value = JSON.stringify(json);
+$target_field.value = JSON.stringify(json);
 EOJ
 	}
 
