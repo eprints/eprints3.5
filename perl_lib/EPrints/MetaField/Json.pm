@@ -307,16 +307,7 @@ sub generate_javascript
 	}
 
 	my $value_obj;
-	if( $value )
-	{
-		# If someone has put non-JSON into a JSON field, let's clear it
-		eval {
-			$value_obj = from_json( $value );
-		} or do {
-			$value = undef;
-			$js_string .= "$target_field.value = '';";
-		}
-	}
+	$value_obj = from_json( $value ) if $value;
 
 	my $config = $self->{json_config};
 
@@ -790,25 +781,6 @@ sub get_property_defaults
 	return %defaults;
 }
 
-sub form_value
-{
-	my( $self, $session, $object, $prefix ) = @_;
-
-	my $value = $self->SUPER::form_value( $session, $object, $prefix );
-
-	# validate the JSON
-	if( $value )
-	{
-		eval {
-			from_json( $value );
-		} or do {
-			$value = undef;
-		};
-	}
-
-	return $value;
-}
-
 sub html_text_escape
 {
 	my( $str ) = @_;
@@ -974,13 +946,7 @@ sub validate
 	if( !$self->{render_table} )
 	{
 		my $value_obj;
-		if( $value )
-		{
-			# If someone has put non-JSON into a JSON field, let's clear it
-			eval {
-				$value_obj = from_json( $value );
-			};
-		}
+		$value_obj = from_json( $value ) if $value;
 
 		my $config = $self->{json_config};
 		for my $sub_field( @{$config} )
