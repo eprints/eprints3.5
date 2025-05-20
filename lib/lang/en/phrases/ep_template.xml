@@ -2,10 +2,9 @@
 <!DOCTYPE phrases SYSTEM "entities.dtd">
 <epp:phrases xmlns="http://www.w3.org/1999/xhtml" xmlns:epp="http://eprints.org/ep3/phrase" xmlns:epc="http://eprints.org/ep3/control" xmlns:epv="http://eprints.org/ep3/view">
   <!-- BOOTSTRAP 5.3 Integration using new XML templating features in EPrints 3.5 -->
-  <epp:phrase id="view:basic_test">
-  Text only test entry.
-</epp:phrase>
+
   <!-- Toolbar (e.g. key tools) -->
+
   <epp:phrase id="view:EPrints/ScreenProcessor:render_item_list">
     <ul class="{if (class, class, 'navbar-nav ms-auto')}" id="{if (id, id, 'ep_tm_menu_tools')">
       <epc:foreach expr="entries" iterator="entry">
@@ -20,7 +19,9 @@
       </epc:foreach>
     </ul>
   </epp:phrase>
+
   <!-- Action links (e.g. links in keytools) -->
+
   <epp:phrase id="view:EPrints/Plugin/ScreenProcessor:render_action_link">
     <a href="{uri}" class="{if (class, class, 'nav-link text-black')}">
       <epc:foreach expr="opts" iterator="attr">
@@ -31,7 +32,9 @@
       <epc:print expr="title"/>
     </a>
   </epp:phrase>
+
   <!-- Logged in as (e.g. keytools) -->
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Login:render_title">
     <span class="nav-link text-black">
       <epc:phrase ref="Plugin/Screen/Login:title:logged_in">
@@ -41,7 +44,9 @@
       </epc:phrase>
     </span>
   </epp:phrase>
+
   <!-- DataSets screen ("Manage records") -->
+
   <epp:phrase id="view:EPrints/Plugin/Screen/DataSets:render">
     <epc:if test="has_intro">
       <div class="ep_toolbox">
@@ -62,7 +67,9 @@
       </epc:foreach>
     </table>
   </epp:phrase>
+
   <!-- Items screen ("Manage deposits") -->
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Items:render_items/item_filters">
     <div class="ep_items_filters">
       <foreach expr="filters" iterator="filter">
@@ -81,6 +88,7 @@
       </foreach>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Paginate/Columns:paginate_list/container">
     <table class="ep_columns" border="0" cellpadding="4" cellspacing="0">
       <tr class="header_plain">
@@ -123,6 +131,7 @@
       </tr>
     </table>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Paginate/Columns:paginate_list/no_items">
     <tr>
       <td class="ep_columns_no_items" colspan="{column_count}">
@@ -131,206 +140,141 @@
     </tr>
   </epp:phrase>
 
-<epp:phrase id="view:EPrints/Paginate:infinite_search_list/controls">
-  <div>
-    <epc:if test="has_main_controls">
-
-      <epc:if test="n_results lt 1">
-        <epc:phrase ref="lib/searchexpression:noresults"/>
-        <br/>
-      </epc:if>
-
-      <epc:if test="n_results gt 1">
-        <epc:phrase ref="lib/searchexpression:results_only">
-          <epc:param name="n"><span class="ep_search_number"><epc:print expr="n_results"/></span></epc:param>
-        </epc:phrase>
-        <br/>
-      </epc:if>
-
-      <epc:foreach expr="control_links" iterator="control_link">
-
-        <epc:if test="$index gt 0 and $control_link{type} != 'next'">
-          <epc:phrase ref="lib/searchexpression:separator"/>
-        </epc:if>
-
-        <span class="ep_search_control">
-          <epc:choose>
-            <epc:when test="$control_link{type} = 'before'">
-              <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
-            </epc:when>
-            <epc:when test="$control_link{type} = 'next'">
-              <epv:link class="ep_next ep_hide" uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:next"/></epv:link>
-            </epc:when>
-          </epc:choose>
-        </span>
-      </epc:foreach>
-
-    </epc:if>
-
-    <epc:if test="controls_after">
-      <epc:print expr="controls_after"/>
-    </epc:if>
-  </div>
-</epp:phrase>
-
-<epp:phrase id="view:EPrints/Paginate:paginate_list/controls">
-  <div class="border rounded p-3 mb-3">
-
-
-    <epc:if test="has_main_controls">
-  <div class="d-flex justify-content-center gap-1">
-      <epc:choose>
-        <epc:when test="n_results gt 0">
-          <epc:phrase ref="lib/searchexpression:results">
-            <epc:param name="from"><span class="ep_search_number"><epc:print expr="from"/></span></epc:param>
-            <epc:param name="to"><span class="ep_search_number"><epc:print expr="to"/></span></epc:param>
-            <epc:param name="n"><span class="ep_search_number"><epc:print expr="n_results"/></span></epc:param>
-          </epc:phrase>
-          <epc:whitespace empty="preserve"> </epc:whitespace>
-          <epc:if test="page_size != ''">
-            <epc:phrase ref="lib/searchexpression:results_page_size">
-              <epc:param name="n_10"><epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link></epc:param>
-              <epc:param name="n_25"><epv:link uri="{url}&amp;{basename}page_size=25">25</epv:link></epc:param>
-              <epc:param name="n_100"><epv:link uri="{url}&amp;{basename}page_size=100">100</epv:link></epc:param>
-              <epc:param name="n_all" singleElement="singleElement"><epv:link uri="{url}&amp;{basename}page_size={n_results}"/></epc:param>
-            </epc:phrase>
-          </epc:if>
-        </epc:when>
-
-        <epc:otherwise>
-          <epc:phrase ref="lib/searchexpression:noresults"/>
-        </epc:otherwise>
-
-      </epc:choose>
-  </div>
-
-      <if test="array_length(control_links) gt 0">
-
-	<br/>
-      </if>
-
-<div class="d-flex pb-3 justify-content-center">
-      <epc:foreach expr="control_links" iterator="control_link">
-
-        <epc:if test="$index gt 0">
-          <epc:phrase ref="lib/searchexpression:separator"/>
-        </epc:if>
-
-        <span class="ep_search_control">
-          <epc:choose>
-            <epc:when test="$control_link{type} = 'before'">
-              <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
-            </epc:when>
-            <epc:when test="$control_link{type} = 'previous'">
-              <epv:link uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:prev"/></epv:link>
-            </epc:when>
-            <epc:when test="$control_link{type} = 'current'">
-              <strong><epc:print expr="$control_link{label}"/></strong>
-            </epc:when>
-            <epc:when test="$control_link{type} = 'jump'">
-              <epv:link uri="{$control_link{url}}"><epc:print expr="$control_link{label}"/></epv:link>
-            </epc:when>
-            <epc:when test="$control_link{type} = 'next'">
-              <epv:link class="ep_next" uri="{$control_link{url}}"><epc:phrase ref="lib/searchexpression:next"/></epv:link>
-            </epc:when>
-          </epc:choose>
-        </span>
-      </epc:foreach>
-
-      </div>
-    </epc:if>
-
-    <epc:if test="controls_after">
-      <epc:print expr="controls_after"/>
-    </epc:if>
-
-  </div>
-</epp:phrase>
-<!--
-  <epp:phrase id="view:EPrints/Paginate:paginate_list/controls">
-    <div class="d-flex flex-column">
+  <epp:phrase id="view:EPrints/Paginate:infinite_search_list/controls">
+    <div>
       <epc:if test="has_main_controls">
-        <epc:choose>
-          <epc:when test="n_results gt 0">
-            <epc:phrase ref="lib/searchexpression:results">
-              <epc:param name="from">
-                <span class="ep_search_number">
-                  <epc:print expr="from"/>
-                </span>
-              </epc:param>
-              <epc:param name="to">
-                <span class="ep_search_number">
-                  <epc:print expr="to"/>
-                </span>
-              </epc:param>
-              <epc:param name="n">
-                <span class="ep_search_number">
-                  <epc:print expr="n_results"/>
-                </span>
-              </epc:param>
-            </epc:phrase>
-            <epc:whitespace empty="preserve"> </epc:whitespace>
-            <epc:if test="page_size != ''">
-              <epc:phrase ref="lib/searchexpression:results_page_size">
-                <epc:param name="n_10">
-                  <epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link>
-                </epc:param>
-                <epc:param name="n_25">
-                  <epv:link uri="{url}&amp;{basename}page_size=25">25</epv:link>
-                </epc:param>
-                <epc:param name="n_100">
-                  <epv:link uri="{url}&amp;{basename}page_size=100">100</epv:link>
-                </epc:param>
-                <epc:param name="n_all" singleElement="singleElement">
-                  <epv:link uri="{url}&amp;{basename}page_size={n_results}"/>
-                </epc:param>
-              </epc:phrase>
-            </epc:if>
-          </epc:when>
-          <epc:otherwise>
-            <epc:phrase ref="lib/searchexpression:noresults"/>
-          </epc:otherwise>
-        </epc:choose>
-        <if test="array_length(control_links) gt 0">
-          <div class="input-group">
+        <epc:if test="n_results lt 1">
+          <epc:phrase ref="lib/searchexpression:noresults"/>
+          <br/>
+        </epc:if>
+        <epc:if test="n_results gt 1">
+          <epc:phrase ref="lib/searchexpression:results_only">
+            <epc:param name="n">
+              <span class="ep_search_number">
+                <epc:print expr="n_results"/>
+              </span>
+            </epc:param>
+          </epc:phrase>
+          <br/>
+        </epc:if>
         <epc:foreach expr="control_links" iterator="control_link">
+          <epc:if test="$index gt 0 and $control_link{type} != 'next'">
+            <epc:phrase ref="lib/searchexpression:separator"/>
+          </epc:if>
+          <span class="ep_search_control">
             <epc:choose>
               <epc:when test="$control_link{type} = 'before'">
-                <epv:link uri="{$control_link{url}}" class="btn btn-outline-primary">
-                  <epc:print expr="$control_link{label}"/>
-                </epv:link>
-              </epc:when>
-              <epc:when test="$control_link{type} = 'previous'">
-                <epv:link uri="{$control_link{url}}">
-                  <epc:phrase ref="lib/searchexpression:prev"/>
-                </epv:link>
-              </epc:when>
-              <epc:when test="$control_link{type} = 'current'">
-                <strong>
-                  <epc:print expr="$control_link{label}"/>
-                </strong>
-              </epc:when>
-              <epc:when test="$control_link{type} = 'jump'">
                 <epv:link uri="{$control_link{url}}">
                   <epc:print expr="$control_link{label}"/>
                 </epv:link>
               </epc:when>
               <epc:when test="$control_link{type} = 'next'">
-                <epv:link uri="{$control_link{url}}">
+                <epv:link class="ep_next ep_hide" uri="{$control_link{url}}">
                   <epc:phrase ref="lib/searchexpression:next"/>
                 </epv:link>
               </epc:when>
             </epc:choose>
+          </span>
         </epc:foreach>
-        </div>
-        </if>
       </epc:if>
       <epc:if test="controls_after">
         <epc:print expr="controls_after"/>
       </epc:if>
     </div>
   </epp:phrase>
--->
+
+  <epp:phrase id="view:EPrints/Paginate:paginate_list/controls">
+    <div class="border rounded p-3 mb-3">
+      <epc:if test="has_main_controls">
+        <div class="d-flex justify-content-center gap-1">
+          <epc:choose>
+            <epc:when test="n_results gt 0">
+              <epc:phrase ref="lib/searchexpression:results">
+                <epc:param name="from">
+                  <span class="ep_search_number">
+                    <epc:print expr="from"/>
+                  </span>
+                </epc:param>
+                <epc:param name="to">
+                  <span class="ep_search_number">
+                    <epc:print expr="to"/>
+                  </span>
+                </epc:param>
+                <epc:param name="n">
+                  <span class="ep_search_number">
+                    <epc:print expr="n_results"/>
+                  </span>
+                </epc:param>
+              </epc:phrase>
+              <epc:whitespace empty="preserve"> </epc:whitespace>
+              <epc:if test="page_size != ''">
+                <epc:phrase ref="lib/searchexpression:results_page_size">
+                  <epc:param name="n_10">
+                    <epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link>
+                  </epc:param>
+                  <epc:param name="n_25">
+                    <epv:link uri="{url}&amp;{basename}page_size=25">25</epv:link>
+                  </epc:param>
+                  <epc:param name="n_100">
+                    <epv:link uri="{url}&amp;{basename}page_size=100">100</epv:link>
+                  </epc:param>
+                  <epc:param name="n_all" singleElement="singleElement">
+                    <epv:link uri="{url}&amp;{basename}page_size={n_results}"/>
+                  </epc:param>
+                </epc:phrase>
+              </epc:if>
+            </epc:when>
+            <epc:otherwise>
+              <epc:phrase ref="lib/searchexpression:noresults"/>
+            </epc:otherwise>
+          </epc:choose>
+        </div>
+        <if test="array_length(control_links) gt 0">
+          <br/>
+        </if>
+        <div class="d-flex pb-3 justify-content-center">
+          <epc:foreach expr="control_links" iterator="control_link">
+            <epc:if test="$index gt 0">
+              <epc:phrase ref="lib/searchexpression:separator"/>
+            </epc:if>
+            <span class="ep_search_control">
+              <epc:choose>
+                <epc:when test="$control_link{type} = 'before'">
+                  <epv:link uri="{$control_link{url}}">
+                    <epc:print expr="$control_link{label}"/>
+                  </epv:link>
+                </epc:when>
+                <epc:when test="$control_link{type} = 'previous'">
+                  <epv:link uri="{$control_link{url}}">
+                    <epc:phrase ref="lib/searchexpression:prev"/>
+                  </epv:link>
+                </epc:when>
+                <epc:when test="$control_link{type} = 'current'">
+                  <strong>
+                    <epc:print expr="$control_link{label}"/>
+                  </strong>
+                </epc:when>
+                <epc:when test="$control_link{type} = 'jump'">
+                  <epv:link uri="{$control_link{url}}">
+                    <epc:print expr="$control_link{label}"/>
+                  </epv:link>
+                </epc:when>
+                <epc:when test="$control_link{type} = 'next'">
+                  <epv:link class="ep_next" uri="{$control_link{url}}">
+                    <epc:phrase ref="lib/searchexpression:next"/>
+                  </epv:link>
+                </epc:when>
+              </epc:choose>
+            </span>
+          </epc:foreach>
+        </div>
+      </epc:if>
+      <epc:if test="controls_after">
+        <epc:print expr="controls_after"/>
+      </epc:if>
+    </div>
+  </epp:phrase>
+
   <epp:phrase id="view:EPrints/Paginate:paginate_list/results">
     <epc:if test="rows_before">
       <epc:print expr="rows_before"/>
@@ -354,6 +298,7 @@
       <epc:print expr="rows_after"/>
     </epc:if>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Paginate:paginate_list/results_container">
     <epc:choose>
       <epc:when test="container">
@@ -368,6 +313,7 @@
       </epc:otherwise>
     </epc:choose>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Paginate:paginate_list">
     <epc:if test="controls">
       <div class="">
@@ -393,6 +339,7 @@
       </epc:if>
     </epc:if>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Items:render_items/paginate_list">
     <tr class="row_{if (row_index % 2, 'b', 'a')} {if (locked, 'ep_columns_row_locked')} {if (locked_mine, 'ep_columns_row_locked_mine')} {if (locked_other, 'ep_columns_row_locked_other')}">
       <epc:foreach expr="columns" iterator="column">
@@ -405,6 +352,7 @@
       </td>
     </tr>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Items:render_items/final_row">
     <epc:if test="array_length(columns) gt 0">
       <tr>
@@ -464,6 +412,7 @@
       </tr>
     </epc:if>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Items:render_items">
     <epc:print expr="paginated_list"/>
     <div class="ep_columns_add">
@@ -478,6 +427,7 @@
       </epv:form>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Items:render">
     <epc:if test="has_phrase('Plugin/Screen/Items:intro')">
       <div class="ep_toolbox">
@@ -502,6 +452,7 @@
     <epc:print expr="import_screen"/>
     <epc:print expr="eprints"/>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen:action_list_icons">
     <ul class="ep_action_list">
       <epc:foreach expr="columns" iterator="column">
@@ -511,6 +462,7 @@
       </epc:foreach>
     </ul>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/XHTML:action_list">
     <ul class="ep_action_list" role="toolbar">
       <epc:foreach expr="actions" iterator="action">
@@ -518,11 +470,13 @@
       </epc:foreach>
     </ul>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen:render_action_list_bar">
     <div class="ep_block">
       <epc:print expr="action_list"/>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render">
     <epc:print expr="top_bar"/>
     <epc:print expr="filters"/>
@@ -539,6 +493,7 @@
       </epv:form>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render/render_result">
     <tr class="row_{if (row_index % 2, 'b', 'a')}">
       <epc:foreach expr="columns" iterator="column">
@@ -551,6 +506,7 @@
       </td>
     </tr>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_top_bar">
     <epc:if test="has_intro">
       <div class="ep_toolbox">
@@ -561,6 +517,7 @@
     </epc:if>
     <epc:print expr="dataobj_tools"/>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_filters">
     <div style="text-align: left">
       <epv:box id="ep_listing_search" collapsed="{collapsed}" show_icon_url="{$config{rel_path}}/style/images/help.png">
@@ -573,6 +530,7 @@
       </epv:box>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_search_form">
     <epv:form method="get" action="{current_url()}">
       <epc:print expr="hidden_bits"/>
@@ -582,11 +540,13 @@
       <epc:print expr="controls"/>
     </epv:form>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_controls">
     <div class="ep_search_buttons">
       <epc:print expr="search_buttons"/>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_links">
     <style type="text/css">
     .ep_tm_main {
@@ -594,6 +554,7 @@
     }
   </style>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Review:render_top_bar">
     <epc:if test="has_editperms">
       <div class="ep_block">
@@ -611,10 +572,12 @@
       </epv:box>
     </div>
   </epp:phrase>
+
   <!--
     Note: if there is only one element we still need the table to
     centre-align the input
--->
+  -->
+
   <epp:phrase id="view:MetaField/render_input_field_actual">
     <div class="ep_form_input_grid">
       <epc:if test="has_col_titles">
@@ -650,11 +613,13 @@
     </div>
     <epc:print expr="javascript"/>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow:render">
     <epc:print expr="status"/>
     <epc:print expr="buttons"/>
     <epc:print expr="tabs"/>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow:render_title">
     <epc:phrase ref="{title_phrase_id}">
       <epc:param name="listing">
@@ -674,6 +639,7 @@
       </epc:param>
     </epc:phrase>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow:render_status">
     <div class="ep_block">
       <epv:link uri="{url}">
@@ -681,6 +647,7 @@
       </epv:link>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/XHTML:tabs">
     <ul id="{basename}_tabs" class="ep_tab_bar" role="tablist">
       <epc:foreach expr="tabs" iterator="tab">
@@ -718,6 +685,7 @@
       </div>
     </epc:if>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow/Details:_render_name_maybe_with_link">
     <epc:choose>
       <epc:when test="url">
@@ -730,6 +698,7 @@
       </epc:otherwise>
     </epc:choose>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow/Details:render">
     <table border="0" cellpadding="3" class="ep_view_details_table">
       <epc:foreach expr="sections" iterator="section">
@@ -787,11 +756,13 @@
       </epc:foreach>
     </table>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow/Details:render_edit_button">
     <div>
       <epc:print expr="button"/>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow/Details:render_stage_warnings">
     <epc:if test="has_problems">
       <epv:render_message type="warning" showicon="1">
@@ -807,6 +778,7 @@
       </epv:render_message>
     </epc:if>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Repository:render_row">
     <tr class="ep_table_row">
       <th valign="top" class="ep_row ep_table_header">
@@ -822,6 +794,7 @@
       </epc:foreach>
     </tr>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Repository:render_row_with_help">
     <div class="input-group w-100 mb-3 {class}" data-context="{if (context, context, 'none')}">
       <div class="input-group-text w-25">
@@ -831,10 +804,10 @@
       </div>
       <epc:choose>
         <epc:when test="has_help">
-            <epc:print expr="field"/>
+          <epc:print expr="field"/>
         </epc:when>
         <epc:otherwise>
-            <epc:print expr="field"/>
+          <epc:print expr="field"/>
         </epc:otherwise>
       </epc:choose>
       <epc:choose>
@@ -858,6 +831,7 @@
       </epc:choose>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Repository:render_message">
     <div class="ep_msg_{type}" id="{message_id}">
       <div class="ep_msg_{type}_content">
@@ -876,10 +850,11 @@
       </div>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:Repository:render_option_list/dropdown">
     <select name="{name}{if (readonly, '_disabled')}" id="{name}{if (readonly, '_disabled')}" style="{if (name = 'satisfyall' or name = 'order', '', 'border-radius:unset;')">
       <epc:attribute name="class">
-	<epc:print expr="if (multiple, 'form-control', 'btn btn-outline-secondary dropdown-toggle')"/>
+        <epc:print expr="if (multiple, 'form-control', 'btn btn-outline-secondary dropdown-toggle')"/>
       </epc:attribute>
       <epc:if test="multiple">
         <epc:attribute name="multiple">multiple</epc:attribute>
@@ -909,6 +884,7 @@
       </epc:foreach>
     </select>
   </epp:phrase>
+
   <epp:phrase id="view:Repository:render_option_list">
     <epc:choose>
       <epc:when test="checkbox">
@@ -985,6 +961,7 @@
       </epc:otherwise>
     </epc:choose>
   </epp:phrase>
+
   <epp:phrase id="view:Repository:render_single_option">
     <option value="{key}">
       <epc:if test="selected">
@@ -993,6 +970,7 @@
       <epc:print expr="desc"/>
     </option>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/Admin:render">
     <epv:tabs basename="ep_admin_tabs">
       <epc:foreach expr="lists" iterator="list">
@@ -1002,6 +980,7 @@
       </epc:foreach>
     </epv:tabs>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/XHTML:action_definition_list">
     <dl class="ep_action_list" id="{id}" role="menu">
       <epc:foreach expr="list" iterator="listitem">
@@ -1041,11 +1020,13 @@
       <epc:print expr="controls"/>
     </epv:form>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/AbstractSearch:render_controls">
     <div class="d-flex justify-content-center p-3">
       <epc:print expr="action_buttons"/>
     </div>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Plugin/Screen/AbstractSearch:render_search_fields">
     <epc:foreach expr="fields" iterator="field">
       <epv:render_row_with_help prefix="{$field{prefix}}{if ($field{is_checkbox_set}, '_legend', '')}" help_prefix="{$field{prefix}}_help" context="type_{$field{field_type}}" no_toggle="{$field{no_toggle}}" no_help="{$field{no_help}}">
@@ -1061,7 +1042,9 @@
       </epv:render_row_with_help>
     </epc:foreach>
   </epp:phrase>
+
   <epp:phrase id="Plugin/Screen/Listing:add_label">Add Column</epp:phrase>
+
   <epp:phrase id="view:EPrints/Repository:render_button">
     <input>
       <epc:attribute name="class">
@@ -1084,32 +1067,35 @@
       </epc:foreach>
     </input>
   </epp:phrase>
+
   <epp:phrase id="view:EPrints/Repository:render_buttons_aux">
     <div class="p-3 w-100 d-flex justify-content-center">
-    <div>
-      <epc:attribute name="class">
-        <epc:print expr="''"/>
-      </epc:attribute>
-      <epc:foreach expr="buttons" iterator="button">
-        <epc:print expr="$button{button}"/>
-      </epc:foreach>
-    </div>
-    </div>
-  </epp:phrase>
-  <epp:phrase id="view:EPrints/Plugin/Screen/EPrint:render_blister">
-    <div class="">
-      <div class="d-flex m-auto justify-content-center">
-      <epc:foreach expr="stages" iterator="stage">
-        <epc:if test="!$stage{first}">
-          <div class="my-auto px-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-            </svg>
-          </div>
-        </epc:if>
-        <epc:print expr="$stage{stage}"/>
-      </epc:foreach>
+      <div>
+        <epc:attribute name="class">
+          <epc:print expr="''"/>
+        </epc:attribute>
+        <epc:foreach expr="buttons" iterator="button">
+          <epc:print expr="$button{button}"/>
+        </epc:foreach>
       </div>
     </div>
   </epp:phrase>
+
+  <epp:phrase id="view:EPrints/Plugin/Screen/EPrint:render_blister">
+    <div class="">
+      <div class="d-flex m-auto justify-content-center">
+        <epc:foreach expr="stages" iterator="stage">
+          <epc:if test="!$stage{first}">
+            <div class="my-auto px-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+              </svg>
+            </div>
+          </epc:if>
+          <epc:print expr="$stage{stage}"/>
+        </epc:foreach>
+      </div>
+    </div>
+  </epp:phrase>
+
 </epp:phrases>
