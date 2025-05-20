@@ -749,8 +749,9 @@ if( $self->{input_lookup_url} )
 	$extra_params_1 = "&" . $extra_params_2->query . "&" . $extra_params_1->query;
 	my $params = EPrints::Utils::js_string( $extra_params_1 );
 	$js_string .= <<"EOJ";
-$js_input_name.parentElement.insertAdjacentHTML('beforeend', "<div id='${js_input_name}_drop' class='ep_drop_target', style='position: absolute; display: none;'>");
-$js_input_name.parentElement.insertAdjacentHTML('beforeend', "<div id='${js_input_name}_drop_loading' class='ep_drop_loading' style='position: absolute; display: none;'>");
+const input_width = $js_input_name.offsetWidth;
+$js_input_name.parentElement.insertAdjacentHTML('beforeend', `<div id='${js_input_name}_drop' class='ep_drop_target', style='position: absolute; display: none; width: \${input_width}px;'>`);
+$js_input_name.parentElement.insertAdjacentHTML('beforeend', `<div id='${js_input_name}_drop_loading' class='ep_drop_loading' style='position: absolute; display: none; width: \${input_width}px;'>`);
 ep_autocompleter(
 	$js_input_name,
 	'${js_input_name}_drop',
