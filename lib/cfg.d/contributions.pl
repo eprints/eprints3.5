@@ -20,9 +20,9 @@ $c->{contributions_fromform} = sub {
 	my $type = $session->param($basename . "_type") ? $session->param($basename . "_type") : undef;
 	my $datasetid = $session->param($basename . "_contributor_datasetid") ? $session->param($basename . "_contributor_datasetid") : undef;
 	my $entityid = $session->param($basename . "_contributor_entityid") ? $session->param($basename . "_contributor_entityid") : undef;
-	my $id_value = $session->param($basename . "_contributor_entity_id_value");
-	my $id_type = $session->param($basename . "_contributor_entity_id_type");
-	my $name = $session->param($basename . "_contributor_entity_name");
+	my $id_value = $session->param($basename . "_contributor_id_value");
+	my $id_type = $session->param($basename . "_contributor_id_type");
+	my $name = $session->param($basename . "_contributor_name");
 	my $deserialised_name = $name;
 	if ( $datasetid && $session->config( 'entities', $datasetid, 'human_deserialise_name' ) )
 	{
@@ -124,7 +124,7 @@ $c->{contributions_fromform} = sub {
 		contributor => {
 			datasetid => $datasetid,
 			entityid => $entityid,
-			name => $deserialised_name,
+			name => $name,
 			id_value => $id_value,
 			id_type => $id_type,
 		},
@@ -132,6 +132,7 @@ $c->{contributions_fromform} = sub {
 
 	return $new_value;
 };
+
 
 $c->{render_input_contributions} = sub {
 	my( $self, $session, $value, $dataset, $staff, $hidden_fields, $obj, $basename, $one_field_component ) = @_;
@@ -192,7 +193,54 @@ $c->{render_input_contributions} = sub {
 
 			foreach my $item ( @{$row} )
 			{
-				next if $x == 3;
+				if ( $x == 6 )
+				{
+					my $yp1 = $y+1;
+					my $entity_field = $session->make_element( "div", ( id=>$basename."_cell_6_".$yp1 ) );
+					my $ef_baseclass = $basename . "_contributor_entity";
+					my $ef_basename = $basename . "_" . $yp1 . "_contributor_entity";
+					my $eu_name = $ef_basename . "_unset";
+					my $es_name = $ef_basename . "_span";
+					my $eif_name = $ef_basename . "id";
+					my $contributor_datasetid = $value->[$y]->{contributor}->{datasetid};
+					my $contributor_entityid = $value->[$y]->{contributor}->{entityid};
+
+					my $entity_span = $session->make_element( 'span', id => $es_name, class => "ep_entity_span" );
+					if ( $contributor_entityid )
+					{
+							my $entity = $datasets->{$contributor_datasetid}->dataobj( $contributor_entityid );
+							my $entity_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
+							if ( $entity->get_value( 'id_value' ) )
+							{
+								$entity_link->appendChild( $entity->render_value( 'id_value' ) );
+							}
+							else
+							{
+								$entity_link->appendChild( $entity->render_value( 'name' ) );
+							}
+							$entity_span->appendChild( $entity_link );
+							$entity_span->appendChild( $session->make_text( ' ' ) );
+					}
+					$entity_field->appendChild( $entity_span );
+					my $eu_button_span = $session->make_element( 'span', id => $eu_name, class => 'ep_entity_button' );
+					my $eu_button = $session->make_element( 'a', href => '#', value => $session->phrase( 'contributions:unset' ), onclick => "unset_entity( event, '${basename}_${yp1}_' )" );
+					my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.png', alt => $session->phrase( 'contributions:unset' ) );
+					$eu_button->appendChild( $eu_button_img );
+					$eu_button_span->appendChild( $eu_button );
+					$entity_field->appendChild( $eu_button_span );
+					my $entityid_input = $session->xhtml->input_field( $eif_name, $contributor_entityid, type => 'hidden', id => $eif_name );
+					$entity_field->appendChild( $entityid_input );
+
+					my $cell_info =  {
+						item => $entity_field,
+						column_index => 6,
+						attrs => [],
+					};
+					push @{ $row_info->{cells} }, $cell_info;
+					$x++;
+					next;
+				}
+
 				my $cell_info = {
 					column_index => $x,
 					attrs => [],
@@ -232,115 +280,9 @@ $c->{render_input_contributions} = sub {
 		$y++;
 	}
 
-	my @eitf_options = ();
-	my $eitf_labels = {};
-	foreach my $ent_type ( @{$session->config( 'entities', 'datasets' )} )
-	{
-		my $nsid = $ent_type . '_id_type';
-		foreach my $id_type ( @{$session->{types}->{$nsid}} )
-		{
-			my $idt_label = $session->phrase( $nsid . '_typename_' . $id_type );
-			unless ( $eitf_labels->{$id_type} )
-			{
-				push @eitf_options, $id_type;
-				$eitf_labels->{$id_type} = $idt_label;
-		   }
-		}
-	}
-	unshift @eitf_options, '';
-	$eitf_labels->{''} = $session->phrase( 'lib/metafield:unspecified' );
-
-	$y = 0;
-
-	foreach my $row ( @$rows )
-	{
-		next unless ref( $row ) eq "HASH";
-		my $yp1 = $y+1;
-		my $entity_field = $session->make_element( "div", ( id=>$basename."_cell_3_".$yp1 ) );
-		my $ef_baseclass = $basename . "_contributor_entity";
-		my $ef_basename = $basename . "_" . $yp1 . "_contributor_entity";
-		my $enf_name = $ef_basename . "_name";
-		my $enf_value = undef;
-		my $eivf_name = $ef_basename . "_id_value";
-		my $eivf_value = undef;
-		my $eitf_name = $ef_basename . "_id_type";
-		my $eitf_value = undef;
-		my $eu_name = $ef_basename . "_unset";
-		my $es_name = $ef_basename . "_span";
-		my $eif_name = $ef_basename . "id";
-		my $contributor_datasetid = $value->[$y]->{contributor}->{datasetid};
-		my $contributor_entityid = $value->[$y]->{contributor}->{entityid};
-		if ( $contributor_datasetid && $contributor_entityid )
-		{
-			my $contributor = $datasets->{$contributor_datasetid}->dataobj( $contributor_entityid );
-			$enf_value = $contributor->human_serialise_name;
-			$eivf_value = $contributor->get_value( 'id_value' );
-			$eitf_value = $contributor->get_value( 'id_type' );
-		}
-
-		my $enf_input = $session->render_noenter_input_field(
-			class => "ep_form_text ep_${datasetid}_${ef_baseclass}_name eptype_${datasetid}_text",
-			name => $enf_name,
-			id => $enf_name,
-			value => $enf_value,
-			size => 25,
-			autocomplete => "off",
-			'aria-labelledby' => $self->get_labelledby( $enf_name ),
-			'aria-describedby' => $self->get_describedby( $enf_name, $one_field_component ),
-		);
-		$entity_field->appendChild( $enf_input );
-		my $eivf_input = $session->render_noenter_input_field(
-			class => "ep_form_text ep_${datasetid}_${ef_baseclass}_id_value eptype_${datasetid}_text",
-			name => $eivf_name,
-			id => $eivf_name,
-			value => $eivf_value,
-			size => 25,
-			autocomplete => "off",
-			'aria-labelledby' => $self->get_labelledby( $eivf_name ),
-			'aria-describedby' => $self->get_describedby( $eivf_name, $one_field_component ),
-		);
-		$entity_field->appendChild( $eivf_input );
-		my $eitf_input = $session->render_option_list(
-			class => "ep_form_text ep_${datasetid}_${ef_baseclass}_id_type eptype_${datasetid}_select",
-			name => $eitf_name,
-			id => $eitf_name,
-			default => $eitf_value,
-			values => \@eitf_options,
-			labels => $eitf_labels,
-			'aria-labelledby' => $self->get_labelledby( $eitf_name ),
-			'aria-describedby' => $self->get_describedby( $eitf_name, $one_field_component ),
-		);
-		$entity_field->appendChild( $eitf_input );
-		my $entity_span = $session->make_element( 'span', id => $es_name, class => "ep_entity_span" );
-
-		if ( $contributor_entityid )
-		{
-			my $entity = $datasets->{$contributor_datasetid}->dataobj( $contributor_entityid );
-			my $entity_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
-			$entity_link->appendChild( $session->html_phrase( 'eprint_fieldopt_contributions_contributor_datasetid_' . $contributor_datasetid ) ); 
-			$entity_link->appendChild( $session->make_text( ' ' . $contributor_entityid ) );
-			$entity_span->appendChild( $entity_link );
-		}
-		$entity_field->appendChild( $entity_span );
-		my $eu_button = $session->make_element( 'a', href => '#', id => $eu_name, value => $session->phrase( 'contributions:unset' ), onclick => "unset_entity( event, '${basename}_${yp1}_' )" );
-		my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.png', alt => $session->phrase( 'contributions:unset' ) );
-        $eu_button->appendChild( $eu_button_img );
-        $entity_field->appendChild( $eu_button );
-        my $entityid_input = $session->xhtml->input_field( $eif_name, $contributor_entityid, type => 'hidden', id => $eif_name );
-        $entity_field->appendChild( $entityid_input );
-
-		my $entity_cell =  {
-			item => $entity_field,
-			column_index => 3,
-			attrs => [],
-		};
-		push @{ $row->{cells} }, $entity_cell;
-		$y++;
-	}
-
 	my $extra_params = URI->new( 'http:' );
 	$extra_params->query( $self->{input_lookup_params} );
-	my %defaults = ( 'type' => '', contributor_datasetid => '', contributor_entity_id_type => '' );
+	my %defaults = ( 'type' => '', contributor_datasetid => '', contributor_id_type => '' );
 	my @params = (
 		$extra_params->query_form,
 		field => $self->name
@@ -355,7 +297,7 @@ $c->{render_input_contributions} = sub {
 		my $contrib_fields = $self->{dataset}->get_field( 'contributions' )->get_property( 'fields' );
 		$defaults{type} = $contrib_fields->[0]->{default_value} if defined $contrib_fields->[0]->{default_value};
 		$defaults{contributor_datasetid} = $contrib_fields->[1]->{fields}->[0]->{default_value} if defined $contrib_fields->[1]->{fields}->[0]->{default_value};
-		$defaults{contributor_entity_id_type} = $contrib_fields->[1]->{fields}->[2]->{default_value} if defined $contrib_fields->[1]->{fields}->[2]->{default_value};
+		$defaults{contributor_id_type} = $contrib_fields->[1]->{fields}->[2]->{default_value} if defined $contrib_fields->[1]->{fields}->[2]->{default_value};
 	}
 	$extra_params->query_form( @params );
 	$extra_params = "&" . $extra_params->query;
@@ -372,8 +314,8 @@ new Metafield ('$componentid', '$self->{name}', {
 
 function unset_entity( e, base_id ) {
 	e.preventDefault();
-	const subfields = [ 'type', 'contributor_datasetid', 'contributor_entity_name', 'contributor_entity_id_value', 'contributor_entity_id_type', 'contributor_entityid', 'contributor_entity_span' ];
-	const subfield_values = [ '$defaults{type}', '$defaults{contributor_datasetid}', '', '', '$defaults{contributor_entity_id_type}', '', '' ];
+	const subfields = [ 'type', 'contributor_datasetid', 'contributor_name', 'contributor_id_value', 'contributor_id_type', 'contributor_entityid', 'contributor_entity_span' ];
+	const subfield_values = [ '$defaults{type}', '$defaults{contributor_datasetid}', '', '', '$defaults{contributor_id_type}', '', '' ];
 	for (let sf = 0; sf < subfields.length; sf++) {
 		var entity_field = document.getElementById(base_id + subfields[sf]);
 		if ( entity_field.tagName == 'SPAN' )

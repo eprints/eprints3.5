@@ -9,8 +9,8 @@ $session->send_http_header( content_type=>$content );
 my @rows;
 my %rows_index;
 
-my $entity_name = $session->param( "_contributor_entity_name" );
-my $entity_id_value = $session->param( "_contributor_entity_id_value" );
+my $entity_name = $session->param( "_contributor_name" );
+my $entity_id_value = $session->param( "_contributor_id_value" );
 my $datasets;
 if ( $entity_name || $entity_id_value )
 {
@@ -33,7 +33,7 @@ foreach my $datasetid ( @$datasets )
 	}
 	my $hsn_func = $session->config( 'entities', $datasetid, 'human_serialise_name' );
 
-	my $entity_id_value = $session->param( "_contributor_entity_id_value" );
+	my $entity_id_value = $session->param( "_contributor_id_value" );
 
 	my $database = $session->get_database;
 	my $name_field = $dataset->get_field( "names_name" );
@@ -135,13 +135,20 @@ foreach my $datasetid ( @$datasets )
 		# $frag->appendChild( $session->html_phrase( 'cgi/lookup/entity:contributed', count => $session->make_text( $cnt ) ) );
 
 		$item->{xhtml} = $frag;
+		my $entity = $dataset->dataobj( $entityid );
+		my $es_frag = $session->make_doc_fragment;
+		my $es_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
+		my $entity_span = $id ? $id : $serialised_name;
+		$es_link->appendChild( $session->make_text( $entity_span ) );
+		$es_frag->appendChild( $es_link );
+		print STDERR "ref: ".ref($es_frag)."\n";
 		$item->{values} = [
 			"for:value:relative:_contributor_datasetid" => $datasetid,
-			"for:value:relative:_contributor_entity_name" => $serialised_name,
-			"for:value:relative:_contributor_entity_id_value" => $id,
-			"for:value:relative:_contributor_entity_id_type" => $id_type,
+			"for:value:relative:_contributor_name" => $serialised_name,
+			"for:value:relative:_contributor_id_value" => $id,
+			"for:value:relative:_contributor_id_type" => $id_type,
 			"for:value:relative:_contributor_entityid" => $entityid,
-			"for:value:relative:_contributor_entity_span" => $session->phrase( 'eprint_fieldopt_contributions_contributor_datasetid_' . $datasetid ). " $entityid",
+			"for:value:relative:_contributor_entity_span" => $es_frag,
 		];
 	}
 

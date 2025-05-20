@@ -417,6 +417,34 @@ sub entityid_to_path
 ######################################################################
 =pod
 
+=item $path = EPrints::DataObj::Entity::entity_id_types( $session )
+
+Returns an array of all possible ID types (e.g. email, url, ror, etc.)
+for an entity.
+
+=cut
+######################################################################
+
+sub entity_id_types
+{
+	my( $session ) = @_;
+
+	my %id_types;
+	foreach my $ent_type ( @{$session->config( 'entities', 'datasets' )} )
+	{
+		my $nsid = $ent_type . '_id_type';
+
+		foreach my $id_type ( @{$session->{types}->{$nsid}} )
+		{
+			$id_types{$id_type} = 1;
+		}
+	}
+	return keys %id_types;
+}
+
+######################################################################
+=pod
+
 =item ( $description, $title, $links ) = $entity->render( $preview )
 
 Render the entity. If C<$preview> is C<true> then render a preview of

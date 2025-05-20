@@ -179,8 +179,3 @@ div.ep_table {
 .ep_no_border {
 	border: 0;
 }
-
-.ep_entity_span {
-	display: inline-block;
-	width: 8em;
-}
