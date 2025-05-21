@@ -3588,8 +3588,9 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:help">Attempt to extract the following information from this document:</epp:phrase>
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:action_merge">Merge with existing data</epp:phrase>
     <epp:phrase id="Plugin/Screen/EPrint/Document/Extract:action_replace">Replace existing data</epp:phrase>
-    <epp:phrase id="Plugin/Import/PDF:action_bibliography">Bibliography</epp:phrase>
     <epp:phrase id="Plugin/Import/PDF:action_metadata">Metadata</epp:phrase>
+    <epp:phrase id="Plugin/Screen/UploadPDFs:title">Import PDFs</epp:phrase>
+    <epp:phrase id="Plugin/Screen/UploadPDFs:help">Imports PDFs into your inbox as separate ePrints.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:filename_label">Filename</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:add_file">Add File</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/Config:add_directory">Add Directory</epp:phrase>
