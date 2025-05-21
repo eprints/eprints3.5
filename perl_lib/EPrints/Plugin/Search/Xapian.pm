@@ -667,6 +667,20 @@ sub render_conditions_description
 	);
 }
 
+sub get_highlightable_search_fields
+{
+	my( $self ) = @_;
+
+	return { text => $self->{q}, ignore_apostrophes => 1 };
+}
+
+sub find_embeddable_text
+{
+	my( $self, $field_text ) = @_;
+
+	return $self->find_matching_embed( $field_text, $self->{q} );
+}
+
 package EPrints::Plugin::Search::Xapian::ResultSet;
 
 our @ISA = qw( EPrints::List );

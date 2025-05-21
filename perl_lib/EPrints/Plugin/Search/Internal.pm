@@ -106,6 +106,33 @@ sub describe
 		);
 }
 
+sub get_highlightable_search_fields
+{
+	my( $self ) = @_;
+
+	my @search_terms;
+	my @fields = $self->get_non_filter_searchfields();
+	for my $field (@fields) {
+		if( $field->is_set && $field->get_value ) {
+			push @search_terms, { text => $field->get_value, field_name => $field->get_field->name };
+		}
+	}
+	return @search_terms;
+}
+
+sub find_embeddable_text
+{
+	my( $self, $field_text, $search_field ) = @_;
+
+	my @fields = $self->get_non_filter_searchfields();
+	for my $field (@fields) {
+		my $field_name = $field->get_field->name;
+		if( $field_name eq $search_field ) {
+			return $self->find_matching_embed( $field_text, $field->get_value );
+		}
+	}
+}
+
 1;
 
 =head1 COPYRIGHT
