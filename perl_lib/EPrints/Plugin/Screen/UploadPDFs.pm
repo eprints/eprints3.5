@@ -48,7 +48,7 @@ sub properties_from
 	$self->{processor}->{dataset} = $self->{session}->get_repository->get_dataset( "inbox" );
 
 	$self->{processor}->{plugin} = $self->{session}->plugin(
-		"Import::PDFMetadata",
+		"Import::PDF",
 		session => $self->{session},
 		dataset => $self->{processor}->{dataset},
 		processor => $self->{processor},
