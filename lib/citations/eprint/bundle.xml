@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+  <div class="ep_outer_group">
+    <h1 style="margin-top: 10px; margin-bottom: 10px;"><epc:print expr="title"/></h1>
+    <div style="margin-bottom: 1em;">
+      <epc:print expr="$item.citation('default')" />
+    </div>
+    <div>
+      <epc:set name='docs' expr='$item.documents()'>
+        <epc:if test="length($docs) gt 0">
+          <div class="ep_search_result_docs">
+          <epc:foreach expr="$docs" iterator="doc">
+            <div style="padding-left: 20px; padding-top: 6px;">
+
+              <epc:choose>
+              <epc:when test="$doc.doc_size() gt $max_filesize or !$doc.current_user_can_view()">
+                <img src="../fallback.png" style="vertical-align: middle;" />
+                <span style="vertical-align: middle;">
+                  <epc:print expr="$doc.property('main')" />
+                  <epc:choose>
+                  <epc:when test="$doc.doc_size() gt $max_filesize">
+                    <epc:print expr="phrase('bundle_export/document:file_too_large')" />
+                  </epc:when><epc:otherwise>
+                    (<epc:phrase ref="document_security_info" />
+                    <epc:print expr="$doc.property('security')"/><!--
+                 --><epc:if test="$doc.property('date_embargo') and $doc.property('date_embargo') gt today()">
+                      <epc:phrase ref="document_embargo_info" />
+                      <epc:print expr="$doc.property('date_embargo')"/><!--
+                 --></epc:if>)
+                  </epc:otherwise>
+                  </epc:choose>
+                </span>
+              </epc:when><epc:otherwise>
+                <epc:set name='filename' expr="url_encode($doc.property('main'))" >
+                <a href="{$filename}">
+                  <epc:comment> Add the small thumbnail if it exists otherwise use the fallback image </epc:comment>
+                  <epc:choose>
+                    <epc:when test="$doc.thumbnail_url('small') != ''">
+                      <img src="{$filename}-small.jpg" style="vertical-align: middle;" />
+                    </epc:when>
+                    <epc:otherwise>
+                      <img src="../fallback.png" style="vertical-align: middle;" />
+                    </epc:otherwise>
+                  </epc:choose>
+                  <span style="vertical-align: middle;">
+                    <epc:print expr="$doc.property('main')"/>  
+                    <epc:if test="$doc.property('security') != 'public'">
+                      (<epc:phrase ref="document_security_info" />
+                      <epc:print expr="$doc.property('security')"/><!--
+                   --><epc:if test="$doc.property('date_embargo') and $doc.property('date_embargo') gt today()">
+                        <epc:phrase ref="document_embargo_info" />
+                        <epc:print expr="$doc.property('date_embargo')"/><!--
+                   --></epc:if>)
+                    </epc:if>
+                  </span>
+                </a>
+                </epc:set>
+              </epc:otherwise>
+              </epc:choose>
+
+            </div>
+          </epc:foreach>
+          </div>
+        </epc:if>
+      </epc:set>
+    </div>
+    <epc:if test="abstract">
+      <h2 style="margin-top: 30px"><epc:phrase ref="eprint_fieldname_abstract"/></h2>
+      <epc:print expr="abstract" />
+    </epc:if>
+    <table>
+      <tbody>
+        <epc:if test="official_url"><tr>
+          <th align="left" style="padding: 5px;">Official URL:</th>
+          <td style="padding: 5px;"><epc:print expr="official_url" /></td>
+        </tr></epc:if>
+        <epc:if test="publisher"><tr>
+          <th align="left" style="padding: 5px;">Publisher:</th>
+          <td style="padding: 5px;"><epc:print expr="publisher" /></td>
+        </tr></epc:if>
+        <tr>
+          <th align="left" style="padding: 5px;">URI:</th>
+          <td style="padding: 5px">
+            <cite:linkhere><epc:print expr="$item.uri()" /></cite:linkhere>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</cite:citation>

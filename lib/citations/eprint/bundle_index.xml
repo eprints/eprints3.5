@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+  <div class="ep_outer_group" style="border-bottom: dashed #bbf 1px">
+    <div style="display: inline-block;">
+      <epc:print expr="$item.citation('default')" />
+      <epc:set name='docs' expr='$item.documents()'>
+      <br/>
+        <epc:if test="length($docs) gt 0">
+          <div style="padding-bottom: 6px;">
+          <epc:foreach expr="$docs" iterator="doc">
+            <div style="padding-top: 3px;">
+
+              <epc:choose>
+              <epc:when test="$doc.doc_size() gt $max_filesize or !$doc.current_user_can_view()">
+                <img src="fallback.png" style="vertical-align: middle;" />
+                <span style="vertical-align: middle;">
+                  <epc:print expr="$doc.property('main')" />
+                  <epc:choose>
+                  <epc:when test="$doc.doc_size() gt $max_filesize">
+                    <epc:print expr="phrase('bundle_export/document:file_too_large')" />
+                  </epc:when><epc:otherwise>
+                    (<epc:phrase ref="document_security_info" />
+                    <epc:print expr="$doc.property('security')"/><!--
+                 --><epc:if test="$doc.property('date_embargo') and $doc.property('date_embargo') gt today()">
+                      <epc:phrase ref="document_embargo_info" />
+                      <epc:print expr="$doc.property('date_embargo')"/><!--
+                 --></epc:if>)
+                  </epc:otherwise>
+                  </epc:choose>
+                </span>
+              </epc:when><epc:otherwise>
+                <epc:set name='filename' expr="url_encode($doc.property('main'))" >
+                <a href="{$n}/{$filename}">
+                  <epc:comment> Add the small thumbnail if it exists otherwise use the fallback image </epc:comment>
+                  <epc:choose>
+                    <epc:when test="$doc.thumbnail_url('small') != ''">
+                      <img src="{$n}/{$filename}-small.jpg" style="vertical-align: middle;" />
+                    </epc:when>
+                    <epc:otherwise>
+                      <img src="fallback.png" style="vertical-align: middle;" />
+                    </epc:otherwise>
+                  </epc:choose>
+                  <span style="vertical-align: middle;">
+                    <epc:print expr="$doc.property('main')"/>  
+                    <epc:if test="$doc.property('security') != 'public'">
+                      (<epc:phrase ref="document_security_info" />
+                      <epc:print expr="$doc.property('security')"/><!--
+                   --><epc:if test="$doc.property('date_embargo') and $doc.property('date_embargo') gt today()">
+                        <epc:phrase ref="document_embargo_info" />
+                        <epc:print expr="$doc.property('date_embargo')"/><!--
+                   --></epc:if>)
+                    </epc:if>
+                  </span>
+                </a>
+                </epc:set>
+              </epc:otherwise>
+              </epc:choose>
+
+            </div>
+          </epc:foreach>
+          </div>
+        </epc:if>
+      </epc:set>
+    </div>
+  </div>
+</cite:citation>
