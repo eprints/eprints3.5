@@ -353,13 +353,13 @@ sub generate_javascript
 					$parent_row_num = $row;
 				}
 
-				my $style = "";
+				my $style = '';
 				if( $value_obj->[$row]->{__hidden} )
 				{
-					$style = "display:none;";
+					$style = 'style="display: none;"';
 				}
 
-				$js_string .= "tbody_$attribute_name.insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${row}\" class=\"table_${attribute_name}_parent_row_${parent_row_num}\" style=\"${style}\">');";
+				$js_string .= "tbody_$attribute_name.insertAdjacentHTML('beforeend', '<tr name=\"table_${attribute_name}_row_${row}\" class=\"table_${attribute_name}_parent_row_${parent_row_num}\" $style>');";
 				my $table_row = "tbody_$attribute_name.lastChild";
 				for my $field_config( @{$config} )
 				{

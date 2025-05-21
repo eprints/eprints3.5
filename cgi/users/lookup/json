@@ -13,7 +13,7 @@ print <<END;
 <?xml version="1.0" encoding="UTF-8" ?>
 END
 
-print "<ul class='journal_title_dropdown'>";
+print "<ul>";
 
 my $search_term = $q;
 
@@ -72,16 +72,8 @@ if( !$search_term || length( $search_term ) < 2 || !$field ) {
 			else
 			{
 				print "<li onclick=\"$click_script\">";
-				print "<li>";
 			}
-			# a random ul stops the autocompleter JS from complaining
-			print <<FRAGMENT
- <ul><li>$target_val</li></ul> <div class="journal_lookup">
-    <div class="journal">$target_val</div>
-    <div style="clear: both"></div>
-  </div>
-</li>
-FRAGMENT
+			print "$target_val<ul></ul></li>";
 		}
 	}
 }
