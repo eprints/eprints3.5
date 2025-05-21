@@ -241,7 +241,7 @@ sub render_blister
 		push @{ $item{stages} }, { stage => $session->render_button(
 			name  => "_action_jump_$stage_id", 
 			value => $phrase,
-			workflow => 1,
+			stage => 1,
 			selected => $selected ), first => $first };
 
 		$first = 0;

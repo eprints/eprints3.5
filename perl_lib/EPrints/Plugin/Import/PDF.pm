@@ -8,213 +8,185 @@ package EPrints::Plugin::Import::PDF;
 
 @ISA = qw( EPrints::Plugin::Import );
 
+use Image::ExifTool qw(:Public);
 use strict;
-
-our $MAX_SIZE = 1024 * 1024; # 1MB
+use utf8;
 
 sub new
 {
 	my( $class, %opts ) = @_;
-
 	my $self = $class->SUPER::new( %opts );
+	my $repo = $self->{repository};
 
-	$self->{name} = "Import (PDF)";
-	$self->{produce} = [qw( dataobj/eprint )];
-	$self->{accept} = [qw( application/pdf )];
-	$self->{advertise} = 0;
-	$self->{actions} = [qw( metadata bibliography )];
+	$self->{name} = "PDF";
+	$self->{visible} = "all";
+	$self->{accept} = [ 'application/pdf' ];
+	$self->{produce} = [ 'dataobj/eprint', 'list/eprint' ];
+	$self->{actions} = [ 'metadata' ] if $repo->config( 'pdf_metadata_enabled' );
 
 	return $self;
 }
 
 sub input_fh
 {
-	my( $self, %opts ) = @_;
+	my( $plugin, %opts ) = @_;
 
-	my $session = $self->{session};
+	my $epdata = $plugin->generate_epdata( %opts );
+
+	my @ids;
+	my $dataobj = $plugin->epdata_to_dataobj( $opts{dataset}, $epdata );
+	push @ids, $dataobj->id if $dataobj;
+
+	return EPrints::List->new(
+		dataset => $opts{dataset},
+		session => $plugin->{session},
+		ids => \@ids,
+	);
+}
+
+sub generate_epdata
+{
+	my( $plugin, %opts ) = @_;
+
+	my $repository = $plugin->{repository};
 	my $filename = $opts{filename};
 
 	my %flags = map { $_ => 1 } @{$opts{actions}};
 
+	my $filepath = "$opts{fh}";
+	if( !-f $filepath ) {
+		$filepath = File::Temp->new;
+		binmode( $filepath );
+		while( sysread( $opts{fh}, $_, 4096 ) ) {
+			syswrite( $filepath, $_ );
+		}
+		seek( $opts{fh}, 0, 0 );
+		seek( $filepath, 0, 0 );
+	}
+
 	my $epdata = {
 		documents => [{
-			format => 'application/pdf',
+			format => "application/pdf",
 			main => $filename,
 			files => [{
 				filename => $filename,
 				filesize => (-s $opts{fh}),
-				_content => $opts{fh}
+				_content => $opts{fh},
 			}],
 		}],
 	};
 
-	if( $flags{metadata} || $flags{bibliography} )
-	{
-		my $filepath = "$opts{fh}";
-		if( !-f $filepath ) # need to make a copy for our purposes :-(
-		{
-			$filepath = File::Temp->new;
-			while(sysread($opts{fh},$_,4096))
-			{
-				syswrite($filepath,$_);
-			}
-			seek($opts{fh},0,0);
-			seek($filepath,0,0);
-		}
+	# Early return if we don't want to add metadata
+	if( !$flags{metadata} ) {
+		return $epdata;
+	}
 
-		my $cmd = sprintf("pdftotext -f 2 -enc UTF-8 -layout -htmlmeta %s -",
-			quotemeta($filepath)
-		);
-		open(my $fh, "$cmd|") or die "Error in $cmd: $!";
-		binmode($fh);
-		my $buffer = "";
-		while(<$fh>)
-		{
-			$buffer .= $_;
-			last if length($buffer) > 10 * 1024 * 1024; # 10 MB
-		}
-		close($fh);
+	$plugin->{exifTool} = Image::ExifTool->new;
+	# By ignoring minor errors we can do questionable actions like extracting over 1000 creators from a file.
+	$plugin->{exifTool}->ExtractInfo( $filepath, { IgnoreMinorErrors => 1 } ) or print STDERR "Failed to extract information from file: ", $!, ", ";
 
-		if( $flags{metadata} )
-		{
-			$self->_parse_metadata( $buffer, %opts, epdata => $epdata );
-		}
+	$epdata->{title} = $plugin->get_info( "title_metadata" );
+	if( !defined $epdata->{title} && $opts{multiple} ) {
+		# If we are importing multiple files and didn't set title then we should set it to the $filename to make it clearer in the list
+		$epdata->{title} = $filename;
+	}
 
-		if( $flags{bibliography} )
-		{
-			$self->_parse_bibliography( $buffer, %opts, epdata => $epdata );
+	my @authors = $plugin->get_info( "authors_metadata" );
+	foreach my $author (@authors) {
+		push @{$epdata->{creators}}, $plugin->parse_author( $author );
+	}
+
+	$epdata->{publication} = $plugin->get_info( "publication_metadata" );
+	$epdata->{issn} = $plugin->get_info( "issn_metadata" );
+	$epdata->{publisher} = $plugin->get_info( "publisher_metadata" );
+	$epdata->{official_url} = $plugin->get_info( "official_url_metadata" );
+	$epdata->{volume} = $plugin->get_info( "volume_metadata" );
+	$epdata->{number} = $plugin->get_info( "number_metadata" );
+
+	$epdata->{pages} = $plugin->get_info( "page_count_metadata" );
+	if( my $pageRange = $plugin->get_info( "page_range_metadata" ) ) {
+		if( $pageRange =~ /-/ ) {
+			$epdata->{pagerange} = $pageRange;
+		} else {
+			$epdata->{article_number} = $pageRange;
+		}
+	} else {
+		my $pageStart = $plugin->get_info( "page_start_metadata" );
+		my $pageEnd = $plugin->get_info( "page_end_metadata" );
+		if( defined $pageStart && defined $pageEnd ) {
+			$epdata->{pagerange} = "$pageStart-$pageEnd";
+		}
+		# TODO: I think some people may put `article_number` in $pageStart with nothing in $pageEnd so that is something we could catch
+	}
+
+	if( $epdata->{date} = $plugin->parse_date( $plugin->get_info( "date_metadata" ) ) ) {
+		$epdata->{date_type} = $repository->config( "date_type_metadata_default" );
+		# If we added the date it was published then it must be published.
+		if( $epdata->{date_type} == "published" ) {
+			$epdata->{ispublished} = "pub";
 		}
 	}
 
-	my @ids;
-	my $dataobj = $self->epdata_to_dataobj( $opts{dataset}, $epdata );
-	push @ids, $dataobj->id if $dataobj;
+	$epdata->{id_number} = $plugin->get_info( "id_number_metadata" );
+	if( $epdata->{id_number} && $repository->config( "fill_url_with_id_number" ) ) {
+		$epdata->{official_url} ||= "https://doi.org/".$epdata->{id_number};
+	}
 
-	return EPrints::List->new(
-		session => $self->{session},
-		dataset => $opts{dataset},
-		ids => \@ids
-	);
+	return $epdata;
 }
 
-sub _parse_metadata
+sub get_info
 {
-	my( $self, $buffer, %opts ) = @_;
+	my( $plugin, $metadata ) = @_;
 
-	my $epdata = $opts{epdata};
+	my @fields = @{ $plugin->{repository}->config($metadata) };
 
-	$buffer =~ /<title>([^<]+)<\/title>/;
-	if( $1 )
-	{
-		$epdata->{title} = $1;
-	}
+	foreach my $field (@fields) {
+		my $info = $plugin->{exifTool}->GetInfo( $field );
+		my @items = map {
+			my $item = $info->{$_};
+			utf8::decode($item);
+			$item
+		} sort keys %$info;
 
-	pos($buffer) = 0;
-	while( $buffer =~ m/<meta name="([a-z]+)" content="([^"]+)">/ig )
-	{
-		my( $name, $value ) = (lc($1), $2);
-		next if !$value;
-		if( $name eq "keywords" )
-		{
-			$epdata->{keywords} = Encode::decode_utf8( $value );
-		}
-		elsif( $name eq "author" )
-		{
-			$epdata->{creators} = [];
-			my @names = split /\s*,\s*/, Encode::decode_utf8( $value );
-			for(@names)
-			{
-				s/\s*(\S+)$//;
-				push @{$epdata->{creators}}, {
-					name => { family => $1, given => $_, }
-				};
-			}
+		if( $items[0] ) {
+			return wantarray ? @items : $items[0];
 		}
 	}
+
+	return;
 }
 
-sub _parse_bibliography
+sub parse_author
 {
-	my( $self, $buffer, %opts ) = @_;
+	my( $plugin, $authors ) = @_;
 
-	my $epdata = $opts{epdata};
+	my @parsed;
+	foreach my $author (split(/,|&| and |\t|;/, $authors)) {
+		my @words = split(' ', $author);
+		my $given = join(' ', @words[0..$#words-1]);
+		push @parsed, {
+			'name' => {
+				'given' => $given,
+				'family' => $words[-1],
+			},
+		};
+	}
 
-	$buffer =~ s/^.*?<pre>//s;
-	$buffer =~ s/<\/pre>.*?$//s;
-
-	$epdata->{documents} ||= [];
-
-	my $ifh = File::Temp->new;
-	syswrite($ifh, $buffer);
-	sysseek($ifh, 0, 0);
-
-	my $referencetext;
-	my $ofh = File::Temp->new;
-	$self->{repository}->exec( "txt2refs",
-		SOURCE => "$ifh",
-		TARGET => "$ofh",
-	);
-	sysseek($ofh, 0, 0);
-	sysread($ofh, $buffer, (-s $ofh) > $MAX_SIZE ? $MAX_SIZE : -s $ofh);
-
-	return if $buffer !~ /\S/;
-
-	$epdata->{referencetext} = Encode::decode_utf8( $buffer );
-
-	push @{$epdata->{documents}}, {
-			format => "other",
-			formatdesc => "Plain Text Bibliography",
-			content => "bibliography",
-			mime_type => "text/plain",
-			main => "bibliography.txt",
-#			relation => [{
-#				type => EPrints::Utils::make_relation( "isVolatileVersionOf" ),
-#				uri => $main_doc->internal_uri(),
-#				},{
-#				type => EPrints::Utils::make_relation( "isVersionOf" ),
-#				uri => $main_doc->internal_uri(),
-#				},{
-#				type => EPrints::Utils::make_relation( "isPartOf" ),
-#				uri => $main_doc->internal_uri(),
-#			}],
-			files => [{
-				filename => "bibliography.txt",
-				filesize => length( $buffer ),
-				mime_type => "text/plain",
-				_content => \$buffer,
-			}],
-	};
+	return @parsed;
 }
 
-1;
+sub parse_date
+{
+	my( $plugin, $date ) = @_;
 
-=head1 COPYRIGHT
+	# XMP date is formatted as '%Y:%m:%d %H:%M:%S%z' (although %z is hh:mm rather than hhmm (and occasionally Z rather than +00:00))
+	# And we are converting to eprints date which is '%Y-%m-%d'
 
-=for COPYRIGHT BEGIN
+	if( defined $date ) {
+		($date) = split(' ', $date, 2);
+		$date =~ s/:/-/g;
+	}
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
-
-http://www.eprints.org/eprints-3.4/
-
-=for COPYRIGHT END
-
-=for LICENSE BEGIN
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=for LICENSE END
-
+	return $date;
+}

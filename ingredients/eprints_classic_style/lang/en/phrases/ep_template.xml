@@ -1101,16 +1101,16 @@
   <epp:phrase id="view:EPrints/Repository:render_button">
     <input>
       <epc:attribute name="class">
-        <epc:if test="workflow">
-          <epc:if test="selected">
+	      <epc:if test="stage">
+	        <epc:if test="selected">
             <epc:print expr="'ep_blister_node_selected'"/>
           </epc:if>
           <epc:if test="!selected">
             <epc:print expr="'ep_blister_node'"/>
-          </epc:if>
-        </epc:if>
-        <epc:if test="!workflow">
-          <epc:print expr="'ep_form_action_button'"/>
+	        </epc:if>
+	      </epc:if>
+        <epc:if test="!stage">
+          <epc:print expr="if (class, class, 'ep_form_action_button')"/>
         </epc:if>
       </epc:attribute>
       <epc:foreach expr="opts" iterator="attr">

@@ -258,7 +258,7 @@ sub render_blister
                         name  => "_action_jump_$stage_id",
                         value => $session->xhtml->to_text_dump( $title ),
                         selected => $selected,
-			workflow => 1 ), first => $first };
+			stage => 1 ), first => $first };
 
 		$first = 0;
 	}
