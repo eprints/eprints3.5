@@ -8,9 +8,31 @@ $c->{render_contributions_contributor} = sub {
 
 	my $dataset = $session->get_dataset( $value->{datasetid} );
 	my $entity = $dataset->dataobj( $value->{entityid} );
-	
-	$frag->appendChild( $entity->render_citation_link( 'default' ) ) if defined $entity;
 
+	if ( defined $entity )
+	{
+		my $entity_hs_name = $entity->human_serialise_name( $entity->get_value( 'name' ) );
+		if ( ( defined $value->{name} && $entity_hs_name ne $value->{name} ) || ( defined $value->{id_value} && $entity->get_value( 'id_value' ) ne $value->{id_value} ) )
+		{
+			my $label = $value->{name};
+			$label .= ' <' . $value->{id_value}. '>' if $value->{id_value};
+			my $link = $session->make_element( 'a', href => $entity->get_url );
+			$link->appendChild( $session->make_text( $label ) );
+			$frag->appendChild( $link );
+		}
+		else
+		{
+			$frag->appendChild( $entity->render_citation_link( 'default' ) ) if defined $entity;
+		}
+	}
+	else
+	{
+		# It should not be possible for the contributor not to be an entity
+		my $label = $value->{name};
+        $label .= ' <' . $value->{id_value}. '>' if $value->{id_value};
+		$frag->appendChild( $session->make_text( $label ) );
+	}
+	
 	return $frag;
 };
 
@@ -41,20 +63,14 @@ $c->{contributions_fromform} = sub {
 			{
 				unless ( $entity->has_name( $deserialised_name ) )
 				{
-					my $entity_names = $entity->get_values( 'names' );
-					push @$entity_names, $deserialised_name;
-					$entity->set_value( 'names', $entity_names );
-					$entity->commit( 1 );
+					$entity->add_name( $deserialised_name, 1 );
 				}
 			}
 			else
 			{
 				unless ( $entity_from_id->has_name( $deserialised_name ) )
 				{
-					my $entity_names = $entity_from_id->get_values( 'names' );
-					push @$entity_names, $deserialised_name;
-					$entity_from_id->set_value( 'names', $entity_names );
-					$entity_from_id->commit( 1 );
+					$entity->add_name( $deserialised_name, 1 );
 				}
 				$entityid = $entity_from_id->id;
 
@@ -65,28 +81,20 @@ $c->{contributions_fromform} = sub {
 			my $changed = 0;
 			unless ( $entity->has_name( $deserialised_name ) )
 			{
-				my $entity_names = $entity->get_values( 'names' );
-				push @$entity_names, $deserialised_name;
-				$entity->set_value( 'names', $entity_names );
-				$changed = 1;
+				$changed = $entity->add_name( $deserialised_name, 0 );
 			}
 			if ( $id_value && $id_type )
 			{
-				my $entity_ids = $entity->get_values( 'ids' );
-				push @$entity_ids, { id => $id_value, id_type => $id_type };
-				$entity->set_value( 'id', $entity_ids );
+				$changed = $entity->add_id( $id_value, $id_type, 0 );
 				$changed = 1;
 			}
-					$entity->commit( 1 ) if $changed;
+			$entity->commit( 1 ) if $changed;
 		}
 		elsif ( defined $entity_from_id )
 		{
 			unless ( $entity_from_id->has_name( $deserialised_name ) )
 			{
-				my $entity_names = $entity_from_id->get_values( 'names' );
-				push @$entity_names, $deserialised_name;
-				$entity_from_id->set_value( 'names', $entity_names );
-				$entity_from_id->commit( 1 );
+				$entity->add_name( $deserialised_name, 1 );
 			}
 			$entityid = $entity_from_id->id;
 		}
@@ -425,7 +433,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 								{
 									if ( $contribution->{$map_bits[0]}->{$map_bits[1]} )
 									{
-										$field_value->{$subfield->{sub_name}} = $contribution->{$map_bits[0]}->{$map_bits[1]};
+										$field_value->{$subfield->{sub_name}} = $map_bits[1] eq 'name' ? $entity->human_deserialise_name( $contribution->{$map_bits[0]}->{$map_bits[1]} ) : $contribution->{$map_bits[0]}->{$map_bits[1]};
 									}
 									else
 									{
@@ -436,9 +444,9 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 								elsif ( scalar @map_bits == 3 )
 								{
 									my @kv = split( '=', $map_bits[2] );
-									if ( $contribution->{contributor}->{$kv[0]} eq $kv[1] )
+									if ( $contribution->{$map_bits[0]}->{$kv[0]} eq $kv[1] )
 									{
-										$field_value->{$subfield->{sub_name}} = $contribution->{contributor}->{$map_bits[1]};
+										$field_value->{$subfield->{sub_name}} = $map_bits[1] eq 'name' ? $entity->human_deserialise_name( $contribution->{$map_bits[0]}->{$map_bits[1]} ) : $contribution->{$map_bits[0]}->{$map_bits[1]};
 									}
 									else
 									{

@@ -377,9 +377,9 @@ sub _htmlpath
 ######################################################################
 =pod
 
-=item $path = $eprint->store_path
+=item $path = $entity->store_path
 
-Get the storage path for this eprint data object.
+Get the storage path for this entity data object.
 
 =cut
 ######################################################################
@@ -390,6 +390,55 @@ sub store_path
     my( $self ) = @_;
 
     return entityid_to_path( $self->id );
+}
+
+
+#####################################################################
+=pod
+
+=item $path = $entity->add_name( $name, [ $commit ] )
+
+Adds and optionally commits a name to an entities list of names.
+
+Returns C<1> to indicate that is expected that he entity has changed.
+
+=cut
+######################################################################
+
+sub add_name
+
+{
+    my( $self, $name, $commit ) = @_;
+
+	my $names = $self->get_value( 'names' );
+	push @$names, { name => $name };
+	$self->set_value( 'names', $names );
+	$self->commit( 1 ) if $commit;
+	return 1;
+}
+
+#####################################################################
+=pod
+
+=item $path = $entity->add_id( $value, $type, [ $commit ] )
+
+Adds and optionally commits an ID to an entities list of IDs.
+
+Returns C<1> to indicate that is expected that he entity has changed.
+
+=cut
+######################################################################
+
+sub add_id
+
+{
+    my( $self, $value, $type, $commit ) = @_;
+
+    my $ids = $self->get_value( 'ids' );
+    push @$ids, { id_value => $value, id_type => $type };
+    $self->set_value( 'ids', $ids );
+    $self->commit( 1 ) if $commit;
+    return 1;
 }
 
 ######################################################################

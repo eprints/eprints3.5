@@ -26,8 +26,11 @@ $c->{entities}->{person}->{human_deserialise_name} = sub
 	$name->{family} = $name_bits[0];
 	$name->{family} =~ s/^\s+|\s+$//g if $name->{family};
 
-    $name->{given} = $name_bits[1];
-    $name->{given} =~ s/^\s+|\s+$//g if $name->{given};
+	$name->{given} = $name_bits[1];
+	$name->{given} =~ s/^\s+|\s+$//g if $name->{given};
+
+	$name->{honourific} = '';
+	$name->{lineage} = '';
 
     return $name;
 };

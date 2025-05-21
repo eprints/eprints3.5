@@ -141,7 +141,6 @@ foreach my $datasetid ( @$datasets )
 		my $entity_span = $id ? $id : $serialised_name;
 		$es_link->appendChild( $session->make_text( $entity_span ) );
 		$es_frag->appendChild( $es_link );
-		print STDERR "ref: ".ref($es_frag)."\n";
 		$item->{values} = [
 			"for:value:relative:_contributor_datasetid" => $datasetid,
 			"for:value:relative:_contributor_name" => $serialised_name,
