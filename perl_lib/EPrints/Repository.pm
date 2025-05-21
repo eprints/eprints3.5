@@ -3799,11 +3799,11 @@ sub render_button
 		$item{class} = $opts{class};
 		delete $opts{class};
 	}
-	if( defined $opts{workflow} )
+	if( defined $opts{stage} )
 	{
-		$item{workflow} = $opts{workflow};
+		$item{stage} = $opts{stage};
 		$item{selected} = $opts{selected};
-		delete $opts{workflow};
+		delete $opts{stage};
 		delete $opts{selected};
 	}
 	if( !defined $opts{role} )
