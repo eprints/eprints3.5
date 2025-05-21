@@ -1043,6 +1043,34 @@
     </epc:foreach>
   </epp:phrase>
 
+  <epp:phrase id="view:DataObj/Document:render_icon_link">
+    <div class="ep_preview_container">
+      <epc:choose>
+        <epc:when test="with_link">
+          <a class="ep_document_link" href="{url}">
+            <epc:if test="new_window">
+              <epc:attribute name="target">_blank</epc:attribute>
+            </epc:if>
+            <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" title="{img_alt}" src="{icon_url}" border="0"/>
+          </a>
+        </epc:when>
+        <epc:otherwise>
+          <img class="ep_doc_icon" alt="[thumbnail of {img_alt}]" title="{img_alt}" src="{icon_url}" border="0"/>
+        </epc:otherwise>
+      </epc:choose>
+      <epc:if test="preview">
+        <div class="ep_preview {if(preview_left, 'ep_preview_left')}">
+          <div>
+            <img class="ep_preview_image" alt="" src="{preview_url}" border="0"/>
+            <div class="ep_preview_title">
+              <epc:phrase ref="lib/document:preview"/>
+            </div>
+          </div>
+        </div>
+      </epc:if>
+    </div>
+  </epp:phrase>
+
   <epp:phrase id="Plugin/Screen/Listing:add_label">Add Column</epp:phrase>
 
   <epp:phrase id="view:EPrints/Repository:render_button">
