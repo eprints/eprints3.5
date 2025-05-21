@@ -3799,6 +3799,13 @@ sub render_button
 		$item{class} = $opts{class};
 		delete $opts{class};
 	}
+	if( defined $opts{stage} )
+	{
+		$item{stage} = $opts{stage};
+		$item{selected} = $opts{selected};
+		delete $opts{stage};
+		delete $opts{selected};
+	}
 	if( !defined $opts{role} )
         {
                 $opts{role} = "button";

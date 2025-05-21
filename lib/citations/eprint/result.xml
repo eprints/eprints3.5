@@ -9,6 +9,7 @@
     <div><epc:print expr="$n" />.</div>
     <div>
       <epc:print expr="$item.citation($config{citation_default}{eprint}{for_result})" />
+      <epc:if test="is_set($embedded)"><div class="embedded">"<epc:print expr="$embedded" />"</div></epc:if>
     </div>
     <div>
 	  <div class="ep_search_result_docs">

@@ -211,14 +211,16 @@ sub render_blister
 {
 	my( $self, $sel_stage_id ) = @_;
 
+        my %item = (
+                stages => [],
+        );
+
 	my $eprint = $self->{processor}->{eprint};
 	my $session = $self->{session};
 
 	my $workflow = $self->workflow;
-	my $table = $session->make_element( "div", class=>"ep_blister_bar" );
-	my $tr = $session->make_element( "div" );
-	$table->appendChild( $tr );
 	my $first = 1;
+	my $selected = 0;
 	my @stages = $workflow->get_stage_ids;
 	if( $eprint->get_value( "eprint_status" ) eq "inbox" )
 	{
@@ -226,19 +228,6 @@ sub render_blister
 	}
 	foreach my $stage_id ( @stages )
 	{
-		if( !$first )  
-		{ 
-			my $td = $session->make_element( "div", class=>"ep_blister_join" );
-			$tr->appendChild( $td );
-		}
-		
-		my $td;
-		$td = $session->make_element( "div" );
-		my $class = "ep_blister_node";
-		if( $stage_id eq $sel_stage_id ) 
-		{ 
-			$class="ep_blister_node_selected"; 
-		}
 		my $phrase;
 		if( $stage_id eq "deposit" )
 		{
@@ -248,17 +237,17 @@ sub render_blister
 		{
 			$phrase = $session->phrase( "metapage_title_".$stage_id );
 		}
-		my $button = $session->render_button(
+		$selected = $stage_id eq $sel_stage_id ? 1 : 0;
+		push @{ $item{stages} }, { stage => $session->render_button(
 			name  => "_action_jump_$stage_id", 
 			value => $phrase,
-			class => $class );
+			stage => 1,
+			selected => $selected ), first => $first };
 
-		$td->appendChild( $button );
-		$tr->appendChild( $td );
 		$first = 0;
 	}
 
-	return $table;
+	return $self->{repository}->template_phrase( "view:EPrints/Plugin/Screen/EPrint:render_blister", { item => \%item } );
 }
 
 sub hidden_bits
