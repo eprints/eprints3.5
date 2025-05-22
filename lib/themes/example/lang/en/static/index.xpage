@@ -22,19 +22,19 @@
 <div style="text-align: right;">
   <span id="atom-feed" class="ep_search_feed">
     <a href="{$config{rel_cgipath}}/latest_tool?output=Atom">
-      <img alt="[atom feed icon]" src="{$config{rel_path}}/style/images/feed-icon-14x14.png" style="border: 0;" />
+      <img alt="[atom feed icon]" src="{$config{rel_path}}/style/images/rss-fill.svg" style="border: 0;" />
       Atom
     </a>
   </span>
   <span id="rss-feed" class="ep_search_feed">
     <a href="{$config{rel_cgipath}}/latest_tool?output=RSS">
-      <img alt="[rss feed]" src="{$config{rel_path}}/style/images/feed-icon-14x14.png" style="border: 0;" />
+      <img alt="[rss feed]" src="{$config{rel_path}}/style/images/rss-fill.svg" style="border: 0;" />
       RSS 1.0
     </a>
   </span>
   <span id="rss2-feed" class="ep_search_feed">
     <a href="{$config{rel_cgipath}}/latest_tool?output=RSS2">
-      <img alt="[rss 2 feed]" src="{$config{rel_path}}/style/images/feed-icon-14x14.png" style="border: 0;" />
+      <img alt="[rss 2 feed]" src="{$config{rel_path}}/style/images/rss-fill.svg" style="border: 0;" />
       RSS 2.0
     </a>
   </span>
