@@ -384,10 +384,12 @@ sub generate_javascript
 
 			if( !$render_only && $self->{table_dynamic_row_count} )
 			{
-				my $add_row = $session->html_phrase( "MetaField/Json:add_row" );
+				my $add_row = $session->phrase( "lib/metafield:more_spaces" );
 				$js_string .= <<"EOJ";
-$target_area.insertAdjacentHTML('beforeend', '<input value="$add_row" class="ep_form_internal_button" type="button" role="button" style="float: right; margin-top: -10px !important;" />');
-$target_area.lastChild.addEventListener('click', function() {
+const more_rows_$attribute_name = createElement('<input value="$add_row" class="ep_form_internal_button" type="button" role="button" />');
+const outer_div_$attribute_name = $target_area.parentElement.parentElement;
+outer_div_$attribute_name.after(more_rows_$attribute_name);
+more_rows_$attribute_name.addEventListener('click', function() {
 	var json = JSON.parse($target_field.value.prepare_json_parse());
 	json[${table_row_count}] = {};
 	$target_field.value = JSON.stringify(json);
