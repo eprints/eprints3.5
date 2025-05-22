@@ -66,6 +66,8 @@ Digest::SHA 5.71 - Included in Perl v5.16.1 (latest is 6.04)
 
 File::Temp 0.22 - Included in Perl v5.16.1 (latest is 0.2311)
 
+HTTP::Tiny 0.017 - Included in Perl v5.16.1 (latest is 0.090)
+
 List::Util 1.25 - Included in Perl v5.16.1 (latest is 1.68_01)
 
 Net::SMTP 2.31 - Included in Perl v5.16.1 (latest is 3.15)
