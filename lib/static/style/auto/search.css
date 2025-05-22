@@ -123,3 +123,8 @@ input.ep_form_search_advanced_link, input.ep_form_search_advanced_link:hover {
 span.search_desc {
 	font-style: italic;
 }
+
+.ep_search_reorder {
+    margin: 0.4em 0 0 auto;
+    text-align: center;
+}
