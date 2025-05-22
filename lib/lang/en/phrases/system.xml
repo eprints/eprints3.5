@@ -2404,6 +2404,14 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/EPrint/Staff/Reindex:action:reindex:title">Reindex Item</epp:phrase>
     <epp:phrase id="Plugin/Screen/EPrint/Staff/Reindex:reindexing">Item has been queued for re-indexing (may take some time to complete).</epp:phrase>
 
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:generate:title">Generate AI summary</epp:phrase>
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:generate:description">Generate a summary of this record using AI</epp:phrase>
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:generate:message">AI summary generation has been queued for this item (this may take some time to complete).</epp:phrase>
+
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:remove:title">Remove AI summary</epp:phrase>
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:remove:description">Remove the AI summary of this record</epp:phrase>
+    <epp:phrase id="Plugin/Screen/EPrint/Staff/GenerateAISummary:action:remove:message">Removed the AI summary from this item.</epp:phrase>
+
     <!-- eprint view screens -->
 
     <epp:phrase id="Plugin/Screen/EPrint/Summary:title">Preview</epp:phrase>
