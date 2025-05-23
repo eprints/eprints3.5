@@ -22,17 +22,10 @@
 	
 .ep_search_fields td {
 	padding: 4px;
-}
-	
-
-.ep_search_control
-{
-	padding: 0px 4px 0px 4px;
-}
+}	
 
 .ep_search_export {
 	margin: 0.25em auto 0.25em auto;
-	text-align: center;
 }
 
 .ep_search_export div[role="toolbar"] {

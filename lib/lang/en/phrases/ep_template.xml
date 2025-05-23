@@ -128,52 +128,63 @@
     </tr>
   </epp:phrase>
   <epp:phrase id="view:EPrints/Paginate:infinite_search_list/controls">
-    <div class="card mb-4 rounded-3 shadow-sm">
-      <epc:if test="has_main_controls">
-        <div class="card-header py-3">
-          <epc:if test="n_results lt 1">
-            <epc:phrase ref="lib/searchexpression:noresults"/>
-            <br/>
-          </epc:if>
-          <epc:if test="n_results gt 1">
-            <epc:phrase ref="lib/searchexpression:results_only">
-              <epc:param name="n">
-                <span class="ep_search_number">
-                  <epc:print expr="n_results"/>
-                </span>
-              </epc:param>
-            </epc:phrase>
-            <br/>
-          </epc:if>
-        </div>
-        <div class="card-body">
-          <div class="d-flex">
-            <div class="btn-group h-100 m-2">
+    <epc:if test="n_results lt 1">
+      <div class="mb-3 ms-3">
+        <epc:phrase ref="lib/searchexpression:noresults"/>
+      </div>
+    </epc:if>
+    <epc:if test="n_results gt 1">
+      <div class="mb-3 ms-3">
+        <epc:phrase ref="lib/searchexpression:results_only">
+          <epc:param name="n">
+            <span class="ep_search_number">
+              <epc:print expr="n_results"/>
+            </span>
+          </epc:param>
+        </epc:phrase>
+      </div>
+    </epc:if>
+    <div class="accordion mb-3" id="accordionResults">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="resultsOptions">
+          <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
+            <h6 class="m-0">
+              <strong>
+                <epc:phrase ref="lib/searchexpression:results_only:title"/>
+              </strong>
+            </h6>
+          </button>
+        </h2>
+        <div id="collapseResults" class="accordion-collapse collapse show" aria-labelledby="resultsOptions" data-bs-parent="#accordionResults">
+          <div class="accordion-body">
+            <div class="d-flex ep_search_control">
+              <div class="btn-group h-100 m-2">
+                <epc:foreach expr="control_links" iterator="control_link">
+                  <epc:choose>
+                    <epc:when test="$control_link{type} = 'before'">
+                      <epv:link class="btn btn-sm btn-outline-primary" uri="{$control_link{url}}">
+                        <epc:print expr="$control_link{label}"/>
+                      </epv:link>
+                    </epc:when>
+                  </epc:choose>
+                </epc:foreach>
+              </div>
               <epc:foreach expr="control_links" iterator="control_link">
                 <epc:choose>
-                  <epc:when test="$control_link{type} = 'before'">
-                    <epv:link class="btn btn-sm btn-outline-primary" uri="{$control_link{url}}">
-                      <epc:print expr="$control_link{label}"/>
+                  <epc:when test="$control_link{type} = 'next'">
+                    <epv:link class="ep_next ep_hide infinite_scroll" uri="{$control_link{url}}">
+                      <epc:phrase ref="lib/searchexpression:next"/>
                     </epv:link>
                   </epc:when>
                 </epc:choose>
               </epc:foreach>
+              <epc:if test="controls_after">
+                <epc:print expr="controls_after"/>
+              </epc:if>
             </div>
-            <epc:foreach expr="control_links" iterator="control_link">
-              <epc:choose>
-                <epc:when test="$control_link{type} = 'next'">
-                  <epv:link class="ep_next ep_hide" uri="{$control_link{url}}">
-                    <epc:phrase ref="lib/searchexpression:next"/>
-                  </epv:link>
-                </epc:when>
-              </epc:choose>
-            </epc:foreach>
-            <epc:if test="controls_after">
-              <epc:print expr="controls_after"/>
-            </epc:if>
           </div>
         </div>
-      </epc:if>
+      </div>
     </div>
   </epp:phrase>
   <epp:phrase id="view:EPrints/Paginate:paginate_list/controls">
@@ -1069,6 +1080,42 @@
           </epc:if>
           <epc:print expr="$stage{stage}"/>
         </epc:foreach>
+      </div>
+    </div>
+  </epp:phrase>
+  <epp:phrase id="lib/searchexpression:export_section">
+    <div class="accordion mb-4" id="accordionExport">
+      <div class="accordion-item">
+        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExport" aria-expanded="false" aria-controls="collapseExport">
+          <h6 id="exportOptions" class="m-0">
+            <strong>
+              <epc:phrase ref="lib/searchexpression:export_section:title"/>
+            </strong>
+          </h6>
+        </button>
+        <div id="collapseExport" class="accordion-collapse collapse" aria-labelledby="exportOptions" data-bs-parent="#accordionExport">
+          <div class="accordion-body">
+            <div class="accordion-collapse collapse show m-0 d-flex justify-content-start" role="toolbar">
+              <epc:if test="menu">
+                <div class="accordion-body border rounded p-2 ps-3 me-2">
+                  <label for="search-export-output">Export <epc:print expr="count"/> results as </label>
+                  <epc:print expr="menu"/>
+                  <epc:print expr="button"/>
+                </div>
+              </epc:if>
+              <epc:if test="tools">
+                <div class="border rounded p-2 pe-3 me-2 m-0 d-flex align-items-center" role="toolbar">
+                  <epc:print expr="tools"/>
+                </div>
+              </epc:if>
+              <epc:if test="feeds">
+                <div class="border rounded p-2 me-2 d-flex align-items-center">
+                  <epc:print expr="feeds"/>
+                </div>
+              </epc:if>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </epp:phrase>
