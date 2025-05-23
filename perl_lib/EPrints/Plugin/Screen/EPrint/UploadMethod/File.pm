@@ -278,6 +278,8 @@ body.addEventListener('ep:dragfinish', function(evt) {
 	});
 EOJ
 
+	$container->appendChild( $session->make_javascript( undef, src => '/javascript/hashwasm_md5.umd.min.js' ) );
+
 	return $f;
 }
 
