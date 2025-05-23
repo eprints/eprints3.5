@@ -1,7 +1,17 @@
-# If enabled this will need some fields adding to fill into, by default these would be:
-#  - ai_summary: longtext
-#  - ai_topics: text (if it is a comma separated string it can use `render_value => 'render_ai_topic_links'`)
 $c->{ai_summary_enabled} = 0;
+
+# If the summary is enabled you will need to add some fields to the eprints,
+#  these are the recommended fields if you are using these settings:
+# push @{$c->{fields}->{eprint}},
+# {
+#     name => 'ai_summary',
+#     type => 'longtext',
+# },
+# {
+#     name => 'ai_topics',
+#     type => 'text',
+#     render_value => 'render_ai_topic_links',
+# };
 
 # The endpoint to call when requesting an AI summary (must be accessible by the server)
 $c->{ai_summary_endpoint} = '<Override this with your AI endpoint>';
