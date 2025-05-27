@@ -53,33 +53,71 @@ XML::Parser           2.47
 
 YAML::Tiny            1.76
 
+
 =head1 OTHER PACKAGES
 
-=head2 These packages aren't installed by this file for various reasons but can be expected to be on the system
+=head2 These packages aren't installed by this file for various reasons but must be installed by other means
 
-CGI 3.59 - Included in Perl v5.16.1 (latest is 4.68)
-
-DBD::mysql 5.012 - This still has to be installed with a package manager for config reasons
-
-Digest::MD5 2.51 - Included in Perl v5.16.1 (latest is 2.59)
-Digest::SHA 5.71 - Included in Perl v5.16.1 (latest is 6.04)
-
-File::Temp 0.22 - Included in Perl v5.16.1 (latest is 0.2311)
-
-HTTP::Tiny 0.017 - Included in Perl v5.16.1 (latest is 0.090)
-
-List::Util 1.25 - Included in Perl v5.16.1 (latest is 1.68_01)
-
-Net::SMTP 2.31 - Included in Perl v5.16.1 (latest is 3.15)
-
-Pod::Usage 1.51 - Included in Perl v5.16.1 (latest is 2.05)
-
-Text::Wrap 2009.0305 - Included in Perl v5.16.1 (latest is 2024.001)
-
-Time::HiRes 1.9725 - Included in Perl v5.16.1 (latest is 1.9764)
-Time::Seconds undef - Included in Perl v5.16.1 (latest is 1.36)
-
-Unicode::Collate 0.89 - Included in Perl v5.16.1 (latest is 1.31)
+DBD::mysql 5.012 - This has to be installed by the package manager to get the config right
 
 XML::LibXSLT 2.003000 - This is installed separately in cpan_modules.pl because it has to be run with notest
+
+
+=head1 CORE PERL PACKAGES
+
+=head2 These packages are included in a baseline Perl version of v5.16.1 (CentOS/RHEL 7)
+
+Carp 1.26 - Latest is 1.50
+
+CGI 3.59 - Latest is 4.68
+
+Cwd 3.39_02 - Latest is 3.75
+
+Data::Dumper 2.135_06 - Latest is 2.183
+
+Digest::MD5 2.51 - Latest is 2.59
+Digest::SHA 5.71 - Latest is 6.04
+
+English 1.05 - Latest is 1.11
+
+Fcntl 1.11           - Latest is 1.18
+File::Basename 2.84  - Latest is 2.84
+File::Compare 1.1006 - Latest is 1.1008
+File::Copy 2.23      - Latest is 2.41
+File::Find 1.20      - Latest is 1.44
+File::Path 2.08_01   - Latest is 2.18
+File::stat 1.05      - Latest is 1.14
+File::Temp 0.22      - Latest is 0.2311
+FileHandle 2.02      - Latest is 2.05
+
+FindBin 1.51 - Latest is 1.54
+
+Getopt::Long 2.38 - Latest is 2.58
+
+HTTP::Tiny 0.017 - Latest is 0.090
+
+List::Util 1.25 - Latest is 1.68_01
+
+MIME::Base64 3.13 - Latest is 3.16
+
+Net::SMTP 2.31 - Latest is 3.15
+
+Pod::Usage 1.51 - Latest is 2.05
+
+POSIX 1.30 - Latest is 1.97
+
+Scalar::Util 1.25 - Latest is 1.69
+
+Storable 2.34 - Latest is 3.25
+
+Sys::Hostname 1.15 - Latest is 1.25
+
+Text::Wrap 2009.0305 - Latest is 2024.001
+
+Time::HiRes 1.9725 - Latest is 1.9764
+Time::Local 1.2000 - Latest is 1.35
+Time::Piece 1.20_01 - Latest is 1.36
+Time::Seconds undef - Latest is 1.36
+
+Unicode::Collate 0.89 - Latest is 1.31
 
