@@ -43,7 +43,8 @@ Text::Extract::Word 0.04
 Text::Refer         1.106 - Used by EndNote import
 Text::Unidecode     1.30
 
-URI          5.31
+URI          5.32
+URI::Escape  5.32
 URI::OpenURL 0.4.6
 
 XML::DOM              1.46
@@ -65,7 +66,7 @@ XML::LibXSLT 2.003000 - This is installed separately in cpan_modules.pl because 
 
 =head1 CORE PERL PACKAGES
 
-=head2 These packages are included in a baseline Perl version of v5.16.1 (CentOS/RHEL 7)
+=head2 These packages are included in a baseline Perl version of v5.16.1 (CentOS/RHEL 7+, Fedora 18+, Ubuntu 14+, Debian 8+)
 
 Carp 1.26 - Latest is 1.50
 
@@ -77,6 +78,8 @@ Data::Dumper 2.135_06 - Latest is 2.183
 
 Digest::MD5 2.51 - Latest is 2.59
 Digest::SHA 5.71 - Latest is 6.04
+
+Encode 2.44 - Latest is 3.21
 
 English 1.05 - Latest is 1.11
 
@@ -114,8 +117,8 @@ Sys::Hostname 1.15 - Latest is 1.25
 
 Text::Wrap 2009.0305 - Latest is 2024.001
 
-Time::HiRes 1.9725 - Latest is 1.9764
-Time::Local 1.2000 - Latest is 1.35
+Time::HiRes 1.9725  - Latest is 1.9764
+Time::Local 1.2000  - Latest is 1.35
 Time::Piece 1.20_01 - Latest is 1.36
 Time::Seconds undef - Latest is 1.36
 
