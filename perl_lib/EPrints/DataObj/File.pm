@@ -241,6 +241,13 @@ sub create_from_data
 		return if !defined $self;
 	}
 
+	if( defined $data->{client_hash} ) {
+		if( $self->get_value( 'hash' ) ne $data->{client_hash} ) {
+			print STDERR "Mismatched hashes\n";
+			$ok = 0;
+		}
+	}
+
 	# content write failed
 	if( !$ok )
 	{
