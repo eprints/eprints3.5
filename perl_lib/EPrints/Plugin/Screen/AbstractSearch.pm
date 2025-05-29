@@ -493,11 +493,11 @@ sub render_export_bar
 	}
 
 	my $feeds = $session->make_doc_fragment;
+	my $feed_count = 0;
 	my $tools = $session->make_doc_fragment;
+	my $tool_count = 0;
 	my $options = {};
-	# EPrints Services/af05v 2009-03-02 default export plugin
 	my $default_export_plugin = $session->config( 'default_export_plugin' ) || '_NULL_';
-	# EPrints Services/af05v end
 	foreach my $plugin_id ( @plugins ) 
 	{
 		$plugin_id =~ m/^[^:]+::(.*)$/;
@@ -519,11 +519,13 @@ sub render_export_bar
 			{
 				$tools->appendChild( $session->make_text( " " ) );
 				$tools->appendChild( $span );	
+				$tool_count += 1;
 			}
 			if( $type eq "feed" )
 			{
 				$feeds->appendChild( $session->make_text( " " ) );
 				$feeds->appendChild( $span );	
+				$feed_count += 1;
 			}
 		}
 		else
@@ -554,16 +556,13 @@ sub render_export_bar
 	$button->appendChild( 
 		$session->render_hidden_field( "exp", $escexp, "exp_export" ) );
 
-	my $form = $self->{session}->render_form( "GET" );
-	$form->appendChild( $session->html_phrase( "lib/searchexpression:export_section",
-					feeds => $feeds,
-					tools => $tools,
-					count => $session->make_text( 
-						$self->{processor}->{results}->count ),
-					menu => $select,
-					button => $button ));
-
-	return $form;
+	return $self->{session}->template_phrase( "lib/searchexpression:export_section" , { item => { 
+					feeds => $feed_count > 0 ? $feeds : undef,
+                                        tools => $tool_count > 0 ? $tools : undef,
+                                        count => $session->make_text(
+                                                $self->{processor}->{results}->count ),
+                                        menu => $select,
+                                        button => $button } } );
 }
 
 sub get_basic_controls_before

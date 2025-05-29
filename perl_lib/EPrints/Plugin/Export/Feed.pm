@@ -19,7 +19,7 @@ sub new
 	my $self = $class->SUPER::new( %opts );
 
 	$self->{name} = "Abstract Feed";
-	$self->{icon} = "feed-icon-14x14.png";
+	$self->{icon} = "rss-fill.svg";
 	$self->{visible} = "";
 	
 	return $self;
