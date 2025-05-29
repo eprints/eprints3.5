@@ -1045,7 +1045,7 @@ sub generate_regex
 	}
 
 	# Require a match to start with a word boundary (we can't use \b because it doesn't handle unicode well)
-	my $regex = '/(?<=^|[^\p{L}\p{N}])(?:';
+	my $regex = '/(?<=^|[^\p{L}\p{N}])';
 	my $last_word;
 	for my $word (@words) {
 		my $regex_word = $self->generate_regex_word( $word, $settings );
@@ -1059,7 +1059,8 @@ sub generate_regex
 			} else {
 				# Capture any spaces preceding a word, iff the last word is correctly the word before this,
 				# this allows it to join up words that follow each other in the search.
-				$regex .= "(?:(?:(?<=$last_word)[^\\p{L}\\p{N}]*)?" if $last_word;
+				$regex .= '(?:';
+				$regex .= "(?:(?<=$last_word)[^\\p{L}\\p{N}]*)?" if $last_word;
 				$regex .= $regex_word . '(?=$|[^\p{L}\p{N}]))?';
 				$last_word = $regex_word;
 			}
