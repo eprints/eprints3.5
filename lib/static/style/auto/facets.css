@@ -3,11 +3,12 @@
 }
 
 .ep_facet_list {
-    width: 200px;
+    width: 500px;
+    margin-right: 30px;
 }
 
 .ep_search_result_list {
-    width: calc(100% - 200px);
+    width: 100%;
 }
 
 .ep_facet_count::before {

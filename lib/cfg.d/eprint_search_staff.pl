@@ -24,6 +24,7 @@ $c->{datasets}->{eprint}->{search}->{staff} =
 	default_order => "bytitle",
 	show_zero_results => 1,
 	staff => 1,
+	template => "default_internal",
 };
 
 =head1 COPYRIGHT

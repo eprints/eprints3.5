@@ -164,7 +164,7 @@ if ( defined $feeds_conf )
                 {
                         my $feed = $session->make_element( "span", class=>"ep_search_feed" );
                         my $feed_icon_link = $session->make_element( "a", href=>"/cgi/latest_tool?output=$feed_type" );
-                        my $feed_icon_link_icon = $session->make_element( "img", alt=>"[feed]", src=>"/style/images/feed-icon-14x14.png", border=>"0" );
+                        my $feed_icon_link_icon = $session->make_element( "img", alt=>"[feed]", src=>"/style/images/rss-fill.svg", border=>"0" );
                         $feed_icon_link->appendChild($feed_icon_link_icon);
                         $feed->appendChild($feed_icon_link);
                         my $feed_link = $session->make_element( "a", href=>"/cgi/latest_tool?output=$feed_type" );
