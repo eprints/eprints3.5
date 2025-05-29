@@ -115,6 +115,7 @@ input.ep_form_search_advanced_link, input.ep_form_search_advanced_link:hover {
 
 span.search_desc {
 	font-style: italic;
+	text-decoration: underline;
 }
 
 .ep_search_reorder {
