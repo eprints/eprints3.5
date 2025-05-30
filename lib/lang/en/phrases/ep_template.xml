@@ -1056,7 +1056,7 @@
   <epp:phrase id="view:EPrints/Repository:render_button">
     <input>
       <epc:attribute name="class">
-        <epc:if test="workflow">
+        <epc:if test="stage">
           <epc:if test="selected">
             <epc:print expr="'btn btn-primary'"/>
           </epc:if>
@@ -1064,7 +1064,7 @@
             <epc:print expr="'btn btn-outline-primary'"/>
           </epc:if>
         </epc:if>
-        <epc:if test="!workflow">
+        <epc:if test="!stage">
           <epc:print expr="'btn btn-primary btn-sm m-1'"/>
         </epc:if>
       </epc:attribute>
