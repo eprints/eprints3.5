@@ -1103,4 +1103,16 @@
       </div>
     </div>
   </epp:phrase>
+  <epp:phrase id="view:EPrints/Plugin/Screen/Search:render_simple_form">
+    <div class="ep_block">
+      <form action="/cgi/search/simple" accept-charset="utf-8" method="get">
+        <input value="Search" type="hidden" name="screen" id="screen"/>
+        <input value="archive" name="dataset" type="hidden" id="dataset"/>
+        <input id="order" type="hidden" name="order"/>
+        <input type="text" name="q" size="60" aria-labelledby="{action_search}" value=""/>
+        <input name="_action_search" type="submit" id="{action_search}" value="{action_search}" role="button" class="ep_form_action_button"/>
+        <input value="{advanced_link}" role="button" class="ep_form_action_button ep_form_search_advanced_link" name="_action_advanced" type="submit"/>
+      </form>
+    </div>
+  </epp:phrase>
 </epp:phrases>

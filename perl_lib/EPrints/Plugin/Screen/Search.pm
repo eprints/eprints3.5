@@ -307,52 +307,16 @@ sub render_simple_form
 {
 	my( $self ) = @_;
 
+	my %item = ();
+
 	my $session = $self->{session};
-	my $xhtml = $session->xhtml;
-	my $xml = $session->xml;
-	my $input;
 
-	my $div = $xml->create_element( "div", class => "ep_block" );
+	$item{preamble} = $self->render_preamble if defined $self->render_preamble;
 
-	my $form = $self->{session}->render_form( "get" );
-	$div->appendChild( $form );
+	$item{action_search} = $self->{session}->phrase( "lib/searchexpression:action_search" );
+	$item{advanced_link} = $self->{session}->phrase( "lib/searchexpression:advanced_link" );
 
-	# avoid adding "dataset", which is selectable here
-	$form->appendChild( $self->SUPER::render_hidden_bits );
-
-	# maintain the order if it was specified (might break if dataset is
-	# changed)
-	$input = $xhtml->hidden_field( "order", $session->param( "order" ) );
-	$form->appendChild( $input );
-
-	$form->appendChild( $self->render_preamble );
-
-	$form->appendChild( $self->{processor}->{search}->render_simple_fields( 'aria-labelledby' => $self->{session}->phrase( "lib/searchexpression:action_search" ) ) );
-
-	$input = $xml->create_element( "input",
-		type => "submit",
-		name => "_action_search",
-		value => $self->{session}->phrase( "lib/searchexpression:action_search" ),
-		class => "ep_form_action_button",
-		role => "button",
-		id => $self->{session}->phrase( "lib/searchexpression:action_search" ),
-	);
-	$form->appendChild( $input );
-
-	$input = $xml->create_element( "input",
-		type => "submit",
-		name => "_action_advanced",
-		value => $self->{session}->phrase( "lib/searchexpression:advanced_link" ),
-		class => "ep_form_action_button ep_form_search_advanced_link",
-		role => "button",
-	);
-	$form->appendChild( $input );
-
-	$form->appendChild( $xml->create_element( "br" ) );
-
-	$form->appendChild( $self->render_dataset );
-
-	return( $div );
+	return( $session->template_phrase( 'view:EPrints/Plugin/Screen/Search:render_simple_form', { item => \%item } ) );
 }
 
 sub render_dataset
