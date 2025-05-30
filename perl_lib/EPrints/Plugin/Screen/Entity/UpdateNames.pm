@@ -111,8 +111,9 @@ sub render
 
 	$sth->execute;	
 	
-	my %eprint_cbtr_names;
-	my @eprint_cbtr_order;
+	my $hr_name = $self->{processor}->{entity}->human_serialise_name( $self->{processor}->{entity}->get_value( 'name' ) );
+	my @eprint_cbtr_order = ( $hr_name );
+	my %eprint_cbtr_names = ( $hr_name => [] );
 	while (my $row = $sth->fetchrow_arrayref) 
 	{
 		push @eprint_cbtr_order, $row->[1] unless defined $eprint_cbtr_names{$row->[1]};
@@ -142,16 +143,16 @@ sub render
 	
 	$name_div->appendChild( $name_label );
 	my $name_select = $self->{session}->make_element( 'select', id => "ep_entity_name_select", name => 'entity_name' );
-	my $hr_name = $self->{processor}->{entity}->human_serialise_name( $self->{processor}->{entity}->get_value( 'name' ) );
 	foreach my $option ( @{$self->{processor}->{entity}->get_value( 'names' )} ) 
 	{
 	
 		my $hr_option = $self->{processor}->{entity}->human_serialise_name( $option->{name} );
+		my $name_option;
 		if ( $hr_option eq $hr_name )
 		{
-			my $name_option = $self->{session}->make_element( 'option', value => $hr_option, selected => "selected" );
+			$name_option = $self->{session}->make_element( 'option', value => $hr_option, selected => "selected" );
 		}
-		my $name_option = $self->{session}->make_element( 'option', value => $hr_option );
+		$name_option = $self->{session}->make_element( 'option', value => $hr_option );
 
 		$name_option->appendChild(  $self->{session}->make_text( $hr_option ) );
 		$name_select->appendChild( $name_option );

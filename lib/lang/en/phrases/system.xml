@@ -1208,7 +1208,9 @@ Enter a URL to capture a file from: <epc:pin name="url"/><br/>
     <epp:phrase id="lib/submissionform:action_create">Create</epp:phrase>
     <epp:phrase id="lib/submissionform:action_later">Deposit Item Later</epp:phrase>
     <epp:phrase id="lib/submissionform:action_update_names">Update Names</epp:phrase>
+	<epp:phrase id="lib/submissionform:action_update_ids">Update IDs</epp:phrase>
     <epp:phrase id="lib/submissionform:select_entity_name">Change to name</epp:phrase>
+    <epp:phrase id="lib/submissionform:select_entity_id">Change to ID</epp:phrase>
     <epp:phrase id="lib/submissionform:title_type">Edit item: Item Type</epp:phrase>
     <epp:phrase id="lib/submissionform:title_meta">Edit item: Bibliographic Information</epp:phrase>
     <epp:phrase id="lib/submissionform:title_linking">Edit item: Succession/Commentary</epp:phrase>
@@ -2372,7 +2374,9 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:title">Update Names</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:description">Update the names for this entity across the EPrint items in which it appears.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:updated_names">Entity's name was updated to "<epc:pin name="to"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
-
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:title">Update IDs</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:description">Update the IDs for this entity across the EPrint items in which it appears.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:updated_ids">Entity's ID was updated to the <epc:pin name="to_type"/> "<epc:pin name="to_value"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
      <!-- eprint action screens -->
 
     <epp:phrase id="Plugin/Screen/EPrint/Deposit:title">Deposit item</epp:phrase>
