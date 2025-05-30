@@ -20,7 +20,7 @@ B<EPrints::DataObj::Person> - A data object that represents a person.
 
 UNDER DEVELOPMENT
 
-Designed to extend L<EPrints::Entity> to represent a person.
+Designed to extend L<EPrints::DataObj::Entity> to represent a person.
 
 =head1 CORE METADATA FIELDS
 

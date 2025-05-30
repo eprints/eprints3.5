@@ -118,8 +118,20 @@ sub get_sql_index
 	my( $self ) = @_;
 
 	return () unless( $self->get_property( "sql_index" ) );
-
+	
 	return ($self->get_sql_names);
+}
+
+sub parts
+{
+	my( $self ) = @_;
+
+	my @parts;
+	foreach my $field (@{$self->{fields_cache}})
+	{
+		push @parts, $field->property( "sub_name" );
+	}
+	return @parts;
 }
 	
 sub render_single_value

@@ -12,7 +12,7 @@ $c->{render_contributions_contributor} = sub {
 	if ( defined $entity )
 	{
 		my $entity_hs_name = $entity->human_serialise_name( $entity->get_value( 'name' ) );
-		if ( ( defined $value->{name} && $entity_hs_name ne $value->{name} ) || ( defined $value->{id_value} && $entity->get_value( 'id_value' ) ne $value->{id_value} ) )
+		if ( ( defined $value->{name} && $entity_hs_name ne $value->{name} ) || ( defined $entity->get_value( 'id_value' ) && defined $value->{id_value} && $entity->get_value( 'id_value' ) ne $value->{id_value} ) )
 		{
 			my $label = $value->{name};
 			$label .= ' <' . $value->{id_value}. '>' if $value->{id_value};

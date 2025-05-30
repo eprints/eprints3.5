@@ -42,7 +42,6 @@ See L<EPrints::DataObj|EPrints::DataObj#INSTANCE_VARIABLES>.
 =head1 METHODS
 
 =cut
-######################################################################
 
 package EPrints::DataObj::Entity;
 
@@ -94,6 +93,34 @@ sub get_system_field_info
 	return ();
 }
 
+
+######################################################################
+=pod
+
+=over 4
+
+=item $entity = EPrints::DataObj::Entity->get( $session, $datasetid, $objectid )
+
+Load the entity from C<$datasetid> with the ID from C<$objectid>
+from the database and return it as the appropriate sub-class of an
+C<EPrints::DataObj::Entity> object.
+
+=cut
+######################################################################
+
+sub get
+{
+    my( $session, $datasetid, $objectid ) = @_;
+
+    unless ( grep /$datasetid/, @{ $session->config( 'entities', 'datasets' ) } )
+    {
+            $session->log("ERROR: $datasetid is not a type of entity!");
+    }
+
+    return $session->get_database->get_single(
+        $session->dataset( $datasetid ),
+        $objectid );
+}
 
 ######################################################################
 =cut
@@ -541,8 +568,8 @@ sub get_control_url
 	my $key_field_name = $dataset->key_field->get_name;
 
 	return $self->{session}->get_repository->get_conf( "perl_url" ).
-		"/users/home?screen=Workflow::View&" . $key_field_name . "=" .
-		$self->get_value( $key_field_name );
+		"/users/home?screen=Entity::View&datasetid=" . $self->get_dataset_id . 
+		"&entityid=" . $self->get_value( $key_field_name );
 }
 
 
@@ -789,6 +816,98 @@ sub entity_with_name
 
 	# Return the latest entity if one has been found, otherwise undef is returned.
 	return $latest_entity;
+}
+
+######################################################################
+=pod
+
+=item $success = $dataobj->commit( [ $force ] )
+
+Write this object to the database and reset the changed fields.
+
+If C<$force> isn't true then it only actually modifies the database if
+one or more fields have been changed.
+
+Commit may also queue indexer jobs or log changes, depending on the
+object.
+
+=cut
+######################################################################
+
+sub commit
+{
+    my( $self, $force ) = @_;
+
+    if( scalar( keys %{$self->{changed}} ) == 0 )
+    {
+        # don't do anything if there isn't anything to do
+        return( 1 ) unless $force;
+    }
+
+    # Remove empty slots in multiple fields
+    $self->tidy;
+
+    $self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_BEFORE_COMMIT,
+        dataobj => $self,
+        changed => $self->{changed},
+    );
+
+	$self->update_triggers();
+
+    # Write the data to the database
+    my $success = $self->{session}->get_database->update(
+        $self->{dataset},
+        $self->{data},
+        $force ? $self->{data} : $self->{changed} );
+
+    if( !$success )
+    {
+        my $db_error = $self->{session}->get_database->error;
+        $self->{session}->get_repository->log(
+            "Error committing ".$self->get_dataset_id.".".
+            $self->get_id.": ".$db_error );
+        return 0;
+    }
+
+    # Queue changes for the indexer (if indexable)
+    $self->queue_changes();
+
+    $self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_AFTER_COMMIT,
+        dataobj => $self,
+        changed => $self->{changed},
+    );
+
+    # clear changed fields
+    $self->clear_changed();
+
+    # clear citations unless this is a citation
+    $self->clear_citationcaches() if defined $self->{session}->config( "citation_caching", "enabled" ) && $self->{session}->config( "citation_caching", "enabled" ) && $self->{dataset}->confid ne "citationcache";
+
+    return $success;
+}
+
+
+######################################################################
+=pod
+
+=item $entity->update_triggers
+
+Update all the stuff that needs updating before an entity data object
+is written to the database.
+
+=cut
+######################################################################
+
+sub update_triggers
+{
+    my( $self ) = @_;
+
+    $self->SUPER::update_triggers();
+
+    if( $self->{non_volatile_change} )
+    {
+        $self->set_value( "lastmod", EPrints::Time::get_iso_timestamp() );
+    }
 }
 
 

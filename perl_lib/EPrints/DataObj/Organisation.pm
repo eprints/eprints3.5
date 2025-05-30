@@ -20,7 +20,7 @@ B<EPrints::DataObj::Organisation> - A data object that represents a organisation
 
 UNDER DEVELOPMENT
 
-Designed to extend L<EPrints::Entity> to represent a organisation.
+Designed to extend L<EPrints::DataObj::Entity> to represent a organisation.
 
 =head1 CORE METADATA FIELDS
 
