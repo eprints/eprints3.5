@@ -2552,7 +2552,7 @@ Titles and Help for the System Fields
 
 
     <epp:phrase id="sys:ep_form_required"><img src="{$config{rel_path}}/style/images/required.png" border="0" class="ep_required" alt="Required" style="display: inline"/>&nbsp;<epc:pin name="label"/></epp:phrase>
-    <epp:phrase id="sys:ep_form_required_src">/style/images/required.png</epp:phrase>
+    <epp:phrase id="sys:ep_form_required_src">/style/images/required.svg</epp:phrase>
     <epp:phrase id="sys:ep_form_required_alt">Required</epp:phrase>
 
 
