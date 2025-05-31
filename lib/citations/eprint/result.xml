@@ -9,7 +9,11 @@
     <div><epc:print expr="$n" />.</div>
     <div>
       <epc:print expr="$item.citation($config{citation_default}{eprint}{for_result})" />
-      <epc:if test="is_set($embedded)"><div class="embedded">"<epc:print expr="$embedded" />"</div></epc:if>
+      <epc:if test="variable_exists('embedded')">
+        <epc:if test="is_set($embedded)"> <epc:comment>This has to be a separate if statement to prevent it being parsed</epc:comment>
+          <div class="embedded">"<epc:print expr="$embedded" />"</div>
+        </epc:if>
+      </epc:if>
     </div>
     <div>
 	  <div class="ep_search_result_docs">
