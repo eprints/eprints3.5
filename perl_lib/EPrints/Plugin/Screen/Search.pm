@@ -1076,7 +1076,7 @@ sub generate_regex
 		$regex .= '(?<=[\p{L}\p{N}])';
 	} else {
 		# Require a match to end on a (unicode) word boundary
-		$regex .= ')(?=$|[^\p{L}\p{N}])';
+		$regex .= '(?=$|[^\p{L}\p{N}])';
 	}
 
 	return $regex . '/gmiu';

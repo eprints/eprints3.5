@@ -1254,6 +1254,27 @@ sub run_current_user_can_view
         return [ defined $session->current_user && $doc->[0]->user_can_view( $session->current_user ), 'BOOLEAN' ];
 }
 
+=item [$boolean, 'BOOLEAN'] = run_variable_exists( $self, $state, $var_name )
+
+Creates the C<variable_exists> method which checks whether the variable
+referred to by the passed string exists.
+
+This should be used in a separate C<test> block to anything using this
+variable as anything in the block will be parsed before calling functions.
+
+=cut
+
+sub run_variable_exists
+{
+	my( $self, $state, $var_name ) = @_;
+
+	if( $state->{$var_name->[0]} ) {
+		return [ 1, 'BOOLEAN' ];
+	} else {
+		return [ 0, 'BOOLEAN' ];
+	}
+}
+
 1;
 
 =head1 COPYRIGHT
