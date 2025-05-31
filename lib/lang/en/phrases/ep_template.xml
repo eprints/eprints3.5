@@ -510,7 +510,7 @@
   </epp:phrase>
   <epp:phrase id="view:EPrints/Plugin/Screen/Listing:render_filters">
     <div style="text-align: left">
-      <epv:box id="ep_listing_search" collapsed="{collapsed}" show_icon_url="{$config{rel_path}}/style/images/help.png">
+      <epv:box id="ep_listing_search" collapsed="{collapsed}" show_icon_url="{$config{rel_path}}/style/images/help.svg">
         <epv:title>
           <epc:print expr="title"/>
         </epv:title>
@@ -548,7 +548,7 @@
       </div>
     </epc:if>
     <div style="text-align: left">
-      <epv:box id="ep_review_instructions" collapsed="1" show_icon_url="{$config{rel_path}}/style/images/help.png">
+      <epv:box id="ep_review_instructions" collapsed="1" show_icon_url="{$config{rel_path}}/style/images/help.svg">
         <epv:title>
           <epc:print expr="intro_title"/>
         </epv:title>
@@ -563,7 +563,7 @@
     centre-align the input
   -->
   <epp:phrase id="view:MetaField/render_input_field_actual">
-    <div class="ep_form_input_grid">
+    <div class="d-flex justify-content-center">
       <epc:if test="has_col_titles">
         <div>
           <epc:foreach expr="titles" iterator="column">
@@ -1164,6 +1164,97 @@
       <epc:foreach expr="dom_messages" iterator="dom_message">
         <epc:print expr="$dom_message{message}"/>
       </epc:foreach>
+    </div>
+  </epp:phrase>
+  <epp:phrase id="view:perl_lib/EPrints/Plugin/InputForm/Surround/Default:render">
+    <div class="mb-3 bg-light bg-opacity-10 border rounded shadow-sm" id="{prefix}">
+      <a name="{prefix}"/>
+      <epc:foreach expr="handled_fields" iterator="handled_field">
+        <epc:print expr="$handled_field{handled_field}"/>
+      </epc:foreach>
+      <div id="{title_bar{id}}" class="p-2 bg-white rounded {title_bar{class}}">
+        <epc:if test="!has_help">
+          <div id="{title_div{id}}" class="ep_sr_title">
+            <epc:choose>
+              <epc:when test="is_collapsed">
+                <a onclick="EPJS_toggleSlideScroll('{contentid}',false,'{main_id}');EPJS_toggle('{colbarid}',true);EPJS_toggle('{barid}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link">
+                  <img alt="+" src="/style/images/minus.svg" border="0">
+                    <epc:print expr="col_link{render_title}"/>
+                  </img>
+                </a>
+                <div class="ep_no_js">
+                  <epc:print expr="col_link{render_title}"/>
+                </div>
+              </epc:when>
+              <epc:otherwise>
+                <epc:print expr="render_title"/>
+              </epc:otherwise>
+            </epc:choose>
+          </div>
+        </epc:if>
+        <epc:if test="!no_toggle and has_help">
+          <div class="">
+            <div class="d-flex justify-content-between">
+              <div>
+                <div id="{title_div{id}}" class="">
+                  <epc:choose>
+                    <epc:when test="is_collapsed">
+                      <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
+                        <img alt="+" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
+                          <epc:print expr="col_link{render_title}"/>
+                        </img>
+                      </a>
+                      <div class="ep_no_js">
+                        <epc:print expr="col_link{render_title}"/>
+                      </div>
+                    </epc:when>
+                    <epc:otherwise>
+                      <epc:print expr="render_title"/>
+                    </epc:otherwise>
+                  </epc:choose>
+                </div>
+              </div>
+              <div align="right">
+                <div class="ep_only_js">
+                  <div class="ep_sr_show_help ep_toggle " id="{help_item{prefix}}_show">
+                    <a onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                      <img border="0" src="/style/images/help.svg" title="Show help" alt="+"/>
+                    </a>
+                  </div>
+                  <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
+                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                      <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </epc:if>
+      </div>
+      <epc:if test="is_collapsed">
+        <div class="p-2 bg-white rounded ep_only_js ep_toggle" id="{col_div{id}}">
+          <a class="ep_sr_collapse_link text-black" onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false">
+            <img alt="+" src="/style/images/plus.svg" style="margin-right: 5px;" border="0">
+              <epc:print expr="col_link{render_title}"/>
+            </img>
+          </a>
+        </div>
+      </epc:if>
+      <div id="{prefix}_content" class="{content{class}} bg-white p-2 rounded">
+        <div id="{content_inner{id}}">
+          <epc:if test="has_help">
+            <div id="{help_item{prefix}}" class="p-2 alert alert-info {help_item{hide_class}}">
+              <div id="{help_item{prefix}}_inner" class="">
+                <epc:print expr="help_item{render_help}"/>
+              </div>
+            </div>
+          </epc:if>
+          <div id="{ajax_content_target{id}}">
+            <epc:print expr="contents"/>
+          </div>
+        </div>
+      </div>
     </div>
   </epp:phrase>
 </epp:phrases>
