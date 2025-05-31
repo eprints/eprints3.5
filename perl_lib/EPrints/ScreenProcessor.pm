@@ -533,7 +533,9 @@ sub render_messages
 {	
 	my( $self ) = @_;
 
-	my $chunk = $self->{session}->make_element( "div", id => "ep_messages" );
+	my $item = {
+                dom_messages => [],
+        };
 
 	my @old_messages;
 	my $cuser = $self->{session}->current_user;
@@ -550,13 +552,12 @@ sub render_messages
 			# parse error!
 			next;
 		}
-		my $dom_message = $self->{session}->render_message( 
-				$message->{type},
-				$message->{content});
-		$chunk->appendChild( $dom_message );
+		push @{$item->{dom_messages}}, { message => $self->{session}->render_message(
+                                $message->{type},
+                                $message->{content})};
 	}
 
-	return $chunk;
+	return $self->{session}->template_phrase( "view:EPrints/ScreenProcessor:render_messages", { item => $item } );
 }
 
 sub check_messages_for_status

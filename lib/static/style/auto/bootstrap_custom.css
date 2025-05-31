@@ -9,3 +9,4 @@
     border-color: #1d4e76;
 }
 .navbar-toggler:focus { box-shadow: none; }
+.d-none-not-important { display: none; }
