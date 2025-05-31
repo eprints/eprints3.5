@@ -392,11 +392,41 @@ sub render_action_link
 		screen => substr($self->{id},8),
 	);
 
-	$opts{class} = "ep_tm_key_tools_item_link" if not defined $opts{class}; 
+	if ( exists $opts{uri} )
+	{
+		$uri = $opts{uri};
+		delete $opts{uri};
+	}
+
+	my $title = undef;
+	if ( exists $opts{link_title} )
+	{
+		$title = $opts{link_title};
+		delete $opts{link_title} ;
+	}
+	else
+	{
+		$title = $self->render_title;
+	}
+
+	my $class = $opts{class} if defined $opts{class}; 
 	my $link = $self->{session}->render_link( $uri, undef, %opts );
 	$link->appendChild( $self->render_title );
 
-	return $link;
+	my @opts = (); # for iteration in xml phrase
+        my $item = {
+		class => $class,
+		uri => $uri,
+		opts => [],
+		title => $title,
+        };
+
+        for my $opt_val ( keys %opts )
+        {
+                push @{ $item->{opts} }, { name => $opt_val, value => $opts{$opt_val} };
+        }
+
+	return $self->{session}->template_phrase( "view:EPrints/Plugin/ScreenProcessor:render_action_link", { item => $item });
 }
 
 sub render_action_icon

@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no" ?>
 <!DOCTYPE page SYSTEM "entities.dtd" >
 <xpage:page xmlns="http://www.w3.org/1999/xhtml" xmlns:xpage="http://eprints.org/ep3/xpage" xmlns:epc="http://eprints.org/ep3/control">
+<xpage:template>default_internal</xpage:template>	
 <xpage:title><epc:phrase ref="archive_name" /> Contact Information</xpage:title>
 <xpage:body>
 

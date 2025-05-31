@@ -13,3 +13,6 @@
 [submodule "ingredients/jquery4eprints"]
 	path = ingredients/jquery4eprints
 	url = ../jquery4eprints.git
+[submodule "ingredients/latest_additions"]
+	path = ingredients/latest_additions
+	url = ../latest_additions.git

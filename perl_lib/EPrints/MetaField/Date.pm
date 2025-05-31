@@ -338,15 +338,18 @@ sub get_value_label
 sub render_search_input
 {
 	my( $self, $session, $searchfield ) = @_;
-	
-	return $session->render_input_field(
-				class => "ep_form_text",
-				type => "text",
-				name => $searchfield->get_form_prefix,
-				value => $searchfield->get_value,
-				size => 21,
-				maxlength => 21,
-				'aria-labelledby' => $searchfield->get_form_prefix . "_label" );
+
+	return $session->template_phrase( "view:MetaField:Date:render_search_input", {
+		item => {
+			class => "ep_form_text",
+			type => "text",
+			name => $searchfield->get_form_prefix,
+			value => $searchfield->get_value,
+			size => 21,
+			maxlength => 21,
+			'aria-labelledby' => $searchfield->get_form_prefix . "_label",
+		},
+	} );
 }
 
 

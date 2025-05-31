@@ -1,84 +1,153 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html SYSTEM "entities.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:epc="http://eprints.org/ep3/control">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epc="http://eprints.org/ep3/control" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title><epc:pin ref="title" textonly="yes"/> - <epc:phrase ref="archive_name"/></title>
-    <link rel="icon" href="{$config{rel_path}}/favicon.ico" type="image/x-icon"/>
-    <link rel="shortcut icon" href="{$config{rel_path}}/favicon.ico" type="image/x-icon"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>EPrints - <epc:phrase ref="archive_name"/></title>
+    <link rel="icon" href="{$config{rel_path}}/favicon.svg" type="image/svg+xml"/>
+    <link rel="shortcut icon" href="{$config{rel_path}}/favicon.svg" type="image/svg+xml"/>
     <epc:pin ref="head"/>
   </head>
   <body>
     <epc:pin ref="pagetop"/>
     <div id="wrapper">
-      <header>
-        <div class="ep_tm_header ep_noprint">
-          <nav aria-label="Main Navigation">
-            <ul role="menubar" class="ep_tm_menu">
-              <li role="none">
-                <a href="{$config{rel_path}}/" title="{phrase('template/navigation:home:title')}" role="menuitem">
-                  <epc:phrase ref="template/navigation:home"/>
-                </a>
-              </li>
-              <li role="none">
-                <a href="{$config{rel_path}}/information.html" title="{phrase('template/navigation:about:title')}" role="menuitem">
-                  <epc:phrase ref="template/navigation:about"/>
-                </a>
-              </li>
-              <li role="none">
-                <a href="{$config{rel_path}}/view/" title="{phrase('template/navigation:browse:title')}" role="menuitem" menu="ep_tm_menu_browse" aria-haspopup="true" aria-expanded="false" aria-owns="ep_tm_menu_browse">
-                  <epc:phrase ref="template/navigation:browse"/>
-                </a>
-                <ul role="menu" id="ep_tm_menu_browse" style="display:none;">
-                  <li role="none">
-                    <a href="{$config{rel_path}}/view/subjects/" role="menuitem">
-                      <epc:phrase ref="bin/generate_views:indextitleprefix"/>
-                      <epc:phrase ref="viewname_eprint_subjects"/>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
-        
-          <div class="ep_tm_searchbar">
-            <div>
+      <header class="">
+        <nav class="navbar navbar-expand-lg p-0 d-none d-sm-block" style="background: #eeeeee;">
+          <div class="container-fluid ">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav_keyTools" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
+              <span class="navbar-toggler-icon"/>
+            </button>
+	    <div class="collapse navbar-collapse ps-3 text-nowrap" id="navbarNav_keyTools">
+		    <hr class="d-none d-md-block my-1"/>
               <epc:pin ref="login_status"/>
             </div>
-            <div>
-              <epc:pin ref="languages"/>
-              <form method="get" accept-charset="utf-8" action="{$config{rel_cgipath}}/search" role="search" aria-label="Publication simple search">
-                <input class="ep_tm_searchbarbox" size="20" type="text" name="q" aria-labelledby="searchbutton"/>
-                <input class="ep_tm_searchbarbutton" value="{phrase('lib/searchexpression:action_search')}" type="submit" name="_action_search" id="searchbutton"/>
+          </div>
+        </nav>
+        <nav class="navbar navbar-expand-sm p-3 border" style="background: #FFFFFF;">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+              <img src="https://www.eprints.org/uk/wp-content/uploads/EprintsServices2015url-small.png" alt="Bootstrap" width="150"/>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav_mainNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
+              <span class="navbar-toggler-icon"/>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav_mainNav">
+		    <ul role="menu" class="navbar-nav ms-auto">
+	  <hr class="d-block d-sm-none"/>
+		<div class="d-block d-sm-none"><epc:pin ref="login_status"/></div>
+			    <hr class="d-block d-sm-none"/>
+                <li class="nav-item me-4">
+                  <a class="nav-link text-dark" href="{$config{rel_path}}/" title="{phrase('template/navigation:home:title')}" role="menuitem">
+                    <p class="h6" style="font-weight: 900;">
+                      <epc:phrase ref="template/navigation:home"/>
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item me-4">
+                  <a class="nav-link text-dark" href="{$config{rel_path}}/information.html" title="{phrase('template/navigation:about:title')}" role="menuitem">
+                    <p class="h6" style="font-weight: 900;">
+                      <epc:phrase ref="template/navigation:about"/>
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item d-none d-sm-block">
+                  <a class="nav-link text-decoration-none text-dark d-flex" href="{$config{rel_path}}/view/" title="{phrase('template/navigation:browse:title')}" role="menuitem" menu="ep_tm_menu_browse" aria-owns="ep_tm_menu_browse">
+                    <p class="h6" style="font-weight: 900;">
+                      <epc:phrase ref="template/navigation:browse"/>
+                    </p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill m-1 ms-2" viewBox="0 0 16 16">
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                    </svg>
+                  </a>
+                  <ul role="menu" id="ep_tm_menu_browse" style="display:none; position: absolute; right: 0; z-index: 3;" class="list-group m-2">
+                    <a href="{$config{rel_path}}/view/subjects/" role="menuitem" class="list-group-item list-group-item-action p-3">
+                      <epc:phrase ref="bin/generate_views:indextitleprefix"/>
+                      <epc:phrase ref="viewname_eprint_subjects"/>
+	      </a>
+                  </ul>
+	  </li>
+                <li class="nav-item d-block d-sm-none">
+                  <a class="nav-link text-decoration-none text-dark d-flex" href="{$config{rel_path}}/view/" title="{phrase('template/navigation:browse:title')}" role="menuitem" menu="ep_tm_menu_browse" aria-owns="ep_tm_menu_browse">
+                    <p class="h6" style="font-weight: 900;">
+                      <epc:phrase ref="template/navigation:browse"/>
+                    </p>
+                  </a>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <nav class="navbar navbar-expand-lg ps-3 p-2 d-none d-md-block" style="background: #eeeeee;">
+          <div class="container-fluid" style="height: 31px;">
+            <div class="d-flex">
+              <div class="me-4">
+                <a href="/" class="text-decoration-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                    <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6Z"/>
+                  </svg>
+                  <span class="sr-only">Home</span>
+                </a>
+              </div>
+              <div class="me-3">
+                <a href="/" class="text-black text-decoration-none">
+                  <epc:phrase ref="archive_name"/>
+                </a>
+              </div>
+              <div class="me-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+                <span class="sr-only">Breadcrumb</span>
+              </div>
+              <div class="me-3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
+                <epc:pin ref="title"/>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <nav class="navbar navbar-expand-lg bg-dark" style="background: #1A4B73;">
+          <div class="container m-auto w-100 p-4">
+            <div class="d-flex flex-column w-100">
+              <div class="d-flex my-4">
+                <h1 class="py-3 px-5 text-white" style="background: #00000040; text-transform: uppercase; font-weight: 100;">
+                  <epc:pin ref="title"/>
+                </h1>
+              </div>
+              <form method="get" accept-charset="utf-8" action="{$config{rel_cgipath}}/search" role="search" class="input-group input-group-lg mb-3">
+                <input type="text" class="form-control" placeholder="Search Journal articles, titles, dates, authors…" aria-label="Search" name="q"/>
                 <input type="hidden" name="_action_search" value="Search"/>
                 <input type="hidden" name="_order" value="bytitle"/>
                 <input type="hidden" name="basic_srchtype" value="ALL"/>
                 <input type="hidden" name="_satisfyall" value="ALL"/>
+                <button class="btn btn-outline-light" type="submit" name="_action_search" id="button-addon2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                  </svg>
+                  <span class="sr-only">Search</span>
+                </button>
               </form>
             </div>
           </div>
-        </div>
+        </nav>
       </header>
-
       <div id="main_content">
-        <div class="ep_tm_page_content">
-          <h1 id="page-title" class="ep_tm_pagetitle">
-            <epc:pin ref="title"/>
-          </h1>
+        <div class="container p-3">
           <epc:pin ref="page"/>
         </div>
       </div>
-
-      <footer>
-        <div class="ep_tm_footer ep_noprint">
+      <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-3 border-top" id="footer">
+        <div class="col-md-4 d-flex align-items-center p-3">
           <epc:phrase ref="template:about_eprints"/>
-          <div class="ep_tm_eprints_logo">
-            <a rel="external" href="https://eprints.org/software/">
-              <img alt="EPrints Logo" src="{$config{rel_path}}/images/eprintslogo.png"/><img alt="EPrints Flavour Logo" src="{$config{rel_path}}/images/flavour.png" style="width: 28px"/>
-            </a>
-          </div>
         </div>
+        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex p-3">
+          <a rel="external" href="https://eprints.org/software/">
+            <img alt="EPrints Logo" src="{$config{rel_path}}/images/eprintslogo.png"/>
+            <img alt="EPrints Publications Flavour Logo" src="{$config{rel_path}}/images/flavour.png" style="width: 28px"/>
+          </a>
+        </ul>
       </footer>
-    </div> <!-- wrapper -->
+    </div>
   </body>
 </html>

@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no" ?>
 <!DOCTYPE page SYSTEM "entities.dtd" >
 <xpage:page xmlns="http://www.w3.org/1999/xhtml" xmlns:xpage="http://eprints.org/ep3/xpage">
+<xpage:template>default_internal</xpage:template>	
 <xpage:title>Authorisation Required</xpage:title>
 <xpage:body>
 

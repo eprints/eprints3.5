@@ -343,13 +343,9 @@ sub render_action_link
 		edit_phrases => "yes"
 	);
 
-        $opts{class} = defined $opts{class} ? $opts{class} : "ep_tm_key_tools_item_link";
-	my $link = $self->{session}->render_link( $uri, undef, %opts );
-	$link->appendChild(
-		$self->{session}->html_phrase( "lib/session:edit_phrases" )
-	);
-
-	return $link;
+	$opts{uri} = $uri;
+	$opts{link_title} = $self->{session}->html_phrase( "lib/session:edit_phrases" );
+	return $self->SUPER::render_action_link( %opts );
 }
 
 sub render

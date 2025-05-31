@@ -77,9 +77,11 @@ sub render_title
 
 	if( defined( my $user = $self->{session}->current_user ) )
 	{
-		return $self->html_phrase( "title:logged_in",
+		my $item = {
 			user => $user->render_citation( 'login' ),
-		);
+        	};
+
+		return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Login:render_title", { item => $item });
 	}
 	else
 	{
@@ -97,11 +99,8 @@ sub render_action_link
 	}
 	else
 	{
-		my $link = $self->SUPER::render_action_link( %opts );
-		my $uri = URI->new( $link->getAttribute( "href" ) );
-		$uri->query( undef );
-		$link->setAttribute( href => $uri );
-		return $link;
+		$opts{uri} = $self->{session}->config( "http_cgiroot" ) . "/users/home";
+		return $self->SUPER::render_action_link( %opts );
 	}
 }
 

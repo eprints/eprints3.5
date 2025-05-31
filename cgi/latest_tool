@@ -210,7 +210,7 @@ foreach my $item ( @records )
 		$container->appendChild( $div );
 	}
 }
-my $template = defined $conf->{template} ? $conf->{template} : "default";
+my $template = defined $conf->{template} ? $conf->{template} : "default_internal";
 $session->build_page( $title, $page, "latest_tool", undef, $template );
 $session->send_page();
 

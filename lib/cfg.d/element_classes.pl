@@ -9,5 +9,5 @@ $c->{eprint}->{summary_content_class} = {
 };
 
 $c->{item_list_class} = undef;
-$c->{toolbar_class} = "ep_tm_key_tools";
+$c->{toolbar_class} = undef;
 

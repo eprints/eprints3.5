@@ -69,17 +69,10 @@ sub from
 
 sub render_action_link
 {
-	my( $self ) = @_;
+	my( $self, %opts ) = @_;
 
-	my $repo = $self->{session};
-
-	my $link = $repo->xml->create_element( "a",
-		href => $repo->config( "http_cgiroot" ) . "/register",
-		class => "ep_tm_key_tools_item_link"
-	);
-	$link->appendChild( $self->render_title );
-
-	return $link;
+	$opts{uri} = $self->{session}->config( "http_cgiroot" ) . "/register";
+	return $self->SUPER::render_action_link( %opts );
 }
 
 sub action_register
