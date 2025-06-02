@@ -117,7 +117,6 @@ sub render
 
 	$sth->execute;	
 	
-	my %eprint_cbtr_ids;
 	my $primary_id = encode_base64( $self->{processor}->{entity}->get_value( 'id_type' ) ). ":" . encode_base64( $self->{processor}->{entity}->get_value( 'id_value' ) );
 	my @eprint_cbtr_order = ( $primary_id );
  	my %eprint_cbtr_ids = ( $primary_id => [] );
