@@ -223,11 +223,6 @@ my $INFO = {
 		class => "EPrints::DataObj::File",
 		datestamp => "mtime",
 	},
-	import => {
-		sqlname => "import",
-		class => "EPrints::DataObj::Import",
-		datestamp => "datestamp",
-	},
 	metafield => {
 		sqlname => "mf", # identifiers get too long
 		class => "EPrints::DataObj::MetaField",
@@ -362,17 +357,28 @@ my $INFO = {
 		import => 1,
 		datestamp => "datestamp",
 	},
-	triple => {
-		sqlname => "triple",
-		class => "EPrints::DataObj::Triple",
-		import => 1,
-	},
 	request => {
 		sqlname => "request",	
 		class => "EPrints::DataObj::Request",
 		import => 1,
 		index => 1,
 		datestamp => "datestamp",
+	},
+	person => {
+		sqlname => "person",
+		class => "EPrints::DataObj::Person",
+		import => 1,
+		index => 1,
+		order => 1,
+		datestamp => "lastmod",
+	},
+	organisation => {
+		sqlname => "organisation",
+		class => "EPrints::DataObj::Organisation",
+		import => 1,
+		index => 1,
+		order => 1,
+		datestamp => "lastmod",
 	},
 };
 

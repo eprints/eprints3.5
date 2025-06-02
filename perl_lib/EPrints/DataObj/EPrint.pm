@@ -133,10 +133,6 @@ this record.
 The ID of the user who deposited this eprint (if any). Scripted importing
 could cause this not to be set.
 
-=item importid (itemref)
-
-The ID of the import from which this eprint was imported. (Rarely used).
-
 =item sword_depositor (itemref)
 
 The ID of the user who deposited this eprint through EPrints 
@@ -300,8 +296,6 @@ sub get_system_field_info
 
 	{ name=>"userid", type=>"itemref", 
 		datasetid=>"user", required=>0 },
-
-	{ name=>"importid", type=>"itemref", required=>0, datasetid=>"import" },
 
 	{ name=>"source", type=>"text", required=>0, },
 
@@ -620,23 +614,6 @@ sub update_triggers
 	if( $self->{non_volatile_change} )
 	{
 		$self->set_value( "lastmod", EPrints::Time::get_iso_timestamp() );
-
-		my $action = "clear_triples";
-		if( $self->value( "eprint_status" ) eq "archive" )
-		{
-			$action = "update_triples";
-		}
-
-		my $user = $self->{session}->current_user;
-		my $userid;
-		$userid = $user->id if defined $user;
-
-		EPrints::DataObj::EventQueue->create_unique( $self->{session}, {
-			pluginid => "Event::RDF",
-			action => $action,
-			params => [$self->internal_uri],
-			userid => $userid,
-		});
 	}
 }
 
@@ -1051,7 +1028,6 @@ If C<under_construction> is C<false>:
 
 If C<non_volatile_change> is C<true>:
  - B<lastmod> field updated
- - triples update queued
 
 If C<under_construction> is C<false> and C<non_volatile_change> is 
 C<true>:
@@ -2598,7 +2574,7 @@ sub render_fileinfo
 ######################################################################
 =pod
 
-=item $path = EPrints::DataObj::eprintid_to_path( $id )
+=item $path = EPrints::DataObj::EPrint::eprintid_to_path( $id )
 
 Returns path of the storage directory based on the eprint C<$id> 
 provided.

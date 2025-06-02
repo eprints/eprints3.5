@@ -112,14 +112,6 @@ if( $path[0] =~ m/^\d+$/ && scalar @path == 1 )
 {
 	export_dataobj( $repository, $plugin, \%arguments, "eprint", $path[0] );
 }
-elsif( $path[0] eq "repository" && scalar @path == 1 )
-{
-	export_rdf_repository( $repository, $plugin, \%arguments );
-}
-elsif( $path[0] eq "dump" && scalar @path == 1 )
-{
-	export_rdf_dump( $repository, $plugin, \%arguments );
-}
 elsif( $path[0] eq "subject" && scalar @path == 2 )
 {
 	export_subject( $repository, $plugin, \%arguments, $path[1] );
@@ -127,10 +119,6 @@ elsif( $path[0] eq "subject" && scalar @path == 2 )
 elsif( $path[0] eq "records" && scalar @path == 1) 
 {
 	export_eprints( $repository, $plugin, \%arguments );
-}
-elsif( $path[1] =~ m/^ext-/ && scalar @path == 2 )
-{
-	export_rdf_resource( $repository, $plugin, \%arguments, $path[0], $path[1] );
 }
 elsif( scalar @path == 2 )
 {
@@ -169,53 +157,6 @@ sub export_eprints
 	$plugin->output_list( fh=>\*STDOUT, list=>$list );
 }
 
-
-# Dump ALL eprint triples. Not Subject or repository ones, though.
-sub export_rdf_dump
-{
-	my( $repository, $plugin, $args ) = @_;
-
-	if( !$plugin->can_accept( "list/triple" ) )
-	{
-		$repository->not_found;
-		exit;
-	}
-
-	my $searchexp = EPrints::Search->new(
-			allow_blank => 1,
-			dataset => $repository->dataset( "triple" ),
-			session => $repository );
-	my $list = $searchexp->perform_search;
-	$plugin->initialise_fh( \*STDOUT );
-	$repository->send_http_header( "content_type"=>$plugin->param("mimetype") );
-	$plugin->output_list( fh=>\*STDOUT, list=>$list );
-}
-
-sub export_rdf_repository
-{
-	my( $repository, $plugin, $args ) = @_;
-
-	if( !$plugin->can_accept( "list/triple" ) )
-	{
-		$repository->not_found;
-		exit;
-	}
-
-	my $repository_uri = "<".$repository->config( "base_url" )."/id/repository>";
-
-	my $graph = EPrints::RDFGraph->new( repository=>$repository );
-	$graph->add( 
-		  subject => "<>",
-		predicate => "foaf:primaryTopic",
-		   object => $repository_uri );
-	$graph->add_boilerplate_triples();	
-	$graph->add_repository_triples();
-
-	$repository->send_http_header( "content_type"=>$plugin->param("mimetype") );
-	$plugin->initialise_fh( \*STDOUT );
-	print $plugin->output_graph( $graph );
-}
-
 sub export_subject
 {
 	my( $repository, $plugin, $args, $subject_id ) = @_;
@@ -246,50 +187,6 @@ sub export_subject
 	$plugin->initialise_fh( \*STDOUT );
 
 	print $list->export( $plugin->get_subtype, %{$args} );
-}
-
-sub export_rdf_resource
-{
-	my( $repository, $plugin, $args, $resource_type, $resource_id ) = @_;
-
-	if( !$plugin->can_accept( "list/triple" ) )
-	{
-		$repository->not_found;
-		exit;
-	}
-
-	my $uri = "epid:$resource_type/$resource_id";
-	my $list = $repository->dataset( "triple" )->search( 
-		filters => [
-			{
-				meta_fields => [qw/ secondary_resource /],
-				value => $uri,
-			}
-		],
-	);
-
-	if( !$list->count )
-	{
-		$repository->not_found;
-		exit;
-	}
-
-	my $graph = EPrints::RDFGraph->new( repository=>$repository );
-	$graph->add( 
-		  subject => "<>",
-		predicate => "foaf:primaryTopic",
-		   object => $uri );
-	$graph->add_boilerplate_triples();	
-
-	$list->map( sub{ 
-		my( $session, $dataset, $dataobj ) = @_;
-		$graph->add_dataobj_triples( $dataobj );
-	} );
-
-	$repository->send_http_header( "content_type"=>$plugin->param("mimetype") );
-	$plugin->initialise_fh( \*STDOUT );
-	
-	print $plugin->output_graph( $graph, %{$args} );
 }
 
 sub export_dataobj

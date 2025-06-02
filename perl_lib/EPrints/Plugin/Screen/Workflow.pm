@@ -21,12 +21,7 @@ sub new
 
 	$self->{icon} = "action_view.png";
 
-	$self->{appears} = [
-#		{
-#			place => "import_item_actions",
-#			position => 200,
-#		},
-	];
+	$self->{appears} = [];
 
 	$self->{actions} = [qw/ /];
 

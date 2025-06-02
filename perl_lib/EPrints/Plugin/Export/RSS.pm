@@ -35,12 +35,10 @@ sub output_list
 
 	my $session = $plugin->{session};
 
-	my $response = $session->make_element( "rdf:RDF",
-		"xmlns:rdf"=>"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-		"xmlns"=>"http://purl.org/rss/1.0/" );
+	my $response = $session->make_element( "rss",
+		"version"=>"1.0" );
 
-	my $channel = $session->make_element( "channel",
-		"rdf:about"=>$session->get_full_url );
+	my $channel = $session->make_element( "channel" );
 	$response->appendChild( $channel );
 
 	my $title = $session->phrase( "archive_name" );
@@ -57,10 +55,12 @@ sub output_list
 		"link",
 		$session->config( "frontpage" ) ) );
 
+	my $desc = $session->config( "oai","content","text" );
+	$desc ||= '';
 	$channel->appendChild( $session->render_data_element(
 		4,
 		"description", 
-		$session->config( "oai","content","text" ) ) );
+		$desc ) );
 
 	$channel->appendChild( $session->render_data_element(
 		4,
@@ -84,20 +84,11 @@ sub output_list
 
 	$channel->appendChild( $session->make_text( "\n    " ) );
 	
-	my $items = $session->make_element( "items" );
-	$channel->appendChild( $items );
-	my $seq = $session->make_element( "rdf:Seq" );
-	$items->appendChild( $seq );
 
 	$list->map(sub {
 		my( undef, undef, $eprint ) = @_;
 
-		my $li = $session->make_element( "rdf:li",
-			"rdf:resource"=>$eprint->get_url );
-		$seq->appendChild( $li );
-
-		my $item = $session->make_element( "item",
-			"rdf:about"=>$eprint->get_url );
+		my $item = $session->make_element( "item" );
 
 		$item->appendChild( $session->render_data_element(
 			2,

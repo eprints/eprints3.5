@@ -179,3 +179,24 @@ div.ep_table {
 .ep_no_border {
 	border: 0;
 }
+
+.ep_entity_name_contribs > .ep_search_result > div,
+.ep_entity_id_contribs > .ep_search_result > div {
+	border: 0;
+}
+
+.ep_entity_name_contribs > .ep_search_result > div:nth-child(2),
+.ep_entity_id_contribs > .ep_search_result > div:nth-child(2) {
+	width: 100%;
+}
+
+.ep_entity_name_contribs > .ep_search_result:nth-child(2n+1),
+.ep_entity_id_contribs > .ep_search_result:nth-child(2n+1) {
+	background-color: #e0e0e0;
+}
+
+.ep_entity_names,
+.ep_entity_ids  {
+	padding-top: 2em;
+	text-align: center;
+}

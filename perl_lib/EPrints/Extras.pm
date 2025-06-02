@@ -172,7 +172,14 @@ sub render_lookup_list
 			my( $name, $value ) = @values[$i,$i+1];
 			my $li = $session->make_element( "li", id => $name );
 			$ul->appendChild( $li );
-			$li->appendChild( $session->make_text( $value ) );
+			if ( ref( $value ) eq "XML::LibXML::DocumentFragment" )
+			{
+				$li->appendChild( $value );
+			}
+			else
+			{
+				$li->appendChild( $session->make_text( $value ) );
+			}
 		}
 	}
 

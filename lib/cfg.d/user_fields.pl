@@ -8,36 +8,11 @@ push @{$c->{fields}->{user}},
 },
 
 {
-	name => 'dept',
-	type => 'text',
-},
-
-{
-	name => 'org',
-	type => 'text',
-},
-
-{
-	name => 'address',
-	type => 'longtext',
-	input_rows => 5,
-},
-
-{
-	name => 'country',
-	type => 'text',
-},
-
-{
 	name => 'hideemail',
 	input_style => 'radio',
 	type => 'boolean',
 },
 
-{
-	name => 'url',
-	type => 'url',
-},
 ; 
 
 =head1 COPYRIGHT

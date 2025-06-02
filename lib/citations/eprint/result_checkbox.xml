@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<!-- 
+	Neat citation for eprints used in search results.
+-->
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control" type="div_table_row">
+  <div class="ep_search_result">
+    <div><epc:print expr="$n" />.</div>
+    <div>
+      <a href="{control_url($item)}" target="_blank">
+        <epc:print expr="$item.citation('default')" />
+      </a>
+    </div>
+    <div>
+	  <div class="ep_search_checkbox">
+        <input type="checkbox" id="ep_checkbox_eprint_{$item.property('eprintid')}" name="eprint:{$item.property('eprintid')}"/>
+	  </div>
+    </div>
+  </div>
+</cite:citation>

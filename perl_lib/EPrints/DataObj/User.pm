@@ -89,7 +89,7 @@ appear to have been created at midnight.
 
 =item email (email)
 
-The email address of this user. Unique within the repository. 
+The email address of this user. Unique within the repository.
 
 =item lang (arclanguage) 
 
@@ -114,14 +114,6 @@ review. never, daily, weekly or monthly.
 Only relevant to staff accounts. If set to true then emails are 
 sent even if there are no items matching the scope.
 
-=item latitude (float)
-
-The latitude of the location where the user is based.
-
-=item longitude (float)
-
-The longitude of the location where the user is based.
-
 =item preference (storable)
 
 User preferences which need to be persistent. Stored as a 
@@ -137,6 +129,10 @@ similar forms from being spammed.
 =head1 REFERENCES AND RELATED OBJECTS
 
 =over 4
+
+=item personid (itemref)
+
+The ID number of the person associated with this user account.
 
 =item saved_searches (subobject, multiple)
 
@@ -238,8 +234,12 @@ my $PRIVMAP =
         "indexer/start",
         "indexer/force_start",
         "create_user",
+        "create_person",
+        "create_organisation",
         "subject/edit",
         "staff/user_search",
+        "staff/person_search",
+        "staff/organisation_search",
         "staff/history_search",
         "staff/issue_search",
         "config/view",
@@ -254,7 +254,6 @@ my $PRIVMAP =
         "config/view/apache",
         "config/view/perl",
         "config/test_email",
-        "config/imports",
         "config/add_field",
         "config/remove_field",
         "config/regen_abstracts",
@@ -281,8 +280,6 @@ my $PRIVMAP =
         "file/destroy",
         "file/export",
         "file/view",
-        "import/view",
-        "import/edit",
         "saved_search/destroy",
         "saved_search/details",
         "saved_search/edit",
@@ -295,6 +292,16 @@ my $PRIVMAP =
         "user/destroy",
         "user/history",
         "user/staff/edit",
+        "person/destroy",
+        "person/details",
+        "person/edit",
+        "person/export",
+        "person/view",
+        "organisation/destroy",
+        "organisation/details",
+        "organisation/edit",
+        "organisation/export",
+        "organisation/view",
         "repository/epm-submit", #EPrints Package Manager - Bazaar Package Submission
     ],
 
@@ -660,6 +667,8 @@ sub get_system_field_info
 
         { name=>"email", type=>"email", required=>1 },
 
+        { name=>"personid", type=>"itemref", datasetid=>"person" },
+
         { name=>"lang", type=>"arclanguage", required=>0, input_rows=>1 },
 
         { name => "editperms",
@@ -683,10 +692,6 @@ sub get_system_field_info
 
         { name=>"items_fields", type=>"fields", datasetid=>"eprint",
             multiple=>1, input_ordered=>1, required=>1, volatile=>1 },
-
-        { name=>"latitude", type=>"float", required=>0 },
-
-        { name=>"longitude", type=>"float", required=>0 },
 
         {
             name => "preference",
