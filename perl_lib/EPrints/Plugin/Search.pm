@@ -4,8 +4,6 @@ package EPrints::Plugin::Search;
 
 use strict;
 
-use List::Util qw( first );
-
 =head1 NAME
 
 EPrints::Plugin::Search - pluggable search engines
@@ -582,8 +580,17 @@ sub find_matching_embed
 	return '' if scalar(@regex_parts) == 0;
 	my $regex = join '|', @regex_parts;
 
-	my $substring = first { /\b$regex\b/i } split /\.(\W|$)/, $full_text;
-	$substring =~ s/^\s*//;
+	# Find the sentence with the most matches
+	my $substring = '';
+	my $substring_matches = 0;
+	for my $sentence (split /(?:\.(?:\W|$))|\?|!/, $full_text) {
+		my @matches = $sentence =~ /\b$regex\b/gi;
+		if( scalar @matches > $substring_matches ) {
+			$substring = $sentence;
+			$substring_matches = scalar @matches;
+		}
+	}
+	$substring =~ s/^\s*//; # Remove any leading spaces
 	$substring .= '.' if $substring;
 
 	return $substring;
