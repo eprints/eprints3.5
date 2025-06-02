@@ -5,8 +5,6 @@ $c->{search}->{user} =
 		{ meta_fields => [ "name", ] },
 		{ meta_fields => [ "username", ] },
 		{ meta_fields => [ "userid", ] },
-		{ meta_fields => [ "dept","org" ] },
-		{ meta_fields => [ "address","country", ] },
 		{ meta_fields => [ "usertype", ] },
 		{ meta_fields => [ "email" ] },
 	],

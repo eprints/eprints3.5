@@ -1196,6 +1196,10 @@ Enter a URL to capture a file from: <epc:pin name="url"/><br/>
     <epp:phrase id="lib/submissionform:action_remove">Remove</epp:phrase>
     <epp:phrase id="lib/submissionform:action_create">Create</epp:phrase>
     <epp:phrase id="lib/submissionform:action_later">Deposit Item Later</epp:phrase>
+    <epp:phrase id="lib/submissionform:action_update_names">Update Names</epp:phrase>
+	<epp:phrase id="lib/submissionform:action_update_ids">Update IDs</epp:phrase>
+    <epp:phrase id="lib/submissionform:select_entity_name">Change to name</epp:phrase>
+    <epp:phrase id="lib/submissionform:select_entity_id">Change to ID</epp:phrase>
     <epp:phrase id="lib/submissionform:title_type">Edit item: Item Type</epp:phrase>
     <epp:phrase id="lib/submissionform:title_meta">Edit item: Bibliographic Information</epp:phrase>
     <epp:phrase id="lib/submissionform:title_linking">Edit item: Succession/Commentary</epp:phrase>
@@ -1889,10 +1893,24 @@ Titles and Help for the System Fields
     <epp:phrase id="eprint_fieldopt_eprint_status_deletion">Retired</epp:phrase>
     <epp:phrase id="eprint_fieldopt_eprint_status_archive">Live Archive</epp:phrase>
     <epp:phrase id="eprint_fieldname_userid">Depositing User</epp:phrase>
-    <epp:phrase id="eprint_fieldname_importid">Import Collection</epp:phrase>
-    <epp:phrase id="eprint_fieldhelp_importid"/>
     <epp:phrase id="eprint_fieldname_source_id">Source Identifier</epp:phrase>
     <epp:phrase id="eprint_fieldname_contributors_name">Name</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions">Contributions</epp:phrase>
+    <epp:phrase id="eprint_fieldhelp_contributions">Contributions people and/or organisations have made to this item.  A combination of the type of contribution and metadata about the person/organisation so they can uniquely identified with your institution's archive.</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_type">Type</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor">Contributor</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor_name">Contributor Name</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor_id_value">Contributor ID</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor_id_type">Contributor ID Type</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_id_type_email">Email</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_id_type_username">Username</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_id_type_ror">ROR</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_id_type_url">URL</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_datasetid_person">Person</epp:phrase>
+    <epp:phrase id="eprint_fieldopt_contributions_contributor_datasetid_organisation">Organisation</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor_datasetid">Entity Type</epp:phrase>
+    <epp:phrase id="eprint_fieldname_contributions_contributor_entityid">Entity</epp:phrase>
+    <epp:phrase id="contributions:unset">Unset</epp:phrase>
     <epp:phrase id="eprint_fieldname_source">Source</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_source"/>
     <epp:phrase id="eprint_fieldname_dir">Directory</epp:phrase>
@@ -1966,13 +1984,6 @@ Titles and Help for the System Fields
     <epp:phrase id="eprint_fieldname__fulltext_">Full Text</epp:phrase>
     <epp:phrase id="eprint_fieldname_documents">Documents</epp:phrase>
 
-    <epp:phrase id="eprint_fieldname_rdf">RDF</epp:phrase>
-    <epp:phrase id="eprint_fieldname_rdf_object">Object</epp:phrase>
-    <epp:phrase id="eprint_fieldname_rdf_predicate">Predicate</epp:phrase>
-    <epp:phrase id="eprint_fieldname_rdf_resource">Resource</epp:phrase>
-    <epp:phrase id="eprint_fieldname_rdf_subject">Subject</epp:phrase>
-    <epp:phrase id="eprint_fieldname_rdf_type">Datatype</epp:phrase>
-
     <epp:phrase id="eprint_fieldname_files">Files</epp:phrase>
     <epp:phrase id="eprint_fieldhelp_files"/>
 
@@ -2033,10 +2044,6 @@ Titles and Help for the System Fields
     <epp:phrase id="user_radio_mailempty_true">Yes, mail me when there is nothing under review within my scope.</epp:phrase>
     <epp:phrase id="user_radio_mailempty_false">No. Only mail me when there is something under review within my scope.</epp:phrase>
     <epp:phrase id="user_radio_mailempty"><label><epc:pin name="true"/><epc:phrase ref="user_radio_mailempty_true"/></label><br/><label><epc:pin name="false"/><epc:phrase ref="user_radio_mailempty_false"/></label></epp:phrase>
-    <epp:phrase id="user_fieldname_latitude">Latitude</epp:phrase>
-    <epp:phrase id="user_fieldname_longitude">Longitude</epp:phrase>
-    <epp:phrase id="user_fieldhelp_latitude">The Latitude associated with this user. Southern latitudes should be expressed as a negative.</epp:phrase>
-    <epp:phrase id="user_fieldhelp_longitude">The Longitude associated with this user. Western longitudes should be expressed as a negative.</epp:phrase>
 
     <epp:phrase id="document_fieldname_docid">ID of Document</epp:phrase>
     <epp:phrase id="document_fieldhelp_docid"/>
@@ -2138,15 +2145,12 @@ Titles and Help for the System Fields
     <epp:phrase id="datasetname_buffer">Review</epp:phrase>
     <epp:phrase id="datasetname_inbox">User Workareas</epp:phrase>
     <epp:phrase id="datasetname_file">Files</epp:phrase>
-    <epp:phrase id="datasetname_import">Imports</epp:phrase>
     <epp:phrase id="datasets_typename_eprint" ref="datasetname_eprint"/>
     <epp:phrase id="datasets_typename_document" ref="datasetname_document"/>
     <epp:phrase id="datasets_typename_saved_search" ref="datasetname_saved_search"/>
     <epp:phrase id="datasets_typename_user" ref="datasetname_user"/>
     <epp:phrase id="datasets_typename_file" ref="datasetname_file"/>
-    <epp:phrase id="datasets_typename_import" ref="datasetname_import"/>
     <epp:phrase id="datasets_typename_citationcache" ref="datasetname_citationcache"/>
-    <epp:phrase id="datasets_typename_triple" ref="datasetname_triple"/>
     <epp:phrase id="datasets_typename_upload_progress" ref="datasetname_upload_progress"/>
 
 <!-- Plugin phrases -->
@@ -2249,6 +2253,25 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/NewUser:user_exists">A user with the username "<epc:pin name="username"/>" already exists!</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewUser:db_error">Error registering user.</epp:phrase>
 
+    <epp:phrase id="Plugin/Screen/NewPerson:blurb"><p>Create a new real-world person.</p></epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:title">Create person</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:description">Create a new real-world person.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:action:create:title">Create Person</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:action:cancel:title">Cancel</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:no_id_value">No ID entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:no_id_type">No ID type entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:person_exists">A person with the ID "<epc:pin name="id_value"/>" of type  "<epc:pin name="id_type"/>" already exists!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewPerson:db_error">Error adding person.</epp:phrase>
+
+    <epp:phrase id="Plugin/Screen/NewOrganisation:blurb"><p>Create a new real-world organisation.</p></epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:title">Create organisation</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:description">Create a new real-world organisation.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:action:create:title">Create Organisation</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:action:cancel:title">Cancel</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:no_id_value">No ID entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:no_id_type">No ID type entered!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:person_exists">An organisation with the ID "<epc:pin name="id_value"/>" of type  "<epc:pin name="id_type"/>" already exists!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:db_error">Error adding organisation.</epp:phrase>
 
     <epp:phrase id="Plugin/Screen/NewEPrint:title" ref="Plugin/Screen/NewEPrint:action:create:title"/>
     <epp:phrase id="Plugin/Screen/NewEPrint:action:create:title">New Item</epp:phrase>
@@ -2333,6 +2356,16 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/Import/Upload:encoding_label" ref="Plugin/Screen/Import:encoding_label"/>
 
 
+    <!-- entity screens -->
+    <epp:phrase id="Plugin/Screen/Entity/View:title">View Entity</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Details:title">Details</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Details:other">Other defined fields</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateNames:title">Update Names</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateNames:description">Update the names for this entity across the EPrint items in which it appears.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateNames:updated_names">Entity's name was updated to "<epc:pin name="to"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:title">Update IDs</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:description">Update the IDs for this entity across the EPrint items in which it appears.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:updated_ids">Entity's ID was updated to the <epc:pin name="to_type"/> "<epc:pin name="to_value"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
      <!-- eprint action screens -->
 
     <epp:phrase id="Plugin/Screen/EPrint/Deposit:title">Deposit item</epp:phrase>
@@ -2411,6 +2444,7 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/EPrint/Staff/Details:title">Details</epp:phrase>
 
     <epp:phrase id="Plugin/Screen/EPrint/Actions:title">Actions</epp:phrase>
+	<epp:phrase id="Plugin/Screen/Entity/Actions:title">Actions</epp:phrase>
 
     <epp:phrase id="Plugin/Screen/EPrint/Actions/Editor:title">Editorial Actions</epp:phrase>
 
@@ -3155,6 +3189,10 @@ Titles and Help for the System Fields
 <epp:phrase id="datasethelp_eprint">Used to store EPrints records</epp:phrase>
 <epp:phrase id="datasetname_user">Users</epp:phrase>
 <epp:phrase id="datasethelp_user">Used to store info on EPrints users</epp:phrase>
+<epp:phrase id="datasetname_person">People</epp:phrase>
+<epp:phrase id="datasethelp_person">Used to represent real-world people.</epp:phrase>
+<epp:phrase id="datasetname_organisation">Organisations</epp:phrase>
+<epp:phrase id="datasethelp_organisation">Used to represent real-world organisations.</epp:phrase>
 <epp:phrase id="datasetname_subject">Subjects</epp:phrase>
 <epp:phrase id="datasethelp_subject">Used to store the hierarchical subject tree(s)</epp:phrase>
 <epp:phrase id="datasetname_document">Documents</epp:phrase>
@@ -3173,14 +3211,11 @@ Titles and Help for the System Fields
 <epp:phrase id="datasethelp_history">Stores information about revisions made to objects (eprints, users etc.)</epp:phrase>
 <epp:phrase id="datasetname_request">Requests</epp:phrase>
 <epp:phrase id="datasethelp_request">Stores requests made for full-texts, changes, new user accounts, etc.</epp:phrase>
-<epp:phrase id="datasethelp_import">Stores the details of an import.</epp:phrase>
 <epp:phrase id="datasethelp_file">Technical data on files stored.</epp:phrase>
 <epp:phrase id="datasetname_event_queue">Tasks</epp:phrase>
 <epp:phrase id="datasethelp_event_queue">Scheduled tasks for the indexer process.</epp:phrase>
 <epp:phrase id="datasetname_citationcache">Citation Caches</epp:phrase>
 <epp:phrase id="datasethelp_citationcache">Caches of citations for objects (eprints, users, etc.)</epp:phrase>
-<epp:phrase id="datasetname_triple">Triples</epp:phrase>
-<epp:phrase id="datasethelp_triple">Subject-Predicate-Object annotations defining relationships between objects.</epp:phrase>
 <epp:phrase id="datasetname_upload_progress">Upload Progresses</epp:phrase>
 <epp:phrase id="datasethelp_upload_progress">The progress of the upload of a file.</epp:phrase>
 
@@ -3258,24 +3293,6 @@ Titles and Help for the System Fields
 <epp:phrase id="loginticket_fieldname_time">Created at</epp:phrase>
 <epp:phrase id="loginticket_fieldname_userid">User ID</epp:phrase>
 
-<!-- Triple -->
-<epp:phrase id="triple_fieldname_lang">Language</epp:phrase>
-<epp:phrase id="triple_fieldhelp_lang"/>
-<epp:phrase id="triple_fieldname_object">Object</epp:phrase>
-<epp:phrase id="triple_fieldhelp_object"/>
-<epp:phrase id="triple_fieldname_predicate">Predicate</epp:phrase>
-<epp:phrase id="triple_fieldhelp_predicate"/>
-<epp:phrase id="triple_fieldname_primary_resource">Primary resource</epp:phrase>
-<epp:phrase id="triple_fieldhelp_primary_resource"/>
-<epp:phrase id="triple_fieldname_secondary_resource">Secondary resource</epp:phrase>
-<epp:phrase id="triple_fieldhelp_secondary_resource"/>
-<epp:phrase id="triple_fieldname_subject">Subject</epp:phrase>
-<epp:phrase id="triple_fieldhelp_subject"/>
-<epp:phrase id="triple_fieldname_tripleid">Triple ID</epp:phrase>
-<epp:phrase id="triple_fieldhelp_tripleid"/>
-<epp:phrase id="triple_fieldname_type">Type</epp:phrase>
-<epp:phrase id="triple_fieldhelp_type"/>
-
 <!-- Upload Progress -->
 <epp:phrase id="upload_progress_fieldname_expires" ref="loginticket_fieldname_expires"/>
 <epp:phrase id="upload_progress_fieldhelp_expires"/>
@@ -3299,6 +3316,9 @@ Titles and Help for the System Fields
     <epp:phrase id="user_fieldhelp_name_given"/>
     <epp:phrase id="user_fieldhelp_name_family"/>
 
+    <epp:phrase id="user_fieldname_personid">Person</epp:phrase>
+    <epp:phrase id="user_fieldhelp_personid">The real-world person associated with this user account.</epp:phrase>
+
     <epp:phrase id="user_fieldname_os">Operating System</epp:phrase>
     <epp:phrase id="user_fieldhelp_os"/>
     <epp:phrase id="user_fieldopt_os_win">Windows/DOS</epp:phrase>
@@ -3312,22 +3332,6 @@ Titles and Help for the System Fields
     <epp:phrase id="user_radio_hideemail_false">Make email visible to all.</epp:phrase>
     <epp:phrase id="user_radio_hideemail_true">Hide email to all except repository administrators.</epp:phrase>
     <epp:phrase id="user_radio_hideemail"><label><epc:pin name="false"/><epc:phrase ref="user_radio_hideemail_false"/></label><br/><label><epc:pin name="true"/><epc:phrase ref="user_radio_hideemail_true"/></label></epp:phrase>
-
-
-    <epp:phrase id="user_fieldname_dept">Department</epp:phrase>
-    <epp:phrase id="user_fieldhelp_dept"/>
-
-    <epp:phrase id="user_fieldname_org">Organisation</epp:phrase>
-    <epp:phrase id="user_fieldhelp_org"/>
-
-    <epp:phrase id="user_fieldname_address">Address</epp:phrase>
-    <epp:phrase id="user_fieldhelp_address"/>
-
-    <epp:phrase id="user_fieldname_country">Country</epp:phrase>
-    <epp:phrase id="user_fieldhelp_country"/>
-
-    <epp:phrase id="user_fieldname_url">Homepage URL</epp:phrase>
-    <epp:phrase id="user_fieldhelp_url"/>
 
     <epp:phrase id="user_fieldname_expertise">Expertise</epp:phrase>
     <epp:phrase id="user_fieldhelp_expertise">Please list keyword/phrases describing your areas of specialisation using the terms likely to be used by someone searching for work in those areas. Avoid over-general terms (`chemistry') and over-particular terms (`my non-quantal theory of chemical reactions') that no one is likely to search on. Enter as many keyword/phrases as you wish.</epp:phrase>
@@ -3383,20 +3387,96 @@ Titles and Help for the System Fields
     <epp:phrase id="warnings:no_documents">You have not <span class="ep_problem_field:documents">uploaded any documents</span>. While this is not essential, it is strongly recommended.</epp:phrase>
     <epp:phrase id="warnings:no_contact_email">Not all the documents in this record are available to the general public. We suggest you provide a <span class="ep_problem_field:contact_email">contact email address</span> which will allow people to request a copy directly from you.</epp:phrase>
 
-    <epp:phrase id="import_fieldname_importid">ID</epp:phrase>
-    <epp:phrase id="import_fieldname_datestamp">Date</epp:phrase>
-    <epp:phrase id="import_fieldname_userid">User ID</epp:phrase>
-    <epp:phrase id="import_fieldname_source_repository">Source Repository</epp:phrase>
-    <epp:phrase id="import_fieldname_description">Description</epp:phrase>
-    <epp:phrase id="import_fieldname_last_run">Last Run</epp:phrase>
-    <epp:phrase id="import_fieldname_last_success">Last Successful Import</epp:phrase>
-    <epp:phrase id="import_fieldname_url">URL</epp:phrase>
 
+<!-- Person Field names -->
+    <epp:phrase id="person_fieldname_personid">Person ID Number</epp:phrase>
+    <epp:phrase id="person_fieldname_ids">Identifiers</epp:phrase>
+    <epp:phrase id="person_fieldname_ids_id">Identifier Values</epp:phrase>
+    <epp:phrase id="person_fieldname_ids_id_type">Identifier Types</epp:phrase>
+    <epp:phrase id="person_fieldname_id_value">Primary Identifier</epp:phrase>
+    <epp:phrase id="person_fieldname_id_type">Primary Identifier Type</epp:phrase>
+    <epp:phrase id="person_id_type_typename_email">Email</epp:phrase>
+    <epp:phrase id="person_id_type_typename_username">Username</epp:phrase>
+    <epp:phrase id="person_fieldname_name">Primary Name</epp:phrase>
+    <epp:phrase id="person_fieldname_names">Names</epp:phrase>
+    <epp:phrase id="person_fieldname_names_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_names_from">From</epp:phrase>
+    <epp:phrase id="person_fieldname_names_to">To</epp:phrase>
+    <epp:phrase id="person_fieldname_dept">Department</epp:phrase>
+    <epp:phrase id="person_fieldname_organisation">Organisation</epp:phrase>
+    <epp:phrase id="person_fieldname_address">Address</epp:phrase>
+    <epp:phrase id="person_fieldname_country">Country</epp:phrase>
+    <epp:phrase id="person_fieldname_url">Homepage URL</epp:phrase>
+    <epp:phrase id="person_fieldname_lastmod">Last Modified</epp:phrase>
+
+    <epp:phrase id="person_fieldhelp_name" />
+    <epp:phrase id="person_fieldhelp_names">The full names of the person with option date spans fro names used in thge past.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are. (E.g. email address, website URL, etc.)</epp:phrase>
+    <epp:phrase id="person_fieldhelp_dept"/>
+    <epp:phrase id="person_fieldhelp_organisation"/>
+    <epp:phrase id="person_fieldhelp_address"/>
+    <epp:phrase id="person_fieldhelp_country"/>
+    <epp:phrase id="person_fieldhelp_url"/>
+
+	<epp:phrase id="Plugin/Screen/Staff/PersonSearch:title">Search people</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Staff/PersonSearch:description">Search for people represented of this repository.</epp:phrase>
+	<epp:phrase id="searchfield_name_ids_id">All Identifiers</epp:phrase>
+	<epp:phrase id="searchfield_name_names_name">All Names</epp:phrase>
+	<epp:phrase id="searchfield_name_organisation.names_name">Organisation Name</epp:phrase>
+	<epp:phrase id="searchfield_name_organisation.ids_id">Organisation ID</epp:phrase>
+	<epp:phrase id="ordername_person_byname">By name</epp:phrase>
+	<epp:phrase id="ordername_person_bylastmod">By most recently modified</epp:phrase>
+	<epp:phrase id="ordername_person_byrevlastmod">By least recently modified</epp:phrase>
+
+    <epp:phrase id="person:workflow:stage:default:title">Information</epp:phrase>
+    <epp:phrase id="person_section_other">Other Details</epp:phrase>
+    <epp:phrase id="lib/citation:unnamed_person_id">Unnamed person with</epp:phrase>
+
+<!-- Organisation Field names -->
+    <epp:phrase id="organisation_fieldname_orgid">Organisation ID Number</epp:phrase>
+    <epp:phrase id="organisation_fieldname_ids">Identifiers</epp:phrase>
+    <epp:phrase id="organisation_fieldname_ids_id">Identifier Values</epp:phrase>
+    <epp:phrase id="organisation_fieldname_ids_id_type">Identifier Types</epp:phrase>
+    <epp:phrase id="organisation_fieldname_id_value">Primary Identifier</epp:phrase>
+    <epp:phrase id="organisation_fieldname_id_type">Primary Identifier Type</epp:phrase>
+    <epp:phrase id="organisation_id_type_typename_ror">ROR</epp:phrase>
+    <epp:phrase id="organisation_id_type_typename_url">URL</epp:phrase>
+    <epp:phrase id="organisation_id_type_typename_email">Email</epp:phrase>
+    <epp:phrase id="organisation_fieldname_name">Primary Name</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names">Name</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names_name">Name</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names_from">From</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names_to">To</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names_lang">Language</epp:phrase>
+    <epp:phrase id="organisation_fieldname_address">Address</epp:phrase>
+    <epp:phrase id="organisation_fieldname_country">Country</epp:phrase>
+    <epp:phrase id="organisation_fieldname_lastmod">Last Modified</epp:phrase>
+
+    <epp:phrase id="organisation_fieldhelp_name">The name of the organisait.</epp:phrase>
+    <epp:phrase id="organisation_fieldhelp_names">The names of the organisations and the date spans when they had these names.</epp:phrase>
+    <epp:phrase id="organisation_fieldhelp_ids">The identifiers for the organisation and the type of identifier they are. (E.g. Research Organization Registry (ROR) , website URL, email address, etc.) </epp:phrase>
+    <epp:phrase id="organisation_fieldhelp_dept"/>
+    <epp:phrase id="organisation_fieldhelp_org"/>
+    <epp:phrase id="organisation_fieldhelp_address"/>
+    <epp:phrase id="organisation_fieldhelp_country"/>
+    <epp:phrase id="organisation_fieldhelp_url"/>
+
+    <epp:phrase id="Plugin/Screen/Staff/OrganisationSearch:title">Search organisations</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Staff/OrganisationSearch:description">Search for organisations represented of this repository.</epp:phrase>
+    <epp:phrase id="ordername_organisation_byname">By name</epp:phrase>
+    <epp:phrase id="ordername_organisation_bylastmod">By most recently modified</epp:phrase>
+    <epp:phrase id="ordername_organisation_byrevlastmod">By least recently modified</epp:phrase>
+
+    <epp:phrase id="organisation:workflow:stage:default:title">Names and Identifiers</epp:phrase>
+    <epp:phrase id="organisation_section_name">Names</epp:phrase>
+    <epp:phrase id="organisation_section_other">Other Details</epp:phrase>
+    <epp:phrase id="lib/citation:unnamed_organisation_id">Unnamed organisation with</epp:phrase>
 
 <!-- Submission Form Page Titles -->
 
     <epp:phrase id="metapage_title_files">Upload</epp:phrase>
     <epp:phrase id="metapage_title_core">Details</epp:phrase>
+	<epp:phrase id="metapage_title_default">Default</epp:phrase>
     <epp:phrase id="metapage_title_subjects">Subjects</epp:phrase>
 
     <epp:phrase id="archive:workflow:stage:files:title" ref="metapage_title_files"/>
@@ -3598,6 +3678,8 @@ Titles and Help for the System Fields
 
     <epp:phrase id="summary_page:actions"><h2 id="actions"><epc:phrase ref="Plugin/Screen/EPrint/Actions:title"/> (login required)</h2></epp:phrase>
     <epp:phrase id="summary_page:download">Download</epp:phrase>
+
+    <epp:phrase id="entity_page:actions"><h2 id="actions"><epc:phrase ref="Plugin/Screen/Entity/Actions:title"/> (login required)</h2></epp:phrase>
 
     <epp:phrase id="Plugin/Screen/Admin/TemplateTest:title">Template Tests</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/TemplateTest:description">View the template tests for this repository.</epp:phrase>

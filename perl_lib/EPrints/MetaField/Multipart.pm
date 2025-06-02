@@ -40,6 +40,7 @@ sub new
 
 	foreach my $fconf (@{$self->property( "fields" )})
 	{
+		next unless $fconf->{sub_name};
 		my $field = EPrints::MetaField->new(
 				%$fconf,
 				name => join('_', $self->name, $fconf->{sub_name}),
@@ -117,8 +118,20 @@ sub get_sql_index
 	my( $self ) = @_;
 
 	return () unless( $self->get_property( "sql_index" ) );
-
+	
 	return ($self->get_sql_names);
+}
+
+sub parts
+{
+	my( $self ) = @_;
+
+	my @parts;
+	foreach my $field (@{$self->{fields_cache}})
+	{
+		push @parts, $field->property( "sub_name" );
+	}
+	return @parts;
 }
 	
 sub render_single_value
@@ -202,7 +215,7 @@ sub get_value_label
 
 sub ordervalue_basic
 {
-	my( $self , $value ) = @_;
+	my( $self , $value, $session, $langid ) = @_;
 
 	if( ref($value) ne "HASH" ) {
 		EPrints::abort( "ordervalue_basic called on something other than a hash: $value" );
@@ -211,7 +224,7 @@ sub ordervalue_basic
 	my @ov;
 	foreach( @{$self->{fields_cache}} )
 	{
-		push @ov, $_->ordervalue_basic( $value->{$_->property( "sub_name" )} );
+		push @ov, $_->ordervalue_basic( $value->{$_->property( "sub_name" )}, $session, $langid );
 	}
 
 	no warnings; # avoid undef warnings

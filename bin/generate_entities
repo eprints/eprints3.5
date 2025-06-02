@@ -1,0 +1,249 @@
+#!/usr/bin/perl -w
+
+use FindBin;
+use lib "$FindBin::Bin/../perl_lib";
+
+######################################################################
+#
+#
+######################################################################
+
+=pod
+
+=for Pod2Wiki
+
+=head1 NAME
+
+B<generate_entities> - Regenerate all the static abstract pages for an EPrint repository
+
+=head1 SYNOPSIS
+
+B<generate_entities> I<repository_id> [B<options>] [I<entity_id>, I<entity_id>, I<entity_id>-I<entity_id> ...]
+
+=head1 DESCRIPTION
+
+This script recreates every static entity page for an eprints repository. To save load on the database, as archived data should not change, EPrints creates static webpages containing the summary of each entity (e.g. person or organisation). If you change the way the entities are rendered or change the site template then you will want to run this script.
+
+To only recreate static entity pages for certain entity IDs provide a space separated list of entity ID integer values.  To recreate a tranche of consecutive entity pages, use a hyphen between integer values, (e.g. 10-20).  To do this you must specify the dataset ID for this/these entity/entities.
+
+=head1 ARGUMENTS
+
+=over 8
+
+=item B<repository_id> 
+
+The ID of the repository for which you want to generate entity pages.
+
+=item B<entity_id> 
+
+An optional integer indicating that the static entity page for entity record I<entity_id> should be updated. Multiple I<entity_id> integer values may be provided to regenerate a set of static entity pages for the specified entities (e.g. person or organisation).  To recreate a tranche of consecutive static entity pages use a hyphen between integer values, (e.g. 10-20). To do this you must specify the dataset ID for this/these entity/entities.
+
+=back
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--dataset I<datasetid>>
+
+Only generate entity pages for a specific dataset (e.g. person or organisation).
+
+=item B<--help>
+
+Print a brief help message and exit.
+
+=item B<--man>
+
+Print the full manual page and then exit.
+
+=item B<--quiet>
+
+Be vewwy vewwy quiet. This option will suppress all output unless an error occurs.
+
+=item B<--verbose>
+
+Explain in detail what is going on.
+May be repeated for greater effect.
+
+=item B<--version>
+
+Output version information and exit.
+
+=back   
+
+
+=cut
+
+
+use EPrints;
+
+use strict;
+use Getopt::Long;
+use Pod::Usage;
+
+my $dataset_opt;
+my $version = 0;
+my $verbose = 0;
+my $quiet = 0;
+my $help = 0;
+my $man = 0;
+
+Getopt::Long::Configure("permute");
+
+GetOptions( 
+	'help|?' => \$help,
+	'dataset=s' => \$dataset_opt,
+	'man' => \$man,
+	'version' => \$version,
+	'verbose+' => \$verbose,
+	'silent' => \$quiet,
+	'quiet' => \$quiet
+) || pod2usage( 2 );
+EPrints::Utils::cmd_version( "generate_entities" ) if $version;
+pod2usage( 1 ) if $help;
+pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
+pod2usage( 2 ) if( scalar @ARGV == 0 ); 
+
+our $noise = 1;
+$noise = 0 if( $quiet );
+$noise = 1+$verbose if( $verbose );
+
+# Set STDOUT to auto flush (without needing a \n)
+$|=1;
+
+my $repoid = shift @ARGV;
+
+my $session = new EPrints::Session( 1 , $repoid , $noise );
+if( !defined $session )
+{
+	print STDERR "Failed to load repository: $repoid\n";
+	exit 1;
+}
+
+my $dataset; 
+my @entity_datasets = @{ $session->config( 'entities', 'datasets' ) };
+
+if( defined $ARGV[0] )
+{
+	unless ( $dataset_opt )
+	{
+		$session->get_repository->log( "No entity dataset specified." );
+		exit 1;
+	}
+	$dataset = $session->get_dataset( $dataset_opt );
+	unless ( grep /$dataset_opt/, @entity_datasets )
+	{
+        $session->get_repository->log( "Unrecognised entity dataset: " .$dataset_opt );
+		exit 1;
+	}
+	
+	my @entityids = expand_ids( $session, $dataset, @ARGV );
+	foreach my $entityid ( @entityids )
+	{
+		my $entity = $dataset->dataobj( $entityid );
+		if( !defined $entity )
+		{
+			$session->get_repository->log( "$dataset_opt #".$entityid." not found. Can't write entity page." );
+		}
+		else
+		{
+			make_static( $session, $dataset, $entity, {} );
+			print "Wrote $dataset_opt entity page  #$entityid\n" if( $noise > 0);
+		}
+	}
+}
+else
+{
+	
+	if ( $dataset_opt )
+	{
+		if ( grep /$dataset_opt/, @entity_datasets )
+		{
+			@entity_datasets = ( $dataset_opt );
+		}
+		else
+		{
+			$session->get_repository->log( "Unrecognised entity dataset: " .$dataset_opt );
+	        exit 1;
+		}
+	}
+	print "Writing entity pages\n" if( $noise > 0);
+	foreach my $datasetid ( @entity_datasets )
+	{
+		my $dataset = $session->dataset( $datasetid );
+		my $info = { count=>0 };
+		$dataset->map( $session , \&make_static, $info );
+		if( $noise > 0)
+		{
+			print "Done writing ".$info->{count}." $datasetid entity pages\n";
+		}
+	}
+}
+$session->terminate();
+exit;
+
+sub make_static
+{
+	my( $session, $dataset, $entity, $info ) = @_;
+	$entity->clear_citationcaches() if defined $session->config( "citation_caching", "enabled" ) && $session->config( "citation_caching", "enabled" );
+	$entity->generate_static();
+	if( $noise > 1 )
+	{
+		print "Generated " . $dataset->id . "#".$entity->id ."\n";
+	}
+	$info->{count}++;
+}
+
+sub expand_ids
+{
+	my ( $repo, $dataset, @ids ) = @_;
+	my @all_ids = ();
+	foreach my $id ( @ids )
+	{
+		if( $id =~ m/^[0-9]+-[0-9]+$/ )
+		{
+			my $searchexp = new EPrints::Search(
+				session=>$repo,
+				dataset=>$dataset );
+			$searchexp->add_field( $dataset->key_field, $id );
+			my $list = $searchexp->perform_search;
+			push @all_ids, @{$list->ids};
+		}
+		else
+		{
+			push @all_ids, $id;
+		}
+	}
+	return @all_ids;
+}
+
+=head1 COPYRIGHT
+
+=for COPYRIGHT BEGIN
+
+Copyright 2025 University of Southampton.
+EPrints 3.5 is supplied by EPrints Services.
+
+http://www.eprints.org/eprints-3.5/
+
+=for COPYRIGHT END
+
+=for LICENSE BEGIN
+
+This file is part of EPrints 3.5 L<http://www.eprints.org/>.
+
+EPrints 3.5 and this file are released under the terms of the
+GNU Lesser General Public License version 3 as published by
+the Free Software Foundation unless otherwise stated.
+
+EPrints 3.5 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with EPrints 3.5.
+If not, see L<http://www.gnu.org/licenses/>.
+
+=for LICENSE END
+

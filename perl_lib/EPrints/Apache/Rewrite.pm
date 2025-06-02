@@ -451,32 +451,6 @@ sub handler
 		return OK;
 	}
 
-	# URI redirection
-	if( $uri =~ m! ^$urlpath/id/(repository|dump)$ !x )
-	{
-		my $file = $1;
-		my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
-		$accept = "application/rdf+xml" unless defined $accept;
-		my $can_accept = "list/triple";
-
-		my $plugin = content_negotiate_best_plugin( 
-			$repository, 
-			accept_header => $accept,
-			consider_summary_page => 0,
-			plugins => [$repository->get_plugins(
-				type => "Export",
-				is_visible => "all",
-				can_accept => $can_accept )]
-		);
-	
-		if( !defined $plugin )  { return NOT_FOUND; }
-
-		my $url = $repository->config( "perl_url" )."/export/$file/".
-			$plugin->get_subtype."/".$repository->get_id.$plugin->param("suffix");
-
-		return redir_see_other( $r, $url );
-	}
-
 	# Custom Handlers
 	if ( defined $repository->config( "custom_handlers" ) && keys %{$repository->config( "custom_handlers" )} )
 	{
@@ -489,33 +463,6 @@ sub handler
 				return $custom_handler->{function}->( $r );
 			}
 		}
-	}
-
-	if( $uri =~ m! ^$urlpath/id/([^\/]+)/(ext-.*)$ !x )
-	{
-		my $exttype = $1;
-		my $id = $2;
-		my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
-		$accept = "application/rdf+xml" unless defined $accept;
-
-		my $plugin = content_negotiate_best_plugin( 
-			$repository, 
-			accept_header => $accept,
-			consider_summary_page => 0,
-			plugins => [$repository->get_plugins(
-				type => "Export",
-				is_visible => "all",
-				can_accept => "list/triple" )]
-		);
-
-		if( !defined $plugin )  { return NOT_FOUND; }
-
-		my $fn = $id;
-		$fn=~s/\//_/g;
-		my $url = $repository->config( "perl_url" )."/export/$exttype/".
-			$id."/".$plugin->get_subtype."/$fn".$plugin->param("suffix");
-
-		return redir_see_other( $r, $url );
 	}
 
 	if ($repository->config("use_long_url_format"))
@@ -688,6 +635,46 @@ sub handler
 			}
 		}
 	}##if use_long_url_format
+
+	#this will serve a entity pages (e.g. people or organisations).
+    my $accept = EPrints::Apache::AnApache::header_in( $r, "Accept" );
+    my $method = eval {$r->method} || "";
+	my $entities = "";
+	my $ent_ds = $repository->get_conf( "entities", "datasets" );
+	if ( ref( $ent_ds ) eq "ARRAY" )
+	{
+		$entities = join( '|', @$ent_ds );
+	}
+
+	if ( ( $method eq "GET" || $method eq "HEAD" ) ## request method must be GET or HEAD
+			&& $entities
+            &&  (index(lc($accept), "text/html") != -1 || index(lc($accept), "text/*") != -1 || index(lc($accept),"*/*") != -1 || $accept eq ""  )   ## header must be text/html, text/*, */* or undef
+            &&  ($uri !~ m!^${urlpath}/id/($entities)/0*[1-9][0-9]*/contents$! )   ## uri must not be id/ENTITY/XX/contents
+            &&  ($uri =~ s! ^${urlpath}/id/($entities)/(0*)([1-9][0-9]*)\b !!x )     ## uri must be id/ENTITY/XX
+        )
+	{
+		my $datasetid = $1;
+		my $entityid = $3;
+		my $entity = $repository->dataset( $datasetid )->dataobj( $entityid );
+		if( !defined $entity )
+		{
+			return NOT_FOUND;
+		}
+		my $path = "/$datasetid/" . $entity->store_path();
+		EPrints::Update::Entity::update( $repository, $lang, $datasetid, $entityid, $path );
+		if( $uri =~ m! /$ !x )
+        	{
+				$uri .= "index.html";
+		}
+		$r->filename( $entity->_htmlpath( $lang ) . $uri );
+		if( $uri =~ /\.html$/ )
+		{
+			$r->pnotes( entity => $entity );
+			$r->handler('perl-script');
+			$r->set_handlers(PerlResponseHandler => [ 'EPrints::Apache::Template' ] );
+		}
+		return OK; ## /id/ENTITY/XX
+	}
 
 	if( $uri =~ s! ^$urlpath/id/(?:
 			contents | ([^/]+)(?:/([^/]+)(?:/([^/]+))?)?

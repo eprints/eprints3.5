@@ -152,11 +152,6 @@ sub render
 				'id' => 'file'
 			},
 			{
-				'href' => '/cgi/users/home?screen=Listing&dataset=import',
-				'label' => 'Imports',
-				'id' => 'import'
-			},
-			{
 				'href' => '/cgi/users/home?screen=Listing&dataset=saved_search',
 				'label' => 'Saved Searches',
 				'id' => 'saved_search'

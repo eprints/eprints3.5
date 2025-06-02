@@ -1,0 +1,176 @@
+use EPrints;
+
+use strict;
+
+my $session = EPrints::Session->new();
+
+my $content = "text/xml";
+$session->send_http_header( content_type=>$content );
+my @rows;
+my %rows_index;
+
+my $entity_name = $session->param( "_contributor_name" );
+my $entity_id_value = $session->param( "_contributor_id_value" );
+my $datasets;
+if ( $entity_name || $entity_id_value )
+{
+	$datasets = $session->config( 'entities', 'datasets' );
+}
+foreach my $datasetid ( @$datasets ) 
+{
+	my $dataset = $session->dataset( $datasetid );
+	my $dataset_key = $dataset->get_key_field->name;
+
+	my $hdsn_func = $session->config( 'entities', $datasetid, 'human_deserialise_name' );
+	my $deserialised_entity_name;
+	if ( my $hdsn_func = $session->config( 'entities', $datasetid, 'human_deserialise_name' ) )
+	{
+		$deserialised_entity_name = &$hdsn_func( $entity_name );
+	}
+	else 
+	{
+		$deserialised_entity_name = $entity_name;
+	}
+	my $hsn_func = $session->config( 'entities', $datasetid, 'human_serialise_name' );
+
+	my $entity_id_value = $session->param( "_contributor_id_value" );
+
+	my $database = $session->get_database;
+	my $name_field = $dataset->get_field( "names_name" );
+	my $id_field = $dataset->get_field( "ids_id" );
+	my $id_type_field = $dataset->get_field( "ids_id_type" );
+	my $entityid_field = $dataset->get_field( $dataset_key );
+
+	my @fields = ($name_field->get_sql_names, $id_field->get_sql_names, $id_type_field->get_sql_names );
+
+	my $Q_table = $database->quote_identifier($dataset->get_sql_table_name);
+	my $Q_name_table = $database->quote_identifier($dataset->get_sql_sub_table_name($name_field));
+	my $Q_id_table = $database->quote_identifier($dataset->get_sql_sub_table_name($id_field));
+	my $Q_id_type_table = $database->quote_identifier($dataset->get_sql_sub_table_name($id_type_field));
+	# my $Q_eprintid = $database->quote_identifier( "eprintid" );
+	my $Q_datasetid = $database->quote_identifier( $dataset_key );
+	my $Q_pos = $database->quote_identifier( "pos" );
+	my $Q_num_matches = $database->quote_identifier( "num_matches" );
+	# my $Q_eprint_status = $database->quote_identifier( "eprint_status" );
+
+	my $sql = "SELECT 1 ".$database->sql_AS." $Q_num_matches," .
+		join(",", map { $database->quote_identifier($_) } @fields) . ",`$datasetid`.`$dataset_key`" .
+		" FROM $Q_table" .
+		" LEFT JOIN $Q_name_table" .
+		" ON $Q_table.$Q_datasetid=$Q_name_table.$Q_datasetid" .
+		" LEFT JOIN $Q_id_table" .
+		" ON $Q_name_table.$Q_datasetid=$Q_id_table.$Q_datasetid " .
+		" LEFT JOIN $Q_id_type_table" .
+		" ON $Q_name_table.$Q_datasetid=$Q_id_type_table.$Q_datasetid " .
+		" AND $Q_name_table.$Q_pos=$Q_id_type_table.$Q_pos " .
+		" WHERE 1=1 ";
+	#	" $Q_table.$Q_eprint_status=".$database->quote_value( "archive" );
+
+	my @orders = ();
+	if ( $entity_name )
+	{
+		if ( ref( $deserialised_entity_name ) eq "HASH" )
+		{
+			$sql .= " AND ( ";
+			my @sql_name_parts;
+			foreach my $part ( keys %$deserialised_entity_name )
+			{
+				push @sql_name_parts, $database->quote_identifier("names_name_$part").$database->sql_LIKE().$database->quote_value(EPrints::Database::prep_like_value($entity_name).'%');
+				push @orders, $database->quote_identifier("names_name_$part");
+			}
+			$sql .= join( ' OR ', @sql_name_parts );
+			$sql .= " )";
+		}
+		else
+		{
+			$sql .= " AND ( " .
+			$database->quote_identifier("names_name").$database->sql_LIKE().$database->quote_value('% '.EPrints::Database::prep_like_value($entity_name).'%') . 
+			" OR " . 
+			$database->quote_identifier("names_name").$database->sql_LIKE().$database->quote_value(EPrints::Database::prep_like_value($entity_name).'%') .
+			" )";
+			push @orders, $database->quote_identifier("names_name");
+		
+		}
+	}
+	if ( $entity_id_value )
+	{
+		$sql .= " AND " . $database->quote_identifier("ids_id").$database->sql_LIKE().$database->quote_value(EPrints::Database::prep_like_value($entity_id_value).'%');
+		push @orders, $database->quote_identifier("ids_id");
+	}
+
+	$sql .= " GROUP BY ".join(",",map { $database->quote_identifier($_) } @fields) .
+		" ORDER BY $Q_num_matches DESC," .
+		join( ',', @orders );
+
+	my $sth = $session->get_database->prepare_select( $sql, 'limit' => 40 );
+	$session->get_database->execute( $sth , $sql );
+	while( my @row = $sth->fetchrow_array )
+	{
+		my $cnt = shift @row;
+		my $name = $name_field->value_from_sql_row( $session, \@row );
+		my $serialised_name = $name;
+		if ( $hsn_func )
+		{
+			$serialised_name = &$hsn_func( $name );
+		}
+		my $id = $id_field->value_from_sql_row( $session, \@row );
+		my $id_type = $id_type_field->value_from_sql_row( $session, \@row );
+		my $entityid = $entityid_field->value_from_sql_row( $session, \@row );
+
+		$rows_index{$serialised_name.$id} = scalar @rows;
+		my $item = {};
+		push @rows, $item;
+
+		my $frag = $session->make_doc_fragment;
+		$frag->appendChild( $session->html_phrase( 'eprint_fieldopt_contributions_contributor_datasetid_' . $datasetid ) );
+		$frag->appendChild( $session->make_text( ": " ) );
+		$frag->appendChild( $session->make_text( $serialised_name ) );
+		if( EPrints::Utils::is_set( $id ) )
+		{
+			$frag->appendChild( $session->make_text( " <" ) );
+			$frag->appendChild( $id_field->render_single_value( $session, $id ) );
+			$frag->appendChild( $session->make_text( ">" ) );
+		}
+
+		# $frag->appendChild( $session->html_phrase( 'cgi/lookup/entity:contributed', count => $session->make_text( $cnt ) ) );
+
+		$item->{xhtml} = $frag;
+		my $entity = $dataset->dataobj( $entityid );
+		my $es_frag = $session->make_doc_fragment;
+		my $es_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
+		my $entity_span = $id ? $id : $serialised_name;
+		$es_link->appendChild( $session->make_text( $entity_span ) );
+		$es_frag->appendChild( $es_link );
+		$item->{values} = [
+			"for:value:relative:_contributor_datasetid" => $datasetid,
+			"for:value:relative:_contributor_name" => $serialised_name,
+			"for:value:relative:_contributor_id_value" => $id,
+			"for:value:relative:_contributor_id_type" => $id_type,
+			"for:value:relative:_contributor_entityid" => $entityid,
+			"for:value:relative:_contributor_entity_span" => $es_frag,
+		];
+	}
+
+	$sth->finish();
+}
+
+my @sorted_rows;
+foreach my $key ( sort( keys( %rows_index ) ) )
+{
+	push @sorted_rows, $rows[$rows_index{$key}];
+}
+my $ul = EPrints::Extras::render_lookup_list( $session, \@sorted_rows );
+
+$session->send_http_header( content_type => "text/xml; charset=UTF-8" );
+
+binmode(STDOUT,":utf8");
+print <<END;
+<?xml version="1.0" encoding="UTF-8" ?>
+
+END
+print EPrints::XML::to_string( $ul, "utf-8", 1 );
+
+EPrints::XML::dispose( $ul );
+
+$session->terminate;
+

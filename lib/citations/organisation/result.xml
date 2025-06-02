@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+
+<!--
+    Result row for organisation searching.
+-->
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control" type="div_table_row">
+  <div style="padding-left: 0.5em"><epc:print expr="$n" />.</div>
+  <div style="padding-left: 0.5em">
+    <epc:print expr="$item.citation('default')" />
+  </div>
+</cite:citation>
+
