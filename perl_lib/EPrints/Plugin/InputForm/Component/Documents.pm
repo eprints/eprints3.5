@@ -391,7 +391,7 @@ sub _render_doc_div
 	$s_options->appendChild( 
 			$session->make_element( "input",
 			    type=>'image',
-				src=>"$imagesurl/style/images/plus.png",
+				src=>"$imagesurl/style/images/plus.svg",
 				alt=>'+',
 				id=>$doc_prefix."_opts_show",
 				) );
@@ -405,7 +405,7 @@ sub _render_doc_div
 	$h_options->appendChild( 
 			$session->make_element( "input",
 			    type=>'image',
-				src=>"$imagesurl/style/images/minus.png",
+				src=>"$imagesurl/style/images/minus.svg",
 				alt=>'-',
 				id=>$doc_prefix."_opts_hide",
 				) );
