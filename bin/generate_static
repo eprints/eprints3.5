@@ -226,12 +226,24 @@ foreach my $langid ( @{$session->config( "languages" )} )
 	my $existing_files = {};
 	scan_dir( $base_target_dir, $existing_files );
 
+	my @ignore_static_paths = @{ $session->config( 'ignore_static_paths' ) };
+	foreach my $isp ( @ignore_static_paths )
+    {
+			$isp =~ s/\//\\\//g;
+	}
 	foreach my $e_file ( keys %{$existing_files} )
 	{
 		next if defined( $wrote_files->{$e_file} );
-		next if( $e_file =~ m/^$base_target_dir\/view\// );
-		next if( $e_file =~ m/^$base_target_dir\/view_tmp/ );
-		next if( $e_file =~ m/^$base_target_dir\/archive\// );
+		my $goto_next = 0;
+		foreach my $isp ( @ignore_static_paths )
+		{
+			if ( $e_file =~ m/^$base_target_dir\/$isp/ )
+			{
+				$goto_next = 1;
+				last;
+			}
+		}
+		next if $goto_next;	
 		if( $prune )
 		{
 			print "removing $e_file\n" if( $noise >= 1);

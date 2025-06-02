@@ -60,6 +60,18 @@ $c->{cache_maxlife} = 12;
 # Maximum number of persistent cache tables to allow
 $c->{cache_max} = 100;
 
+# Ignore static paths
+# generate_static will complain about files under archive's /html/LANG/
+# that don't tally with a static file. Add extra paths to ignore.
+$c->{ignore_static_paths} = [
+	'archive/',
+	'organisation/',
+	'person/',
+	'sitemap.xml',
+	'sitemaps/',
+	'view/',
+];
+
 
 ######################################################################
 # 

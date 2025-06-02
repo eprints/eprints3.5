@@ -54,7 +54,7 @@ my $ds = $repo->dataset( "archive" );
 my $eprints = $ds->search;
 
 my $n = 0;
-my $sitemaps_dir = $EPrints::SystemSettings::conf->{base_path} . "/archives/$repositoryid/cfg/static/sitemaps";
+my $sitemaps_dir = $EPrints::SystemSettings::conf->{base_path} . "/archives/$repositoryid/html/" . $repo->config( 'defaultlanguage' ) . "/sitemaps";
 mkdir($sitemaps_dir, 0775) unless ( -d $sitemaps_dir );
 for ( my $i = 0; $i < $eprints->count(); $i += 1000 )
 {
@@ -73,7 +73,7 @@ for ( my $i = 0; $i < $eprints->count(); $i += 1000 )
 	close $fh;
 }
 
-open ( my $fh, ">:encoding(UTF-8)", $EPrints::SystemSettings::conf->{base_path} . "/archives/$repositoryid/cfg/static/sitemap.xml" );
+open ( my $fh, ">:encoding(UTF-8)", $EPrints::SystemSettings::conf->{base_path} . "/archives/$repositoryid/html/" . $repo->config( 'defaultlanguage') . "/sitemap.xml" );
 print $fh "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
 my $xml = $repo->xml;
 my $sitemapindex = $xml->create_element( "sitemapindex", xmlns => "http://www.sitemaps.org/schemas/sitemap/0.9" );
