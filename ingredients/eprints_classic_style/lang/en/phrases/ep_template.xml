@@ -1239,7 +1239,6 @@
   <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_div">
     <div class="ep_upload_doc" id="{doc_prefix}_block">
       <a name="{doc_prefix}">
-test
 		</a>
       <epc:print expr="hidden_field"/>
       <div class="ep_upload_doc_title_bar">
@@ -1256,11 +1255,25 @@ test
       </div>
       <div class="ep_upload_doc_expansion_bar ep_only_js">
         <a onclick="EPJS_toggleSlideScroll('{doc_prefix}_opts',{if(hide, 'false', 'true')},'{doc_prefix}_block');EPJS_toggle('{doc_prefix}_opts_hide',{if(hide, 'false', 'true')},'block');EPJS_toggle('{doc_prefix}_opts_show',{if (hide, 'true','false')},'block');return false">
-	    </a>
+          <div id="{doc_prefix}_opts_show" class="ep_update_doc_options {if (hide, '','ep_hide')}">
+            <label for="{doc_prefix}_opts_show">
+              <epc:print expr="show_label"/>
+            </label>
+            <input type="image" src="{imagesurl}/style/images/plus.svg" alt="+" id="{doc_prefix}_opts_show"/>
+          </div>
+          <div id="{doc_prefix}_opts_hide" class="ep_update_doc_options {if (hide, 'ep_hide', '')}">
+            <label for="{doc_prefix}_opts_hide">
+              <epc:print expr="hide_label"/>
+            </label>
+            <input type="image" src="{imagesurl}/style/images/minus.svg" alt="-" id="{doc_prefix}_opts_hide"/>
+          </div>
+        </a>
       </div>
       <div class="ep_upload_doc_content {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
-
-	    </div>
+        <div class="" id="{doc_prefix}_opts_inner">
+          <epc:print expr="doc_metadata"/>
+        </div>
+      </div>
     </div>
   </epp:phrase>
 </epp:phrases>

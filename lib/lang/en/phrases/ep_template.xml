@@ -802,7 +802,7 @@
       <epc:print expr="field"/>
       <epc:choose>
         <epc:when test="has_toggle">
-          <div class="input-group-text ms-auto">
+          <div class="input-group-text">
             <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
               <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
                 <img alt="{string_phrase(&quot;lib/session:show_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:show_help_title&quot;)}" src="{string_phrase(&quot;lib/session:show_help_src&quot;)}"/>
@@ -1293,5 +1293,45 @@
         </epc:attribute>
       </epc:foreach>
     </input>
+  </epp:phrase>
+  <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_div">
+    <div class="border p-3 rounded mb-3 shadow" id="{doc_prefix}_block">
+      <a name="{doc_prefix}">
+                </a>
+      <epc:print expr="hidden_field"/>
+      <div class="ep_upload_doc_title_bar">
+        <div class="">
+          <div class="d-flex justify-content-between">
+            <div class="ep_upload_doc_title_bar_inner_left">
+              <epc:print expr="doc_icon_info"/>
+            </div>
+            <div class="ep_upload_doc_actions">
+              <epc:print expr="doc_actions"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ep_upload_doc_expansion_bar ep_only_js p-2 mt-2 border-top">
+        <a class="d-flex text-black" onclick="EPJS_toggleSlideScroll('{doc_prefix}_opts',{if(hide, 'false', 'true')},'{doc_prefix}_block');EPJS_toggle('{doc_prefix}_opts_hide',{if(hide, 'false', 'true')},'block');EPJS_toggle('{doc_prefix}_opts_show',{if (hide, 'true','false')},'block');return false">
+          <div id="{doc_prefix}_opts_show" class="ep_update_doc_options ms-auto {if (hide, '','ep_hide')}">
+            <label for="{doc_prefix}_opts_show" class="p-1">
+              <epc:print expr="show_label"/>
+            </label>
+            <input class="align-middle ms-1" type="image" src="{imagesurl}/style/images/plus.svg" alt="+" id="{doc_prefix}_opts_show"/>
+          </div>
+          <div id="{doc_prefix}_opts_hide" class="ep_update_doc_options ms-auto {if (hide, 'ep_hide', '')}">
+            <label for="{doc_prefix}_opts_hide">
+              <epc:print expr="hide_label"/>
+            </label>
+            <input class="align-middle ms-1" type="image" src="{imagesurl}/style/images/minus.svg" alt="-" id="{doc_prefix}_opts_hide"/>
+          </div>
+        </a>
+      </div>
+      <div class="ep_upload_doc_content {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
+        <div class="" id="{doc_prefix}_opts_inner">
+          <epc:print expr="doc_metadata"/>
+        </div>
+      </div>
+    </div>
   </epp:phrase>
 </epp:phrases>
