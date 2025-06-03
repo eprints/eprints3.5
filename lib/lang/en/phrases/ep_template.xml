@@ -802,7 +802,7 @@
       <epc:print expr="field"/>
       <epc:choose>
         <epc:when test="has_toggle">
-          <div class="input-group-text">
+          <div class="input-group-text ms-auto">
             <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
               <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
                 <img alt="{string_phrase(&quot;lib/session:show_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:show_help_title&quot;)}" src="{string_phrase(&quot;lib/session:show_help_src&quot;)}"/>

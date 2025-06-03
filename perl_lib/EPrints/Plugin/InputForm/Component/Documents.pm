@@ -358,6 +358,7 @@ sub _render_doc_div
         my @fields = $self->doc_fields( $doc );
         return $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_div", { item => $doc_item } ) if !scalar @fields;
 
+
 	$doc_item->{show_label} = $self->html_phrase( "show_options" );
 	$doc_item->{hide_label} = $self->html_phrase( "hide_options" );
 	$doc_item->{doc_metadata} = $self->_render_doc_metadata( $doc )->{content};

@@ -408,8 +408,51 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 		{
 			my $entity_contrib_fields = $all_contrib_fields->{$contribution->{contributor}->{datasetid}};
 			my $entity_contrib_maps = $all_contrib_maps->{$contribution->{contributor}->{datasetid}};
-			my $entity = $entity_datasets->{$contribution->{contributor}->{datasetid}}->dataobj( $contribution->{contributor}->{entityid} );
+			my $entity;
+			if ( defined $contribution->{contributor}->{entityid} )
+			{
+				$entity = $entity_datasets->{$contribution->{contributor}->{datasetid}}->dataobj( $contribution->{contributor}->{entityid} );
+			}
+			if ( ! defined $entity && $contribution->{contributor}->{id_value} )
+			{
+				if ( $contribution->{contributor}->{id_type} )
+				{
+					$entity = EPrints::DataObj::Entity::entity_with_id( $entity_datasets->{$contribution->{contributor}->{datasetid}}, $contribution->{contributor}->{id_value}, type => $contribution->{contributor}->{id_type} );
+				}
+				else
+				{
+					$entity = EPrints::DataObj::Entity::entity_with_id( $entity_datasets->{$contribution->{contributor}->{datasetid}}, $contribution->{contributor}->{id_value} );
+				}
+			}
+			if ( ! defined $entity && $contribution->{contributor}->{name} )
+			{
+					my $deserialised_name;
+					if ( my $f = $repo->config( 'entities', $contribution->{contributor}->{datasetid}, 'human_deserialise_name' ) )
+					{
+						$deserialised_name = &$f( $contribution->{contributor}->{name} );
+					}
+					else
+					{
+						$deserialised_name = $contribution->{contributor}->{name};
+					}
+					$entity = EPrints::DataObj::Entity::entity_with_name( $entity_datasets->{$contribution->{contributor}->{datasetid}}, $deserialised_name );
+			}
 
+			unless ( $entity )
+			{
+				$entity = $entity_datasets->{$contribution->{contributor}->{datasetid}}->create_dataobj;
+				if ( $contribution->{contributor}->{name} )
+				{
+					my $deserialised_name = $entity->human_deserialise_name( $contribution->{contributor}->{name} );
+					$entity->set_value( 'names', [ { name => $deserialised_name } ] );
+				}
+				if ( $contribution->{contributor}->{id_value} && $contribution->{contributor}->{id_type} )
+				{
+					$entity->set_value( 'ids', [ { id => $contribution->{contributor}->{id_value}, id_type => $contribution->{contributor}->{id_type} } ] );
+				}
+				$entity->commit;
+			}
+			$contribution->{contributor}->{entityid} = $entity->id unless $contribution->{contributor}->{entityid};
 			foreach my $field_name ( keys %$entity_contrib_fields )
 			{
 				if ( $entity_contrib_fields->{$field_name} eq $contribution->{type} )
@@ -444,7 +487,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 								elsif ( scalar @map_bits == 3 )
 								{
 									my @kv = split( '=', $map_bits[2] );
-									if ( $contribution->{$map_bits[0]}->{$kv[0]} eq $kv[1] )
+									if ( defined $contribution->{$map_bits[0]}->{$kv[0]} && $contribution->{$map_bits[0]}->{$kv[0]} eq $kv[1] )
 									{
 										$field_value->{$subfield->{sub_name}} = $map_bits[1] eq 'name' ? $entity->human_deserialise_name( $contribution->{$map_bits[0]}->{$map_bits[1]} ) : $contribution->{$map_bits[0]}->{$map_bits[1]};
 									}
