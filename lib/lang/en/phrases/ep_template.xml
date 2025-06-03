@@ -563,9 +563,9 @@
     centre-align the input
   -->
   <epp:phrase id="view:MetaField/render_input_field_actual">
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center flex-column">
       <epc:if test="has_col_titles">
-        <div>
+        <div class="row">
           <epc:foreach expr="titles" iterator="column">
             <epc:choose>
               <epc:when test="$column{empty_column}">
@@ -581,7 +581,7 @@
         </div>
       </epc:if>
       <epc:foreach expr="rows" iterator="row">
-        <div>
+        <div class="w-100">
           <epc:foreach expr="$row{cells}" iterator="cell">
             <div id="{concat(basename, '_cell_', $cell{column_index}, '_', $row{row_index})}">
               <epc:foreach expr="$cell{attrs}" iterator="attr">
@@ -1256,5 +1256,10 @@
         </div>
       </div>
     </div>
+  </epp:phrase>
+  <epp:phrase id="view:MetaField/LongText:get_basic_input_elements">
+	  <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="w-100 form-control" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
+		<epc:print expr="value"/>
+	  </textarea>
   </epp:phrase>
 </epp:phrases>

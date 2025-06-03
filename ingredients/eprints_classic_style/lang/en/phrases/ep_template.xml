@@ -1213,4 +1213,9 @@
       </div>
     </div>
   </epp:phrase>
+  <epp:phrase id="view:MetaField/LongText:get_basic_input_elements">
+	  <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="{class}" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
+      <epc:print expr="value"/>
+    </textarea>
+  </epp:phrase>
 </epp:phrases>

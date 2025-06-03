@@ -89,13 +89,14 @@ sub get_basic_input_elements
                 readonly => $readonly,
                 wrap => "virtual",
                 'aria-labelledby' => $self->get_labelledby( $basename ),
+		value => $session->make_text( $value ),
 	);
 	my $describedby = $self->get_describedby( $basename, $one_field_component );
-	$attributes{'aria-describedby'} = $describedby if EPrints::Utils::is_set( $describedby ); 
-	my $textarea = $session->make_element( "textarea", %attributes );
-	$textarea->appendChild( $session->make_text( $value ) );
+	$attributes{'aria-describedby'} = $describedby if EPrints::Utils::is_set( $describedby );
 
-	return [ [ { el=>$textarea } ] ];
+	my $textarea_new = $self->repository->template_phrase( "view:MetaField/LongText:get_basic_input_elements", { item => \%attributes } );
+
+	return [ [ { el=>$textarea_new } ] ];
 }
 
 
