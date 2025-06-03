@@ -167,13 +167,14 @@ sub get_basic_input_elements
             
 		foreach my $option ( @options )
 		{
-			my $dt = $session->make_element( "dt" );
+			my $dt = $session->make_element( "dt", class=>"d-inline pe-1" );
 			$dt->appendChild( $inputs->{$option} );
 			$f->appendChild( $dt );
-			my $dd = $session->make_element( "dd", id => $basename . "_" . $option . "_label" );
+			my $dd = $session->make_element( "dd", class=>"d-inline", id => $basename . "_" . $option . "_label" );
 			$dd->appendChild( $session->html_phrase( $self->{confid} . "_radio_" . $self->{name} . "_" . $option ) ) unless $option eq "unspecified";
 			$dd->appendChild( $self->unspecified_phrase( $session ) ) if $option eq "unspecified";
 			$f->appendChild( $dd );
+			$f->appendChild( $session->make_element( "br" ) );
 		}
 		
 		return [[{ el=>$f }]];

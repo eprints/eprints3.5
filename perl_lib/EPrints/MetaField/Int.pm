@@ -82,7 +82,7 @@ sub render_search_input
 	}
 
 	return $session->render_input_field(
-				class => "ep_form_text",
+				class => "form-control form-control-sm ep_form_text",
 				name=>$searchfield->get_form_prefix,
 				value=>$searchfield->get_value,
 				size=>9,

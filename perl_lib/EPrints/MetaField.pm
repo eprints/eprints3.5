@@ -1481,6 +1481,8 @@ sub get_input_elements
 	}
 
 	# multiple field...
+	
+	my $items = {};
 
 	my $boxcount = $session->param( $basename."_spaces" );
 	if( !defined $boxcount )
@@ -1529,33 +1531,26 @@ sub get_input_elements
 			my $lastcol = {};
 			if( $n == 0 && $self->{input_ordered})
 			{
-				my $row_label = $session->make_element( "span" , id=>$basename."_".$i."_label" );
-				$row_label->appendChild( $session->make_text( $i.". " ) );
-				$col1 = { el=>$row_label, class=>"ep_form_input_grid_pos" };
-				my $arrows = $session->make_doc_fragment;
-				$arrows->appendChild( $session->make_element(
-					"input",
-					type=>"image",
-					src=> "$imagesurl/multi_down.png",
-					alt=>"down",
-					title=>"move down",
-               		name=>"_internal_".$basename."_down_$i",
-					class => "epjs_ajax",
-					value=>"1" ));
+				my $row_label = $session->template_phrase( 'view:MetaField:get_input_elements:multiple:row_label', { item => {
+					id => $basename."_".$i."_label",
+					index => $i,		
+				}});
+				$col1 = { el=>$row_label, first_col=>1, class=>"ep_form_input_grid_pos" };
+				my $arrow_item = {
+					arrow_down => { 
+						name => "_internal_".$basename."_down_$i",
+						src => "$imagesurl/multi_down.svg",
+					},
+				};
 				if( $i > 1 )
 				{
-					$arrows->appendChild( $session->make_text( " " ) );
-					$arrows->appendChild( $session->make_element(
-						"input",
-						type=>"image",
-						alt=>"up",
-						title=>"move up",
-						src=> "$imagesurl/multi_up.png",
-                		name=>"_internal_".$basename."_up_$i",
-						class => "epjs_ajax",
-						value=>"1" ));
+                                	$arrow_item->{arrow_up} = {
+                                                name => "_internal_".$basename."_up_$i",
+                                                src => "$imagesurl/multi_up.svg",
+                                        };
 				}
-				$lastcol = { el=>$arrows, valign=>"middle", class=>"ep_form_input_grid_arrows" };
+				my $arrows = $session->template_phrase( 'view:MetaField:get_input_elements:multiple:arrows', { item => $arrow_item });
+				$lastcol = { el=>$arrows, last_col=>1, valign=>"middle", class=>"ep_form_input_grid_arrows" };
 				$row =  [ $col1, @{$section->[$n]}, $lastcol ];
 			}
 			push @{$rows}, $row;
@@ -1700,7 +1695,7 @@ sub get_basic_input_elements
 	else
 	{
 		my @classes = (
-			"ep_form_text",
+			"form-control form-control-sm ep_form_text",
 		);
 
 		push @classes, "ep_readonly" if $readonly;
