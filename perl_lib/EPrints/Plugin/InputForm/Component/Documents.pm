@@ -351,88 +351,18 @@ sub _render_doc_div
 		@$files = sort { $idx{$a} cmp $idx{$b} } @$files;
 	};
 
-	my $doc_div = $self->{session}->make_element( "div", class=>"ep_upload_doc", id=>$doc_prefix."_block" );
-
-	# provide <a> link to this document
-	$doc_div->appendChild( $session->make_element( "a", name=>$doc_prefix ) );
-
-	# note which documents should be updated
-	$doc_div->appendChild( $session->render_hidden_field( $self->{prefix}."_update_doc", $docid ) );
-
-	# note the document placement
-	$doc_div->appendChild( $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) ) );
 	$doc_item->{hidden_field} = $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) );
-
-	my $doc_title_bar = $session->make_element( "div", class=>"ep_upload_doc_title_bar" );
-	$doc_div->appendChild( $doc_title_bar );
-
-	my $doc_expansion_bar = $session->make_element( "div", class=>"ep_upload_doc_expansion_bar ep_only_js" );
-	$doc_div->appendChild( $doc_expansion_bar );
-
-	my $content = $session->make_element( "div", id=>$doc_prefix."_opts", class=>"ep_upload_doc_content ".($hide?"ep_no_js":"") );
-	$doc_div->appendChild( $content );
-
-
-	my $table = $session->make_element( "div", class=>"ep_upload_doc_title_bar_inner" );
-	my $tr = $session->make_element( "div" );
-	$doc_title_bar->appendChild( $table );
-	$table->appendChild( $tr );
-	my $td_left = $session->make_element( "div", class=>"ep_upload_doc_title_bar_inner_left" );
-	$tr->appendChild( $td_left );
-
-	$td_left->appendChild( $self->_render_doc_icon_info( $doc, $files ) );
 	$doc_item->{doc_icon_info} = $self->_render_doc_icon_info( $doc, $files );
-
-	my $td_right = $session->make_element( "div", class => "ep_upload_doc_actions" );
-	$tr->appendChild( $td_right );
-
-	$td_right->appendChild( $self->_render_doc_actions( $doc ) );
 	$doc_item->{doc_actions} = $self->_render_doc_actions( $doc );
 
         my @fields = $self->doc_fields( $doc );
-        return $doc_div if !scalar @fields;
-
-	my $opts_toggle = $session->make_element( "a", onclick => "EPJS_toggleSlideScroll('${doc_prefix}_opts',".($hide?"false":"true").",'${doc_prefix}_block');EPJS_toggle('${doc_prefix}_opts_hide',".($hide?"false":"true").",'block');EPJS_toggle('${doc_prefix}_opts_show',".($hide?"true":"false").",'block');return false" );
-	$doc_expansion_bar->appendChild( $opts_toggle );
-
-	my $s_options = $session->make_element( "div", id=>$doc_prefix."_opts_show", class=>"ep_update_doc_options ".($hide?"":"ep_hide") );
-	my $show_label = $session->make_element( "label", for=>$doc_prefix."_opts_show" );
-	$show_label->appendChild( $self->html_phrase( "show_options" ) );
-	$s_options->appendChild( $show_label );
-	$s_options->appendChild( $session->make_text( " " ) );
-	$s_options->appendChild( 
-			$session->make_element( "input",
-			    type=>'image',
-				src=>"$imagesurl/style/images/plus.svg",
-				alt=>'+',
-				id=>$doc_prefix."_opts_show",
-				) );
-	$opts_toggle->appendChild( $s_options );
-
-	my $h_options = $session->make_element( "div", id=>$doc_prefix."_opts_hide", class=>"ep_update_doc_options ".($hide?"ep_hide":"") );
-	my $hide_label = $session->make_element( "label", for=>$doc_prefix."_opts_hide" );
-	$hide_label->appendChild( $self->html_phrase( "hide_options" ) );
-	$h_options->appendChild( $hide_label );
-	$h_options->appendChild( $session->make_text( " " ) );
-	$h_options->appendChild( 
-			$session->make_element( "input",
-			    type=>'image',
-				src=>"$imagesurl/style/images/minus.svg",
-				alt=>'-',
-				id=>$doc_prefix."_opts_hide",
-				) );
-	$opts_toggle->appendChild( $h_options );
+        return $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_div", { item => $doc_item } ) if !scalar @fields;
 
 
-	my $content_inner = $self->{session}->make_element( "div", id=>$doc_prefix."_opts_inner" );
-	$content->appendChild( $content_inner );
-
-	$content_inner->appendChild( $self->_render_doc_metadata( $doc )->{content} );
-	my $doc_div_template = $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_div", { item => $doc_item } );
-	my $div = $session->make_element("div");
-	$div->appendChild($doc_div);
-	$div->appendChild($doc_div_template);
-	return $doc_div;
+	$doc_item->{show_label} = $self->html_phrase( "show_options" );
+	$doc_item->{hide_label} = $self->html_phrase( "hide_options" );
+	$doc_item->{doc_metadata} = $self->_render_doc_metadata( $doc )->{content};
+	return $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_div", { item => $doc_item } );
 }
 
 sub _render_doc_icon_info

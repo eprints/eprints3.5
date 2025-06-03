@@ -196,6 +196,7 @@ sub input_field
 	my @opts_item = ();
 	for my $key ( keys %opts )
 	{
+		next if not defined $opts{$key};
 		push @opts_item, { key => $key, value => $opts{$key} };
 	}
 
