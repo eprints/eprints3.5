@@ -232,7 +232,7 @@ $c->{render_input_contributions} = sub {
 					$entity_field->appendChild( $entity_span );
 					my $eu_button_span = $session->make_element( 'span', id => $eu_name, class => 'ep_entity_button' );
 					my $eu_button = $session->make_element( 'a', href => '#', value => $session->phrase( 'contributions:unset' ), onclick => "unset_entity( event, '${basename}_${yp1}_' )" );
-					my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.png', alt => $session->phrase( 'contributions:unset' ) );
+					my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.svg', alt => $session->phrase( 'contributions:unset' ) );
 					$eu_button->appendChild( $eu_button_img );
 					$eu_button_span->appendChild( $eu_button );
 					$entity_field->appendChild( $eu_button_span );

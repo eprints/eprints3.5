@@ -9,6 +9,8 @@ package EPrints::Plugin::InputForm::Component::Documents;
 use EPrints::Plugin::InputForm::Component;
 @ISA = ( "EPrints::Plugin::InputForm::Component" );
 
+use EPrints::Template qw( :template_phrase );
+
 use strict;
 
 sub new
@@ -332,6 +334,13 @@ sub _render_doc_div
 	my $session = $self->{session};
 
 	my $docid = $doc->get_id;
+	my $doc_item = {
+		docid => $docid, 
+		doc_prefix => $self->{prefix}."_doc".$docid,
+		imagesurl => $session->current_url( path => "static" ),
+	};
+	$doc_item->{hide} = $hide if $hide;
+
 	my $doc_prefix = $self->{prefix}."_doc".$docid;
 
 	my $imagesurl = $session->current_url( path => "static" );
@@ -352,6 +361,7 @@ sub _render_doc_div
 
 	# note the document placement
 	$doc_div->appendChild( $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) ) );
+	$doc_item->{hidden_field} = $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) );
 
 	my $doc_title_bar = $session->make_element( "div", class=>"ep_upload_doc_title_bar" );
 	$doc_div->appendChild( $doc_title_bar );
@@ -371,11 +381,13 @@ sub _render_doc_div
 	$tr->appendChild( $td_left );
 
 	$td_left->appendChild( $self->_render_doc_icon_info( $doc, $files ) );
+	$doc_item->{doc_icon_info} = $self->_render_doc_icon_info( $doc, $files );
 
 	my $td_right = $session->make_element( "div", class => "ep_upload_doc_actions" );
 	$tr->appendChild( $td_right );
 
 	$td_right->appendChild( $self->_render_doc_actions( $doc ) );
+	$doc_item->{doc_actions} = $self->_render_doc_actions( $doc );
 
         my @fields = $self->doc_fields( $doc );
         return $doc_div if !scalar @fields;
@@ -416,6 +428,10 @@ sub _render_doc_div
 	$content->appendChild( $content_inner );
 
 	$content_inner->appendChild( $self->_render_doc_metadata( $doc )->{content} );
+	my $doc_div_template = $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_div", { item => $doc_item } );
+	my $div = $session->make_element("div");
+	$div->appendChild($doc_div);
+	$div->appendChild($doc_div_template);
 	return $doc_div;
 }
 

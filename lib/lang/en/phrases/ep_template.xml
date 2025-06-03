@@ -563,16 +563,16 @@
     centre-align the input
   -->
   <epp:phrase id="view:MetaField/render_input_field_actual">
-    <div class="d-flex justify-content-center flex-column">
+    <div class="{if (has_col_titles, 'd-table m-auto', 'd-flex justify-content-center flex-column form-control flex-grow-1')}">
       <epc:if test="has_col_titles">
-        <div class="row">
+        <div class="d-table-row">
           <epc:foreach expr="titles" iterator="column">
             <epc:choose>
               <epc:when test="$column{empty_column}">
-                <div class="empty_heading" id="{basename}_th_0"/>
+                <div class="d-table-cell" id="{basename}_th_0"/>
               </epc:when>
               <epc:otherwise>
-                <div class="heading" id="{concat($column{id}, '_label')}">
+                <div class="d-table-cell" id="{concat($column{id}, '_label')}">
                   <epc:print expr="$column{title}"/>
                 </div>
               </epc:otherwise>
@@ -581,7 +581,7 @@
         </div>
       </epc:if>
       <epc:foreach expr="rows" iterator="row">
-        <div class="w-100">
+        <div class="{if (has_col_titles, 'd-table-row', 'input-group')}">
           <epc:foreach expr="$row{cells}" iterator="cell">
             <div id="{concat(basename, '_cell_', $cell{column_index}, '_', $row{row_index})}">
               <epc:foreach expr="$cell{attrs}" iterator="attr">
@@ -589,12 +589,26 @@
                   <epc:print expr="$attr{value}"/>
                 </epc:attribute>
               </epc:foreach>
+              <epc:if test="$cell{column_index} = 0">
+                <epc:attribute name="class">
+                  <epc:if test="has_col_titles">
+					py-1 px-1 d-table-cell
+				</epc:if>
+                  <epc:if test="!has_col_titles">
+					w-100
+                                </epc:if>
+                </epc:attribute>
+              </epc:if>
+              <epc:if test="$cell{column_index} != 0">
+                <epc:attribute name="class">py-1 px-1 d-table-cell</epc:attribute>
+              </epc:if>
               <epc:print expr="$cell{item}"/>
             </div>
           </epc:foreach>
         </div>
       </epc:foreach>
     </div>
+    <epc:print expr="buttons"/>
     <epc:print expr="javascript"/>
   </epp:phrase>
   <epp:phrase id="view:EPrints/Plugin/Screen/Workflow:render">
@@ -788,7 +802,7 @@
       <epc:print expr="field"/>
       <epc:choose>
         <epc:when test="has_toggle">
-          <div class="input-group-text">
+          <div class="input-group-text ms-auto">
             <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
               <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
                 <img alt="{string_phrase(&quot;lib/session:show_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:show_help_title&quot;)}" src="{string_phrase(&quot;lib/session:show_help_src&quot;)}"/>
@@ -1258,8 +1272,26 @@
     </div>
   </epp:phrase>
   <epp:phrase id="view:MetaField/LongText:get_basic_input_elements">
-	  <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="w-100 form-control" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
-		<epc:print expr="value"/>
-	  </textarea>
+    <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="w-100 form-control" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
+      <epc:print expr="value"/>
+    </textarea>
+  </epp:phrase>
+  <epp:phrase id="view:MetaField:get_input_elements:multiple:row_label">
+    <span id="{id}"><epc:print expr="index"/>. </span>
+  </epp:phrase>
+  <epp:phrase id="view:MetaField:get_input_elements:multiple:arrows">
+    <input type="image" alt="down" title="move down" src="{arrow_down{src}}" name="{arrow_down{name}}" class="epjs_ajax" value="1"/>
+    <epc:if test="arrow_up">
+      <input type="image" alt="up" title="move up" src="{arrow_up{src}}" name="{arrow_up{name}}" class="epjs_ajax ms-1" value="1"/>
+    </epc:if>
+  </epp:phrase>
+  <epp:phrase id="view:EPrints/XHTML:input_field">
+    <input name="{name}" value="{value}">
+      <epc:foreach expr="opts" iterator="opt">
+        <epc:attribute name="{$opt{key}}">
+          <epc:print expr="$opt{value}"/>
+        </epc:attribute>
+      </epc:foreach>
+    </input>
   </epp:phrase>
 </epp:phrases>

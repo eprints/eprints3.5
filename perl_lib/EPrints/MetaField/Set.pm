@@ -262,7 +262,7 @@ sub render_set_input
 
 	if( $input_style eq "long" || $input_style eq "medium" )
 	{
-		$list = $session->make_element( "dl", class=>"ep_field_set_" . $input_style );
+		$list = $session->make_element( "dl", class=>"form-control m-0 ep_field_set_" . $input_style );
 	}	
 	else
 	{
@@ -294,7 +294,7 @@ sub render_set_input
 		my $row;
 		if( $input_style eq "long" || $input_style eq "medium" )
 		{
-			$row = $session->make_element( "dt", id => $basename."_".$opt."_title" );
+			$row = $session->make_element( "dt", class => "d-inline", id => $basename."_".$opt."_title" );
         	        my $checked = undef;
                 	my $type = "radio";
 	                if( $self->{multiple} )
@@ -327,7 +327,7 @@ sub render_set_input
 					'aria-describedby' => $basename."_".$opt."_desc",
 				) );
 	                	$row->appendChild( $session->make_text( " ".$labels->{$opt} ));
-        	        	$dd = $session->make_element( "dd", id=>$basename."_".$opt."_desc" );
+        	        	$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_desc" );
                 		my $phrasename = $self->{confid}."_optdetails_".$self->{name}."_".$opt;
                 		$dd->appendChild( $session->html_phrase( $phrasename ));
 			}
@@ -343,11 +343,12 @@ sub render_set_input
 	                                checked => $checked,
         	                        'aria-labelledby' => $basename."_".$opt."_title",
                 	        ) );
-	                        $dd = $session->make_element( "dd", id=>$basename."_".$opt."_label", 'aria-describedby'=>$self->get_labelledby( $basename ) );
+	                        $dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_label", 'aria-describedby'=>$self->get_labelledby( $basename ) );
 				$dd->appendChild( $session->make_text( " ".$labels->{$opt} ) );
 			}
 			$list->appendChild( $row );
                         $list->appendChild( $dd );
+			$list->appendChild( $session->make_element( "br" ) );
 		}
 		else
 		{

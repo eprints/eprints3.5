@@ -560,7 +560,7 @@
       <epc:foreach expr="rows" iterator="row">
         <div>
           <epc:foreach expr="$row{cells}" iterator="cell">
-            <div id="{concat(basename, '_cell_', $cell{column_index}, '_', $row{row_index})}">
+            <div class="" id="{concat(basename, '_cell_', $cell{column_index}, '_', $row{row_index})}">
               <epc:foreach expr="$cell{attrs}" iterator="attr">
                 <epc:attribute name="{$attr{name}}">
                   <epc:print expr="$attr{value}"/>
@@ -1214,8 +1214,53 @@
     </div>
   </epp:phrase>
   <epp:phrase id="view:MetaField/LongText:get_basic_input_elements">
-	  <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="{class}" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
+    <textarea aria-describedby="{if (aria-describedby, aria-describedby, '')}" class="{class}" wrap="{wrap}" cols="{cols}" aria-labelledby="{aria-labelledby}" name="{name}" rows="{rows}" id="{id}">
       <epc:print expr="value"/>
     </textarea>
+  </epp:phrase>
+  <epp:phrase id="view:MetaField:get_input_elements:multiple:row_label">
+    <span id="{id}"><epc:print expr="index"/>. </span>
+  </epp:phrase>
+  <epp:phrase id="view:MetaField:get_input_elements:multiple:arrows">
+    <input type="image" alt="down" title="move down" src="{arrow_down{src}}" name="{arrow_down{name}}" class="epjs_ajax" value="1"/>
+    <epc:if test="arrow_up">
+      <input type="image" alt="up" title="move up" src="{arrow_up{src}}" name="{arrow_up{name}}" class="epjs_ajax" value="1"/>
+    </epc:if>
+  </epp:phrase>
+  <epp:phrase id="view:EPrints/XHTML:input_field">
+    <input name="{name}" value="{value}">
+      <epc:foreach expr="opts" iterator="opt">
+        <epc:attribute name="{$opt{key}}">
+          <epc:print expr="$opt{value}"/>
+        </epc:attribute>
+      </epc:foreach>
+    </input>
+  </epp:phrase>
+  <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_div">
+    <div class="ep_upload_doc" id="{doc_prefix}_block">
+      <a name="{doc_prefix}">
+test
+		</a>
+      <epc:print expr="hidden_field"/>
+      <div class="ep_upload_doc_title_bar">
+        <div class="ep_upload_doc_title_bar_inner">
+          <div class="">
+            <div class="ep_upload_doc_title_bar_inner_left">
+              <epc:print expr="doc_icon_info"/>
+            </div>
+            <div class="ep_upload_doc_actions">
+              <epc:print expr="doc_actions"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ep_upload_doc_expansion_bar ep_only_js">
+        <a onclick="EPJS_toggleSlideScroll('{doc_prefix}_opts',{if(hide, 'false', 'true')},'{doc_prefix}_block');EPJS_toggle('{doc_prefix}_opts_hide',{if(hide, 'false', 'true')},'block');EPJS_toggle('{doc_prefix}_opts_show',{if (hide, 'true','false')},'block');return false">
+	    </a>
+      </div>
+      <div class="ep_upload_doc_content {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
+
+	    </div>
+    </div>
   </epp:phrase>
 </epp:phrases>

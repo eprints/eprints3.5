@@ -10,3 +10,5 @@
 }
 .navbar-toggler:focus { box-shadow: none; }
 .d-none-not-important { display: none; }
+
+input { border: var(--bs-border-width) solid var(--bs-border-color); }

@@ -192,10 +192,18 @@ sub input_field
 #		push @opts, id => $name;
 #	}
 
-	return $self->{repository}->xml->create_element( "input",
-		name => $name,
-		value => $value,
-		@opts );
+	my %opts = @opts;
+	my @opts_item = ();
+	for my $key ( keys %opts )
+	{
+		push @opts_item, { key => $key, value => $opts{$key} };
+	}
+
+        return $self->{repository}->template_phrase( "view:EPrints/XHTML:input_field", { item => {
+                name => $name,
+                value => $value,
+		opts => \@opts_item,
+        } } );
 }
 
 =item $node = $xhtml->hidden_field( $name, $value, %opts );
