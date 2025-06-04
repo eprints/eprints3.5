@@ -41,7 +41,7 @@ sub can_be_viewed
 
 	return 0 if !$self->has_workflow();
 
-	return $self->allow( $self->{processor}->{dataset}->id."/edit" );
+	return $self->allow( $self->{processor}->{dataset}->id . "/edit" );
 }
 
 
@@ -65,7 +65,7 @@ sub action_update_ids
 			my $changed = 0;
 			for ( my $c = 0; $c < scalar @$contributions; $c++ )
 			{
-				if ( $contributions->[$c]->{contributor}->{datasetid} eq $self->{processor}->{datasetid} && $contributions->[$c]->{contributor}->{entityid} eq $self->{processor}->{entityid} && ( $contributions->[$c]->{contributor}->{id_value} ne $entity_id_value || $contributions->[$c]->{contributor}->{id_type} ne $entity_id_type ) )
+				if ( $contributions->[$c]->{contributor}->{datasetid} eq $self->{processor}->{dataset}->id && $contributions->[$c]->{contributor}->{entityid} eq $self->{processor}->{entity}->id && ( $contributions->[$c]->{contributor}->{id_value} ne $entity_id_value || $contributions->[$c]->{contributor}->{id_type} ne $entity_id_type ) )
 				{
 					$contributions->[$c]->{contributor}->{id_value} = $entity_id_value;
 					$contributions->[$c]->{contributor}->{id_type} = $entity_id_type;
@@ -107,9 +107,9 @@ sub render
 			$db->quote_identifier( "contributions_contributor_id_value" ),
 			$db->quote_identifier( "eprint_contributions_contributor" ),
 			$db->quote_identifier( "contributions_contributor_datasetid" ),
-			$db->quote_value( $self->{processor}->{datasetid} ),
+			$db->quote_value( $self->{processor}->{dataset}->id ),
 			$db->quote_identifier( "contributions_contributor_entityid" ),
-			$db->quote_value( $self->{processor}->{entityid} ),
+			$db->quote_value( $self->{processor}->{entity}->id ),
 			$db->quote_identifier( "contributions_contributor_id_type" ),			
 			$db->quote_identifier( "contributions_contributor_id_value" ),
 		)
@@ -133,7 +133,7 @@ sub render
 		my $heading = $self->{session}->make_element( 'h2', class => "ep_entity_id" );
 		my @id_type_value = split( ':',  $eprint_cbtr_id );
 
-		$heading->appendChild( $self->{session}->html_phrase( $self->{processor}->{datasetid} . "_id_type_typename_" . decode_base64( $id_type_value[0] ) ) );
+		$heading->appendChild( $self->{session}->html_phrase( $self->{processor}->{dataset}->id . "_id_type_typename_" . decode_base64( $id_type_value[0] ) ) );
 		$heading->appendChild( $self->{session}->make_text( ": " . decode_base64( $id_type_value[1] ) ) );
 		my $eprints_div = $self->{session}->make_element( 'div', class => "ep_entity_id_contribs" );
 		$contrib_frag->appendChild( $heading );
@@ -156,7 +156,7 @@ sub render
 	foreach my $option ( @{$self->{processor}->{entity}->get_value( 'ids' )} ) 
 	{
 		my $option_encode = encode_base64( $option->{id_type} ) . ": " . encode_base64( $option->{id} );
-		my $option_label = $self->{session}->make_text( $self->{session}->phrase( $self->{processor}->{datasetid} . "_id_type_typename_" . $option->{id_type} ) . ": " . $option->{id} );
+		my $option_label = $self->{session}->make_text( $self->{session}->phrase( $self->{processor}->{dataset}->id . "_id_type_typename_" . $option->{id_type} ) . ": " . $option->{id} );
 		my $id_option;
 		if ( $option_encode eq $primary_id )
 		{

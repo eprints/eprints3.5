@@ -41,14 +41,14 @@ sub render
 
 	my $session = $self->{session};
 
-	my $entityid_fieldname = $self->{processor}->{dataset}->get_key_field->{name};
+	my $entityid_fieldname = $self->{processor}->{entity}->get_dataset->get_key_field->{name};
 
 	my $frag = $session->make_doc_fragment;
 	my $table = $session->make_element( "table" );
 	$frag->appendChild( $table );
 	my( $contents, $tr, $th, $td );
 
-	$contents = $self->render_action_list( "entity_actions", { datasetid => $self->{processor}->{datasetid} , entityid => $self->{processor}->{entityid} } );
+	$contents = $self->render_action_list( "entity_actions", { dataset => $self->{processor}->{dataset}->id , dataobj => $self->{processor}->{entity}->id } );
 
 	if( $contents->hasChildNodes )
 	{

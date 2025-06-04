@@ -568,8 +568,8 @@ sub get_control_url
 	my $key_field_name = $dataset->key_field->get_name;
 
 	return $self->{session}->get_repository->get_conf( "perl_url" ).
-		"/users/home?screen=Entity::View&datasetid=" . $self->get_dataset_id . 
-		"&entityid=" . $self->get_value( $key_field_name );
+		"/users/home?screen=Entity::View&dataset=" . $self->get_dataset_id .
+		"&dataobj=" . $self->get_value( $key_field_name );
 }
 
 

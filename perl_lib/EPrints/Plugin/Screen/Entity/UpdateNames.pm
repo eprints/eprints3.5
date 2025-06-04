@@ -11,6 +11,7 @@ use EPrints::Plugin::Screen::Entity;
 @ISA = ( 'EPrints::Plugin::Screen::Entity' );
 
 use strict;
+use Encode;
 
 sub new
 {
@@ -40,7 +41,7 @@ sub can_be_viewed
 
 	return 0 if !$self->has_workflow();
 
-	return $self->allow( $self->{processor}->{dataset}->id."/edit" );
+	return $self->allow( $self->{processor}->{dataset}->id . "/edit" );
 }
 
 
@@ -62,7 +63,7 @@ sub action_update_names
 			my $changed = 0;
 			for ( my $c = 0; $c < scalar @$contributions; $c++ )
 			{
-				if ( $contributions->[$c]->{contributor}->{datasetid} eq $self->{processor}->{datasetid} && $contributions->[$c]->{contributor}->{entityid} eq $self->{processor}->{entityid} && $contributions->[$c]->{contributor}->{name} ne $entity_name )
+				if ( $contributions->[$c]->{contributor}->{datasetid} eq $self->{processor}->{dataset}->id && $contributions->[$c]->{contributor}->{entityid} eq $self->{processor}->{entity}->id && $contributions->[$c]->{contributor}->{name} ne $entity_name )
 				{
 					$contributions->[$c]->{contributor}->{name} = $entity_name;
 					$changed = 1;
@@ -102,16 +103,16 @@ sub render
 		    $db->quote_identifier( "contributions_contributor_name" ),
 			$db->quote_identifier( "eprint_contributions_contributor" ),
 			$db->quote_identifier( "contributions_contributor_datasetid" ),
-			$db->quote_value( $self->{processor}->{datasetid} ),
+			$db->quote_value( $self->{processor}->{dataset}->id ),
 			$db->quote_identifier( "contributions_contributor_entityid" ),
-			$db->quote_value( $self->{processor}->{entityid} ),
+			$db->quote_value( $self->{processor}->{entity}->id ),
 			$db->quote_identifier( "contributions_contributor_name" ),			
 		)
 	);
 
 	$sth->execute;	
-	
-	my $hr_name = $self->{processor}->{entity}->human_serialise_name( $self->{processor}->{entity}->get_value( 'name' ) );
+
+	my $hr_name = Encode::encode( "UTF-8", $self->{processor}->{entity}->human_serialise_name( $self->{processor}->{entity}->get_value( 'name' ) ) );
 	my @eprint_cbtr_order = ( $hr_name );
 	my %eprint_cbtr_names = ( $hr_name => [] );
 	while (my $row = $sth->fetchrow_arrayref) 
