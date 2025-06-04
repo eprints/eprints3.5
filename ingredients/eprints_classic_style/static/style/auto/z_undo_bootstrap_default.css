@@ -16,3 +16,17 @@ body {
 #wrapper {
         min-height: auto;
 }
+
+.ep_upload_doc /* upload.css */
+{
+        background-image: url(images/bar_solid_24px.png);
+        background-repeat: repeat-x;
+}
+.ep_upload_doc /* upload.css */
+{
+        border-color: #ccc;
+}
+.ep_upload_doc /* upload.css */
+{
+        background-color: #e8e8ff;
+}
