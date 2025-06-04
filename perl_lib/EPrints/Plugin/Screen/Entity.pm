@@ -17,24 +17,42 @@ sub properties_from
 {
 	my( $self ) = @_;
 
-	$self->{processor}->{datasetid} = $self->{session}->param( "datasetid" );
-	$self->{processor}->{entityid} = $self->{session}->param( "entityid" );
+	my $processor = $self->{processor};
+	my $session = $self->{session};
+
+	my $datasetid = $session->param( "dataset" );
+	my $entityid = $session->param( "dataobj" );
+
+	my $dataset = $self->{processor}->{dataset};
+	$dataset = $session->dataset( $datasetid ) if !defined $dataset;
+	my $entity_dss = $session->config( 'entities', 'datasets' );
+	if( !defined $dataset || ! grep /^$datasetid$/, @$entity_dss )
+	{
+		$processor->{screenid} = "Error";
+		$processor->add_message( "error", $session->html_phrase(
+			"cgi/users/edit_entity:cant_find_it",
+			dataset=>$self->{session}->make_text( $datasetid ),
+			dataobj=>$self->{session}->make_text( $entityid ) ) );
+		return;
+	}
+	$self->{processor}->{dataset} = $dataset;
+
+	my $entity = $processor->{entity};
+	$entity = $dataset->dataobj( $entityid ) if !defined $entity;
+	if( !defined $entity )
+	{
+		$processor->{screenid} = "Error";
+		$processor->add_message( "error", $session->html_phrase(
+			"cgi/users/edit_entity:cant_find_it",
+			dataset=>$self->{session}->make_text( $datasetid ),
+			dataobj=>$self->{session}->make_text( $entityid ) ) );
+		return;
+	}
+	$processor->{entity} = $entity;
+
 	unless (defined $self->{processor}->{required_fields_only}) {
 		$self->{processor}->{required_fields_only} = $self->{session}->param( "required_only" );
 	}
-	$self->{processor}->{entity} = EPrints::DataObj::Entity::get( $self->{session}, $self->{processor}->{datasetid}, $self->{processor}->{entityid} );
-
-	if( !defined $self->{processor}->{entity} )
-	{
-		$self->{processor}->{screenid} = "Error";
-		$self->{processor}->add_message( "error", $self->{session}->html_phrase(
-			"cgi/users/edit_entity:cant_find_it",
-			datasetid=>$self->{session}->make_text( $self->{processor}->{datasetid} ),
-			entityid=>$self->{session}->make_text( $self->{processor}->{entityid} ) ) );
-		return;
-	}
-
-	$self->{processor}->{dataset} = $self->{processor}->{entity}->get_dataset;
 
 	$self->SUPER::properties_from;
 }
@@ -42,6 +60,14 @@ sub properties_from
 sub allow
 {
 	my( $self, $priv ) = @_;
+
+	# Allow Entity::View icon to be displayed under Listing pages actions for entity datasets.
+	if ( $self->{processor}->{screenid} eq "Listing" && $self->{processor}->{dataset} )
+	{
+		my $entity_dss = $self->{session}->config( 'entities', 'datasets' );
+		my $datasetid = $self->{processor}->{dataset}->id;
+		return 1 if grep /^$datasetid$/, @$entity_dss;
+	}
 
 	return 0 unless defined $self->{processor}->{entity};
 
@@ -52,11 +78,11 @@ sub allow
 
 sub has_workflow
 {
-        my( $self ) = @_;
+	my( $self ) = @_;
 
-        my $xml = $self->{session}->get_workflow_config( $self->{processor}->{datasetid}, "default" );
+	my $xml = $self->{session}->get_workflow_config( $self->{processor}->{dataset}->id, "default" );
 
-        return defined $xml;
+	return defined $xml;
 }
 
 sub render_tab_title
@@ -70,7 +96,7 @@ sub render_title
 {
 	my( $self ) = @_;
 
-	my $priv = $self->allow( $self->{processor}->{datasetid}."/view" );
+	my $priv = $self->allow( $self->{processor}->{dataset}->id."/view" );
 	my $owner  = $priv & 4;
 	my $editor = $priv & 8;
 
@@ -85,7 +111,7 @@ sub render_title
 	}
 	else
 	{
-		my $a = $self->{session}->render_link( "?screen=Entity::View&datasetid=".$self->{processor}->{datasetid}."&entityid=".$self->{processor}->{entityid} );
+		my $a = $self->{session}->render_link( "?screen=Entity::View&dataset=".$self->{processor}->{dataset}->id."&dataobj=".$self->{processor}->{entity}->id );
 		$a->appendChild( $title );
 		$f->appendChild( $a );
 	}
@@ -96,7 +122,7 @@ sub redirect_to_me_url
 {
 	my( $self ) = @_;
 
-	return $self->SUPER::redirect_to_me_url."&datasetid=".$self->{processor}->{datasetid}."&entityid=".$self->{processor}->{entityid};
+	return $self->SUPER::redirect_to_me_url."&dataset=".$self->{processor}->{dataset}->id."&dataobj=".$self->{processor}->{entity}->id;
 }
 
 sub register_furniture
@@ -105,7 +131,7 @@ sub register_furniture
 
 	$self->SUPER::register_furniture;
 
-	my $eprint = $self->{processor}->{entity};
+	my $entity = $self->{processor}->{entity};
 	my $user = $self->{session}->current_user;
 
 	return $self->{session}->make_doc_fragment;
@@ -119,7 +145,7 @@ sub workflow
 	{
 		# look up and use the custom callback if its defined
 		my $fn = $self->{session}->get_conf( "STAFF_ONLY_LOCAL_callback" );
-                my $soa = ( defined $fn && ref $fn eq "CODE" ) ? &{$fn}( $self->{processor}->{entity}, $self->{session}->current_user, "write" ) : 0;
+		my $soa = ( defined $fn && ref $fn eq "CODE" ) ? &{$fn}( $self->{processor}->{entity}, $self->{session}->current_user, "write" ) : 0;
 
 		my $staff = $self->allow( "entity/edit:editor" );
 		my %opts = (
@@ -131,21 +157,21 @@ sub workflow
 		);
 		
 		my $user = $self->{session}->current_user;
-                if( $user )
-                {
-                        foreach my $role ( $user->get_roles )
-                        {
-                                $role =~ s|/|__|g; # replace / with __
-                                $opts{ "ROLE_" . $role } = [ "TRUE", "BOOLEAN" ];
-                        }
-                        $opts{ "ROLES" } = [ join("|", $user->get_roles), "STRING" ];
-                }
+		if( $user )
+		{
+			foreach my $role ( $user->get_roles )
+			{
+				$role =~ s|/|__|g; # replace / with __
+				$opts{ "ROLE_" . $role } = [ "TRUE", "BOOLEAN" ];
+			}
+			$opts{ "ROLES" } = [ join("|", $user->get_roles), "STRING" ];
+		}
 
  		$self->{processor}->{workflow} = EPrints::Workflow->new(
 				$self->{session},
 				$self->workflow_id,
 				%opts
-			);
+		);
 	}
 
 	return $self->{processor}->{workflow};
@@ -213,8 +239,8 @@ sub hidden_bits
 
 	return(
 		$self->SUPER::hidden_bits,
-		datasetid => $self->{processor}->{datasetid},
-		entityid => $self->{processor}->{entityid},
+		dataset => $self->{processor}->{dataset}->id,
+		dataobj => $self->{processor}->{entity}->id,
 	);
 }
 

@@ -56,7 +56,7 @@ sub can_be_viewed
 {
 	my( $self ) = @_;
 	
-	return $self->allow( $self->{processor}->{entity}->get_dataset_id . "/details" );
+	return $self->allow( $self->{processor}->{dataset}->id . "/details" );
 }
 
 sub _render_name_maybe_with_link
@@ -314,7 +314,7 @@ sub render_edit_button
 	my $button = $self->render_action_button({
 		screen => $screen,
 		screen_id => "Screen::".$self->edit_screen_id,
-		hidden => { dataset => $self->{processor}->{datasetid}, dataobj => $self->{processor}->{entityid}, stage => $self->{processor}->{stage} },
+		hidden => { dataset => $self->{processor}->{dataset}->id, dataobj => $self->{processor}->{entity}->id, stage => $self->{processor}->{stage} },
 		idsuffix => "stage_" . $stage,
 	});
 	$div->appendChild( $button );

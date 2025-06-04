@@ -902,6 +902,10 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
 
     <epp:phrase id="lib/metafield:words"> words</epp:phrase>
 
+<!-- Entity -->
+
+    <epp:phrase id="lib/entity:no_such_entity">Either <epc:pin name="datasetid"/> is not a type of entity or its dataset does not contain and object with ID <epc:pin name="objectid"/>.  It may have been erased.</epp:phrase>
+
 <!-- File -->
     <epp:phrase id="file_fieldname_fileid">Unique file id</epp:phrase>
     <epp:phrase id="file_fieldhelp_fileid"/>
@@ -1197,9 +1201,11 @@ Enter a URL to capture a file from: <epc:pin name="url"/><br/>
     <epp:phrase id="lib/submissionform:action_create">Create</epp:phrase>
     <epp:phrase id="lib/submissionform:action_later">Deposit Item Later</epp:phrase>
     <epp:phrase id="lib/submissionform:action_update_names">Update Names</epp:phrase>
-	<epp:phrase id="lib/submissionform:action_update_ids">Update IDs</epp:phrase>
+    <epp:phrase id="lib/submissionform:action_update_ids">Update IDs</epp:phrase>
+    <epp:phrase id="lib/submissionform:action_split">Split Entity</epp:phrase>
     <epp:phrase id="lib/submissionform:select_entity_name">Change to name</epp:phrase>
     <epp:phrase id="lib/submissionform:select_entity_id">Change to ID</epp:phrase>
+    <epp:phrase id="lib/submissionform:choose_entity_id">Choose ID for entity</epp:phrase>
     <epp:phrase id="lib/submissionform:title_type">Edit item: Item Type</epp:phrase>
     <epp:phrase id="lib/submissionform:title_meta">Edit item: Bibliographic Information</epp:phrase>
     <epp:phrase id="lib/submissionform:title_linking">Edit item: Succession/Commentary</epp:phrase>
@@ -1647,6 +1653,10 @@ The following eprint has been deleted from your User Area:
     <epp:phrase id="cgi/users/edit_user:delete_title">Delete User</epp:phrase>
     <epp:phrase id="cgi/users/edit_user:could_not_remove">Could not remove user. Check the logs for more information.</epp:phrase>
     <epp:phrase id="cgi/users/edit_user:deleted"><p>The user &quot;<epc:pin name="username"/>&quot; has been deleted.</p><p>Any items associated with that user have <em>not</em> been removed. They are still associated with userid #<epc:pin name="userid"/>.</p></epp:phrase>
+
+
+<!-- edit entity -->
+    <epp:phrase id="cgi/users/edit_entity:cant_find_it">Can't retrieve "<epc:pin name="dataset"/>" with the ID "<epc:pin name="dataobj"/>"</epp:phrase>
 
 <!-- user_search -->
 
@@ -2360,12 +2370,18 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/Entity/View:title">View Entity</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/Details:title">Details</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/Details:other">Other defined fields</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Details:edit_field_link">Edit <epc:pin name="field"/></epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:title">Update Names</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:description">Update the names for this entity across the EPrint items in which it appears.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateNames:updated_names">Entity's name was updated to "<epc:pin name="to"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:title">Update IDs</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:description">Update the IDs for this entity across the EPrint items in which it appears.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Entity/UpdateIDs:updated_ids">Entity's ID was updated to the <epc:pin name="to_type"/> "<epc:pin name="to_value"/>" in the contributions of <epc:pin name="count"/> item(s).</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Split:title">Split Entity</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Split:description">Split the entity into two, moving some eprints to the new entity.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Split:split_entity"><epc:pin name="to_href"/> and has had <epc:pin name="count"/> selected item(s) assigned to it.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Entity/Split:split_entity_href_text">New <epc:pin name="to_type"/> created with ID <epc:pin name="to_id"/></epp:phrase>
+
      <!-- eprint action screens -->
 
     <epp:phrase id="Plugin/Screen/EPrint/Deposit:title">Deposit item</epp:phrase>

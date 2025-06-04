@@ -19,22 +19,17 @@ sub new
 
 	my $self = $class->SUPER::new(%params);
 
-	$self->{icon} = "action_view.png";
+	$self->{icon} = "action_entity.png";
 
-	$self->{appears} = [
+	$self->{appears} = [];
+	foreach my $datasetid ( @{$self->{session}->config( 'entities', 'datasets' )} )
+	{
+		push @{$self->{appears}}, 
 		{
-			place => "entity_summary_page_actions",
-			position => 100,
-		},
-		{
-			place => "entity_item_actions",
-			position => 10,
-		},
-		{
-			place => "entity_review_actions",
-			position => 10,
-		},
-	];
+			place => $datasetid . "_item_actions",
+			position => 800,
+		};
+	}
 
 	return $self;
 }
@@ -115,10 +110,8 @@ sub can_be_viewed
 		return 1 if $rv;
 	}
 
-	return $self->allow( $self->{processor}->{datasetid}."/view" ) & $self->who_filter;
+	return $self->allow( $self->{processor}->{dataset}->id . "/view" ) & $self->who_filter;
 }
-
-sub who_filter { return 14; }
 
 sub render
 {
@@ -155,7 +148,7 @@ sub render
 
 		my $screen = $screens[$i];
 		my $rtt = $screen->render_tab_title;
- 	        push @labels, ($rtt) ? $rtt : "no title";
+		push @labels, ($rtt) ? $rtt : "no title";
 
 		push @expensive, $i if $screen->{expensive};
 		if( $screen->{expensive} && $i != $current )
@@ -188,7 +181,7 @@ sub render_common_action_buttons
 
 	my $frag = $self->{session}->make_doc_fragment;
 
-	$frag->appendChild( $self->render_action_list_bar( "entity_actions_bar", ['datasetid, objectid'] ) );
+	$frag->appendChild( $self->render_action_list_bar( "entity_actions_bar", ['dataset, entity'] ) );
 
 	return $frag;
 }
