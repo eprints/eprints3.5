@@ -1276,4 +1276,13 @@
       </div>
     </div>
   </epp:phrase>
+  <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_actions">
+    <div class="ep_upload_doc_actions_inner">
+      <div class="">
+        <epc:foreach expr="actions" iterator="action">
+          <input style="margin-left: 6px;" name="{$action{name}}" src="{$action{src}}" title="{$action{title}}" alt="{$action{title}}" value="{$action{title}}" rel="{$action{rel}}"/>
+        </epc:foreach>
+      </div>
+    </div>
+  </epp:phrase>
 </epp:phrases>

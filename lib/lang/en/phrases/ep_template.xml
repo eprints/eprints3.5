@@ -1295,7 +1295,7 @@
     </input>
   </epp:phrase>
   <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_div">
-    <div class="border p-3 rounded mb-3 shadow" id="{doc_prefix}_block">
+    <div class="border p-3 rounded mb-3 shadow ep_upload_doc" id="{doc_prefix}_block">
       <a name="{doc_prefix}">
                 </a>
       <epc:print expr="hidden_field"/>
@@ -1331,6 +1331,15 @@
         <div class="" id="{doc_prefix}_opts_inner">
           <epc:print expr="doc_metadata"/>
         </div>
+      </div>
+    </div>
+  </epp:phrase>
+  <epp:phrase id="view:Plugin/InputForm/Component/Documents:_render_doc_actions">
+    <div class="ep_upload_doc_actions_inner">
+      <div class="">
+        <epc:foreach expr="actions" iterator="action">
+          <input class="ms-2" name="{$action{name}}" src="{$action{src}}" title="{$action{title}}" alt="{$action{title}}" value="{$action{title}}" rel="{$action{rel}}"/>
+        </epc:foreach>
       </div>
     </div>
   </epp:phrase>

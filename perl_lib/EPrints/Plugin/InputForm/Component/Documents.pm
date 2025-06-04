@@ -400,14 +400,12 @@ sub _render_doc_actions
 
 	my $session = $self->{session};
 
+	my $doc_actions_item = {
+		doc_prefix => $self->{prefix}."_doc".$doc->id,
+		actions => [],
+	};
+
 	my $doc_prefix = $self->{prefix}."_doc".$doc->id;
-
-	my $table = $session->make_element( "div", class=>"ep_upload_doc_actions_inner" );
-
-	my( $tr, $td );
-
-	$tr = $session->make_element( "div" );
-	$table->appendChild( $tr );
 
 	my $screen = $self->{processor}->screen;
 	my $uri = URI->new( 'http:' );
@@ -418,26 +416,23 @@ sub _render_doc_actions
 
 	foreach my $params ($screen->action_list( "document_item_actions" ))
 	{
-		$td = $session->make_element( "div" );
-		$tr->appendChild( $td );
-
 		my $aux = $params->{screen};
 		my $action = $params->{action};
 		my $name = "_internal_".$doc_prefix."_".$aux->get_subtype;
 		my $title = $action ? $aux->phrase( "action:$action:title" ) : $aux->phrase( "title" );
 		my $icon = $action ? $aux->action_icon_url( $action ) : $aux->icon_url;
-		my $input = $td->appendChild(
-			$session->make_element( "input",
-				type => "image",
-				class => "ep_form_action_icon",
-				name => $name,
-				src => $icon,
-				title => $title,
-				alt => $title,
-				value => $title,
-				rel => ($aux->param( "ajax" ) ? $aux->param( "ajax" ) : "") ) );
+
+		my $doc_actions = {
+			name => $name,
+                        src => $icon,
+                        title => $title,
+			rel => ($aux->param( "ajax" ) ? $aux->param( "ajax" ) : ""),
+		}; 
+
+		push @{$doc_actions_item->{actions}}, $doc_actions;
 	}
 
+	my $table = $session->template_phrase( "view:Plugin/InputForm/Component/Documents:_render_doc_actions", { item => $doc_actions_item } );
 	return $table;
 }
 
