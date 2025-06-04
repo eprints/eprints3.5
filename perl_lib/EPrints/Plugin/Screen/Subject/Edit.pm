@@ -10,6 +10,9 @@ package EPrints::Plugin::Screen::Subject::Edit;
 use EPrints::Plugin::Screen::Workflow::Edit;
 @ISA = qw( EPrints::Plugin::Screen::Workflow::Edit );
 
+use Digest::MD5 qw( md5 );
+use JSON;
+
 use strict;
 
 sub new
@@ -120,6 +123,7 @@ sub render_editbox
 	my( $self ) = @_;
 
 	my $session = $self->{session};
+	my $processor = $self->{processor};
 
 	my $form = $session->render_form( "POST" );
 	$form->appendChild( $self->render_hidden_bits );
@@ -135,6 +139,27 @@ sub render_editbox
 	$form->appendChild( $session->render_action_buttons(
 		save => $self->phrase( "action_save" )
 		) );
+
+	$form->appendChild( $session->make_text( "History (TODO: formatting):" ) );
+	my $parent = $processor->{dataobj};
+	my $list = $session->dataset( 'history' )->search(
+		filters => [
+			{ meta_fields => [qw( datasetid )], value => 'subject' },
+			{ meta_fields => [qw( objectid )], value => unpack( 'l', md5( $parent->id ) ) },
+		],
+		custom_order => '-historyid',
+	);
+	$form->appendChild( EPrints::Paginate->paginate_list(
+		$session,
+		undef,
+		$list,
+		params => { $processor->{screen}->hidden_bits },
+		container => $session->make_element( 'div' ),
+		render_result => sub {
+			my( undef, $item ) = @_;
+			return $self->render_history( $item, $parent->id );
+		},
+	) );
 
 	return $form;
 }
@@ -390,6 +415,85 @@ sub render_children
 	}
 
 	return $table;
+}
+
+sub render_history
+{
+	my( $self, $item, $objectid ) = @_;
+	my $repo = $self->{repository};
+
+	sub render_data_structure {
+		my( $session, $value ) = @_;
+		my $pre = $session->make_element( 'pre', class => 'ep_history_xmlblock', style => 'white-space: pre-wrap;' );
+		if( ref( $value ) eq 'ARRAY' ) {
+			my @array = @{$value};
+			my $text = '[';
+			if( scalar @array ) {
+				for my $item (@array) {
+					$text .= "\n  $item,";
+				}
+				$text .= "\n]";
+			} else {
+				$text .= ']';
+			}
+			$pre->appendChild( $session->make_text( $text ) );
+		} else {
+			$pre->appendChild( $session->make_text( $value ) );
+		}
+		return $pre;
+	}
+
+	my %pins = ();
+	my $user = $item->get_user;
+
+	my $datasetid = $item->get_value( 'datasetid' );
+	$item->set_value( 'objectid', $objectid );
+	if( defined $item->get_dataobj ) {
+		$pins{item} = $repo->make_doc_fragment;
+		$pins{item}->appendChild( $item->get_dataobj->render_description );
+		my $revision = $item->get_value( 'revision' );
+		$pins{item}->appendChild( $repo->make_text( " ($datasetid $objectid r$revision)" ) );
+	} else {
+		$pins{item} = $repo->html_phrase(
+			'lib/history:no_such_item',
+			datasetid => $repo->make_text( $datasetid ),
+			objectid => $repo->make_text( $objectid ),
+		);
+	}
+
+	if( defined $user ) {
+		$pins{cause} = $user->render_description;
+	} else {
+		$pins{cause} = $repo->make_element( 'tt' );
+		$pins{cause}->appendChild( $repo->make_text( $item->get_value( 'actor' ) ) );
+	}
+
+	$pins{when} = $item->render_value( 'timestamp' );
+	$pins{action} = $item->render_value( 'action' );
+
+	$pins{details} = $repo->make_element( 'table', class => 'ep_history_diff_table' );
+	my $tr = $pins{details}->appendChild( $repo->make_element( 'tr' ) );
+	my $td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 10%;' ) );
+	$td->appendChild( $repo->make_text( 'Field' ) ); # TODO: Phrase this
+	$td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 45%;' ) );
+	$td->appendChild( $repo->html_phrase( 'lib/history:before' ) );
+	$td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 45%;' ) );
+	$td->appendChild( $repo->html_phrase( 'lib/history:after' ) );
+
+	my $values = from_json( $item->get_value( 'details' ) );
+	for my $fields (@{$values}) {
+		my( $field, $old_value, $new_value ) = @{$fields};
+
+		my $tr = $pins{details}->appendChild( $repo->make_element( 'tr' ) );
+		my $th = $tr->appendChild( $repo->make_element( 'th', style => 'width: 10%;' ) );
+		$th->appendChild( $repo->html_phrase( "subject_fieldname_$field" ) );
+		my $td = $tr->appendChild( $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' ) );
+		$td->appendChild( render_data_structure( $repo, $old_value ) );
+		$td = $tr->appendChild( $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' ) );
+		$td->appendChild( render_data_structure( $repo, $new_value ) );
+	}
+
+	return $repo->html_phrase( 'lib/history:record', %pins );
 }
 
 sub action_create
