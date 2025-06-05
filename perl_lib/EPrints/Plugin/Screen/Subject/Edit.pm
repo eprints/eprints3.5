@@ -12,6 +12,7 @@ use EPrints::Plugin::Screen::Workflow::Edit;
 
 use Digest::MD5 qw( md5 );
 use JSON;
+use List::Util qw( max min );
 
 use strict;
 
@@ -496,6 +497,100 @@ sub render_history
 	return $repo->html_phrase( 'lib/history:record', %pins );
 }
 
+######################################################################
+=pod
+
+=over 4
+
+=item @changes = EPrints::Plugin::Screen::Subject::Edit::myers_diff( $left: &[str], $right: &[str] )
+
+This applies the Eugene Myers Diff Algorithm to the C<left> and C<right>
+array refs of strings, returning an array of changes.
+
+These changes are of the form:
+
+ {
+   operation => 'insert' | 'delete',
+   old => [$start_position, $end_position],
+   new => [$start_position, $end_position],
+ }
+
+=cut
+######################################################################
+
+sub myers_diff
+{
+	my( $left_ref, $right_ref, $left_idx, $right_idx ) = @_;
+	my @left = @{$left_ref};
+	my @right = @{$right_ref};
+	$left_idx = 0 unless $left_idx;
+	$right_idx = 0 unless $right_idx;
+
+	my $joint_len = @left + @right;
+	my $array_len = 2 * min( scalar @left, scalar @right ) + 2;
+	if( @left > 0 && @right > 0 ) {
+		my @g = (0) x $array_len;
+		my @p = (0) x $array_len;
+		for my $h (0 .. (int($joint_len / 2) + $joint_len % 2)) {
+			for my $r (0 .. 1) {
+				my $m = $r ? -1 : 1;
+
+				for( my $k = -($h - 2 * max(0, $h - @right)); $k <= $h - 2 * max(0, $h - @left); $k += 2 ) {
+					my $left_offset;
+					if( $k == -$h || ($k != $h && $g[($k - 1) % $array_len] < $g[($k + 1) % $array_len]) ) {
+						$left_offset = $g[($k + 1) % $array_len];
+					} else {
+						$left_offset = $g[($k - 1) % $array_len] + 1;
+					}
+					my $right_offset = $left_offset - $k;
+					my $s = $left_offset;
+					my $t = $right_offset;
+					while(
+						$left_offset < @left &&
+						$right_offset < @right &&
+						$left[$r * (@left - 1) + $m * $left_offset] eq $right[$r * (@right - 1) + $m * $right_offset]
+					) {
+						$left_offset++;
+						$right_offset++;
+					}
+					$g[$k % $array_len] = $left_offset;
+					my $z = -$k + @left - @right;
+					if(
+						$joint_len % 2 == 1 - $r &&
+						$z >= (1 - $h - $r) &&
+						$z <= ($h + $r - 1) &&
+						$g[$k % $array_len] + $p[$z % $array_len] >= scalar @left
+					) {
+						my $x = $r ? @left - $left_offset : $s;
+						my $y = $r ? @right - $right_offset : $t;
+						my $u = $r ? @left - $s : $left_offset;
+						my $v = $r ? @right - $t : $right_offset;
+						if( 2 * $h + $r > 2 || ( $x != $u && $y != $v ) ) {
+							return ( myers_diff( [@left[0 .. $x - 1]], [@right[0 .. $y - 1]], $left_idx, $right_idx ), myers_diff( [@left[$u .. scalar @left - 1]], [@right[$v .. scalar @right - 1]], $left_idx + $u, $right_idx + $v ) );
+						} elsif ( @right > @left ) {
+							return myers_diff( [], [@right[scalar @left .. scalar @right - 1]], $left_idx + @left, $right_idx + @left );
+						} elsif ( @right < @left ) {
+							return myers_diff( [@left[scalar @right .. scalar @left - 1]], [], $left_idx + @right, $right_idx + @right );
+						} else {
+							return ();
+						}
+					}
+				}
+
+				my @temp = @g;
+				@g = @p;
+				@p = @temp;
+			}
+		}
+	} elsif( scalar @left > 0) {
+		return ( { operation => 'delete', old => [$left_idx, $left_idx + scalar @left - 1], new => [$right_idx, $right_idx] } );
+	} elsif( scalar @right > 0) {
+		return ( { operation => 'insert', old => [$left_idx, $left_idx], new => [$right_idx, $right_idx + scalar @right - 1] } );
+	} else {
+		return ();
+	}
+}
+
 sub action_create
 {
 	my( $self ) = @_;
@@ -658,6 +753,8 @@ sub hidden_bits
 		dataobj => $self->{processor}->{dataobj}->id,
 	);
 }
+
+=back
 
 =head1 COPYRIGHT
 
