@@ -183,7 +183,7 @@ sub _render_value
 			type => "checkbox",
 			($selected->{$ctx} ? (checked => "checked") : ())
 	) );
-	my ($input_node) = $result->getElementsByTagName('input');
+	my ($input_node) = $input->getElementsByTagName('input');
 	$input_node->setAttribute( id => $id );
 	$frag->appendChild( $xml->create_data_element( "label", $path[-1],
 		for => $id
