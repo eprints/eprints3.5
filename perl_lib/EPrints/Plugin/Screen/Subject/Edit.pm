@@ -511,8 +511,10 @@ These changes are of the form:
 
  {
    operation => 'insert' | 'delete',
-   old => [$start_position, $end_position],
-   new => [$start_position, $end_position],
+   change_start => <int>, # Where the change starts on the relevant side
+   change_end => <int>,   # Where the change ends, so the change is @<left|right>[$change_start .. $change_end]
+   left_idx => <int>,  # The left index at this stage
+   right_idx => <int>, # The right index at this stage
  }
 
 =cut
@@ -566,7 +568,19 @@ sub myers_diff
 						my $u = $r ? @left - $s : $left_offset;
 						my $v = $r ? @right - $t : $right_offset;
 						if( 2 * $h + $r > 2 || ( $x != $u && $y != $v ) ) {
-							return ( myers_diff( [@left[0 .. $x - 1]], [@right[0 .. $y - 1]], $left_idx, $right_idx ), myers_diff( [@left[$u .. scalar @left - 1]], [@right[$v .. scalar @right - 1]], $left_idx + $u, $right_idx + $v ) );
+							my @left_diff = myers_diff( [@left[0 .. $x - 1]], [@right[0 .. $y - 1]], $left_idx, $right_idx );
+							my @right_diff = myers_diff( [@left[$u .. @left - 1]], [@right[$v .. @right - 1]], $left_idx + $u, $right_idx + $v );
+
+							# Combine matching operations
+							if( scalar @left_diff && scalar @right_diff && $left_diff[-1]->{operation} eq $right_diff[0]->{operation} ) {
+								# Only combine operations if the end of one matches the start of the next
+								if( $left_diff[-1]->{change_end} + 1 == $right_diff[0]->{change_start} ) {
+									$left_diff[-1]->{change_end} = $right_diff[0]->{change_end};
+									@right_diff = @right_diff[1 .. @right_diff - 1];
+								}
+							}
+
+							return( @left_diff, @right_diff );
 						} elsif ( @right > @left ) {
 							return myers_diff( [], [@right[scalar @left .. scalar @right - 1]], $left_idx + @left, $right_idx + @left );
 						} elsif ( @right < @left ) {
@@ -583,9 +597,9 @@ sub myers_diff
 			}
 		}
 	} elsif( scalar @left > 0) {
-		return ( { operation => 'delete', old => [$left_idx, $left_idx + scalar @left - 1], new => [$right_idx, $right_idx] } );
+		return( { operation => 'delete', change_start => $left_idx, change_end => $left_idx + @left - 1, left_idx => $left_idx, right_idx => $right_idx } );
 	} elsif( scalar @right > 0) {
-		return ( { operation => 'insert', old => [$left_idx, $left_idx], new => [$right_idx, $right_idx + scalar @right - 1] } );
+		return( { operation => 'insert', change_start => $right_idx, change_end => $right_idx + @right - 1, left_idx => $left_idx, right_idx => $right_idx } );
 	} else {
 		return ();
 	}
