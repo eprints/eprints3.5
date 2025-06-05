@@ -8,7 +8,7 @@
 
 <cite:linkhere><span class="ep_name_citation"><epc:choose>
 			<epc:when test="is_set( name )"><epc:print expr="name"/><epc:if test="is_set( id_value )"> &lt;<epc:print expr="id_value"/>&gt;</epc:if></epc:when>
-  <epc:otherwise><epc:phrase ref="lib/citation:unnamed_organsation_id"/> <epc:print expr="id_type"/> <epc:print expr="id_value"/></epc:otherwise>
+  <epc:otherwise><epc:phrase ref="lib/citation:unnamed_organisation_id"/> <epc:print expr="id_type"/> <epc:print expr="id_value"/></epc:otherwise>
 </epc:choose></span></cite:linkhere>
 
 </cite:citation>
