@@ -85,7 +85,7 @@ sub action_create
         return;
     }
 
-	if( my $person = EPrints::DataObj::Entity::entity_with_id( $ds, $candidate_id, $candidate_id_type ) )
+	if( my $person = EPrints::DataObj::Entity::entity_with_id( $ds, $candidate_id, { type => $candidate_id_type } ) )
 	{
 		$self->{processor}->add_message( 
 			"error",
