@@ -195,7 +195,8 @@ sub template_phrase
 
 			if( $checked )
 			{
-				$result->setAttribute( "checked", "checked" );
+				my ($node) = $result->getElementsByTagName('input');
+				$node->setAttribute( "checked", "checked" );
 			}
 
 			return $result;
