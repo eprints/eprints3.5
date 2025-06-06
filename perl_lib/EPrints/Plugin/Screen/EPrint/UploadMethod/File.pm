@@ -102,6 +102,8 @@ sub action_add_format
 
 	my $epdata = $processor->{notes}->{epdata};
 
+	$epdata->{client_hash} = $session->query->param( 'file_hash' );
+
 	my $filename = $epdata->{main};
 	return if !defined $filename;
 
@@ -277,6 +279,8 @@ body.addEventListener('ep:dragfinish', function(evt) {
 		controller.dragFinish (evt);
 	});
 EOJ
+
+	$container->appendChild( $session->make_javascript( undef, src => '/javascript/hashwasm_md5.umd.min.js' ) );
 
 	return $f;
 }

@@ -329,6 +329,7 @@ sub create_from_data
 
         foreach my $epdata (@{$_->[1]})
         {
+            $epdata->{client_hash} = $data->{client_hash} if defined $data->{client_hash};
             my $dataobj = $self->create_subdataobj( $field->name, $epdata );
             if( !defined $dataobj )
             {
