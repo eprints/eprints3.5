@@ -427,27 +427,6 @@ sub render_history
 	my( $self, $item, $objectid ) = @_;
 	my $repo = $self->{repository};
 
-	sub render_data_structure {
-		my( $session, $value ) = @_;
-		my $pre = $session->make_element( 'pre', class => 'ep_history_xmlblock', style => 'white-space: pre-wrap;' );
-		if( ref( $value ) eq 'ARRAY' ) {
-			my @array = @{$value};
-			my $text = '[';
-			if( scalar @array ) {
-				for my $item (@array) {
-					$text .= "\n  $item,";
-				}
-				$text .= "\n]";
-			} else {
-				$text .= ']';
-			}
-			$pre->appendChild( $session->make_text( $text ) );
-		} else {
-			$pre->appendChild( $session->make_text( $value ) );
-		}
-		return $pre;
-	}
-
 	my %pins = ();
 	my $user = $item->get_user;
 
@@ -492,10 +471,9 @@ sub render_history
 		my $tr = $pins{details}->appendChild( $repo->make_element( 'tr' ) );
 		my $th = $tr->appendChild( $repo->make_element( 'th', style => 'width: 10%;' ) );
 		$th->appendChild( $repo->html_phrase( "subject_fieldname_$field" ) );
-		my $td = $tr->appendChild( $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' ) );
-		$td->appendChild( render_data_structure( $repo, $old_value ) );
-		$td = $tr->appendChild( $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' ) );
-		$td->appendChild( render_data_structure( $repo, $new_value ) );
+		my( $left, $right ) = $self->render_history_diff( $old_value, $new_value );
+		$tr->appendChild( $left );
+		$tr->appendChild( $right );
 	}
 
 	return $repo->html_phrase( 'lib/history:record', %pins );
