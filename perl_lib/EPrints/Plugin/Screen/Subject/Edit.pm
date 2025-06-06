@@ -506,6 +506,89 @@ sub render_history
 
 =over 4
 
+=item $text = $screen->render_history_diff( $left, $right )
+
+Returns two <td> elements (left and right) to show the difference between the
+passed in C<$left> and C<$right> items.
+
+This currently supports (both sides must match or the left must be C<undef>):
+
+=over 4
+
+=item * Numbers  - Displayed as -3.14
+
+=item * Strings  - Displayed as "Hello"
+
+=item * C<undef> - Displayed as UNSPECIFIED
+
+=back
+
+=cut
+######################################################################
+
+sub render_history_diff
+{
+	my( $self, $left, $right ) = @_;
+	my $repo = $self->{repository};
+	my $width = ($repo->config( 'max_history_width' ) || 120) / 2;
+
+	sub render_scalar {
+		my( $repo, $value ) = @_;
+		if( $value =~ /^-?\d*(?:\.?\d+)$/ ) { # Display anything that looks like a number 'as-is'
+			return $value;
+		} elsif( defined $value ) { # Display any defined non-numbers as strings
+			return "\"$value\"";
+		} else { # Display undef as 'UNSPECIFIED'
+			return $repo->phrase( 'lib/metafield:unspecified' );
+		}
+	}
+
+	sub render_list_portion {
+		my( $repo, @list ) = @_;
+		my $text = '';
+		for my $item (@list) {
+			$text .= "\n  " . render_scalar( $repo, $item ) . ',';
+		}
+		return $text;
+	}
+
+	my $td_left = $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' );
+	my $td_right = $repo->make_element( 'td', class => 'ep_history_diff_table_change', style => 'width: 45%;' );
+	my $pre_left = $td_left->appendChild( $repo->make_element( 'pre', class => 'ep_history_xmlblock' ) );
+	my $pre_right = $td_right->appendChild( $repo->make_element( 'pre', class => 'ep_history_xmlblock' ) );
+
+	# If the left is undefined then this field has been set for the first time
+	if( !defined $left ) {
+		if( ref( $right ) eq 'ARRAY' ) {
+			my( $created, $line_count ) = wrap_text( '[' . render_list_portion( $repo, @{$right} ) . "\n]", $width );
+			my $left_span = $pre_left->appendChild( $repo->make_element( 'span' ) );
+			$left_span->appendChild( $repo->make_text( "\n" x $line_count ) );
+			$pre_right->appendChild( $repo->make_text( $created ) );
+		} else {
+			$pre_left->appendChild( $repo->render_nbsp );
+			$pre_right->appendChild( $repo->make_text( render_scalar( $repo, $right ) ) );
+		}
+
+		delete $td_left->{class};
+		$td_right->{class} = 'ep_history_diff_table_add';
+
+		return( $td_left, $td_right );
+	} elsif( ref( $right ) ne 'ARRAY' ) {
+		my $left_span = $pre_left->appendChild( $repo->make_element( 'span', style => 'background: #cc0;' ) );
+		my $right_span = $pre_right->appendChild( $repo->make_element( 'span', style => 'background: #cc0;' ) );
+
+		$left_span->appendChild( $repo->make_text( render_scalar( $repo, $left ) ) );
+		$right_span->appendChild( $repo->make_text( render_scalar( $repo, $right ) ) );
+
+		return( $td_left, $td_right );
+	}
+
+	return( $td_left, $td_right );
+}
+
+######################################################################
+=pod
+
 =item $text = Self::wrap_text( $text: str, $width: int )
 
 =item ($text, $lines) = Self::wrap_text( $text: str, $width: int )
