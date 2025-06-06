@@ -2,7 +2,7 @@
 
 BEGIN { # Add the path to INC so that it can find 'Bundle::EPrints'
 	my $path = $0;
-	$path =~ s/\/cpan_modules\.pl$//g;
+	$path =~ s/cpan_modules\.pl$/./g;
 	$path .= '/perl_lib/EPrints';
 	push @INC, $path;
 }
