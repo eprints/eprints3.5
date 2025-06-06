@@ -27,8 +27,7 @@ sub new
 	
 	$self->{actions} = [qw/ merge replace cancel /];
 
-# Extract updates metadata which is troublesome in AJAX
-#	$self->{ajax} = "interactive";
+	$self->{ajax} = "interactive";
 
 	return $self;
 }
