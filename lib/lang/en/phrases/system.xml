@@ -2592,6 +2592,9 @@ Titles and Help for the System Fields
         Unlinking this subject will cause it to be permanently deleted. Are you sure you want to do this? <epc:pin name="form" />
     </epp:phrase>
 
+    <epp:phrase id="Plugin/Screen/Subject/History:title">Subject History</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Subject/History:field">Field</epp:phrase>
+
 
     <!-- other screens -->
 

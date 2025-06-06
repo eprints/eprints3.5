@@ -103,7 +103,7 @@ sub render_history
 	$pins{details} = $repo->make_element( 'table', class => 'ep_history_diff_table' );
 	my $tr = $pins{details}->appendChild( $repo->make_element( 'tr' ) );
 	my $td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 10%;' ) );
-	$td->appendChild( $repo->make_text( 'Field' ) ); # TODO: Phrase this
+	$td->appendChild( $repo->html_phrase( 'Plugin/Screen/Subject/History:field' ) );
 	$td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 45%;' ) );
 	$td->appendChild( $repo->html_phrase( 'lib/history:before' ) );
 	$td = $tr->appendChild( $repo->make_element( 'th', style => 'width: 45%;' ) );
