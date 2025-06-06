@@ -9,12 +9,12 @@ $c->{subject_update_trigger} = sub
 	my $datasetid = $obj->dataset->base_id;
 	return unless defined $repo->config( 'history_enable', $datasetid );
 
-	my @details_list;
+	my %details_hash;
 	for my $field (keys %{$obj->{changed}}) {
-		push @details_list, [$field, $obj->{changed}->{$field}, $obj->{data}->{$field}];
+		$details_hash{$field} = [$obj->{changed}->{$field}, $obj->{data}->{$field}];
 	}
 
-	my $details = to_json( \@details_list );
+	my $details = to_json( \%details_hash );
 	my $rev_number = $obj->value( "rev_number" ) || 0;
 
 	my $user = $repo->current_user;
@@ -36,5 +36,9 @@ $c->{subject_update_trigger} = sub
 };
 
 $c->add_dataset_trigger( 'subject', EPrints::Const::EP_TRIGGER_AFTER_COMMIT, $c->{subject_update_trigger}, id => 'update_subject_history' );
+
 $c->{history_enable}->{subject} = 1;
+
+# Which fields should we show in the 'Subject History' and in what order
+$c->{subject_history_fields} = ['depositable', 'name_name', 'name_sortvalue', 'name_lang', 'parents', 'ancestors', 'rev_number'];
 

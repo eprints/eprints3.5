@@ -110,8 +110,9 @@ sub render_history
 	$td->appendChild( $repo->html_phrase( 'lib/history:after' ) );
 
 	my $values = from_json( $item->get_value( 'details' ) );
-	for my $fields (@{$values}) {
-		my( $field, $old_value, $new_value ) = @{$fields};
+	for my $field (@{$repo->config( 'subject_history_fields' )}) {
+		next if !defined $values->{$field};
+		my( $old_value, $new_value ) = @{$values->{$field}};
 
 		my $tr = $pins{details}->appendChild( $repo->make_element( 'tr' ) );
 		my $th = $tr->appendChild( $repo->make_element( 'th', style => 'width: 10%;' ) );
