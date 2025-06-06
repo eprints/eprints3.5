@@ -37,7 +37,7 @@ The field works by providing a (required) C<json_config> parameter, for example:
 		},
 		{
 			name => "subfield4",
-			type => "namedset"
+			type => "namedset",
 			set_name => "example_set"
 		}
 	],
