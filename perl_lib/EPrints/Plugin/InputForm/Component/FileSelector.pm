@@ -178,13 +178,13 @@ sub _render_value
 	my @path = split '/', $ctx;
 
 	my $id = $self->{prefix} . ':' . join('/',@path);
-	my $input = $frag->appendChild(
-		$xhtml->input_field( $self->{prefix}, join('/',@path),
-			type => "checkbox",
-			($selected->{$ctx} ? (checked => "checked") : ())
-	) );
+	my $input = $xhtml->input_field( $self->{prefix}, join('/',@path),
+		type => "checkbox",
+		($selected->{$ctx} ? (checked => "checked") : ())
+	);
 	my ($input_node) = $input->getElementsByTagName('input');
 	$input_node->setAttribute( id => $id );
+	$frag->appendChild( $input );
 	$frag->appendChild( $xml->create_data_element( "label", $path[-1],
 		for => $id
 	) );
