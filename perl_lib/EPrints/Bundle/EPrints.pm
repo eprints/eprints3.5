@@ -8,6 +8,8 @@ $VERSION = 'v3.5.0';
 
 BibTeX::Parser 1.05
 
+CGI 4.68 - This was included in Perl but deprecated in v5.19.7
+
 Config::General 2.67
 
 DBI        1.647
@@ -29,6 +31,8 @@ LWP::Protocol::https 6.14 - Used by DataCite to register DOIs
 LWP::Simple          6.78
 LWP::UserAgent       6.78
 
+Mail::Address 2.22 - MIME::Lite soft-depends on this
+MIME::Types 2.28 - MIME::Lite soft-depends on this
 MIME::Lite 3.033
 
 Net::LDAP 0.68
@@ -69,8 +73,6 @@ XML::LibXSLT 2.003000 - This is installed separately in cpan_modules.pl because 
 =head2 These packages are included in a baseline Perl version of v5.16.1 (CentOS/RHEL 7+, Fedora 18+, Ubuntu 14+, Debian 8+)
 
 Carp 1.26 - Latest is 1.50
-
-CGI 3.59 - Latest is 4.68
 
 Cwd 3.39_02 - Latest is 3.75
 
