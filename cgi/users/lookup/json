@@ -1,0 +1,85 @@
+use EPrints;
+use strict;
+
+my $content_type = "text/xml; charset=UTF-8";
+
+my $session = EPrints::Session->new();
+my $user = $session->current_user;
+my $q = $session->param( "q" );
+my $field = $session->param( "field" );
+my $json_field = $session->param( "json_field" );
+
+print <<END;
+<?xml version="1.0" encoding="UTF-8" ?>
+END
+
+print "<ul>";
+
+my $search_term = $q;
+
+if( defined $user )
+{
+if( !$search_term || length( $search_term ) < 2 || !$field ) {
+	print "<span style='color:#666;font-style:italic;'>Please enter at least two characters</span>";
+} else {
+	my $database = $session->get_database;
+
+	my $Q_eprint_table = $database->quote_identifier( "eprint" );
+
+	my $Q_target_field = $database->quote_identifier( $field );
+	my $Q_eprintid = $database->quote_identifier( "eprintid" );
+
+	my $Q_like = $database->sql_LIKE();
+
+	my $sql = "SELECT DISTINCT $Q_target_field" .
+			" FROM $Q_eprint_table" .
+			" WHERE " .
+			" $Q_eprint_table.$Q_target_field " . $Q_like.$database->quote_value( '%' . EPrints::Database::prep_like_value($search_term) . '%' ) .
+			" ORDER BY $Q_target_field ASC";
+
+	my $sth = $session->get_database->prepare_select( $sql, 'limit' => 40 );
+	$session->get_database->execute( $sth , $sql );
+	my $first = 1;
+
+	my $results;
+
+	while( my( $res ) = $sth->fetchrow_array )
+	{
+		my $parsed = EPrints::MetaField::Json::parse( $res, {} );
+		my $target_val = $parsed->{$json_field};
+
+		if( $target_val && $target_val =~ /\Q$search_term/mi )
+		{
+			$results->{$target_val} = 1;
+		}
+	}
+
+	if( $results )
+	{
+		foreach my $target_val( sort { "\L$a" cmp "\L$b" } keys %{$results} )
+		{
+			my $escaped_val = $target_val;
+			$escaped_val =~ s/(['\\])/\\$1/g;
+			$escaped_val =~ s/"/&quot;/g;
+			# for JSON fields, need to trigger change to get the parent field updated
+			# for better or for worse, fieldnames are ep_eprint_${field}_${json_field} even when parent is ep_approval_${field}...
+			my $click_script = "document.querySelector('.ep_eprint_${field}_$json_field').value = '$escaped_val';document.querySelector('.ep_eprint_${field}_$json_field').dispatchEvent(new Event('change'));return true";
+			if( $first )
+			{
+				print "<li class='ep_first' onclick=\"$click_script\">";
+				$first = 0;
+			}
+			else
+			{
+				print "<li onclick=\"$click_script\">";
+			}
+			print "$target_val<ul></ul></li>";
+		}
+	}
+}
+
+print "</ul>";
+}
+
+$session->terminate;
+

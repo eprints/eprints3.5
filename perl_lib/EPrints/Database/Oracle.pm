@@ -164,6 +164,11 @@ our %ORACLE_TYPES = (
 		TYPE_NAME => "DATE",
 		COLUMN_SIZE => 10,
 	},
+	SQL_JSON() => {
+		CREATE_PARAMS => undef,
+		TYPE_NAME => "JSON",
+		COLUMN_SIZE => 2**31,
+	}
 );
 
 use strict;
