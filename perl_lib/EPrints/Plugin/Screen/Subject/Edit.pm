@@ -2,6 +2,10 @@
 
 EPrints::Plugin::Screen::Subject::Edit
 
+=encoding utf8
+
+=head1 METHODS
+
 =cut
 
 
@@ -502,7 +506,44 @@ sub render_history
 
 =over 4
 
-=item @changes = EPrints::Plugin::Screen::Subject::Edit::myers_diff( $left: &[str], $right: &[str] )
+=item $text = Self::wrap_text( $text: str, $width: int )
+
+=item ($text, $lines) = Self::wrap_text( $text: str, $width: int )
+
+This wraps the given C<text> to a maximum width of C<width>, adding (↲) to
+denote line breaks. If called in ARRAY context it will also return the
+line count of the new text.
+
+=cut
+######################################################################
+
+sub wrap_text
+{
+	my( $text, $width ) = @_;
+
+	my $line_break = chr(8626); # The character to use as a line break (↲)
+	my @lines = ();
+	foreach my $line ( split /[\r\n]/, $text ) {
+		while( length( $line ) > $width ) {
+			my $cut = $width - 1;
+			push @lines, substr( $line, 0, $cut ) . $line_break;
+			$line = substr( $line, $cut );
+		}
+		push @lines, $line;
+	}
+
+	# Return the line count as well if an array is requested
+	if( wantarray ) {
+		return( join( "\n", @lines ), scalar @lines );
+	} else {
+		return join( "\n", @lines );
+	}
+}
+
+######################################################################
+=pod
+
+=item @changes = Self::myers_diff( $left: &[str], $right: &[str] )
 
 This applies the Eugene Myers Diff Algorithm to the C<left> and C<right>
 array refs of strings, returning an array of changes.
@@ -513,8 +554,8 @@ These changes are of the form:
    operation => 'insert' | 'delete',
    change_start => <int>, # Where the change starts on the relevant side
    change_end => <int>,   # Where the change ends, so the change is @<left|right>[$change_start .. $change_end]
-   left_idx => <int>,  # The left index at this stage
-   right_idx => <int>, # The right index at this stage
+   left_idx => <int>,  # The left index, equal to 'change_start' for 'delete'
+   right_idx => <int>, # The right index, equal to 'change_start' for 'insert'
  }
 
 =cut
