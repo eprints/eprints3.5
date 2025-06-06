@@ -521,6 +521,8 @@ This currently supports (both sides must match or the left must be C<undef>):
 
 =item * C<undef> - Displayed as UNSPECIFIED
 
+=item * Lists of Numbers, Strings and C<undef> - Displayed as [<contents>]
+
 =back
 
 =cut
@@ -582,6 +584,54 @@ sub render_history_diff
 
 		return( $td_left, $td_right );
 	}
+
+	# If we didn't return then it is a list on both sides, so open the list
+	$pre_left->appendChild( $repo->make_text( '[' ) );
+	$pre_right->appendChild( $repo->make_text( '[' ) );
+
+	my @diff = myers_diff( $left, $right );
+	# Add a fake operation so that it will add the text between the last operation and the end
+	push @diff, { operation => 'end', left_idx => scalar @{$left}, right_idx => scalar @{$right} };
+
+	my $left_idx = 0;
+	my $right_idx = 0;
+	for my $diff_op (@diff) {
+		# Add text up to the next operation to both sides
+		my $text = wrap_text(
+			render_list_portion( $repo, @{$left}[ $left_idx .. $diff_op->{left_idx} - 1 ] ),
+			$width
+		);
+		$pre_left->appendChild( $repo->make_text( $text ) );
+		$pre_right->appendChild( $repo->make_text( $text ) );
+		$left_idx = $diff_op->{left_idx};
+		$right_idx = $diff_op->{right_idx};
+
+		my @change = $diff_op->{change_start} .. $diff_op->{change_end};
+		if( $diff_op->{operation} eq 'insert' ) {
+			my( $inserted, $newlines ) = wrap_text(
+				render_list_portion( $repo, @{$right}[ @change ] ),
+				$width
+			);
+			$pre_left->appendChild( $repo->make_text( "\n" x ($newlines - 1) ) );
+
+			my $right_span = $pre_right->appendChild( $repo->make_element( 'span', style => 'background: #8f8;' ) );
+			$right_span->appendChild( $repo->make_text( $inserted ) );
+			$right_idx = $diff_op->{change_end} + 1;
+		} elsif( $diff_op->{operation} eq 'delete' ) {
+			my( $deleted, $newlines ) = wrap_text(
+				render_list_portion( $repo, @{$left}[ @change ] ),
+				$width
+			);
+			$pre_right->appendChild( $repo->make_text( "\n" x ($newlines - 1) ) );
+
+			my $left_span = $pre_left->appendChild( $repo->make_element( 'span', style => 'background: #f88;' ) );
+			$left_span->appendChild( $repo->make_text( $deleted ) );
+			$left_idx = $diff_op->{change_end} + 1;
+		}
+	}
+
+	$pre_left->appendChild( $repo->make_text( "\n]" ) );
+	$pre_right->appendChild( $repo->make_text( "\n]" ) );
 
 	return( $td_left, $td_right );
 }
