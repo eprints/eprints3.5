@@ -134,7 +134,7 @@ sub render_history
 Returns two <td> elements (left and right) to show the difference between the
 passed in C<$left> and C<$right> items.
 
-This currently supports (both sides must match or the left must be C<undef>):
+This currently supports:
 
 =over 4
 
@@ -147,6 +147,9 @@ This currently supports (both sides must match or the left must be C<undef>):
 =item * Lists of Numbers, Strings and C<undef> - Displayed as [<contents>]
 
 =back
+
+However as an exception a list can only be opposite another list (or C<undef>
+on the left).
 
 =cut
 ######################################################################
