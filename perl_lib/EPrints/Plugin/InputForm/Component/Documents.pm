@@ -69,7 +69,7 @@ sub update_from_form
 
 		$doc->commit;
 	}
-	
+
 	if( $session->internal_button_pressed )
 	{
 		my $internal = $self->get_internal_button;
@@ -351,7 +351,10 @@ sub _render_doc_div
 		@$files = sort { $idx{$a} cmp $idx{$b} } @$files;
 	};
 
-	$doc_item->{hidden_field} = $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) );
+	my $hidden_fields = $session->make_doc_fragment;
+	$hidden_fields->appendChild( $session->render_hidden_field( $self->{prefix}."_update_doc", $doc->id ) );
+	$hidden_fields->appendChild( $session->render_hidden_field( $self->{prefix}."_doc_placement", $doc->value( "placement" ) ) );
+	$doc_item->{hidden_field} = $hidden_fields;
 	$doc_item->{doc_icon_info} = $self->_render_doc_icon_info( $doc, $files );
 	$doc_item->{doc_actions} = $self->_render_doc_actions( $doc );
 
