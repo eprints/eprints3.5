@@ -1268,7 +1268,7 @@ sub create_db
 	}
 	if( $mktables eq "yes" )
 	{
-		create_tables( $repoid );
+		create_tables( $repo );
 	}
 }
 
@@ -1711,7 +1711,7 @@ END
 
 	}
 
-	reload( $repoid );
+	reload( $repo );
 }	
 
 
@@ -1746,7 +1746,7 @@ END
 		}
 	}
 
-	reload( $repoid );
+	reload( $repo );
 }
 
 
@@ -1781,7 +1781,7 @@ END
         }
     }
 
-    reload( $repoid );
+    reload( $repo );
 }
 
 
@@ -1920,7 +1920,7 @@ END
 	$ok = $force || EPrints::Utils::get_input_confirm( "Do you want to build the static web pages" );
 	if( $ok )
 	{
-		run_script( $repoid, "generate_static", "--verbose", $repoid );	
+		run_script( $repo, "generate_static", "--verbose", $repoid );
 	}
 }
 
