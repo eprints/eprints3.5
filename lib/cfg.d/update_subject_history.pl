@@ -7,7 +7,7 @@ $c->{subject_update_trigger} = sub
 	my( $repo, $obj ) = @args{qw( repository dataobj )};
 
 	my $datasetid = $obj->dataset->base_id;
-	return unless defined $repo->config( 'history_enable', $datasetid );
+	return unless $repo->config( 'history_enable', $datasetid );
 
 	my %details_hash;
 	for my $field (keys %{$obj->{changed}}) {
