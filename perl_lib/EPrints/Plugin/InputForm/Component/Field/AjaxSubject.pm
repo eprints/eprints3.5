@@ -379,14 +379,14 @@ sub _render_subnode
 		$toggle = $self->{session}->make_element( "span", class=>"ep_only_js ep_subjectinput_toggle", id=>$id."_toggle" );
 
 		my $hide = $self->{session}->make_element( "span", id=>$id."_hide" );
-		$hide->appendChild( $self->{session}->make_element( "img", alt=>"-", src=>"/style/images/minus.png", border=>0 ) );
+		$hide->appendChild( $self->{session}->make_element( "img", alt=>"-", src=>"/style/images/minus.svg", border=>0 ) );
 		$hide->appendChild( $self->{session}->make_text( " " ) );
 		$hide->appendChild( $subject->render_description );
 		$hide->setAttribute( "class", join( " ", @classes ) );
 		$toggle->appendChild( $hide );
 
 		my $show = $self->{session}->make_element( "span", id=>$id."_show" );
-		$show->appendChild( $self->{session}->make_element( "img", alt=>"+", src=>"/style/images/plus.png", border=>0 ) );
+		$show->appendChild( $self->{session}->make_element( "img", alt=>"+", src=>"/style/images/plus.svg", border=>0 ) );
 		$show->appendChild( $self->{session}->make_text( " " ) );
 		$show->appendChild( $subject->render_description );
 		$show->setAttribute( "class", join( " ", @classes ) );
