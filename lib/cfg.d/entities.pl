@@ -1,8 +1,8 @@
 $c->{entities}->{datasets} = [ qw/ person organisation / ];
 
-$c->{entitites}->{primary_id_types}->{person} = 'email';
-$c->{entitites}->{primary_id_types}->{organisation} = 'ror';
-$c->{entitites}->{primary_id_types}->{default} = $c->{entitites}->{primary_id_types}->{person};
+$c->{entities}->{primary_id_types}->{person} = 'email';
+$c->{entities}->{primary_id_types}->{organisation} = 'ror';
+$c->{entities}->{primary_id_types}->{default} = $c->{entities}->{primary_id_types}->{person};
 
 $c->{entities}->{field_contribution_types}->{eprint}->{person} = {};
 $c->{entities}->{field_contribution_types}->{eprint}->{organisation} = {};

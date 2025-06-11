@@ -552,6 +552,8 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 					my $contrib_name = ref( $value ) ? $value->{name} : $value;
 					$contrib_type = $value->{type} unless $contrib_type;
 					my $entity = undef;
+					my $id_value = undef;
+					my $id_type = undef;
 					$entity = EPrints::DataObj::Entity::entity_with_id( $entity_dataset, $value->{id}, { type => $primary_id_types->{$contrib_fields_id}, name => $contrib_name } ) if ref( $value ) && $value->{id};
 					if ( $entity )
 					{
@@ -567,7 +569,6 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 					{
 						# Find an entity that matches the entity's name but does not already have an ID.
 						$entity = EPrints::DataObj::Entity::entity_with_name( $entity_dataset, $contrib_name, { no_id => 1 } );
-
 						# If an entity is found but the entered field row has an ID, create a new entity including that ID.
 						if( $entity && ref( $value ) && $value->{id} )
 						{
@@ -583,13 +584,16 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 							$entity->commit( 1 );
 						}
 					}
-					push @contributions, { contributor => { entityid => $entity->id, datasetid => $contrib_fields_id }, type => $contrib_type };
+					if ( ref( $value ) && $value->{id} )
+					{
+						$id_value = $value->{id};
+						$id_type = $primary_id_types->{$contrib_fields_id};
+					}
+					push @contributions, { contributor => { name => $entity->human_serialise_name( $contrib_name ), id_value => $id_value, id_type => $id_type, entityid => $entity->id, datasetid => $contrib_fields_id }, type => $contrib_type };
 				}
 			}
 		}
-
 		$eprint->set_value( "contributions", \@contributions );
 	}
-
 }, id => 'sync_eprint_contributions', priority => 100 );
 
