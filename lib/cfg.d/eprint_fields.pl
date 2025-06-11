@@ -43,6 +43,7 @@ push @{$c->{fields}->{eprint}},
 					sub_name => 'id_type',
 					type => 'set',
 					options => [ qw( email username ror url ) ],
+					default_value => 'email',
 					maxlength => 32,
 				},
 				{
