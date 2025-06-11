@@ -184,28 +184,42 @@ sub handler
 	{
 		my $restrict_paths = $repository->get_conf( 'restrict_paths' );
 		my $ip = $repository->remote_ip;
+		my $ip_ok = 0;
 		foreach my $restrict_path ( @$restrict_paths )
 		{
 			if ( $uri =~ /^$restrict_path->{path}/ )
 			{
-				foreach my $restrict_ip ( @{$restrict_path->{ips}} )
+				if ( defined $restrict_path->{not_ips}  && ref( $restrict_path->{not_ips} ) eq "ARRAY" )
 				{
-					# Test if IPv4 or IPv6
-					if ( $restrict_ip =~ m/:/ )
+					my $ip_ok = 0;
+					foreach my $unrestrict_ip ( @{$restrict_path->{not_ips}} )
 					{
-						$restrict_ip .= '$' if substr( $restrict_ip, -1 ) ne ':'; # avoid blocking 2001:1234:5678::9abc::1234 when blocking 2001:1234:5678:9abc::12 (i.e. 2001:1234:5678:9abc::0012).
+						my $unres_ip = $unrestrict_ip;
+						$unres_ip =~ s/\./\\./g;
+						$unres_ip .= '$' if substr( $unres_ip, -1 ) ne '.' && substr( $unres_ip, -1 ) ne ':'; # avoid allowing 1.2.3.40 when allowing 1.2.3.4 but without preventing IPv6 subnets for being specified.
+						if ( $ip =~ /^$unres_ip/ )
+						{
+							$ip_ok = 1;
+							last;
+						}
 					}
-					else
+					return FORBIDDEN unless $ip_ok;
+				}
+				elsif ( defined $restrict_path->{ips} && ref( $restrict_path->{ips} ) eq "ARRAY" )
+				{
+					foreach my $restrict_ip ( @{$restrict_path->{ips}} )
 					{
-						$restrict_ip =~ s/\./\\./g;
-						$restrict_ip .= '$' if substr( $restrict_ip, -1 ) ne '.'; # avoid blocking 1.2.3.40 when blocking 1.2.3.4
-					}
-					if ( $ip =~ /^$restrict_ip/ )
-					{
-						return FORBIDDEN;
+						my $res_ip = $restrict_ip;
+						$res_ip =~ s/\./\\./g;
+						$res_ip .= '$' if substr( $res_ip, -1 ) ne '.' && substr( $res_ip, -1 ) ne ':'; # avoid blocking 1.2.3.40 when blocking 1.2.3.4 but without preventing IPv6 subnets for being specified. 
+						if ( $ip =~ /^$res_ip/ )
+						{
+							return FORBIDDEN;
+						}
 					}
 				}
 			}
+			last if $ip_ok;
 		}
 	}
 
