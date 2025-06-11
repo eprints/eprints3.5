@@ -3305,6 +3305,7 @@ Titles and Help for the System Fields
 <epp:phrase id="citationcache_fieldname_datasetid">Dataset ID</epp:phrase>
 <epp:phrase id="citationcache_fieldname_objectid">Object ID</epp:phrase>
 <epp:phrase id="citationcache_fieldname_style">Citation style</epp:phrase>
+<epp:phrase id="citationcache_fieldname_context">Citation context</epp:phrase>
 <epp:phrase id="citationcache_fieldname_timestamp">Time created</epp:phrase>
 
 <!-- Loginticket -->
