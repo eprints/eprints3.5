@@ -1344,7 +1344,7 @@ sub render_input_field_actual
 			};
 		}
 
-		my @input_ids = $self->get_basic_input_ids( $session, $basename, $staff );
+		my @input_ids = $self->get_basic_input_ids( $session, $basename, $staff, $obj );
 
 		my $x = 0;
 
