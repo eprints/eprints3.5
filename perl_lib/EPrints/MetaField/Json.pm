@@ -231,11 +231,8 @@ sub render_input_field_actual
 			}
 			$tr->appendChild( $td );
 
-# CHANGE FOR JSON METAFIELD
-if( $item->{el}->isa( "XML::LibXML::Element" ) ) {
-	my $attribute_name = $item->{el}->getAttribute( "name" );
-	$self->generate_javascript( $session, $value, $attribute_name, $frag );
-}
+			# CHANGE FOR JSON METAFIELD
+			$self->generate_javascript( $session, $value, $basename, $frag );
 		}
 		$table->appendChild( $tr );
 		$y++;
