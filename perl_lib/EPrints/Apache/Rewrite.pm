@@ -917,12 +917,9 @@ sub handler
 
 		$r->filename( $filename );
 	}
-	elsif( $uri =~ m! ^$urlpath/javascript/(secure_)?auto(?:-\d+\.\d+\.\d+)?\.js$ !x )
+	elsif( $uri =~ m! ^$urlpath/javascript/auto(?:-\d+\.\d+\.\d+)?\.js$ !x )
 	{
-		my $f = $1 ?
-			\&EPrints::Update::Static::update_secure_auto_js :
-			\&EPrints::Update::Static::update_auto_js;
-		my $filename = &$f(
+		my $filename = EPrints::Update::Static::update_auto_js(
 			$repository,
 			$repository->config( "htdocs_path" )."/$lang",
 			[$repository->get_static_dirs( $lang )]
