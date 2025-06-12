@@ -182,6 +182,7 @@ sub perform_search
 			last;
 		}
 	}
+	$self->{sort_order} = $sort_order;
 
 	my $list = $self->{session}->current_user->owned_eprints_list( %$search,
 		custom_order => $sort_order,
@@ -272,6 +273,7 @@ sub render_items
 			screen => "Items",
 		},
 		columns => [@{$columns}, undef ],
+		custom_order => $self->{sort_order}, # Prevents a potentially very expensive reorder
 		above_results => $session->template_phrase( "view:EPrints/Plugin/Screen/Items:render_items/item_filters", { item => $filter_info } ),
 		render_result => sub {
 
