@@ -1268,6 +1268,14 @@ sub create_db
 	}
 	if( $mktables eq "yes" )
 	{
+		# $repo was made with db_connect => 0 so didn't create a database but
+		# `create_tables` expects to be able to get a database.
+		#
+		# The easy way to do this is to let it create a new copy of
+		# `Repository` by passing it `$repoid` however we then import config
+		# twice and get redefine warnings so we instead create the database
+		# here.
+		$repo->{database} = EPrints::Database->new( $repo );
 		create_tables( $repo );
 	}
 }
