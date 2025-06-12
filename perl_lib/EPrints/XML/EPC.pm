@@ -364,7 +364,6 @@ sub _process_attribute
 	my $parent = $params{parent_element};
 	my $name = $node->getAttribute( "name" );
 
-
 	if( !defined( $name ) )
 	{
 		EPrints::abort("epc:attribute requires a name attribute.")
@@ -379,7 +378,17 @@ sub _process_attribute
 		$children->appendChild( process_child_nodes( $node, %params ) );
 	}
 
-	$parent->setAttribute( $name, $children->toString );
+	# Because <epc:print> creates nodes using `make_text` which calls
+	# XML::LibXML::Document::createTextNode the result is XML encoded.
+	# Attributes aren't XML encoded so we have to XML decode here.
+	my $attributes = $children->toString;
+	$attributes =~ s/&lt;/</;
+	$attributes =~ s/&gt;/>/;
+	$attributes =~ s/&quot;/"/;
+	$attributes =~ s/&apos;/'/;
+	$attributes =~ s/&amp;/&/;
+
+	$parent->setAttribute( $name, $attributes );
 
 	return undef;
 }
