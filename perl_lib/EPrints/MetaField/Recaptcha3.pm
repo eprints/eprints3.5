@@ -59,10 +59,10 @@ sub is_virtual { 1 }
 
 sub get_property_defaults
 {
-        my( $self ) = @_;
-        my %defaults = $self->SUPER::get_property_defaults;
+	my( $self ) = @_;
+	my %defaults = $self->SUPER::get_property_defaults;
 
-        return %defaults;
+	return %defaults;
 }
 
 sub render_input_field_actual
@@ -97,7 +97,7 @@ sub render_input_field_actual
 	    return new Promise(resolve => setTimeout(resolve, ms));
 	}
 	document.addEventListener("DOMContentLoaded", function(){
-		document.querySelector('.ep_form_action_button').addEventListener('click', e => {
+		document.querySelector('#g-recaptcha-response').addEventListener('click', e => {
 			e.preventDefault();
 			grecaptcha.ready(function() {
 				grecaptcha.execute('$public_key', {action: 'submit'}).then(function(token) {
