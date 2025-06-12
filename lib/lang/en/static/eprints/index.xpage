@@ -102,16 +102,14 @@
   <dd><a href="https://perl.apache.org/">mod_perl</a></dd>
   <dd><a href="https://xapian.org/">Xapian</a></dd>
   <dd><a href="https://www.w3c.org/XML/">XML</a></dd>
-  <dd><a href="https://www.w3c.org/DOM/">DOM</a></dd>
+  <dd><a href="https://dom.spec.whatwg.org/">DOM</a></dd>
   <dd><a href="https://codemirror.net/">CodeMirror</a></dd>
-  <dd><a href="https://flowplayer.org/">Flowplayer</a></dd>
   <dd class="last"><a href="https://www.cpan.org/">CPAN</a></dd>
 
   <dt>Supports:</dt>
   <dd><a href="https://www.openarchives.org/">Open Archives Initiative Protocol for Metadata Harvesting</a></dd>
   <dd><a href="https://www.w3.org/MarkUp/">Valid XHTML</a></dd>
-  <dd><a href="https://jigsaw.w3.org/css-validator/">Valid CSS</a></dd>
-  <dd class="last"><a href="https://www.w3.org/standards/semanticweb/data">Linked Data</a></dd>
+  <dd class="last"><a href="https://jigsaw.w3.org/css-validator/">Valid CSS</a></dd>
 
   <dt>Part of:</dt>
   <dd class="last"><a href="https://www.gnu.org/">The GNU Project</a></dd>
@@ -120,8 +118,8 @@
 <epc:phrase ref="ruler" />
 
 <div style="text-align: center; margin-top: 2em;">
-  <img src="{$config{rel_path}}/images/ecslogo.jpg" border="0" alt="School of Electronics and Computer Science, University of Southampton" align="top"/>
-  <p>EPrints is Copyright &#169; University of Southampton, 2000-2022.</p>
+  <a href="https://www.southampton.ac.uk/" target="_blank"><img src="{$config{rel_path}}/images/uoslogo.png" style="border: 0; vertical-align: top; max-width: 500px;"  alt="University of Southampton"/></a>
+  <p>EPrints is Copyright &#169; University of Southampton, 2000-2025.</p>
 </div>
 
 </xpage:body>
