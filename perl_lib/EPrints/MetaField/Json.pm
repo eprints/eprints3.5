@@ -231,11 +231,8 @@ sub render_input_field_actual
 			}
 			$tr->appendChild( $td );
 
-# CHANGE FOR JSON METAFIELD
-if( $item->{el}->isa( "XML::LibXML::Element" ) ) {
-	my $attribute_name = $item->{el}->getAttribute( "name" );
-	$self->generate_javascript( $session, $value, $attribute_name, $frag );
-}
+			# CHANGE FOR JSON METAFIELD
+			$self->generate_javascript( $session, $value, $basename, $frag );
 		}
 		$table->appendChild( $tr );
 		$y++;
@@ -384,9 +381,13 @@ sub generate_javascript
 
 			if( !$render_only && $self->{table_dynamic_row_count} )
 			{
-				my $add_row = $session->phrase( "lib/metafield:more_spaces" );
+				my $add_row = $session->render_button(
+					name => "_internal_${attribute_name}_morespaces",
+					value => $session->phrase( 'lib/metafield:more_spaces' ),
+					class => 'ep_form_internal_button epjs_ajax'
+				);
 				$js_string .= <<"EOJ";
-const more_rows_$attribute_name = createElement('<input value="$add_row" class="ep_form_internal_button" type="button" role="button" />');
+const more_rows_$attribute_name = createElement('$add_row');
 const outer_div_$attribute_name = $target_area.parentElement.parentElement;
 outer_div_$attribute_name.after(more_rows_$attribute_name);
 more_rows_$attribute_name.addEventListener('click', function() {
