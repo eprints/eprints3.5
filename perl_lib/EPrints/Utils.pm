@@ -1100,6 +1100,9 @@ sub crypt
 
 	return undef if !EPrints::Utils::is_set( $value );
 
+	# Must be printable ASCII
+	return undef if $value =~ m/[^\x20-\xff]/;
+
 	# backwards compatibility
 	if( UNIVERSAL::isa( $method, "EPrints::Repository" ) )
 	{
@@ -1177,6 +1180,9 @@ sub crypt_equals
 	my( $crypt, $value ) = @_;
 
 	return undef if !EPrints::Utils::is_set( $value );
+
+	# Must be printable ASCII
+	return undef if $value =~ m/[^\x20-\xff]/;
 
 	# EP_CRYPT_CRYPT
 	if( $crypt !~ /^\?/ ) {
