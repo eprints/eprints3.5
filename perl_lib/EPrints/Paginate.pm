@@ -157,7 +157,7 @@ sub paginate_list
 	$url->query_form( @param_list );
 
 	my $paginate_data = {
-		url => $url,
+		url => $url->as_string,
 		basename => $basename,
 		from => $offset + 1,
 		to => $plast,
@@ -180,6 +180,10 @@ sub paginate_list
 		{
    			push @controls, { url => $control->{url}, label => $control->{label}, type => 'before' };
 		}
+	}
+
+	if( defined $session->param( "${basename}page_size" ) ) {
+		$url->query_form( @param_list, "${basename}page_size" => $pagesize );
 	}
 
 	# Previous page link
