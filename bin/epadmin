@@ -139,6 +139,12 @@ This erases all the .words and .indexcodes cache files from your repository, for
 
 This is useful if you only setup the fulltext indexing after your repository is already live, or if you discover there has been a problem.
 
+=item B<epadmin> export_init_config I<repository_id>
+
+This exports the configuration for your repository as a YAML file, which can be used to create a repository using C<epadmin create --config CONFIG_FILE>
+
+It should be noted this is only the initial setup configuration, not the full configuration for a repository.
+
 =item B<epadmin> logout_all_users I<repository_id> [I<exclude_user_id>, I<exclude_user_id> ...]
 
 Logout all users from a repositiory.  Potentially excluding one or more user IDs.
@@ -275,7 +281,14 @@ BEGIN
 
 	if ( scalar @ARGV )
 	{
-		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test /;
+		if ( grep { $ARGV[0] eq $_ } qw/ create profile test / )
+		{
+			$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test /;
+		}
+		else
+		{
+			push @ARGV, "--archive=".$ARGV[1];
+		}
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
@@ -364,6 +377,7 @@ else
 	elsif( $action eq "erase_data" ) { erase_data( $repoid ); }
 	elsif( $action eq "erase_eprints" ) { erase_eprints( $repoid ); }
 	elsif( $action eq "erase_fulltext_index" ) { erase_fulltext_index( $repoid ); }
+	elsif( $action eq "export_init_config" ) { export_init_config( $repoid ); }
 	elsif( $action eq "logout_all_users" ) { logout_all_users( $repoid,@ARGV ); }
 	elsif( $action eq "reload" ) { reload( $repoid ); }
 	elsif( $action eq "refresh_abstracts" ) { refresh_abstracts( $repoid ); }
@@ -1254,6 +1268,12 @@ sub create_db
 		EPrints::abort "Database name isn't configured";
 	}
 
+	# Handles YAML::Tiny not parsing null as an undefined value
+	if( $dbaconf->{password} eq 'null' )
+	{
+		$dbaconf->{password} = undef;
+	}
+
 	BADPASSWORD:
 
 	my $username = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_ANY, "Database Superuser Username", "root", $dbaconf, [ 'username' ] );
@@ -2083,6 +2103,105 @@ sub erase_fulltext_index
 	$ep_ds->search->map( $fn );
 
 	print "Done queuing\n" if( $noise >= 1 );
+}
+
+sub export_init_config
+{
+	my( $repoid ) = @_;
+
+	my $repo = &repository( $repoid );
+	my $package_yml_fn = $repo->config( 'base_path' ) . '/archives/' . $repoid . '/cfg/package.yml';
+	my $config_yml_tmpl_fn =  $repo->config( 'base_path' ) . '/lib/config.yml.tmpl';
+	my $package_yaml;
+	my $config_yaml_data;
+
+
+	if ( EPrints::Utils::require_if_exists( 'YAML::Tiny' ) && EPrints::Utils::require_if_exists( 'YAML::PP' ) && EPrints::Utils::require_if_exists( 'YAML::PP::Common' ) )
+	{
+		if ( -f $package_yml_fn )
+		{
+			$package_yaml = YAML::Tiny->read( $package_yml_fn );
+			if ( -f $config_yml_tmpl_fn )
+			{
+				open CFG_YML_TMPL_FILE, $config_yml_tmpl_fn;
+				$config_yaml_data = join "", <CFG_YML_TMPL_FILE>;
+				close CFG_YML_TMPL_FILE;
+			}
+			else
+			{
+				print STDERR "Could not find configuration template file at: $config_yml_tmpl_fn\n";
+				exit 1;
+			}
+		}
+		else
+		{
+			print STDERR "Could not find $package_yml_fn\n";
+			exit 1;
+		}
+	}
+	else
+	{
+		print STDERR "export_init_config requires YAML::Tiny and YAML:: PP to be installed.\n";
+		exit 1;
+	}
+
+	my $yp = YAML::PP->new( preserve => YAML::PP::Common->PRESERVE_ORDER );
+	my $config_yaml = $yp->load_string( $config_yaml_data );
+
+	foreach my $comp ( @{$package_yaml->[0]->{includes}} )
+	{
+		if ( $comp->{path} =~ m!^flavours/([^_]+)_lib$! )
+		{
+			$config_yaml->{flavour} = $1;
+			last;
+		}
+	}
+	unless ( $config_yaml->{flavour} )
+	{
+		$config_yaml->{flavour} = 'zero';
+	}
+
+	$config_yaml->{archive_id} = $repoid;
+	$config_yaml->{core}->{host} = $repo->config( 'host' ) if defined $repo->config( 'host' );
+	$config_yaml->{core}->{port} = $repo->config( 'port' ) if defined $repo->config( 'port' );
+	$config_yaml->{core}->{aliases} = $repo->config( 'aliases' ) if defined $repo->config( 'aliases' );
+	$config_yaml->{core}->{path} = $repo->config( 'path' ) if defined $repo->config( 'path' );
+	$config_yaml->{core}->{securehost} = $repo->config( 'securehost' ) if defined $repo->config( 'securehost' );
+	$config_yaml->{core}->{secureport} = $repo->config( 'secureport' ) if defined $repo->config( 'secureport' );
+	$config_yaml->{core}->{adminemail} = $repo->config( 'adminemail' ) if defined $repo->config( 'adminemail' );
+	$config_yaml->{core}->{phrases}->{archive_name} = $repo->phrase( 'archive_name' ) if $repo->get_lang->has_phrase( 'archive_name' );
+	$config_yaml->{core}->{phrases}->{organisation_name} = $repo->phrase( 'organisation_name' ) if $repo->get_lang->has_phrase( 'organisation_name' );
+
+	# epadmin create still needs 'host' to be specified.
+	$config_yaml->{core}->{host} = $config_yaml->{core}->{securehost} if !$config_yaml->{core}->{host} && $config_yaml->{core}->{securehost};
+
+	$config_yaml->{database}->{dbname} = $repo->config( 'dbname' ) if defined $repo->config( 'dbname' );
+	$config_yaml->{database}->{dbhost} = $repo->config( 'dbhost' ) if defined $repo->config( 'dbhost' );
+	$config_yaml->{database}->{dbport} = $repo->config( 'dbport' ) if defined $repo->config( 'dbport' );
+	$config_yaml->{database}->{dbsock} = $repo->config( 'dbsock' ) if defined $repo->config( 'dbsock' );
+	$config_yaml->{database}->{dbuser} = $repo->config( 'dbuser' ) if defined $repo->config( 'dbuser' );
+	$config_yaml->{database}->{dbpass} = $repo->config( 'dbpass' ) if defined $repo->config( 'dbpass' );
+	$config_yaml->{database}->{dbengine} = $repo->config( 'dbengine' ) if defined $repo->config( 'dbengine' );
+	$config_yaml->{database}->{dbcharset} = $repo->config( 'dbcharset' ) if defined $repo->config( 'dbcharset' );
+
+    my $user = $repo->dataset( 'user' )->dataobj( 1 );
+	my $user_config;
+    if ( $user )
+	{
+		$config_yaml->{user}->{username} = $user->get_value( 'username' );
+		$config_yaml->{user}->{usertype} = $user->get_value( 'usertype' );
+		$config_yaml->{user}->{email} = $user->get_value( 'email' );
+	}
+
+	my $subject = $repo->dataset( 'subject' )->dataobj( 'subjects' );
+	if ( $subject && @{$subject->get_value( 'name' )}[0]->{name} eq 'Library of Congress Subject Areas' )
+	{
+		$config_yaml->{import_subjects} = 'yes';
+	}
+
+	print $yp->dump_string( $config_yaml );
+
+	print STDERR "\n# Be sure to set the database admin username and password and a suitable password for the initial EPrints user, unless you wish to be prompted for these settings when using this configuration file to create a new repository archive.\n\n"
 }
 
 sub logout_all_users
