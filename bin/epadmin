@@ -570,12 +570,14 @@ END
 	}
 	if( $config_core eq "yes" )
 	{
-		config_core( $repoid, $config->{core} );	
+		config_core( $repoid, $config->{core} );
 	}
 	else
 	{
 		print "OK, but you'll need to edit 10_core.pl by hand in that case.\n";
 	}
+	
+	my $repo = &repository( $repoid, db_connect => 0 );
 
 	print "\n";
 	my $config_db = "yes";
@@ -585,7 +587,7 @@ END
 	}
 	if( $config_db eq "yes" )
 	{
-		config_db( $repoid, $config->{database} );	
+		config_db( $repo, $config->{database} );
 		
 		if( !$db_ok )
 		{
@@ -610,7 +612,7 @@ END
 		if( $create_user eq "yes" )
 		{
 			my $u = $config->{user};
-			create_user( $repoid, ( $u->{username}, $u->{usertype}, $u->{password}, $u->{email} ) );	
+			create_user( $repo, ( $u->{username}, $u->{usertype}, $u->{password}, $u->{email} ) );
 		}
 		else
 		{
@@ -620,19 +622,19 @@ END
 		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to build the static web pages?", "yes", $config, [ 'generate_static' ] );
 		if( $ok eq "yes" )
 		{
-			run_script( $repoid, "generate_static", "--quiet", $repoid );	
+			run_script( $repo, "generate_static", "--quiet", $repoid );
 		}
 
 		if ($repo_type eq "zero")
 		{
-			run_script( $repoid, "import_subjects", "--force", $repoid );
+			run_script( $repo, "import_subjects", "--force", $repoid );
 		}
 		else
 		{
 			$ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to import the LOC subjects and sample divisions?", "yes", $config, [ 'import_subjects' ] );
 			if( $ok eq "yes" )
 			{
-				run_script( $repoid, "import_subjects", "--force", $repoid );	
+				run_script( $repo, "import_subjects", "--force", $repoid );
 			}
 		}
 	}
@@ -642,7 +644,7 @@ END
 		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to update the apache config files? (you still need to add the 'Include' line)", "yes", $config, [ 'generate_apacheconf' ] );
 		if( $ok eq "yes" )
 		{
-			run_script( $repoid, "generate_apacheconf" );
+			run_script( $repo, "generate_apacheconf" );
 		}
 
 	my $base_path = EPrints::Config::get( "base_path" );
@@ -1000,7 +1002,9 @@ END
 
 sub config_db
 {
-	my( $repoid, $dbconf ) = @_;
+	my( $repo, $dbconf ) = @_;
+
+	my $repoid = ref($repo) ? $repo->get_id : $repo;
 
 	my %config = ();
 	$config{dbname} = $repoid;
@@ -1099,7 +1103,10 @@ END
 	}
 	if( $makedb eq "yes" )
 	{
-		create_db( $repoid, $dbconf->{admin} );
+		# Add the config set above to the repository config so that we don't
+		# have to reload it all.
+		$repo->{config} = { %{$repo->{config}}, %config };
+		create_db( $repo, $dbconf->{admin} );
 	}
 	else
 	{
@@ -1284,7 +1291,6 @@ sub create_user
 {
 	my( $repoid, @info ) = @_;
 
-	use Data::Dumper;
 	my $userconf = {};
 
 	my $repo = &repository( $repoid );
@@ -1322,7 +1328,7 @@ sub create_user
 		}
 	}
 
-	print "Creating a new user in $repoid\n\n";
+	print 'Creating a new user in ' . $repo->get_id . "\n\n";
 	$info{username} ||= EPrints::Utils::get_input( $EPrints::Utils::REGEXP_USERNAME, 'Enter a username', 'admin' );
 	while( defined $repo->user_by_username( $info{username} ) )
 	{
