@@ -2,6 +2,8 @@
 
 EPrints::Plugin::Screen::Subject::Edit
 
+=head1 METHODS
+
 =cut
 
 
@@ -60,6 +62,8 @@ sub properties_from
 
 	my $processor = $self->{processor};
 
+	$processor->{tab_prefix} = 'ep_subject_edit';
+
 	$processor->{dataset} = $self->{session}->dataset( "subject" );
 
 	my $id = $self->{session}->param( "dataobj" );
@@ -69,6 +73,38 @@ sub properties_from
 	}
 
 	$self->SUPER::properties_from;
+}
+
+sub wishes_to_export { shift->{repository}->param( 'ajax' ) }
+
+sub export_mime_type { 'text/html;charset=utf-8' }
+
+sub export
+{
+	my( $self ) = @_;
+
+	my $id_prefix = $self->{processor}->{tab_prefix};
+
+	my $current = $self->{session}->param( "${id_prefix}_current" );
+	$current = 0 if !defined $current;
+
+	# The first tab is loaded from a stage not a screen
+	return if $current == 0;
+
+	my @screens;
+	foreach my $item ( $self->list_items( 'subject_edit_tabs', filter => 0 ) )
+	{
+		next if !($item->{screen}->can_be_viewed & $self->who_filter);
+		next if $item->{action} && !$item->{screen}->allow_action( $item->{action} );
+		push @screens, $item->{screen};
+	}
+
+	local $self->{processor}->{current} = $current;
+
+	my $content = $screens[$current - 1]->render();
+	binmode(STDOUT, ":utf8");
+	print $self->{repository}->xhtml->to_xhtml( $content );
+	$self->{repository}->xml->dispose( $content );
 }
 
 sub render_title
@@ -120,6 +156,7 @@ sub render_editbox
 	my( $self ) = @_;
 
 	my $session = $self->{session};
+	my $processor = $self->{processor};
 
 	my $form = $session->render_form( "POST" );
 	$form->appendChild( $self->render_hidden_bits );
@@ -128,8 +165,37 @@ sub render_editbox
 
 	my $stage = $workflow->get_stage( $workflow->get_first_stage_id );
 
-	# prepend subjectid ???
-	$form->appendChild( $stage->render( $session, $workflow ) );
+	my $current = $session->param( $processor->{tab_prefix} . '_current' );
+	$current = 0 if !defined $current;
+
+	my @labels = ( $session->phrase( 'Plugin/Screen/Subject/Edit:title' ) );
+	my @contents = ( $stage->render( $session, $workflow ) );
+	my @expensive;
+	for my $item ($self->list_items( 'subject_edit_tabs', filter => 0 )) {
+		next if !($item->{screen}->can_be_viewed & $self->who_filter);
+		next if $item->{action} && !$item->{screen}->allow_action( $item->{action} );
+
+		# allow hidden_bits to point to the correct tab for local links
+		local $self->{processor}->{current} = scalar @contents;
+
+		my $screen = $item->{screen};
+		push @labels, $screen->render_tab_title;
+		push @expensive, scalar @contents if $screen->{expensive};
+
+		if( $screen->{expensive} && $current != scalar @contents ) {
+			push @contents, $session->html_phrase( 'cgi/users/edit_eprint:loading' );
+		} else {
+			push @contents, $screen->render( $processor->{tab_prefix} . '_' . scalar @contents );
+		}
+	}
+
+	$form->appendChild( $session->xhtml->tabs(
+		\@labels,
+		\@contents,
+		basename => $processor->{tab_prefix},
+		current => $current,
+		expensive => \@expensive,
+	) );
 
 	$form->appendChild( $session->render_hidden_field( "_default_action", "register" ) );
 	$form->appendChild( $session->render_action_buttons(
@@ -420,7 +486,7 @@ sub action_create
 	$child = $subject_ds->create_dataobj( {
 		subjectid => $childid,
 		parents => [ $subject->id ],
-		depositable => 1 } );
+		depositable => 'TRUE' } );
 
 	$self->{processor}->add_message( "message", $self->html_phrase( "added", newchild=>$child->render_value( "subjectid" ) ) );
 	$self->{processor}->{dataobj} = $child;
@@ -552,6 +618,7 @@ sub hidden_bits
 	return(
 		$self->EPrints::Plugin::Screen::hidden_bits,
 		dataobj => $self->{processor}->{dataobj}->id,
+		$self->{processor}->{tab_prefix} . "_current" => $self->{processor}->{current},
 	);
 }
 
