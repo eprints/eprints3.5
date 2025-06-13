@@ -281,7 +281,14 @@ BEGIN
 
 	if ( scalar @ARGV )
 	{
-		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test /;
+		if ( grep { $ARGV[0] eq $_ } qw/ create profile test / )
+		{
+			$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1 if grep { $ARGV[0] eq $_ } qw/ create profile test /;
+		}
+		else
+		{
+			push @ARGV, "--archive=".$ARGV[1];
+		}
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
@@ -1289,7 +1296,6 @@ sub create_user
 {
 	my( $repoid, @info ) = @_;
 
-	use Data::Dumper;
 	my $userconf = {};
 
 	my $repo = &repository( $repoid );
@@ -2054,8 +2060,6 @@ sub export_init_config
 {
 	my( $repoid ) = @_;
 
-	use Data::Dumper;
-
 	my $repo = &repository( $repoid );
 	my $package_yml_fn = $repo->config( 'base_path' ) . '/archives/' . $repoid . '/cfg/package.yml';
 	my $config_yml_tmpl_fn =  $repo->config( 'base_path' ) . '/lib/config.yml.tmpl';
@@ -2063,7 +2067,7 @@ sub export_init_config
 	my $config_yaml_data;
 
 
-	if ( EPrints::Utils::require_if_exists( 'YAML::Tiny' ) &&  EPrints::Utils::require_if_exists( 'YAML::PP' ) )
+	if ( EPrints::Utils::require_if_exists( 'YAML::Tiny' ) && EPrints::Utils::require_if_exists( 'YAML::PP' ) && EPrints::Utils::require_if_exists( 'YAML::PP::Common' ) )
 	{
 		if ( -f $package_yml_fn )
 		{
@@ -2092,10 +2096,7 @@ sub export_init_config
 		exit 1;
 	}
 
-	use YAML::PP;
-	use YAML::PP::Common qw/ :PRESERVE /;
-
-	my $yp = YAML::PP->new( preserve => PRESERVE_ORDER );
+	my $yp = YAML::PP->new( preserve => YAML::PP::Common->PRESERVE_ORDER );
 	my $config_yaml = $yp->load_string( $config_yaml_data );
 
 	foreach my $comp ( @{$package_yaml->[0]->{includes}} )
@@ -2151,7 +2152,7 @@ sub export_init_config
 
 	print $yp->dump_string( $config_yaml );
 
-	print STDERR "\n# Be sure to set the database admin username and password and a suitable password for the initial EPrints user, unless you wish to be prompted for this settings when using this configuration file to create a new repository archive.\n\n"
+	print STDERR "\n# Be sure to set the database admin username and password and a suitable password for the initial EPrints user, unless you wish to be prompted for these settings when using this configuration file to create a new repository archive.\n\n"
 }
 
 sub logout_all_users
