@@ -53,18 +53,22 @@ sub render
 		custom_order => '-historyid',
 	);
 
-	return EPrints::Paginate->paginate_list(
-		$repo,
-		undef,
-		$list,
-		params => { $processor->{screen}->hidden_bits },
-		container => $repo->make_element( 'div' ),
-		render_result => sub {
-			my( undef, $item ) = @_;
+	if( defined $list->item( 0 ) ) {
+		return EPrints::Paginate->paginate_list(
+			$repo,
+			undef,
+			$list,
+			params => { $processor->{screen}->hidden_bits },
+			container => $repo->make_element( 'div' ),
+			render_result => sub {
+				my( undef, $item ) = @_;
 
-			return $self->render_history( $item, $subject_id );
-		},
-	);
+				return $self->render_history( $item, $subject_id );
+			},
+		);
+	} else {
+		return $repo->html_phrase( 'Plugin/Screen/Subject/History:no_history' );
+	}
 }
 
 sub render_history
