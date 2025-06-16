@@ -47,6 +47,8 @@ Where I<command> is one of:
 
 =item erase_fulltext_index
 
+=item export_init_config
+
 =item help
 
 =item logout_all_users
@@ -279,16 +281,13 @@ BEGIN
 	use FindBin;
 	use File::Copy;
 
-	if ( scalar @ARGV )
+	if ( scalar @ARGV == 1 )
 	{
-		if ( grep { $ARGV[0] eq $_ } qw/ create profile test / or scalar @ARGV == 1 )
-		{
-			$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
-		}
-		else
-		{
-			push @ARGV, "--archive=".$ARGV[1];
-		}
+		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
+	}
+	elsif ( $ARGV[1] && $ARGV[1] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ )
+	{
+		push @ARGV, "--archive=".$ARGV[1];
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
@@ -300,6 +299,16 @@ BEGIN
 			die "Could not install SystemSettings.pm\n";
 		}
 	}
+}
+
+# Unset --archive=... if created during BEGIN
+for ( my $a = 2; $a < scalar @ARGV; $a++ )
+{
+	if ( $ARGV[1] && $ARGV[$a] eq "--archive=".$ARGV[1] )
+    {
+		delete $ARGV[$a];
+        last;
+    }
 }
 
 use EPrints;
