@@ -375,7 +375,7 @@ elsif( $action eq "profile" ) { profile( @ARGV ); }
 else
 {
 	my $repoid = shift @ARGV;
-	pod2usage(1) unless defined $repoid;
+	argument_error( $action ) unless defined $repoid;
 	if( $action eq "cleanup_cachemaps" ) { cleanup_cachemaps( $repoid ); }
 	elsif( $action eq "config_core" ) { config_core( &repository($repoid) ); }
 	elsif( $action eq "config_db" ) { config_db( $repoid ); }
@@ -405,19 +405,19 @@ else
 	elsif( $action eq "recommit" ) 
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		recommit( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "reindex" ) 
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		reindex( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "reorder" )
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		reorder( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "rehash" ) { rehash( $repoid, @ARGV ); }
@@ -443,6 +443,38 @@ sub repository
 	}
 
 	return $repo;
+}
+
+# argument_error( $action )
+#
+# If a correct command (for example `epadmin update`) has been entered but it is
+# missing an argument, or its argument is incorrect it can raise an
+# 'argument_error' which will only display the doc information for that argument
+# (and the options section), as opposed to `pod2usage` which will show it all.
+#
+# This is not POD as it would otherwise show up in the error message.
+sub argument_error
+{
+	my( $action ) = @_;
+
+	my $pod;
+	open my $fh, '>', \$pod;
+	# Output to a file (that is really a variable) and don't exit
+	pod2usage( -exitval => 'NOEXIT', -output => $fh);
+
+	# Find 'epadmin $action...' followed by exactly one newline
+	my( $relevant ) = $pod =~ /(    epadmin $action .*(?:\r?\n(?!\r?\n).*)*)/;
+	if( $relevant ) {
+		my( $options ) = $pod =~ /(Options:.*(?:\r?\n(?!\r?\n\r?\n).*)*)/;
+		print STDERR "Missing argument(s):\n$relevant\n\n$options";
+		exit 1;
+	} else {
+		# If we can't find the section for `$action` then we just display the
+		# whole documentation (it is more efficient to just print the already
+		# generated version).
+		print STDERR $pod;
+		exit 1;
+	}
 }
 
 sub create
