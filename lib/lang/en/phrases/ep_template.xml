@@ -435,7 +435,7 @@
     </epc:if>
     <epc:if test="has_phrase(help_phrase)">
       <div text-align="left">
-        <epv:box id="ep_review_instructions" collapsed="1" show_icon_url="{$config{rel_path}}/style/images/help.gif">
+        <epv:box id="ep_review_instructions" collapsed="1" show_icon_url="{$config{rel_path}}/style/images/help.svg">
           <epv:title>
             <epc:phrase ref="Plugin/Screen/Items:help_title"/>
           </epv:title>
