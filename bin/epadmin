@@ -1284,7 +1284,11 @@ sub create_db
 	if( !$database->create( $username, $password ) )
 	{
 		print STDERR "Error creating database: [$DBI::err] $DBI::errstr\n";
-		goto BADPASSWORD if $DBI::err == 1045;
+		# 1045 (ER_ACCESS_DENIED_ERROR) is generally raised when the username
+		# or password were wrong however if the username is correct and the
+		# password has been left empty ('') when required the error is instead
+		# 1698 (ER_ACCESS_DENIED_NO_PASSWORD_ERROR).
+		goto BADPASSWORD if $DBI::err == 1045 || $DBI::err == 1698;
 		exit 1;
 	}
 
