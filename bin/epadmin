@@ -27,69 +27,71 @@ Where I<command> is one of:
 
 =over 4
 
-=item cleanup_cachemaps
+=item cleanup_cachemaps <repo>
 
-=item config_core
+=item config_core <repo>
 
-=item config_db
+=item config_db <repo>
 
-=item create
+=item create [--config=<config>]
 
-=item create_db
+=item create_db <repo>
 
-=item create_tables
+=item create_tables <repo>
 
-=item create_user
+=item create_user <repo>
 
-=item erase_data
+=for comment Create user also takes [(_ [<usertype>]) | (<username> [<usertype> [<password> [<email>]]])]
 
-=item erase_eprints
+=item erase_data <repo>
 
-=item erase_fulltext_index
+=item erase_eprints <repo>
 
-=item export_init_config
+=item erase_fulltext_index <repo>
+
+=item export_init_config <repo>
 
 =item help
 
-=item logout_all_users
+=item logout_all_users <repo> [<excluded_userid>...]
 
-=item profile
+=item profile <test>
 
-=item recommit
+=item recommit <repo> <dataset> [<dataobj_id>...]
 
-=item reorder
+=item reorder <repo> <dataset> [<dataobj_id>...]
 
-=item redo_hash
+=item redo_hash <repo> <dataset> [<dataobj_id>...]
 
-=item redo_mime_type
+=item redo_mime_type <repo> <dataset> [<dataobj_id>...]
 
-=item redo_thumbnails
+=item redo_thumbnails <repo> [<eprint_id>...]
 
-=item refresh_abstracts
+=item refresh_abstracts <repo>
 
-=item refresh_citations
+=item refresh_citations <repo>
 
-=item refresh_entities
+=item refresh_entities <repo>
 
-=item refresh_views
+=item refresh_views <repo>
 
-=item rehash
+=item rehash <repo> <document_id>
 
-=item reindex
+=item reindex <repo> <dataset> [<dataobj_id>...]
 
-=item reload
+=item reload <repo>
 
-=item remove_field
+=item remove_field <repo> <dataset> <field>
 
-=item schema
+=item schema <repo>
 
-=item set_developer_mode
+=item set_developer_mode <repo> [on|off]
 
-=item test
+=item test [<repo>]
 
-=item update
+=item update <repo> [--dry-run]
 
-=item upgrade
+=item upgrade <repo>
 
 =back
 
