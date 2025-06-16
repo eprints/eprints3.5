@@ -3481,6 +3481,7 @@ sub upgrade
 	my $db = $repo->database();
 
 	my @versions = qw(
+			3.3.4
 			3.5.0
 		);
 	
@@ -3507,6 +3508,8 @@ sub upgrade
 	print STDERR "Please restart the indexer\n";
 	print "Database version is now: ".$db->get_version()."\n";
 }
+
+sub upgrade_3_3_4_to_3_5_0 {}
 
 # End of UPGRADE CODE
 
