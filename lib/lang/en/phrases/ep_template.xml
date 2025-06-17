@@ -1134,9 +1134,11 @@
             <div class="accordion-collapse collapse show m-0 d-flex justify-content-start" role="toolbar">
               <epc:if test="menu">
                 <div class="accordion-body border rounded p-2 ps-3 me-2">
-                  <label for="search-export-output">Export <epc:print expr="count"/> results as </label>
-                  <epc:print expr="menu"/>
-                  <epc:print expr="button"/>
+                  <form action="" accept-charset="utf-8" method="get">
+                    <label for="search-export-output">Export <epc:print expr="count"/> results as </label>
+                    <epc:print expr="menu"/>
+                    <epc:print expr="button"/>
+                  </form>
                 </div>
               </epc:if>
               <epc:if test="tools">
