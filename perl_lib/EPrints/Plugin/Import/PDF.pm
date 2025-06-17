@@ -187,18 +187,18 @@ sub parse_author
 
 	my @parsed;
 	foreach my $author (split(/,|&| and |\t|;/, $authors)) {
+		my @words = split(' ', $author);
+		my $given = join(' ', @words[0..$#words-1]);
+
 		if( $has_contributions ) {
 			push @parsed, {
 				type => $plugin->{repository}->config('entities', 'field_contribution_types', 'eprint', 'person', 'creators'),
 				contributor => {
 					datasetid => 'person',
-					name => $author,
+					name => $words[-1] . ', ' . $given,
 				}
 			}
 		} else {
-			my @words = split(' ', $author);
-			my $given = join(' ', @words[0..$#words-1]);
-
 			push @parsed, {
 				name => {
 					given => $given,
