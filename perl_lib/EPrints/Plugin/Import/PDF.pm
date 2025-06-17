@@ -91,14 +91,38 @@ sub generate_epdata
 		$epdata->{title} = $filename;
 	}
 
-	my @authors = $plugin->get_info( "authors_metadata" );
-	foreach my $author (@authors) {
-		push @{$epdata->{creators}}, $plugin->parse_author( $author );
+	# Create a dummy workflow so that we can test whether it contains the 'contributions' field
+	my $workflow = EPrints::Workflow->new( $repository, 'default', ( item => EPrints::DataObj::EPrint->new( $repository, 1 ) ) );
+	my $has_contributions = $workflow->{field_stages}->{contributions} && 1;
+
+	# If it does contain contributions then we want to add the information to 'contributions' rather than 'creators'
+	my @author_texts = $plugin->get_info( "authors_metadata" );
+	for my $author_text (@author_texts) {
+		my @authors = $plugin->parse_author( $author_text, $has_contributions );
+		if( $has_contributions ) {
+			push @{$epdata->{contributions}}, @authors;
+		} else {
+			push @{$epdata->{creators}}, @authors;
+		}
+	}
+
+	my $publisher = $plugin->get_info( 'publisher_metadata' );
+	if( $publisher ) {
+		if( $has_contributions ) {
+			push @{$epdata->{contributions}}, {
+				type => $plugin->{repository}->config('entities', 'field_contribution_types', 'eprint', 'organisation', 'publisher'),
+				contributor => {
+					datasetid => 'organisation',
+					name => $publisher,
+				}
+			};
+		} else {
+			$epdata->{publisher} = $publisher;
+		}
 	}
 
 	$epdata->{publication} = $plugin->get_info( "publication_metadata" );
 	$epdata->{issn} = $plugin->get_info( "issn_metadata" );
-	$epdata->{publisher} = $plugin->get_info( "publisher_metadata" );
 	$epdata->{official_url} = $plugin->get_info( "official_url_metadata" );
 	$epdata->{volume} = $plugin->get_info( "volume_metadata" );
 	$epdata->{number} = $plugin->get_info( "number_metadata" );
@@ -159,18 +183,29 @@ sub get_info
 
 sub parse_author
 {
-	my( $plugin, $authors ) = @_;
+	my( $plugin, $authors, $has_contributions ) = @_;
 
 	my @parsed;
 	foreach my $author (split(/,|&| and |\t|;/, $authors)) {
 		my @words = split(' ', $author);
 		my $given = join(' ', @words[0..$#words-1]);
-		push @parsed, {
-			'name' => {
-				'given' => $given,
-				'family' => $words[-1],
-			},
-		};
+
+		if( $has_contributions ) {
+			push @parsed, {
+				type => $plugin->{repository}->config('entities', 'field_contribution_types', 'eprint', 'person', 'creators'),
+				contributor => {
+					datasetid => 'person',
+					name => $words[-1] . ', ' . $given,
+				}
+			}
+		} else {
+			push @parsed, {
+				name => {
+					given => $given,
+					family => $words[-1],
+				},
+			};
+		}
 	}
 
 	return @parsed;
