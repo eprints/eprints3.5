@@ -106,9 +106,23 @@ sub generate_epdata
 		}
 	}
 
+	my $publisher = $plugin->get_info( 'publisher_metadata' );
+	if( $publisher ) {
+		if( $has_contributions ) {
+			push @{$epdata->{contributions}}, {
+				type => $plugin->{repository}->config('entities', 'field_contribution_types', 'eprint', 'organisation', 'publisher'),
+				contributor => {
+					datasetid => 'organisation',
+					name => $publisher,
+				}
+			};
+		} else {
+			$epdata->{publisher} = $publisher;
+		}
+	}
+
 	$epdata->{publication} = $plugin->get_info( "publication_metadata" );
 	$epdata->{issn} = $plugin->get_info( "issn_metadata" );
-	$epdata->{publisher} = $plugin->get_info( "publisher_metadata" );
 	$epdata->{official_url} = $plugin->get_info( "official_url_metadata" );
 	$epdata->{volume} = $plugin->get_info( "volume_metadata" );
 	$epdata->{number} = $plugin->get_info( "number_metadata" );
