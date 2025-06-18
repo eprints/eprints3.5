@@ -163,18 +163,16 @@ if ( defined $feeds_conf )
                 if ( defined $feeds_conf->{$feed_type}->{enabled} && $feeds_conf->{$feed_type}->{enabled} )
                 {
                         my $feed = $session->make_element( "span", class=>"ep_search_feed" );
-                        my $feed_icon_link = $session->make_element( "a", href=>"/cgi/latest_tool?output=$feed_type" );
-                        my $feed_icon_link_icon = $session->make_element( "img", alt=>"[feed]", src=>"/style/images/rss-fill.svg", border=>"0" );
-                        $feed_icon_link->appendChild($feed_icon_link_icon);
-                        $feed->appendChild($feed_icon_link);
                         my $feed_link = $session->make_element( "a", href=>"/cgi/latest_tool?output=$feed_type" );
+                        my $feed_link_icon = $session->make_element( "img", alt=>"[feed]", src=>"/style/images/rss-fill.svg", style=>"border: 0;" );
+                        $feed_link->appendChild($feed_link_icon);
                         if ( defined $feeds_conf->{$feed_type}->{label} )
                         {
-                                $feed_link->appendText($feeds_conf->{$feed_type}->{label});
+                                $feed_link->appendText(' ' . $feeds_conf->{$feed_type}->{label});
                         }
                         else
                         {
-                                $feed_link->appendText($feed_type);
+                                $feed_link->appendText(' ' . $feed_type);
                         }
                         $feed->appendChild($feed_link);
                         $feeds->appendChild($feed);
