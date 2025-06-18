@@ -1233,7 +1233,7 @@
               <div align="right">
                 <div class="ep_only_js">
                   <div class="ep_sr_show_help ep_toggle " id="{help_item{prefix}}_show">
-                    <a onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
                       <img border="0" src="/style/images/help.svg" title="Show help" alt="+"/>
                     </a>
                   </div>
