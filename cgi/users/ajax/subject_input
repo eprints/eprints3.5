@@ -81,7 +81,7 @@ EPJS_blur(event);
 EPJS_toggle_type('${id}_hide',false,'inline');
 EPJS_toggle_type('${id}_show',true,'inline');
 EPJS_toggleSlide('${id}_kids',false,'block'); ">
-<img alt="-" src="/style/images/minus.png" border="0" /> $label $add
+<img alt="-" src="/style/images/minus.svg" border="0" /> $label $add
 </span>
 
 <span id='${id}_show' onclick="
@@ -101,7 +101,7 @@ new Ajax.Request(
 		EPJS_toggleSlideScroll('${id}_kids',false,'${id}_toggle');
 	} 
 });"> 
-<img alt="+" src="/style/images/plus.png" border="0" /> $label
+<img alt="+" src="/style/images/plus.svg" border="0" /> $label
 </span>
 </span>
 
