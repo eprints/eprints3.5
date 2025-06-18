@@ -1260,8 +1260,8 @@
       <div id="{prefix}_content" class="{content{class}} bg-white p-2 rounded">
         <div id="{content_inner{id}}">
           <epc:if test="has_help">
-            <div id="{help_item{prefix}}" class="p-2 alert alert-info {help_item{hide_class}}">
-              <div id="{help_item{prefix}}_inner" class="">
+            <div id="{help_item{prefix}}" class="{help_item{hide_class}}">
+              <div id="{help_item{prefix}}_inner" class="p-2 alert alert-info">
                 <epc:print expr="help_item{render_help}"/>
               </div>
             </div>
