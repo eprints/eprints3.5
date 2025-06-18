@@ -20,6 +20,10 @@ For more information see B<https://www.eprints.org/software/>.
 
 =head1 35 DEVELOPER NOTES
 
+=head2 INSTALLATION INSTRUCTIONS
+
+See https://wiki.eprints.org/w/EPrints_3.5.0_Beta_1
+
 =head2 SUBMODULES
 
 After cloning eprints3 you will need to checkout the submodules, this can be done with the following command...
@@ -28,7 +32,7 @@ After cloning eprints3 you will need to checkout the submodules, this can be don
 
 =head2 BOOTSTRAP INTEGRATION
 
-As standard EPrints35 will leverage bootsrap classes and structures within the new xml template fragments, for a better user experience.
+As standard EPrints35 will leverage bootstrap classes and structures within the new xml template fragments, for a better user experience.
 
 If you wish to revert back to the original styling (still using xml template fragments) then add the ingredient classic_eprints_styling to the package.yml in your archive. 
 
