@@ -83,10 +83,12 @@ EOX
 			"rel"  => "self" ) );
 	}
 
+	my $desc = $session->config( 'oai', 'content', 'text' );
+	$desc ||= '';
 	$channel->appendChild( $session->render_data_element(
 		4,
 		"description", 
-		$session->config( "oai","content","text" ) ) );
+		$desc ) );
 
 	{
 		my $image = $session->make_element( "image" );
