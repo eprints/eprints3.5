@@ -92,7 +92,8 @@ sub generate_epdata
 	}
 
 	# Create a dummy workflow so that we can test whether it contains the 'contributions' field
-	my $workflow = EPrints::Workflow->new( $repository, 'default', ( item => EPrints::DataObj::EPrint->new( $repository, 1 ) ) );
+	my $fake_eprint = bless { dataset => $repository->dataset( 'eprint' ) }, 'EPrints::DataObj';
+	my $workflow = EPrints::Workflow->new( $repository, 'default', item => $fake_eprint );
 	my $has_contributions = $workflow->{field_stages}->{contributions} && 1;
 
 	# If it does contain contributions then we want to add the information to 'contributions' rather than 'creators'
