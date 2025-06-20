@@ -962,7 +962,7 @@ Adds the necessary javascript for search highlighting to the bottom of the $page
 
 =item C<text> is the text we are highlighting. If this is a list of strings then it will search for each string, otherwise it will split into words and search for those
 
-=item C<field_name> is the field C<text> is being searched on ('undef' if it should apply generally)
+=item C<field_name> is the field C<text> is being searched on ('undef' if it should apply generally). This can also be a list of field C<text>s which all have the same search applied.
 
 =item C<ignore_apostrophes> tells us to ignore apostrophes (both ' and ’) placed anywhere throughout the word
 
@@ -984,9 +984,34 @@ sub render_search_highlights
 
 		my $config = $repo->config( 'highlighted_search_selection' );
 		my $field_name = $search_field->{field_name};
-		# If the config doesn't exist then we want to use '*' but if it was set to 'undef' then we don't want to try to highlight
-		if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
-			my $selection = $config->{$field_name};
+
+		my $skip_highlighting = 1;
+		my $selection = undef;
+		if( ref $field_name eq 'ARRAY' ) {
+			# Combine all of the field names into a single selection, if any
+			# are '' then they take priority and `$selection` is set to ''
+			# otherwise it is a comma-separated list of selections.
+			for my $field_name (@{$field_name}) {
+				if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
+					$skip_highlighting = 0;
+					if( not $config->{$field_name} ) {
+						$selection = '';
+					} elsif ( not defined $selection ) {
+						$selection = $config->{$field_name};
+					} elsif ( $selection ne '' ) {
+						$selection .= ',' . $config->{$field_name};
+					}
+				}
+			}
+		} else {
+			# If the config doesn't exist then we want to use '*' but if it was set to 'undef' then we don't want to try to highlight
+			if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
+				$skip_highlighting = 0;
+				$selection = $config->{$field_name};
+			}
+		}
+
+		if( !$skip_highlighting ) {
 			# Don't select marks because 'search_highlighter.js' handles them specially.
 			$javascript .= "    highlightRegExp(element.querySelectorAll('$selection:not(mark)'), $regex);\n";
 		}

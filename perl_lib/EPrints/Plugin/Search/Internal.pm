@@ -113,10 +113,12 @@ sub get_highlightable_search_fields
 	my @search_terms;
 	my @fields = $self->get_non_filter_searchfields();
 	for my $field (@fields) {
-		for my $metafield (@{$field->get_fields}) {
-			if( $field->is_set && $field->get_value ) {
-				push @search_terms, { text => $field->get_value, field_name => $metafield->get_name };
-			}
+		if( $field->is_set && $field->get_value ) {
+			my @field_names = map { $_->get_name } @{$field->get_fields};
+			push @search_terms, {
+				text => $field->get_value,
+				field_name => \@field_names,
+			};
 		}
 	}
 	return @search_terms;
