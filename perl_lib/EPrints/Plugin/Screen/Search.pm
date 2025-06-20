@@ -316,6 +316,16 @@ sub render_simple_form
 	$item{action_search} = $self->{session}->phrase( "lib/searchexpression:action_search" );
 	$item{advanced_link} = $self->{session}->phrase( "lib/searchexpression:advanced_link" );
 
+	# If 'Search::Xapian' is being used then the field is accessible from
+	# `$search->{q}` otherwise we want to use `get_non_filter_searchfields`
+	# (for 'Search::Internal').
+	my $search = $self->{processor}->{search};
+	if( defined $search->{q} ) {
+		$item{search_value} = $search->{q};
+	} else {
+		$item{search_value} = ($search->get_non_filter_searchfields)[0]->get_value;
+	}
+
 	return( $session->template_phrase( 'view:EPrints/Plugin/Screen/Search:render_simple_form', { item => \%item } ) );
 }
 

@@ -1164,7 +1164,7 @@
         <input value="archive" name="dataset" type="hidden" id="dataset"/>
         <input id="order" type="hidden" name="order"/>
         <div class="col-auto">
-          <input class="form-control" type="text" name="q" size="60" aria-labelledby="{action_search}" value=""/>
+          <input class="form-control" type="text" name="q" size="60" aria-labelledby="{action_search}" value="{search_value}"/>
         </div>
         <div class="col-auto">
           <input name="_action_search" type="submit" id="{action_search}" value="{action_search}" role="button" class="btn btn-primary"/>
