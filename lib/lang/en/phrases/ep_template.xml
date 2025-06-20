@@ -1345,4 +1345,8 @@
       </div>
     </div>
   </epp:phrase>
+  <!-- This is used by 'Template Tests' to check it handles basic text entry -->
+  <epp:phrase id="view:basic_test">
+    Text only test entry.
+  </epp:phrase>
 </epp:phrases>
