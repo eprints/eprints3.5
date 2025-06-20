@@ -114,7 +114,11 @@ sub get_highlightable_search_fields
 	my @fields = $self->get_non_filter_searchfields();
 	for my $field (@fields) {
 		if( $field->is_set && $field->get_value ) {
-			push @search_terms, { text => $field->get_value, field_name => $field->get_field->name };
+			my @field_names = map { $_->get_name } @{$field->get_fields};
+			push @search_terms, {
+				text => $field->get_value,
+				field_names => \@field_names,
+			};
 		}
 	}
 	return @search_terms;
@@ -126,9 +130,10 @@ sub find_embeddable_text
 
 	my @fields = $self->get_non_filter_searchfields();
 	for my $field (@fields) {
-		my $field_name = $field->get_field->name;
-		if( $field_name eq $search_field ) {
-			return $self->find_matching_embed( $field_text, $field->get_value );
+		for my $metafield (@{$field->get_fields}) {
+			if( $metafield->get_name eq $search_field ) {
+				return $self->find_matching_embed( $field_text, $field->get_value );
+			}
 		}
 	}
 }
