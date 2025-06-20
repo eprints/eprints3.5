@@ -185,27 +185,22 @@ sub get_info
 sub parse_author
 {
 	my( $plugin, $authors, $has_contributions ) = @_;
+	my $repo = $plugin->{repository};
 
 	my @parsed;
 	foreach my $author (split(/,|&| and |\t|;/, $authors)) {
-		my @words = split(' ', $author);
-		my $given = join(' ', @words[0..$#words-1]);
+		my $name = $repo->config( 'format_imported_author' )->( $author, $has_contributions );
 
 		if( $has_contributions ) {
 			push @parsed, {
 				type => $plugin->{repository}->config('entities', 'field_contribution_types', 'eprint', 'person', 'creators'),
 				contributor => {
 					datasetid => 'person',
-					name => $words[-1] . ', ' . $given,
+					name => $name,
 				}
 			}
 		} else {
-			push @parsed, {
-				name => {
-					given => $given,
-					family => $words[-1],
-				},
-			};
+			push @parsed, { name => $name };
 		}
 	}
 
