@@ -117,7 +117,7 @@ sub get_highlightable_search_fields
 			my @field_names = map { $_->get_name } @{$field->get_fields};
 			push @search_terms, {
 				text => $field->get_value,
-				field_name => \@field_names,
+				field_names => \@field_names,
 			};
 		}
 	}

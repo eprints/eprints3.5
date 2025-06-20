@@ -542,8 +542,8 @@ Returns a list of all the fields involved in this search and some information as
 Each item is
 
  {
-     text => $text,
-	 field => $field_name, # (or C<undef> or an arrayref of $field_name)
+	 text => $text,
+	 field_names => [$field_name, ...], # (or C<undef>)
 	 ignore_apostrophes => C<bool>,
 	 no_stemming => C<bool>
  }
