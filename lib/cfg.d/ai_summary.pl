@@ -36,6 +36,10 @@ $c->{ai_summary_output_fields} = {
 use HTTP::Tiny;
 $c->{render_ai_topic_links} = sub {
 	my( $session, $self, $value, $all_langs, $no_link, $object ) = @_;
+
+	# Don't make 'Use of uninitialized value' warnings if 'ai_topic' is unset
+	return undef if !defined $value;
+
 	my $http_tiny = HTTP::Tiny->new;
 
 	my $span = $session->make_element( 'span' );
