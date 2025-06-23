@@ -37,8 +37,6 @@ MIME::Lite 3.033
 
 Net::LDAP 0.68
 
-Search::Xapian 1.2.25.5
-
 Term::ReadKey 2.38
 
 TeX::Encode 2.010 - Used by BibTeX export
