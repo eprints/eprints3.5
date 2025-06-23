@@ -904,13 +904,10 @@ sub render_results
 
 	my $results = $self->{session}->make_element("div", "class" => "ep_search_result_area");
 
-	if( $self->{processor}->{searchid} eq "advanced" )
-	{
-		my $facets_area = $self->{session}->make_element("div", "class" => "ep_facet_list");
-		$facets_area->appendChild( $self->render_facet_lists() );
+	my $facets_area = $self->{session}->make_element("div", "class" => "ep_facet_list");
+	$facets_area->appendChild( $self->render_facet_lists() );
 
-		$results->appendChild( $facets_area );
-	}
+	$results->appendChild( $facets_area );
 
 	my $results_area = $self->{session}->make_element("div", "class" => "ep_search_result_list");
 	$results_area->appendChild( $self->SUPER::render_results );
