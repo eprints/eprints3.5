@@ -941,7 +941,7 @@ sub render
 
 		my %facet_fields = %{$self->get_facet_parameters()};
 		for my $key (keys %facet_fields) {
-			push @search_fields, { text => $facet_fields{$key}, field_name => $key, no_stemming => 1 };
+			push @search_fields, { text => $facet_fields{$key}, field_names => [ $key ], no_stemming => 1 };
 		}
 
 		$page = $self->render_search_highlights( $page, \@search_fields )
@@ -954,7 +954,7 @@ sub render
 
 =over 4
 
-=item $page = $screen->render_search_highlights( $page, $search_fields: [{text => <string/array[string]>, (field_name => <string>, ignore_apostrophes => <bool>, no_stemming => <bool>)?}, ...] )
+=item $page = $screen->render_search_highlights( $page, $search_fields: [{text => <string/array[string]>, (field_names => <array[string]>, ignore_apostrophes => <bool>, no_stemming => <bool>)?}, ...] )
 
 Adds the necessary javascript for search highlighting to the bottom of the $page.
 
@@ -962,7 +962,7 @@ Adds the necessary javascript for search highlighting to the bottom of the $page
 
 =item C<text> is the text we are highlighting. If this is a list of strings then it will search for each string, otherwise it will split into words and search for those
 
-=item C<field_name> is the field C<text> is being searched on ('undef' if it should apply generally)
+=item C<field_names> is an arrayref of the field C<text>s being searched on ('undef' if it should apply generally)
 
 =item C<ignore_apostrophes> tells us to ignore apostrophes (both ' and ’) placed anywhere throughout the word
 
@@ -983,10 +983,28 @@ sub render_search_highlights
 		my $regex = $self->generate_regex( $search_field->{text}, $search_field );
 
 		my $config = $repo->config( 'highlighted_search_selection' );
-		my $field_name = $search_field->{field_name};
-		# If the config doesn't exist then we want to use '*' but if it was set to 'undef' then we don't want to try to highlight
-		if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
-			my $selection = $config->{$field_name};
+		my $field_names = $search_field->{field_names};
+
+		my $skip_highlighting = 1;
+		my $selection = undef;
+		# Combine all of the field names into a single selection, if any
+		# are '' then they take priority and `$selection` is set to ''
+		# otherwise it is a comma-separated list of selections.
+		for my $field_name (@{$field_names}) {
+			# If the config doesn't exist then we want to use '*' but if it was set to 'undef' then we don't want to try to highlight
+			if( not exists $config->{$field_name} or defined $config->{$field_name} ) {
+				$skip_highlighting = 0;
+				if( not $config->{$field_name} ) {
+					$selection = '';
+				} elsif ( not defined $selection ) {
+					$selection = $config->{$field_name};
+				} elsif ( $selection ne '' ) {
+					$selection .= ',' . $config->{$field_name};
+				}
+			}
+		}
+
+		if( !$skip_highlighting ) {
 			# Don't select marks because 'search_highlighter.js' handles them specially.
 			$javascript .= "    highlightRegExp(element.querySelectorAll('$selection:not(mark)'), $regex);\n";
 		}
