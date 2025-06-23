@@ -18,6 +18,8 @@ B<unit_tests> - Unit testing for EPrints
 
 =head1 SYNOPSIS
 
+B<unit_tests> I<repository_id> [B<options>]
+
 =head1 DESCRIPTION
 
 Runs unit tests under F<tests/> against a chosen EPrints repository.
