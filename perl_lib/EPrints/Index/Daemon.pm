@@ -690,8 +690,7 @@ sub run_index
 		# clear temporary values, database connection, language
 		# if we lose connection while sleeping we can lose any connection
 		# settings on an auto-reconnect
-		# some session variables may need to clear e.g. xapian may not write
-		# anything until its object goes away
+		# some session variables may need to clear
 		foreach my $repo (@repos)
 		{
 			$repo->cleanup;

@@ -18,7 +18,7 @@ B<unit_tests> - Unit testing for EPrints
 
 =head1 SYNOPSIS
 
-B<check_xapian> I<repository_id> [B<options>] 
+B<unit_tests> I<repository_id> [B<options>]
 
 =head1 DESCRIPTION
 

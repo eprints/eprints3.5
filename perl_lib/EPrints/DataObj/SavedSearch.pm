@@ -356,12 +356,6 @@ sub send_out_alert
 
 	my $searchexp = $self->make_searchexp;
 
-	if( $searchexp->isa( "EPrints::Plugin::Search::Xapian" ) || $searchexp->isa( "EPrints::Plugin::Search::Xapianv2" ) )
-	{
-		$self->{session}->log( "send_alerts: Xapian search engine not yet supported. Cannot send alerts for SavedSearch id=".$self->id );
-		return;
-	}
-
 	# get the description before we fiddle with searchexp
  	my $searchdesc = $searchexp->render_description,
 

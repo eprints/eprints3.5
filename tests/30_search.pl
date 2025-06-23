@@ -419,22 +419,6 @@ $list = eval { $searchexp->perform_search };
 
 ok(defined($list) && $list->count > 0, "search multiple field".&describe($searchexp).&sql($searchexp));
 
-SKIP:
-{
-	skip "Enable Xapian", 1 if !defined $session->plugin( "Search::Xapian" );
-
-	my $searchexp = $session->plugin( "Search::Xapian",
-			dataset => $dataset,
-			search_fields => [
-				{ meta_fields => [qw( creators_name )], },
-			],
-			q => "creators_name:Léricolais",
-		);
-	my $list = $searchexp->execute;
-
-	ok($list->count > 0, "Xapian creators_name");
-}
-
 $session->terminate;
 
 sub describe
