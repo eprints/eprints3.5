@@ -102,9 +102,9 @@ You can also specify the following:
 
 =over 4
 
-=item C<richtext_init_fun> - determines the function which initialises the TinyMCE richtext field. Default is C<initTinyMCE>, as defined in C<98_richtext.js>
+=item C<richtext_init_fun> - determines the function which initialises the TinyMCE richtext field. Default is C<initJsonTinyMCE>, as defined in C<98_json_richtext.js>
 
-=item C<richtext_init_fun_readonly> - determines the function which initialises the TinyMCE richtext field when readonly is true. Default is C<initTinyMCEReadOnly>, as defined in C<98_richtext.js>
+=item C<richtext_init_fun_readonly> - determines the function which initialises the TinyMCE richtext field when readonly is true. Default is C<initJsonTinyMCEReadOnly>, as defined in C<98_json_richtext.js>
 
 =item C<readonly> - set all fields readonly
 
@@ -762,8 +762,8 @@ sub get_property_defaults
 	my %defaults = $self->SUPER::get_property_defaults;
 
 	$defaults{json_config} = EP_PROPERTY_REQUIRED;
-	$defaults{richtext_init_func} = "initTinyMCE";
-	$defaults{richtext_init_func_readonly} = "initTinyMCEReadOnly";
+	$defaults{richtext_init_func} = "initJsonTinyMCE";
+	$defaults{richtext_init_func_readonly} = "initJsonTinyMCEReadOnly";
 
 	$defaults{readonly_fields} = EP_PROPERTY_UNDEF;
 	$defaults{hidden_fields} = EP_PROPERTY_UNDEF;
