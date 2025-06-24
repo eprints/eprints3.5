@@ -372,8 +372,6 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 	my $primary_id_types = $repo->config( 'entities', 'primary_id_types' );
 	my $all_contrib_fields =  $repo->config( 'entities', 'field_contribution_types', 'eprint' );
 
-	return unless  $eprint->dataset->has_field( "contributions" );
-	
 	if ( $workflow->{field_stages}->{contributions} )
 	{
 		my $dataset = $repo->dataset( 'eprint' );
@@ -385,7 +383,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 			$entity_datasets->{$dsid} = $repo->dataset( $dsid );
 		}
 
-		my $contributions = $eprint->get_value( "contributions" );
+		my $contributions = $eprint->exists_and_set( 'contributions' ) ? $eprint->get_value( "contributions" ) : [];
 		my $changes = {};
 
 
