@@ -1,6 +1,6 @@
 use strict;
 use utf8;
-use Test::More tests => 35;
+use Test::More tests => 34;
 
 BEGIN { use_ok( "EPrints" ); }
 BEGIN { use_ok( "EPrints::Test" ); }
