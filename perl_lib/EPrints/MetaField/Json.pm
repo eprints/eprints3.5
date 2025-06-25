@@ -149,7 +149,27 @@ BEGIN
 use EPrints::MetaField::Longtext;
 use EPrints::Const qw( :metafield );
 use JSON;
-use List::Util qw( any );
+use List::Util qw( all any );
+
+sub new
+{
+	my( $class, %properties ) = @_;
+
+	my $self = EPrints::MetaField::new( @_ );
+
+	# Check that we don't have any richtext fields if 'ingredient:richtext' isn't installed
+	# If we do then it will abort during `generate_static`.
+	my $ingredients = $self->{repository}->includes;
+	if( all { $_ ne 'ingredients/richtext' } @$ingredients ) {
+		for my $sub_field (@{$properties{json_config}}) {
+			if( $sub_field->{type} eq 'richtext' ) {
+				EPrints::abort( 'Error in field property for '.$self->{dataset}->id.'.'.$self->{name}.": 'json_config' can't contain a 'richtext' field as you do not have the 'richtext' ingredient" );
+			}
+		}
+	}
+
+	return $self;
+}
 
 sub get_sql_type
 {
