@@ -2027,21 +2027,12 @@ sub render_preview_link
 	if( defined $url )
 	{
 		my $link;
-		if ( EPrints::Utils::tree_to_utf8($caption) eq EPrints::Utils::tree_to_utf8( $self->{session}->html_phrase( "lib/document:preview" ) ) )
-		{
-			$link = $self->{session}->make_element( "a",
-					href=>$url,
-					rel=>"lightbox$set nofollow",
-				);
+		if( $caption eq $self->{session}->html_phrase( 'lib/document:preview' ) ) {
+			$link = $self->{session}->make_element( 'a', href => 'javascript:void(0)', onclick => "showLightboxPreview('$url')" );
+		} else {
+			$link = $self->{session}->make_element( 'a', href => 'javascript:void(0)', onclick => "showLightboxPreview('$url', '$caption')" );
 		}
-		else {
-			$link = $self->{session}->make_element( "a",
-					href=>$url,
-					rel=>"lightbox$set nofollow",
-					title=>EPrints::Utils::tree_to_utf8($caption),
-				);
-		}
-		$link->appendChild( $self->{session}->html_phrase( "lib/document:preview" ) );
+		$link->appendChild( $self->{session}->html_phrase( 'lib/document:preview' ) );
 		$f->appendChild( $link );
 	}
 
