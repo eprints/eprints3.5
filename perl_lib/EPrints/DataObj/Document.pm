@@ -2028,9 +2028,10 @@ sub render_preview_link
 	{
 		my $link;
 		if( $caption eq $self->{session}->html_phrase( 'lib/document:preview' ) ) {
-			$link = $self->{session}->make_element( 'a', href => 'javascript:void(0)', onclick => "showLightboxPreview('$url')" );
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox' );
 		} else {
-			$link = $self->{session}->make_element( 'a', href => 'javascript:void(0)', onclick => "showLightboxPreview('$url', '$caption')" );
+			$caption =~ s/"/\\"/g;
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-caption' => $caption );
 		}
 		$link->appendChild( $self->{session}->html_phrase( 'lib/document:preview' ) );
 		$f->appendChild( $link );
