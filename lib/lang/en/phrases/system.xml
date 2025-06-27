@@ -2278,7 +2278,7 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/NewOrganisation:action:cancel:title">Cancel</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewOrganisation:no_id_value">No ID entered!</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewOrganisation:no_id_type">No ID type entered!</epp:phrase>
-    <epp:phrase id="Plugin/Screen/NewOrganisation:person_exists">An organisation with the ID "<epc:pin name="id_value"/>" of type  "<epc:pin name="id_type"/>" already exists!</epp:phrase>
+    <epp:phrase id="Plugin/Screen/NewOrganisation:organisation_exists">An organisation with the ID "<epc:pin name="id_value"/>" of type  "<epc:pin name="id_type"/>" already exists!</epp:phrase>
     <epp:phrase id="Plugin/Screen/NewOrganisation:db_error">Error adding organisation.</epp:phrase>
 
     <epp:phrase id="Plugin/Screen/NewEPrint:title" ref="Plugin/Screen/NewEPrint:action:create:title"/>
