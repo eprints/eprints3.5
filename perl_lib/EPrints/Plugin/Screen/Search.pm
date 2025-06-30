@@ -146,6 +146,13 @@ sub hidden_bits
 		$bits{dataset} = $self->{processor}->{dataset}->id;
 	}
 
+	# Don't reset the facets if we re-order the search results
+	for my $key ( $self->{repository}->param() ) {
+		if( $key =~ /^facet_/ ) {
+			$bits{$key} = $self->{repository}->param( $key );
+		}
+	}
+
 	return %bits;
 }
 
