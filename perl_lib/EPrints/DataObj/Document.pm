@@ -2011,14 +2011,6 @@ sub render_preview_link
 
 	my $caption = $opts{caption} || $self->{session}->make_doc_fragment;
 	my $set = $opts{set};
-	if( EPrints::Utils::is_set($set) )
-	{
-		$set = "[$set]";
-	}
-	else
-	{
-		$set = "";
-	}
 
 	my $size = $opts{size};
 	$size = "lightbox" if !defined $size;
@@ -2028,10 +2020,10 @@ sub render_preview_link
 	{
 		my $link;
 		if( $caption eq $self->{session}->html_phrase( 'lib/document:preview' ) ) {
-			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox' );
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-group' => $set );
 		} else {
 			$caption =~ s/"/\\"/g;
-			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-caption' => $caption );
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-group' => $set, 'data-caption' => $caption );
 		}
 		$link->appendChild( $self->{session}->html_phrase( 'lib/document:preview' ) );
 		$f->appendChild( $link );
