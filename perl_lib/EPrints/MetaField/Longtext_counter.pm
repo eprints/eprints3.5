@@ -15,8 +15,6 @@ B<EPrints::MetaField::Longtext_counter> Longtext input field with character coun
 
 =head1 DESCRIPTION
 Renders the input field with additional character counter.
-Requires javascript/jquery.min.js in static folder. 
-This will define jquery $ as $j to avoid conflict with prototype.
 
 =over 4
 
@@ -77,44 +75,32 @@ sub get_basic_input_elements
 
 
 $frag->appendChild( $session->make_javascript( <<EOJ ) );
-jQuery.noConflict();
 function getWordCount(words_string)
 {
 	var words = words_string.split(/\\W+/);
-        var word_count = words.length;
-        if (word_count > 0 && words[word_count-1] == "")
-        {
-                word_count--;
-        }
+	var word_count = words.length;
+	if (word_count > 0 && words[word_count-1] == "")
+	{
+		word_count--;
+	}
 	return word_count;
 }
-jQuery.fn.wordCount = function(max_words)
-{
-	var counterLine = "counter_line";
-        var counterElement = "display_count";
-        var cid = jQuery(this).attr('id');
-        var total_words;
+document.addEventListener('DOMContentLoaded', () => {
+	const element = document.getElementById('$basename');
+	const counterDisplay = document.getElementById('${basename}_display_count');
+	const counterLine = document.getElementById('${basename}_counter_line');
 
-        //for each keypress function on text areas
-        jQuery(this).bind("input propertychange", function()
-        {
-		total_words = getWordCount(this.value);
-                jQuery('#'+cid+"_"+counterElement).html(total_words);
-		console.log("total_words: "+total_words+" | max_words: "+max_words);
-		if (total_words > max_words )
-		{
-			jQuery('#'+cid+"_"+counterLine).attr('class', 'ep_over_word_limit');
+	element.addEventListener('input', () => {
+		const totalWords = getWordCount(element.value);
+		counterDisplay.innerText = totalWords;
+		if (totalWords > $self->{maxwords}) {
+			counterLine.setAttribute('class', 'ep_over_word_limit');
+		} else if (counterLine.getAttribute('class') === 'ep_over_word_limit') {
+			counterLine.removeAttribute('class');
 		}
-		else if (jQuery('#'+cid+"_"+counterLine).attr('class') == "ep_over_word_limit")
-		{
-			jQuery('#'+cid+"_"+counterLine).attr('class', '');
-		}
-        });
-	total_words = getWordCount(jQuery(this).text());
-        jQuery('#'+cid+"_"+counterElement).html(total_words);
-};
-jQuery( document ).ready(function() {
-	jQuery("#$basename").wordCount($self->{maxwords});
+	});
+
+	counterDisplay.innerText = getWordCount(element.value);
 });
 EOJ
 
