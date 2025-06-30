@@ -85,7 +85,8 @@ function getWordCount(words_string)
 	}
 	return word_count;
 }
-document.addEventListener('DOMContentLoaded', () => {
+
+{
 	const element = document.getElementById('$basename');
 	const counterDisplay = document.getElementById('${basename}_display_count');
 	const counterLine = document.getElementById('${basename}_counter_line');
@@ -100,8 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	counterDisplay.innerText = getWordCount(element.value);
-});
+	const totalWords = getWordCount(element.value);
+	counterDisplay.innerText = totalWords;
+	if (totalWords > $self->{maxwords}) {
+		counterLine.setAttribute('class', 'ep_over_word_limit');
+	}
+}
 EOJ
 
 
