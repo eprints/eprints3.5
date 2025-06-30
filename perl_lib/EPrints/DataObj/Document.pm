@@ -2011,14 +2011,6 @@ sub render_preview_link
 
 	my $caption = $opts{caption} || $self->{session}->make_doc_fragment;
 	my $set = $opts{set};
-	if( EPrints::Utils::is_set($set) )
-	{
-		$set = "[$set]";
-	}
-	else
-	{
-		$set = "";
-	}
 
 	my $size = $opts{size};
 	$size = "lightbox" if !defined $size;
@@ -2027,21 +2019,13 @@ sub render_preview_link
 	if( defined $url )
 	{
 		my $link;
-		if ( EPrints::Utils::tree_to_utf8($caption) eq EPrints::Utils::tree_to_utf8( $self->{session}->html_phrase( "lib/document:preview" ) ) )
-		{
-			$link = $self->{session}->make_element( "a",
-					href=>$url,
-					rel=>"lightbox$set nofollow",
-				);
+		if( $caption eq $self->{session}->html_phrase( 'lib/document:preview' ) ) {
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-group' => $set );
+		} else {
+			$caption =~ s/"/\\"/g;
+			$link = $self->{session}->make_element( 'a', href => "$url", class => 'lightbox', 'data-group' => $set, 'data-caption' => $caption );
 		}
-		else {
-			$link = $self->{session}->make_element( "a",
-					href=>$url,
-					rel=>"lightbox$set nofollow",
-					title=>EPrints::Utils::tree_to_utf8($caption),
-				);
-		}
-		$link->appendChild( $self->{session}->html_phrase( "lib/document:preview" ) );
+		$link->appendChild( $self->{session}->html_phrase( 'lib/document:preview' ) );
 		$f->appendChild( $link );
 	}
 
