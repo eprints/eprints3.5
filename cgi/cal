@@ -4,8 +4,10 @@ use strict;
 # renders a calendar for embedded in other pages via ajax
 #
 # note the use of &amp; when using from an xpage, else use &
-#  fetch('/cgi/cal?year=2017&amp;w=25&amp;m=8').then((data) => {
-#    document.getElementById('mycal').insertAdjacentHTML('beforeend', data);
+#  fetch('/cgi/cal?year=2017&amp;w=25&amp;m=8').then((res) => {
+#    res.text().then((data) => {
+#      document.getElementById('mycal').insertAdjacentHTML('beforeend', data);
+#    });
 #  });
 
 my $session = EPrints::Session->new();
