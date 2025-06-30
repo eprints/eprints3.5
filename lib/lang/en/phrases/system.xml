@@ -3427,6 +3427,9 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldname_names_to">To</epp:phrase>
     <epp:phrase id="person_fieldname_dept">Department</epp:phrase>
     <epp:phrase id="person_fieldname_organisation">Organisation</epp:phrase>
+    <epp:phrase id="person_fieldname_organisation_name">Name</epp:phrase>
+    <epp:phrase id="person_fieldname_organisation_id_value">Identifier</epp:phrase>
+    <epp:phrase id="person_fieldname_organisation_id">ID</epp:phrase>
     <epp:phrase id="person_fieldname_address">Address</epp:phrase>
     <epp:phrase id="person_fieldname_country">Country</epp:phrase>
     <epp:phrase id="person_fieldname_url">Homepage URL</epp:phrase>
