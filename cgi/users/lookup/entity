@@ -64,7 +64,6 @@ foreach my $datasetid ( @$datasets )
 		" ON $Q_name_table.$Q_datasetid=$Q_id_type_table.$Q_datasetid " .
 		" AND $Q_name_table.$Q_pos=$Q_id_type_table.$Q_pos " .
 		" WHERE 1=1 ";
-	#	" $Q_table.$Q_eprint_status=".$database->quote_value( "archive" );
 
 	my @orders = ();
 	if ( $entity_name )
@@ -99,6 +98,7 @@ foreach my $datasetid ( @$datasets )
 	}
 
 	$sql .= " GROUP BY ".join(",",map { $database->quote_identifier($_) } @fields) .
+		', `' . $dataset->get_sql_table_name . '`.`' . $dataset->get_key_field->get_sql_names . '`' .
 		" ORDER BY $Q_num_matches DESC," .
 		join( ',', @orders );
 
