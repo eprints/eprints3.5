@@ -592,7 +592,7 @@ sub get_facet_config
 			field_id => "publication"
 		},
 		{
-			field_id => "date"
+			field_id => "date;res=year"
 		},	];
 }
 
@@ -729,14 +729,16 @@ sub render_facet_list
 {
 	my( $self, $facet_config ) = @_;
 
-	my $max_facet_list_length = 6;
-
-	my $facet = $facet_config->{field_id};
-
 	my $session = $self->{session};
 
 	my $search = $self->{processor}->{search};
 	my $dataset = $self->{processor}->{dataset};
+
+
+	my $max_facet_list_length = 6;
+
+	my $field = EPrints::Utils::field_from_config_string( $dataset, $facet_config->{field_id} );
+	my $facet = $field->name;
 
 	my %current_values;
 	my $existing_param = $session->param( "facet_$facet" );
@@ -759,8 +761,6 @@ sub render_facet_list
 
 	$base_url->query_form( @query );
 	$base_url->query( undef ) if !@query;
-
-	my $field = $self->{processor}->{dataset}->get_field( $facet );
 
 	my $list = $session->make_element( "div" );
 
