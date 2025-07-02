@@ -777,12 +777,17 @@ sub render_facet_list
 
 	my( $values, $counts ) = $search->perform_groupby( $field );
 
-	my @result;
-	my $num_results = scalar @{$counts};
+	# Combine the counts of items with shared ids (for example with `date?res=year`)
+	my %id_list = ();
+	for (my $index = 0; $index < scalar @{$counts}; $index++) {
+		next unless defined $values->[$index];
+		my $key = $field->get_id_from_value( $session, $values->[$index] );
+		$id_list{$key} += $counts->[$index];
+	}
 
-	for (my $index = 0; $index < $num_results; $index++)
-	{
-		push @result, { count => $counts->[$index], value => $values->[$index] };
+	my @result;
+	for my $value (keys %id_list) {
+		push @result, { count => $id_list{$value}, value => $value };
 	}
 
 	my @sorted_result = sort { $b->{count} <=> $a->{count} } @result;
