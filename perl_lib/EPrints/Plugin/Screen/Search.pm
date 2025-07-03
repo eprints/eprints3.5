@@ -843,8 +843,15 @@ sub render_facet_list
 
 			# Show facet list entry.
 
+			my $style = ( $show_expander && $index >= ( $max_facet_list_length - 1 ) ) ? "display: none; " : '';
+			# Bunch facets with the same count together (to make the ordering clearer)
+			if( $index != 0 && $defined_results[$index - 1]->{count} eq $result->{count} ) {
+				$style .= 'margin-top: 0px;';
+			}
+			$style = undef unless $style;
+
 			my $entry = $session->make_element( "li",
-				"style" => ( $show_expander && ( $index >= ( $max_facet_list_length - 1 ) ? "display: none" : undef) ),
+				"style" => $style,
 				"class" => "ep_facet_entry" . ( defined( $result->{value} ) ? "" : " ep_facet_unspecified" ),
 				"data-ep-facet-value" => defined( $result->{value} ) ? $result->{value} : "");
 
