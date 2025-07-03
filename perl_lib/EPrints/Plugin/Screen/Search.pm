@@ -592,7 +592,9 @@ sub get_facet_config
 			field_id => "publication"
 		},
 		{
-			field_id => "date;res=year"
+			field_id => "date;res=year",
+			# Name the field 'Year' rather than 'Date'
+			field_name => "metafield_fieldopt_min_resolution_year",
 		},	];
 }
 
@@ -807,7 +809,8 @@ sub render_facet_list
 	if( $show_this_facet )
 	{
 		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
-		$heading->appendChild( $session->make_text( $field->render_name ) );
+		my $field_name = $session->phrase( $facet_config->{field_name} ) if defined $facet_config->{field_name};
+		$heading->appendChild( $session->make_text( $field_name || $field->render_name ) );
 
 		my @defined_results;
 
