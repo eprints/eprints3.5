@@ -58,9 +58,7 @@ h1, h2, h3, h4 {
 	color: #606060;
 }
 .ep_tm_searchbar, .ep_columns_title, td.ep_columns_alter {
-	background-color: #ccc;
-	background-image: url(images/bar_24px.png);
-	background-repeat: repeat-x;
+	background-color: transparent;
 }
 .ep_tm_searchbarbox {
 	border-color: #606060;
@@ -110,7 +108,7 @@ h1, h2, h3, h4 {
 ,.ep_search_buttons, .ep_search_controls, .ep_search_controls_bottom /* search.css */
 ,.ep_view_group_by /* view.css */
 {
-	background-color: #e8e8ff;
+	background-color: #ffffff;
 }
 .ep_summary_box_title, .ep_sr_title_bar, .ep_sr_collapse_bar {
 	background-image: url(images/bar_solid_12px.png);
@@ -121,8 +119,6 @@ h1, h2, h3, h4 {
 .ep_toolbox_content /* toolbox.css */
 /* upload.css */
 {
-	background-image: url(images/bar_solid_24px.png);
-	background-repeat: repeat-x;
 }
 .ep_summary_box_title, .ep_summary_box_body, .ep_sr_title_bar, .ep_sr_content, .ep_sr_collapse_bar
 ,.ep_tab_panel, .ep_tab_bar li, .ep_tab_bar li a
@@ -134,14 +130,10 @@ h1, h2, h3, h4 {
 
 /* tabs.css */
 
-.ep_tab_bar li a {
-	background-image: url(images/bar_solid_24px.png);
-	background-repeat: repeat-x;
-}
 
 /* unselected tab */
 .ep_tab_bar li a {
-	background-color: #bbf;
+	background-color: #f0f0f0; 
 }
 
 /* selected tab */
@@ -154,19 +146,11 @@ h1, h2, h3, h4 {
 th.ep_title_row
 {
 	border-color: #808080;
-	background-image: url(images/bar_24px.png);
-	background-color: #ccc;
 	color: #333;
 }
 
 th.ep_row, td.ep_row {
 	border-color: #bbb;
-}
-th.ep_row, td.ep_row {
-	border-bottom-style: dashed;
-}
-td.ep_row {
-	border-left-style: dashed;
 }
 
 /* messages.css */
