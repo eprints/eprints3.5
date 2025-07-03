@@ -790,7 +790,8 @@ sub render_facet_list
 		push @result, { count => $id_list{$value}, value => $value };
 	}
 
-	my @sorted_result = sort { $b->{count} <=> $a->{count} } @result;
+	# Sort by count and if those match then sort alphabetically
+	my @sorted_result = sort { ($b->{count} <=> $a->{count}) || ($a->{value} cmp $b->{value}) } @result;
 
 
 	my $show_this_facet = 0;
