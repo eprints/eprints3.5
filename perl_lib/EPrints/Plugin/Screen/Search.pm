@@ -592,7 +592,9 @@ sub get_facet_config
 			field_id => "publication"
 		},
 		{
-			field_id => "date;res=year"
+			field_id => "date;res=year",
+			# Name the field 'Year' rather than 'Date'
+			field_name => "metafield_fieldopt_min_resolution_year",
 		},	];
 }
 
@@ -790,7 +792,8 @@ sub render_facet_list
 		push @result, { count => $id_list{$value}, value => $value };
 	}
 
-	my @sorted_result = sort { $b->{count} <=> $a->{count} } @result;
+	# Sort by count and if those match then sort alphabetically
+	my @sorted_result = sort { ($b->{count} <=> $a->{count}) || ($a->{value} cmp $b->{value}) } @result;
 
 
 	my $show_this_facet = 0;
@@ -806,7 +809,8 @@ sub render_facet_list
 	if( $show_this_facet )
 	{
 		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
-		$heading->appendChild( $session->make_text( $field->render_name ) );
+		my $field_name = $session->phrase( $facet_config->{field_name} ) if defined $facet_config->{field_name};
+		$heading->appendChild( $session->make_text( $field_name || $field->render_name ) );
 
 		my @defined_results;
 
@@ -839,8 +843,15 @@ sub render_facet_list
 
 			# Show facet list entry.
 
+			my $style = ( $show_expander && $index >= ( $max_facet_list_length - 1 ) ) ? "display: none; " : '';
+			# Bunch facets with the same count together (to make the ordering clearer)
+			if( $index != 0 && $defined_results[$index - 1]->{count} eq $result->{count} ) {
+				$style .= 'margin-top: 0px;';
+			}
+			$style = undef unless $style;
+
 			my $entry = $session->make_element( "li",
-				"style" => ( $show_expander && ( $index >= ( $max_facet_list_length - 1 ) ? "display: none" : undef) ),
+				"style" => $style,
 				"class" => "ep_facet_entry" . ( defined( $result->{value} ) ? "" : " ep_facet_unspecified" ),
 				"data-ep-facet-value" => defined( $result->{value} ) ? $result->{value} : "");
 
