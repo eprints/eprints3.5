@@ -592,7 +592,9 @@ sub get_facet_config
 			field_id => "publication"
 		},
 		{
-			field_id => "date"
+			field_id => "date;res=year",
+			# Name the field 'Year' rather than 'Date'
+			field_name => "metafield_fieldopt_min_resolution_year",
 		},	];
 }
 
@@ -729,14 +731,16 @@ sub render_facet_list
 {
 	my( $self, $facet_config ) = @_;
 
-	my $max_facet_list_length = 6;
-
-	my $facet = $facet_config->{field_id};
-
 	my $session = $self->{session};
 
 	my $search = $self->{processor}->{search};
 	my $dataset = $self->{processor}->{dataset};
+
+
+	my $max_facet_list_length = 6;
+
+	my $field = EPrints::Utils::field_from_config_string( $dataset, $facet_config->{field_id} );
+	my $facet = $field->name;
 
 	my %current_values;
 	my $existing_param = $session->param( "facet_$facet" );
@@ -760,8 +764,6 @@ sub render_facet_list
 	$base_url->query_form( @query );
 	$base_url->query( undef ) if !@query;
 
-	my $field = $self->{processor}->{dataset}->get_field( $facet );
-
 	my $list = $session->make_element( "div" );
 
 
@@ -777,15 +779,21 @@ sub render_facet_list
 
 	my( $values, $counts ) = $search->perform_groupby( $field );
 
-	my @result;
-	my $num_results = scalar @{$counts};
-
-	for (my $index = 0; $index < $num_results; $index++)
-	{
-		push @result, { count => $counts->[$index], value => $values->[$index] };
+	# Combine the counts of items with shared ids (for example with `date?res=year`)
+	my %id_list = ();
+	for (my $index = 0; $index < scalar @{$counts}; $index++) {
+		next unless defined $values->[$index];
+		my $key = $field->get_id_from_value( $session, $values->[$index] );
+		$id_list{$key} += $counts->[$index];
 	}
 
-	my @sorted_result = sort { $b->{count} <=> $a->{count} } @result;
+	my @result;
+	for my $value (keys %id_list) {
+		push @result, { count => $id_list{$value}, value => $value };
+	}
+
+	# Sort by count and if those match then sort alphabetically
+	my @sorted_result = sort { ($b->{count} <=> $a->{count}) || ($a->{value} cmp $b->{value}) } @result;
 
 
 	my $show_this_facet = 0;
@@ -801,7 +809,8 @@ sub render_facet_list
 	if( $show_this_facet )
 	{
 		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
-		$heading->appendChild( $session->make_text( $field->render_name ) );
+		my $field_name = $session->phrase( $facet_config->{field_name} ) if defined $facet_config->{field_name};
+		$heading->appendChild( $session->make_text( $field_name || $field->render_name ) );
 
 		my @defined_results;
 
@@ -834,8 +843,15 @@ sub render_facet_list
 
 			# Show facet list entry.
 
+			my $style = ( $show_expander && $index >= ( $max_facet_list_length - 1 ) ) ? "display: none; " : '';
+			# Bunch facets with the same count together (to make the ordering clearer)
+			if( $index != 0 && $defined_results[$index - 1]->{count} eq $result->{count} ) {
+				$style .= 'margin-top: 0px;';
+			}
+			$style = undef unless $style;
+
 			my $entry = $session->make_element( "li",
-				"style" => ( $show_expander && ( $index >= ( $max_facet_list_length - 1 ) ? "display: none" : undef) ),
+				"style" => $style,
 				"class" => "ep_facet_entry" . ( defined( $result->{value} ) ? "" : " ep_facet_unspecified" ),
 				"data-ep-facet-value" => defined( $result->{value} ) ? $result->{value} : "");
 
