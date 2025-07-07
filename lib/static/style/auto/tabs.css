@@ -63,3 +63,9 @@
 .ep_tab_panel > div > table {
 	width: 100%;
 }
+
+.ep_tab_panel .btn {
+	min-width: 12em;
+	max-width: 12em;
+	white-space: normal;
+}

@@ -43,3 +43,12 @@ dl.ep_field_set_long dd {
 .ep_itemref_desc {
 	padding: 0 0.5em;
 }
+
+.ep_field_set_long > dd
+{
+	padding-left: 0.5em;
+}
+
+.ep_field_legend {
+	display: none;
+}

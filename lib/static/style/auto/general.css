@@ -39,12 +39,15 @@ h1 {
 	text-align: center;
 }
 h2 {
+	padding-top: 1rem;
 	font-size: 1.8em;
 }
 h3 {
+	padding-top: 0.8rem;
 	font-size: 1.5em;
 }
 h4 {
+	padding-top: 0.6rem;;
 	font-size: 1.2em;
 }
 
@@ -107,9 +110,9 @@ th.ep_title_row {
 	border-left: none;
 	border-right: none;
 	padding: 0.1em 0.5em 0.1em 0.5em;
-	font-size: 100%;
+	font-size: 125%;
 	height: 2em;
-	font-weight: normal;
+	font-weight: bold;
 }
 
 .ep_title_row_inner {
