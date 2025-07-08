@@ -107,6 +107,29 @@ sub generate_epdata
 		}
 	}
 
+	# We can only add orcids to `contributions` if 'orcid' is a valid `id_type`
+	# as otherwise `id_value` will be filled with an UNSPECIFIED `id_type`.
+	my $eprint_fields = $repository->config( 'fields', 'eprint' );
+	my( $contributions_field ) = grep { $_->{name} eq 'contributions' } @{$eprint_fields};
+	my( $contributor_field ) = grep { $_->{sub_name} eq 'contributor' } @{$contributions_field->{fields}};
+	my( $contribution_id_type ) = grep { $_->{sub_name} eq 'id_type' } @{$contributor_field->{fields}};
+
+	if( !$has_contributions || grep /^orcid$/, @{$contribution_id_type->{options}} ) {
+		my @orcids = $plugin->get_info( 'authors_orcid_metadata' );
+		for my $index (0 .. scalar @orcids) {
+			# The XMP can contain the orcid link but we just want to store the id
+			my( $orcid ) = $orcids[$index] =~ /(\d{4}-\d{4}-\d{4}-\d{3}[0-9X])/;
+			next unless defined $orcid;
+
+			if( $has_contributions ) {
+				$epdata->{contributions}->[$index]->{contributor}->{id_type} = 'orcid';
+				$epdata->{contributions}->[$index]->{contributor}->{id_value} = $orcid;
+			} else {
+				$epdata->{creators}->[$index]->{orcid} = $orcid;
+			}
+		}
+	}
+
 	my $publisher = $plugin->get_info( 'publisher_metadata' );
 	if( $publisher ) {
 		if( $has_contributions ) {
