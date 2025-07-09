@@ -416,7 +416,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 			{
 				if ( $contribution->{contributor}->{id_type} )
 				{
-					$entity = EPrints::DataObj::Entity::entity_with_id( $entity_datasets->{$contribution->{contributor}->{datasetid}}, $contribution->{contributor}->{id_value}, type => $contribution->{contributor}->{id_type} );
+					$entity = EPrints::DataObj::Entity::entity_with_id( $entity_datasets->{$contribution->{contributor}->{datasetid}}, $contribution->{contributor}->{id_value}, { type => $contribution->{contributor}->{id_type} } );
 				}
 				else
 				{
