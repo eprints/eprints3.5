@@ -96,7 +96,17 @@ if( $repo->dataset( 'epm' ) )
 }
 print "\n";
 
+print 'includes: ';
+my $base_path = $repo->config( 'base_path' );
+my $first = 1;
+for my $component (@{$repo->includes}) {
+	my $comp_filepath = "$base_path/$component/component.yml";
+	my $comp_cfg = YAML::Tiny->read( $comp_filepath )->[0];
 
-print "includes: " . join(", ",@{ $repo->includes } ) . "\n";
+	print '; ' if !$first;
+	$first = 0;
+	print $component . '=' . $comp_cfg->{version};
+}
+print "\n";
 
 exit;
