@@ -283,13 +283,13 @@ BEGIN
 	use FindBin;
 	use File::Copy;
 
-	if ( scalar @ARGV == 1 )
-	{
-		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
-	}
-	elsif ( $ARGV[1] && $ARGV[1] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ )
+	if ( $ARGV[1] && $ARGV[1] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ )
 	{
 		push @ARGV, "--archive=".$ARGV[1];
+	}
+	else
+	{
+		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
