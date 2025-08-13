@@ -27,69 +27,71 @@ Where I<command> is one of:
 
 =over 4
 
-=item cleanup_cachemaps
+=item cleanup_cachemaps <repo>
 
-=item config_core
+=item config_core <repo>
 
-=item config_db
+=item config_db <repo>
 
-=item create
+=item create [--config=<config>]
 
-=item create_db
+=item create_db <repo>
 
-=item create_tables
+=item create_tables <repo>
 
-=item create_user
+=item create_user <repo>
 
-=item erase_data
+=for comment Create user also takes [(_ [<usertype>]) | (<username> [<usertype> [<password> [<email>]]])]
 
-=item erase_eprints
+=item erase_data <repo>
 
-=item erase_fulltext_index
+=item erase_eprints <repo>
 
-=item export_init_config
+=item erase_fulltext_index <repo>
+
+=item export_init_config <repo>
 
 =item help
 
-=item logout_all_users
+=item logout_all_users <repo> [<excluded_userid>...]
 
-=item profile
+=item profile <test>
 
-=item recommit
+=item recommit <repo> <dataset> [<dataobj_id>...]
 
-=item reorder
+=item reorder <repo> <dataset> [<dataobj_id>...]
 
-=item redo_hash
+=item redo_hash <repo> <dataset> [<dataobj_id>...]
 
-=item redo_mime_type
+=item redo_mime_type <repo> <dataset> [<dataobj_id>...]
 
-=item redo_thumbnails
+=item redo_thumbnails <repo> [<eprint_id>...]
 
-=item refresh_abstracts
+=item refresh_abstracts <repo>
 
-=item refresh_citations
+=item refresh_citations <repo>
 
-=item refresh_entities
+=item refresh_entities <repo>
 
-=item refresh_views
+=item refresh_views <repo>
 
-=item rehash
+=item rehash <repo> <document_id>
 
-=item reindex
+=item reindex <repo> <dataset> [<dataobj_id>...]
 
-=item reload
+=item reload <repo>
 
-=item remove_field
+=item remove_field <repo> <dataset> <field>
 
-=item schema
+=item schema <repo>
 
-=item set_developer_mode
+=item set_developer_mode <repo> [on|off]
 
-=item test
+=item test [<repo>]
 
-=item update
+=item update <repo> [--dry-run]
 
-=item upgrade
+=item upgrade <repo>
 
 =back
 
@@ -281,13 +283,13 @@ BEGIN
 	use FindBin;
 	use File::Copy;
 
-	if ( scalar @ARGV == 1 )
-	{
-		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
-	}
-	elsif ( $ARGV[1] && $ARGV[1] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ )
+	if ( $ARGV[1] && $ARGV[1] =~ m/^[a-zA-Z][_a-zA-Z0-9]+$/ )
 	{
 		push @ARGV, "--archive=".$ARGV[1];
+	}
+	else
+	{
+		$ENV{IGNORE_UNKNOWN_ARCHIVE} = 1;
 	}
 
 	my $system_settings_file = "$FindBin::Bin/../perl_lib/EPrints/SystemSettings.pm";
@@ -345,7 +347,7 @@ GetOptions(
 	'config=s' => \$config,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "epadmin" ) if $version;
-pod2usage( 1 ) if $help;
+argument_error( $ARGV[0], 1, 'Usage:' ) if $help;
 pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
 pod2usage( 2 ) if( scalar @ARGV == 0 ); 
 
@@ -375,7 +377,7 @@ elsif( $action eq "profile" ) { profile( @ARGV ); }
 else
 {
 	my $repoid = shift @ARGV;
-	pod2usage(1) unless defined $repoid;
+	argument_error( $action ) unless defined $repoid;
 	if( $action eq "cleanup_cachemaps" ) { cleanup_cachemaps( $repoid ); }
 	elsif( $action eq "config_core" ) { config_core( &repository($repoid) ); }
 	elsif( $action eq "config_db" ) { config_db( $repoid ); }
@@ -405,25 +407,25 @@ else
 	elsif( $action eq "recommit" ) 
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		recommit( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "reindex" ) 
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		reindex( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "reorder" )
 	{
 		my $datasetid = shift @ARGV;
-		pod2usage(1) unless defined $datasetid;
+		argument_error( $action ) unless defined $datasetid;
 		reorder( $repoid, $datasetid, @ARGV );
 	}
 	elsif( $action eq "rehash" ) { rehash( $repoid, @ARGV ); }
 	elsif( $action eq "upgrade_add_files" ) { upgrade_add_files( $repoid, @ARGV ) }
 	elsif( $action eq "remove_field" ) { remove_field( $repoid, @ARGV ); }
-	else { pod2usage( 1 ); }
+	else { pod2usage( 2 ); }
 }
 
 
@@ -443,6 +445,43 @@ sub repository
 	}
 
 	return $repo;
+}
+
+# argument_error( $action, $verbose = 2, $msg = 'Missing argument(s):' )
+#
+# If a correct command (for example `epadmin update`) has been entered but it is
+# missing an argument, or its argument is incorrect it can raise an
+# 'argument_error' which will only display the doc information for that argument
+# (and the options section), as opposed to `pod2usage` which will show it all.
+#
+# The `$verbose` allows you to set how verbose `pod2usage` is if the `$action`
+# isn't matched, defaulting to `2` (short docs).
+#
+# This is not POD as it would otherwise show up in the error message.
+sub argument_error
+{
+	my( $action, $verbose, $msg ) = @_;
+	$verbose ||= 2;
+	$msg ||= 'Missing argument(s):';
+
+	pod2usage( $verbose ) unless defined $action;
+
+	my $pod;
+	open my $fh, '>', \$pod;
+	# Output to a file (that is really a variable) and don't exit
+	pod2usage( -exitval => 'NOEXIT', -output => $fh);
+
+	# Find 'epadmin $action...' followed by exactly one newline
+	my( $relevant ) = $pod =~ /(    epadmin $action .*(?:\r?\n(?!\r?\n).*)*)/;
+	if( $relevant ) {
+		my( $options ) = $pod =~ /(Options:.*(?:\r?\n(?!\r?\n\r?\n).*)*)/;
+		print STDERR "$msg\n$relevant\n\n$options";
+		exit 1;
+	} else {
+		# If we can't find the section for `$action` then we display the short
+		# version of the full documentation (or long if `$verbose` = 1)
+		pod2usage( $verbose );
+	}
 }
 
 sub create
