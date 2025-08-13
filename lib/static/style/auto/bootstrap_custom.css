@@ -12,3 +12,6 @@
 .d-none-not-important { display: none; }
 
 input { border: var(--bs-border-width) solid var(--bs-border-color); }
+
+.input-group select { border-color: #ccc; }
+

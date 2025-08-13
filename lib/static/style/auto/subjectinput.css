@@ -63,19 +63,13 @@ ul.ep_subjectinput_subjects img {
 
 .ep_subjectinput_selections {
 	padding-bottom: 10px;
-	border-bottom: dashed #808080 1px; 
 	margin-bottom: 10px;
 }
 .ep_subjectinput_selections td.ep_first {
 	border-top: none;
 }
 
-.ep_subjectinput_selections td {
-	border-top: dashed #ccc 1px; 
-}
-
 .ep_subjectinput_results {
-	border: dashed #c8cbdf 1px; 
 	margin-top: 0.5em; 
 	padding: 0.5em; 
 	background-color: white;
@@ -84,10 +78,6 @@ ul.ep_subjectinput_subjects img {
 
 .ep_subjectinput_results td.ep_first {
 	border-top: none;
-}
-
-.ep_subjectinput_results td {
-	border-top: dashed #ccc 1px; 
 }
 
 .ep_subjectinput_add_button, .ep_subjectinput_remove_button {
