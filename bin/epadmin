@@ -347,7 +347,7 @@ GetOptions(
 	'config=s' => \$config,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "epadmin" ) if $version;
-pod2usage( 1 ) if $help;
+argument_error( $ARGV[0], 1, 'Usage:' ) if $help;
 pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
 pod2usage( 2 ) if( scalar @ARGV == 0 ); 
 
@@ -447,17 +447,24 @@ sub repository
 	return $repo;
 }
 
-# argument_error( $action )
+# argument_error( $action, $verbose = 2, $msg = 'Missing argument(s):' )
 #
 # If a correct command (for example `epadmin update`) has been entered but it is
 # missing an argument, or its argument is incorrect it can raise an
 # 'argument_error' which will only display the doc information for that argument
 # (and the options section), as opposed to `pod2usage` which will show it all.
 #
+# The `$verbose` allows you to set how verbose `pod2usage` is if the `$action`
+# isn't matched, defaulting to `2` (short docs).
+#
 # This is not POD as it would otherwise show up in the error message.
 sub argument_error
 {
-	my( $action ) = @_;
+	my( $action, $verbose, $msg ) = @_;
+	$verbose ||= 2;
+	$msg ||= 'Missing argument(s):';
+
+	pod2usage( $verbose ) unless defined $action;
 
 	my $pod;
 	open my $fh, '>', \$pod;
@@ -468,12 +475,12 @@ sub argument_error
 	my( $relevant ) = $pod =~ /(    epadmin $action .*(?:\r?\n(?!\r?\n).*)*)/;
 	if( $relevant ) {
 		my( $options ) = $pod =~ /(Options:.*(?:\r?\n(?!\r?\n\r?\n).*)*)/;
-		print STDERR "Missing argument(s):\n$relevant\n\n$options";
+		print STDERR "$msg\n$relevant\n\n$options";
 		exit 1;
 	} else {
 		# If we can't find the section for `$action` then we display the short
-		# version of the full documentation
-		pod2usage( 2 );
+		# version of the full documentation (or long if `$verbose` = 1)
+		pod2usage( $verbose );
 	}
 }
 
