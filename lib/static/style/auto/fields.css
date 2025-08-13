@@ -52,3 +52,9 @@ dl.ep_field_set_long dd {
 .ep_field_legend {
 	display: none;
 }
+
+/* Used by Longtext_counter to highlight when it is over the word limit*/
+.ep_over_word_limit {
+	color: red;
+	font-weight: bold;
+}
