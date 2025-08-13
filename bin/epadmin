@@ -423,7 +423,7 @@ else
 	elsif( $action eq "rehash" ) { rehash( $repoid, @ARGV ); }
 	elsif( $action eq "upgrade_add_files" ) { upgrade_add_files( $repoid, @ARGV ) }
 	elsif( $action eq "remove_field" ) { remove_field( $repoid, @ARGV ); }
-	else { pod2usage( 1 ); }
+	else { pod2usage( 2 ); }
 }
 
 
@@ -469,11 +469,9 @@ sub argument_error
 		print STDERR "Missing argument(s):\n$relevant\n\n$options";
 		exit 1;
 	} else {
-		# If we can't find the section for `$action` then we just display the
-		# whole documentation (it is more efficient to just print the already
-		# generated version).
-		print STDERR $pod;
-		exit 1;
+		# If we can't find the section for `$action` then we display the short
+		# version of the full documentation
+		pod2usage( 2 );
 	}
 }
 
