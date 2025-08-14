@@ -41,7 +41,7 @@ Where I<command> is one of:
 
 =item create_user <repo>
 
-=for comment Create user also takes [(_ [<usertype>]) | (<username> [<usertype> [<password> [<email>]]])]
+=for comment create_user can also take [(_ [<usertype>]) | (<username> [<usertype> [<password> [<email>]]])]
 
 =item erase_data <repo>
 
@@ -85,7 +85,7 @@ Where I<command> is one of:
 
 =item schema <repo>
 
-=item set_developer_mode <repo> [on|off]
+=item set_developer_mode <repo> on|off
 
 =item test [<repo>]
 
@@ -101,11 +101,11 @@ Type I<epadmin help> for further help.
 
 =over 8
 
-=item B<epadmin> create
+=item B<epadmin> create [I<--config=/path/to/yaml/config>]
 
-START HERE! This option will walk you through the tasks needed to create your repository.
+START HERE! This option will walk you through the tasks needed to create your repository. Alternatively you can pass in a YAML file to auto-fill the config options.
 
-=item B<epadmin> test I<repository_id>
+=item B<epadmin> test [I<repository_id>]
 
 A null operation which just checks your configuration files are OK and that you can connect to the database. If no I<repository_id> is specified loads each repository in turn. Use --verbose to generate more information.
 
@@ -223,15 +223,13 @@ Run a performance profile of I<test> using L<Devel::NYTProf>.
 
 Remove the database entries for the given field, can not be undone!
 
-=item B<epadmin> update I<repository_id> [ I<--dry-run> ]
+=item B<epadmin> update I<repository_id> [I<--dry-run>]
 
 This will add tables and columns to your SQL database to bring it in-line with your current configuration. It will not remove data. Use with caution on a live database. Database backup is recommended before use on live systems.  If run with I<--dry-run> flag only what will change will be reported and the database will not be modified.
 
 =item B<epadmin> upgrade I<repository_id>
 
 After upgrading EPrints, use this to update the database tables. It will advise any other tasks that are required.
-
-=item B<epadmin> --help
 
 =back
 
@@ -241,15 +239,15 @@ After upgrading EPrints, use this to update the database tables. It will advise 
 
 =item B<--help>
 
-Print a brief help message and exit.
+Print the full help message and exit.
 
 =item B<--man>
 
 Print the full manual page and then exit.
 
-=item B<--quiet>
+=item B<--quiet> | B<--silent>
 
-This option does not do anything.
+Prevent any unnecessary messages.
 
 =item B<--verbose>
 
@@ -258,14 +256,6 @@ Explain in detail what is going on. May be repeated for greater effect.
 =item B<--force>
 
 Be more forceful (don't ask for confirmation).
-
-=item B<--dry-run>
-
-Just for "update" command.  Explains how the database will be updated rather than doing it.
-
-=item B<--config=/path/to/yaml/config>
-
-Just for for "create" command. Use configuration provided by a YAML file.
 
 =item B<--version>
 
@@ -347,7 +337,7 @@ GetOptions(
 	'config=s' => \$config,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "epadmin" ) if $version;
-argument_error( $ARGV[0], 1, 'Usage:' ) if $help;
+argument_error( $ARGV[0], 'Usage:', 1 ) if $help;
 pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
 pod2usage( 2 ) if( scalar @ARGV == 0 ); 
 
@@ -367,13 +357,15 @@ my @PASSWORD_CHARS = ( 'a'..'z','A'..'Z','0'..'9' );
 my $eprints = EPrints->new();
 
 my $action = shift @ARGV;
-if ( $action ne "update" && $dry_run )
-{
-	pod2usage( "--dry-run can only be used with 'update' command" );
+if( $action ne "update" && $dry_run ) {
+	pod2usage( "--dry-run can only be used with the 'update' command" );
+} elsif( $action ne "create" && $config ) {
+	pod2usage( "--config can only be used with the 'create' command" );
 }
 if( $action eq "create" ) { create( $config ); }
 elsif( $action eq "test" ) { test( @ARGV ); }
 elsif( $action eq "profile" ) { profile( @ARGV ); }
+elsif( $action eq "help" ) { pod2usage( 1 ); }
 else
 {
 	my $repoid = shift @ARGV;
@@ -447,7 +439,7 @@ sub repository
 	return $repo;
 }
 
-# argument_error( $action, $verbose = 2, $msg = 'Missing argument(s):' )
+# argument_error( $action, $msg = 'Missing argument(s):', $verbose = 2 )
 #
 # If a correct command (for example `epadmin update`) has been entered but it is
 # missing an argument, or its argument is incorrect it can raise an
@@ -460,9 +452,9 @@ sub repository
 # This is not POD as it would otherwise show up in the error message.
 sub argument_error
 {
-	my( $action, $verbose, $msg ) = @_;
-	$verbose ||= 2;
+	my( $action, $msg, $verbose ) = @_;
 	$msg ||= 'Missing argument(s):';
+	$verbose ||= 2;
 
 	pod2usage( $verbose ) unless defined $action;
 
@@ -2627,7 +2619,7 @@ sub remove_field
 
 	if( !defined $fieldid )
 	{
-		pod2usage( "Requires dataset and field ids" );
+		argument_error( "remove_field", "Requires dataset and field ids" );
 	}
 
 	my $repo = &repository( $repoid );
@@ -2652,7 +2644,7 @@ sub set_developer_mode
 
 	if( !defined $set_to )
 	{
-		pod2usage( "Do you want to set developer mode to 'on' or 'off'?" );
+		argument_error( "set_developer_mode", "Do you want to set developer mode to 'on' or 'off'?" );
 	}
 
 	my $repo = &repository( $repoid );
@@ -2667,7 +2659,7 @@ sub set_developer_mode
 		}
 		print CHANGEDFILE "This file was created at: ".EPrints::Time::human_time()."\n";
 		close CHANGEDFILE;
-		print "Developer mode is for $repoid is set to on\n";
+		print "Developer mode for '$repoid' is set to on\n";
 		return;	
 	}
 
@@ -2677,12 +2669,12 @@ sub set_developer_mode
 		{
 			EPrints::abort( "Cannot remove file $file" );
 		}
-		print "Developer mode is for $repoid is set to off\n";
+		print "Developer mode for '$repoid' is set to off\n";
 		
 		return;	
 	}
 
-	pod2usage( "The only valid options for developer mode are 'on' or 'off'?" );
+	argument_error( "set_developer_mode", "The only valid options for developer mode are 'on' or 'off'?" );
 
 
 
