@@ -101,14 +101,6 @@ Type I<epadmin help> for further help.
 
 =over 8
 
-=item B<epadmin> create [I<--config=/path/to/yaml/config>]
-
-START HERE! This option will walk you through the tasks needed to create your repository. Alternatively you can pass in a YAML file to auto-fill the config options.
-
-=item B<epadmin> test [I<repository_id>]
-
-A null operation which just checks your configuration files are OK and that you can connect to the database. If no I<repository_id> is specified loads each repository in turn. Use --verbose to generate more information.
-
 =item B<epadmin> cleanup_cachemaps I<repository_id>
 
 Drop any orphaned cache tables.
@@ -120,6 +112,10 @@ Set hostname, contact email and repository name.
 =item B<epadmin> config_db I<repository_id>
 
 Set database connection properties and, optionally, to create database and database user.
+
+=item B<epadmin> create [I<--config=/path/to/yaml/config>]
+
+START HERE! This option will walk you through the tasks needed to create your repository. Alternatively you can pass in a YAML file to auto-fill the config options.
 
 =item B<epadmin> create_db I<repository_id>
 
@@ -133,9 +129,13 @@ Create the database tables.
 
 Create a new user. You need to do this to create your first admin account.
 
-=item B<epadmin> schema I<repository_id>
+=item B<epadmin> erase_data I<repository_id>
 
-Use this to produce a schema for the EP3 XML read/written by your repository. 
+Erases and recreates the database. Removes all documents and files. Does not touch the configuration files.
+
+=item B<epadmin> erase_eprints I<repository_id>
+
+Erases all the documents and eprints (including their files). Recreates the eprint and document tables. Leaves configuration files and the users and subjects tables alone.
 
 =item B<epadmin> erase_fulltext_index I<repository_id>
 
@@ -149,49 +149,25 @@ This exports the configuration for your repository as a YAML file, which can be 
 
 It should be noted this is only the initial setup configuration, not the full configuration for a repository.
 
+=item B<epadmin> help
+
+Print the full help message and exit.
+
 =item B<epadmin> logout_all_users I<repository_id> [I<exclude_user_id>, I<exclude_user_id> ...]
 
 Logout all users from a repositiory.  Potentially excluding one or more user IDs.
+
+=item B<epadmin> profile I<test>
+
+Run a performance profile of I<test> using L<Devel::NYTProf>.
 
 =item B<epadmin> recommit I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
 
 Recommit all the records in the given dataset. What this does is cause the automatic values to be re-calculated. If a list of data object IDs are given then just recommit those.  If a data object ID range is given (e.g. 10-20), then recommit all existing data objects in that range.
 
-=item B<epadmin> reindex I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
-
-Re-index all items in a dataset. (This could take some time). If a list of data object IDs is given then just re-index those. If a data object ID range is given (e.g. 10-20), then re-index all existing data objects in that range. If C<--force> is included for the eprint or document datasets, all associated .indexcodes cache files will be regenerated before re-indexing.
-
 =item B<epadmin> reorder I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
 
 Regenerate the order values for the dataset. If a list of data object IDs is given then just regenerate order values on those. If a data object ID range is given (e.g. 10-20), then regenerate order values all existing data objects in that range.
-
-=item B<epadmin> rehash I<repository_id> [I<document_id>]
-
-Recalculate the hashes of the files in this document and write it to a probity log file. If a document id is given then just generate the hash for that document.
-
-=item B<epadmin> reload I<repository_id>
-
-Cause the web server to reload the repository configuration.
-
-=item B<epadmin> set_developer_mode I<repository_id> <on|off>
-
-While set to on developer mode causes the web server to reload the repository configuration on every page request. This makes development much quicker but must not be left switched on in a production environment since it increases server load dramatically.
-
-=item B<epadmin> refresh_views I<repository_id>
-
-Tell the webserver that all views pages must be regenerated. The webserver will update them next time they are requested. Also causes config to be reloaded.
-
-=item B<epadmin> refresh_abstracts I<repository_id>
-
-Tell the webserver that all abstract summary pages must be regenerated. The webserver will update them next , but won't update them again unless something on the EPrint changes or you re-run refresh abstracts. Also causes config to be reloaded.
-
-=item B<epadmin> refresh_entities I<repository_id>
-
-Tell the webserver that all entity pages must be regenerated. The webserver will update them next , but won't update them again unless something on the Entity changes or you re-run refresh entities. Also causes config to be reloaded.
-
-=item B<epadmin> refresh_citations I<repository_id>
-
-Tell the webserver that all citations must be regenerated. The webserver will update them next , but won't update them again unless something on the citationable object changes or you re-run refresh citation.
 
 =item B<epadmin> redo_hash I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
 
@@ -207,21 +183,49 @@ Regenerate all the thumbnail and image-preview files and any other things which
 are triggered if the document file changed. Optionally supply a list of eprint
 ids to re-generate thumbnails for. If an eprint ID range is given (e.g. 10-20), then just regenerate thumbnails on existing eprints in that range.
 
-=item B<epadmin> erase_data I<repository_id>
+=item B<epadmin> refresh_abstracts I<repository_id>
 
-Erases and recreates the database. Removes all documents and files. Does not touch the configuration files.
+Tell the webserver that all abstract summary pages must be regenerated. The webserver will update them next , but won't update them again unless something on the EPrint changes or you re-run refresh abstracts. Also causes config to be reloaded.
 
-=item B<epadmin> erase_eprints I<repository_id>
+=item B<epadmin> refresh_citations I<repository_id>
 
-Erases all the documents and eprints (including their files). Recreates the eprint and document tables. Leaves configuration files and the users and subjects tables alone.
+Tell the webserver that all citations must be regenerated. The webserver will update them next , but won't update them again unless something on the citationable object changes or you re-run refresh citation.
 
-=item B<epadmin> profile I<test>
+=item B<epadmin> refresh_entities I<repository_id>
 
-Run a performance profile of I<test> using L<Devel::NYTProf>.
+Tell the webserver that all entity pages must be regenerated. The webserver will update them next , but won't update them again unless something on the Entity changes or you re-run refresh entities. Also causes config to be reloaded.
+
+=item B<epadmin> refresh_views I<repository_id>
+
+Tell the webserver that all views pages must be regenerated. The webserver will update them next time they are requested. Also causes config to be reloaded.
+
+=item B<epadmin> rehash I<repository_id> [I<document_id>]
+
+Recalculate the hashes of the files in this document and write it to a probity log file. If a document id is given then just generate the hash for that document.
+
+=item B<epadmin> reindex I<repository_id> I<dataset_id> [I<dataobj_id> I<dataobj_id> I<dataobj_id>-I<dataobj_id> ...]
+
+Re-index all items in a dataset. (This could take some time). If a list of data object IDs is given then just re-index those. If a data object ID range is given (e.g. 10-20), then re-index all existing data objects in that range. If C<--force> is included for the eprint or document datasets, all associated .indexcodes cache files will be regenerated before re-indexing.
+
+=item B<epadmin> reload I<repository_id>
+
+Cause the web server to reload the repository configuration.
 
 =item B<epadmin> remove_field I<repository_id> I<dataset> I<field_id>
 
 Remove the database entries for the given field, can not be undone!
+
+=item B<epadmin> schema I<repository_id>
+
+Use this to produce a schema for the EP3 XML read/written by your repository. 
+
+=item B<epadmin> set_developer_mode I<repository_id> <on|off>
+
+While set to on developer mode causes the web server to reload the repository configuration on every page request. This makes development much quicker but must not be left switched on in a production environment since it increases server load dramatically.
+
+=item B<epadmin> test [I<repository_id>]
+
+A null operation which just checks your configuration files are OK and that you can connect to the database. If no I<repository_id> is specified loads each repository in turn. Use --verbose to generate more information.
 
 =item B<epadmin> update I<repository_id> [I<--dry-run>]
 
