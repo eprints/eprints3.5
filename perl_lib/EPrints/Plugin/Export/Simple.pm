@@ -108,6 +108,11 @@ sub convert_dataobj
 				{
 					push @epdata, [ $fieldname, ($item->{family}||"").", ".($item->{given}||"") ];
 				}
+				elsif( $field->is_type( 'multipart' ) ) {
+					for my $subfieldname (keys %$item) {
+						push @epdata, [ $fieldname . '_' . $subfieldname, $item->{$subfieldname} ];
+					}
+				}
 				else
 				{
 					push @epdata, [ $fieldname, $item ];
