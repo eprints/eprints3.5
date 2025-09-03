@@ -873,24 +873,12 @@ but do not remove their eprints.
 sub remove
 {
 	my( $self ) = @_;
-	
-	my $success = 1;
 
-	foreach my $saved_search ( $self->get_saved_searches )
-	{
+	for my $saved_search( $self->get_saved_searches ) {
 		$saved_search->remove;
 	}
 
-	# clean-up citation cache for this item
-	$self->clear_citationcaches() if defined $self->{session}->config( "citation_caching", "enabled" ) && $self->{session}->config( "citation_caching", "enabled" ) && $self->{dataset}->confid ne "citationcache";
-
-	# remove user record
-	my $user_ds = $self->{session}->get_repository->get_dataset( "user" );
-	$success = $success && $self->{session}->get_database->remove(
-		$user_ds,
-		$self->get_value( "userid" ) );
-	
-	return( $success );
+	return $self->SUPER::remove();
 }
 
 
