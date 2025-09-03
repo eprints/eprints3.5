@@ -323,7 +323,6 @@ sub deposit_file {
 	use MIME::Types qw(by_suffix by_mediatype);
 
 	my ($mime_type,$encoding) = by_suffix($filepath);
-	if ($suffix eq "epm") { $mime_type = "archive/zip+eprints_package"; }
 	$req->content_type( $mime_type );
 
 	my $file = "";
