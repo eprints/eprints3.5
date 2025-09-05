@@ -7,9 +7,6 @@
 [submodule "flavours/pub_lib"]
 	path = flavours/pub_lib
 	url = ../pub_lib.git
-[submodule "ingredients/bazaar"]
-	path = ingredients/bazaar
-	url = ../bazaar.git
 [submodule "ingredients/latest_additions"]
 	path = ingredients/latest_additions
 	url = ../latest_additions.git
