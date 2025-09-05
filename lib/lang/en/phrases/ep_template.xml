@@ -1232,16 +1232,32 @@
               </div>
               <div align="right">
                 <div class="ep_only_js">
-                  <div class="ep_sr_show_help ep_toggle " id="{help_item{prefix}}_show">
-                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/help.svg" title="Show help" alt="+"/>
-                    </a>
-                  </div>
-                  <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
-                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
-                    </a>
-                  </div>
+                  <epc:choose>
+                  <epc:when test="is_collapsed">
+                    <div class="ep_sr_show_help ep_toggle" id="{help_item{prefix}}_show">
+                      <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                        <img border="0" src="/style/images/help.svg" title="Show help" alt="?"/>
+                      </a>
+                    </div>
+                    <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
+                      <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                        <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
+                      </a>
+                    </div>
+                  </epc:when>
+                  <epc:otherwise>
+                    <div class="ep_sr_show_help ep_toggle ep_hide" id="{help_item{prefix}}_show">
+                      <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',true);EPJS_toggle('{help_item{prefix}}_hide',true);EPJS_toggle('{help_item{prefix}}_show',false);return false">
+                        <img border="0" src="/style/images/help.svg" title="Show help" alt="?"/>
+                      </a>
+                    </div>
+                    <div class="ep_sr_hide_help ep_toggle" id="{help_item{prefix}}_hide">
+                      <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',true);EPJS_toggle('{help_item{prefix}}_hide',true);EPJS_toggle('{help_item{prefix}}_show',false);return false">
+                        <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
+                      </a>
+                    </div>
+                  </epc:otherwise>
+                  </epc:choose>
                 </div>
               </div>
             </div>
