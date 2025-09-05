@@ -71,6 +71,8 @@ sub render
 	$item->{content} = { class => $content_class };
 	$item->{content_inner} = { id => $component->{prefix}."_content_inner" };
 
+	$item->{no_toggle} = $component->{no_toggle};
+
 	# Help rendering
 	$item->{has_help} = $component->has_help && !$component->{no_help} ? 1 : 0;
 	if( $component->has_help && !$component->{no_help} )
