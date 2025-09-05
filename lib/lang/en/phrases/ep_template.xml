@@ -592,7 +592,7 @@
               <epc:if test="$cell{column_index} = 0">
                 <epc:attribute name="class">
                   <epc:if test="has_col_titles">
-					py-1 px-1 d-table-cell
+					py-1 px-1 d-table-cell align-middle
 				</epc:if>
                   <epc:if test="!has_col_titles">
 					w-100
@@ -600,7 +600,7 @@
                 </epc:attribute>
               </epc:if>
               <epc:if test="$cell{column_index} != 0">
-                <epc:attribute name="class">py-1 px-1 d-table-cell</epc:attribute>
+                <epc:attribute name="class">py-1 px-1 d-table-cell align-middle</epc:attribute>
               </epc:if>
               <epc:print expr="$cell{item}"/>
             </div>
