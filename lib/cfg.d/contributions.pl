@@ -305,7 +305,7 @@ $c->{render_input_contributions} = sub {
 		my $contrib_fields = $self->{dataset}->get_field( 'contributions' )->get_property( 'fields' );
 		$defaults{type} = $contrib_fields->[0]->{default_value} if defined $contrib_fields->[0]->{default_value};
 		$defaults{contributor_datasetid} = $contrib_fields->[1]->{fields}->[0]->{default_value} if defined $contrib_fields->[1]->{fields}->[0]->{default_value};
-		$defaults{contributor_id_type} = $contrib_fields->[1]->{fields}->[2]->{default_value} if defined $contrib_fields->[1]->{fields}->[2]->{default_value};
+		$defaults{contributor_id_type} = $contrib_fields->[1]->{fields}->[3]->{default_value} if defined $contrib_fields->[1]->{fields}->[3]->{default_value};
 	}
 	$extra_params->query_form( @params );
 	$extra_params = "&" . $extra_params->query;
