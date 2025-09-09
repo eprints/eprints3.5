@@ -1285,7 +1285,10 @@
     <span id="{id}"><epc:print expr="index"/>. </span>
   </epp:phrase>
   <epp:phrase id="view:MetaField:get_input_elements:multiple:arrows">
-    <input type="image" alt="down" title="move down" src="{arrow_down{src}}" name="{arrow_down{name}}" class="epjs_ajax" value="1"/>
+    <a type="image" href="javascript:" alt="clear" title="clear row" name="{clear{name}}" onclick="return EPJS_clear_row('{clear{basename}}', {clear{index}});">
+      <img src="{clear{src}}" alt="clear" />
+    </a>
+    <input type="image" alt="down" title="move down" src="{arrow_down{src}}" name="{arrow_down{name}}" class="epjs_ajax ms-1" value="1"/>
     <epc:if test="arrow_up">
       <input type="image" alt="up" title="move up" src="{arrow_up{src}}" name="{arrow_up{name}}" class="epjs_ajax ms-1" value="1"/>
     </epc:if>

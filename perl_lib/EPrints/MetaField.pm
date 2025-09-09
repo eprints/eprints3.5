@@ -1587,6 +1587,12 @@ sub get_input_elements
 				}});
 				$col1 = { el=>$row_label, first_col=>1, class=>"ep_form_input_grid_pos" };
 				my $arrow_item = {
+					clear => {
+						name => "_internal_".$basename."_clear_$i",
+						src => "$imagesurl/cross.svg",
+						basename => $basename,
+						index => $i,
+					},
 					arrow_down => { 
 						name => "_internal_".$basename."_down_$i",
 						src => "$imagesurl/multi_down.svg",
