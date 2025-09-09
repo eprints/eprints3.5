@@ -131,10 +131,11 @@ sub template_phrase
 
 			my $key = EPrints::XML::EPC::expand_attribute( $node->getAttribute( 'key' ), 'key', \%params );
 			my $selected = EPrints::XML::EPC::expand_attribute( $node->getAttribute( 'selected' ), 'selected', \%params );
+			my $default = EPrints::XML::EPC::expand_attribute( $node->getAttribute( 'default' ), 'default', \%params );
 
 			my $desc = &{$process_child_nodes_func}( $node, %params );
 
-			return $params{session}->render_single_option($key, $desc, $selected);
+			return $params{session}->render_single_option($key, $desc, $selected, $default);
 		},
 
 		"epv:render_hidden_field" => sub {

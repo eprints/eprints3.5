@@ -3486,6 +3486,7 @@ sub render_option_list
 	# onchange : all an onchange event handler to be registered
 	# aria-labelledby :
 	# aria-describedby :
+	# mark-default : scalar (this element is marked by `data-default`)
 
 	my %defaults = ();
 	if( ref( $params{default} ) eq "ARRAY" )
@@ -3544,6 +3545,7 @@ sub render_option_list
 			key => $pair->[0],
 			desc => $pair->[1],
 			selected => $defaults{$pair->[0]},
+			default => ($pair->[0] eq $params{'mark-default'}),
 		};
 
 		$size++;
@@ -3586,7 +3588,7 @@ sub render_option_list
 
 =begin InternalDoc
 
-=item $option = $repository->render_single_option( $key, $desc, $selected, $disabled )
+=item $option = $repository->render_single_option( $key, $desc, $selected, $default )
 
 Used by render_option_list.
 
@@ -3597,13 +3599,13 @@ Used by render_option_list.
 
 sub render_single_option
 {
-	my( $self, $key, $desc, $selected, $disabled ) = @_;
+	my( $self, $key, $desc, $selected, $default ) = @_;
 
 	return $self->template_phrase( "view:Repository:render_single_option", { item => {
 		key => $key,
 		desc => $desc,
 		selected => $selected,
-		disabled => $disabled,
+		default => $default,
 	} } );
 }
 

@@ -204,6 +204,7 @@ sub get_basic_input_elements
 			height => 1,
 			'aria-labelledby' => $self->get_labelledby( $basename ),
 			'aria-describedby' => $self->get_describedby( $basename, $one_field_component ),
+			'mark-default' => $self->{default_value},
 	) } ]] );
 }
 

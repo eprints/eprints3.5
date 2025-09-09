@@ -886,7 +886,7 @@
         </epc:attribute>
       </epc:if>
       <epc:foreach expr="pairs" iterator="pair">
-        <epv:render_single_option key="{$pair{key}}" selected="{$pair{selected}}">
+        <epv:render_single_option key="{$pair{key}}" selected="{$pair{selected}}" default="{$pair{default}}">
           <epc:print expr="$pair{desc}"/>
         </epv:render_single_option>
       </epc:foreach>
@@ -972,6 +972,9 @@
     <option value="{key}">
       <epc:if test="selected">
         <epc:attribute name="selected">selected</epc:attribute>
+      </epc:if>
+      <epc:if test="default">
+        <epc:attribute name="data-default">data-default</epc:attribute>
       </epc:if>
       <epc:print expr="desc"/>
     </option>
