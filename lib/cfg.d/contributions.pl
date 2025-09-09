@@ -207,7 +207,6 @@ $c->{render_input_contributions} = sub {
 					my $entity_field = $session->make_element( "div", ( id=>$basename."_cell_6_".$yp1 ) );
 					my $ef_baseclass = $basename . "_contributor_entity";
 					my $ef_basename = $basename . "_" . $yp1 . "_contributor_entity";
-					my $eu_name = $ef_basename . "_unset";
 					my $es_name = $ef_basename . "_span";
 					my $eif_name = $ef_basename . "id";
 					my $contributor_datasetid = $value->[$y]->{contributor}->{datasetid};
@@ -230,12 +229,6 @@ $c->{render_input_contributions} = sub {
 							$entity_span->appendChild( $session->make_text( ' ' ) );
 					}
 					$entity_field->appendChild( $entity_span );
-					my $eu_button_span = $session->make_element( 'span', id => $eu_name, class => 'ep_entity_button' );
-					my $eu_button = $session->make_element( 'a', href => '#', value => $session->phrase( 'contributions:unset' ), onclick => "unset_entity( event, '${basename}_${yp1}_' )" );
-					my $eu_button_img = $session->make_element( 'img', src => $session->config( 'rel_path' ) . '/style/images/cross.svg', alt => $session->phrase( 'contributions:unset' ) );
-					$eu_button->appendChild( $eu_button_img );
-					$eu_button_span->appendChild( $eu_button );
-					$entity_field->appendChild( $eu_button_span );
 					my $entityid_input = $session->xhtml->input_field( $eif_name, $contributor_entityid, type => 'hidden', id => $eif_name );
 					$entity_field->appendChild( $entityid_input );
 
@@ -290,7 +283,6 @@ $c->{render_input_contributions} = sub {
 
 	my $extra_params = URI->new( 'http:' );
 	$extra_params->query( $self->{input_lookup_params} );
-	my %defaults = ( 'type' => '', contributor_datasetid => '', contributor_id_type => '' );
 	my @params = (
 		$extra_params->query_form,
 		field => $self->name
@@ -302,10 +294,6 @@ $c->{render_input_contributions} = sub {
 	if( defined $self->{dataset} )
 	{
 		push @params, dataset => $datasetid;
-		my $contrib_fields = $self->{dataset}->get_field( 'contributions' )->get_property( 'fields' );
-		$defaults{type} = $contrib_fields->[0]->{default_value} if defined $contrib_fields->[0]->{default_value};
-		$defaults{contributor_datasetid} = $contrib_fields->[1]->{fields}->[0]->{default_value} if defined $contrib_fields->[1]->{fields}->[0]->{default_value};
-		$defaults{contributor_id_type} = $contrib_fields->[1]->{fields}->[2]->{default_value} if defined $contrib_fields->[1]->{fields}->[2]->{default_value};
 	}
 	$extra_params->query_form( @params );
 	$extra_params = "&" . $extra_params->query;
@@ -319,24 +307,6 @@ new Metafield ('$componentid', '$self->{name}', {
 	input_lookup_url: $url,
 	input_lookup_params: $params
 });
-
-function unset_entity( e, base_id ) {
-	e.preventDefault();
-	const subfields = [ 'type', 'contributor_datasetid', 'contributor_name', 'contributor_id_value', 'contributor_id_type', 'contributor_entityid', 'contributor_entity_span' ];
-	const subfield_values = [ '$defaults{type}', '$defaults{contributor_datasetid}', '', '', '$defaults{contributor_id_type}', '', '' ];
-	for (let sf = 0; sf < subfields.length; sf++) {
-		var entity_field = document.getElementById(base_id + subfields[sf]);
-		if ( entity_field.tagName == 'SPAN' )
-		{
-			entity_field.innerHTML = subfield_values[sf];
-		}
-		else
-		{
-			entity_field.value = subfield_values[sf];
-		}
-	}
-}
-
 EOJ
 
 	return $self->repository->template_phrase( "view:MetaField/render_input_field_actual", { item => {
