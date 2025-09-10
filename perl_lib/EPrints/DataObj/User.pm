@@ -262,7 +262,6 @@ my $PRIVMAP =
         "config/edit/perl",
 
         "storage/manager",
-        "repository/epm", #EPrints Package Manager
 
         "event_queue/destroy",
         "event_queue/details",
@@ -303,7 +302,6 @@ my $PRIVMAP =
         "organisation/export",
         "organisation/search/simple",
         "organisation/view",
-        "repository/epm-submit", #EPrints Package Manager - Bazaar Package Submission
     ],
 
     "toolbox" =>
