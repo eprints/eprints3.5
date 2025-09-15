@@ -26,7 +26,7 @@ B<EPrints::NamedSet> - Repository Configuration
 	
 =head1 DESCRIPTION
 
-A utility class to manipulate named sets. Add and remove methods are designed to be called by Bazaar Packages
+A utility class to manipulate named sets. Add and remove methods are designed to be called by Ingredients
 
 =head1 METHODS
 

@@ -5739,7 +5739,7 @@ sub cleanup
 
 =begin InternalDoc
 
-=item $Boolean = $repository->package_includes("ingredients/bazaar")
+=item $Boolean = $repository->package_includes("ingredients/richtext")
 
 return 1 or 0 if the given path is in the repository archive package
 configurations includes.

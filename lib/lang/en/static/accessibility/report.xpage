@@ -381,11 +381,6 @@
     <td>None</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3AEPM"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3AEPM</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;170&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;122</div></td>
-    <td>Two alerts are due to two nearby images with the same alt text due two identically named plugins in the Bazaar, which cannot be controlled.</td>
-  </tr>
-  <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3ATestEmail"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3ATestEmail</a></td>
     <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;17</div></td>
     <td>None</td>

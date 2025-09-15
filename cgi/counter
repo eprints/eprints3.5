@@ -93,8 +93,8 @@ if( $repo->dataset( 'epm' ) )
 		$first = 0;
 		print $epm->value( "epmid" ) . "=" . $epm->value( "version" );
 	});
+	print "\n";
 }
-print "\n";
 
 print 'includes: ';
 my $base_path = $repo->config( 'base_path' );
