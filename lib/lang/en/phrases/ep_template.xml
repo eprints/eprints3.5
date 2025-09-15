@@ -1208,28 +1208,28 @@
             </epc:choose>
           </div>
         </epc:if>
-        <epc:if test="!no_toggle and has_help">
-          <div class="">
-            <div class="d-flex justify-content-between">
-              <div>
-                <div id="{title_div{id}}" class="">
-                  <epc:choose>
-                    <epc:when test="is_collapsed">
-                      <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
-                        <img alt="+" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
-                          <epc:print expr="col_link{render_title}"/>
-                        </img>
-                      </a>
-                      <div class="ep_no_js">
+        <div class="">
+          <div class="d-flex justify-content-between">
+            <div>
+              <div id="{title_div{id}}" class="">
+                <epc:choose>
+                  <epc:when test="is_collapsed">
+                    <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
+                      <img alt="+" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
                         <epc:print expr="col_link{render_title}"/>
-                      </div>
-                    </epc:when>
-                    <epc:otherwise>
-                      <epc:print expr="render_title"/>
-                    </epc:otherwise>
-                  </epc:choose>
-                </div>
+                      </img>
+                    </a>
+                    <div class="ep_no_js">
+                      <epc:print expr="col_link{render_title}"/>
+                    </div>
+                  </epc:when>
+                  <epc:otherwise>
+                    <epc:print expr="render_title"/>
+                  </epc:otherwise>
+                </epc:choose>
               </div>
+            </div>
+            <epc:if test="!no_toggle and has_help">
               <div align="right">
                 <div class="ep_only_js">
                   <div class="ep_sr_show_help ep_toggle" id="{help_item{prefix}}_show">
@@ -1244,9 +1244,9 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </epc:if>
           </div>
-        </epc:if>
+        </div>
       </div>
       <epc:if test="is_collapsed">
         <div class="p-2 bg-white rounded ep_only_js ep_toggle" id="{col_div{id}}">
