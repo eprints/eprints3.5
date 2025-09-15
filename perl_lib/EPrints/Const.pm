@@ -206,6 +206,12 @@ Manipulate the list of thumbnail types that will be generated for a given user-u
 	types - array reference of types (strings)
 	dataobj - document object
 
+=item EP_TRIGGER_CGI_COUNTER
+
+Add extra information to the bottom of the C<cgi/counter> page.
+
+	content - SCALARREF of string
+
 =item EP_TRIGGER_INDEX_FIELDS
 
 Add the changed fields for the given data object to the index engine(s).
@@ -335,6 +341,7 @@ use constant {
 	EP_TRIGGER_LOCAL_SITEMAP_URLS => 15,
 	EP_TRIGGER_DYNAMIC_TEMPLATE => 16,
 	EP_TRIGGER_THUMBNAIL_TYPES => 17,
+	EP_TRIGGER_CGI_COUNTER => 18,
 };
 
 # Dataset triggers
@@ -467,6 +474,7 @@ use constant {
 	EP_TRIGGER_LOCAL_SITEMAP_URLS
 	EP_TRIGGER_DYNAMIC_TEMPLATE
 	EP_TRIGGER_THUMBNAIL_TYPES
+	EP_TRIGGER_CGI_COUNTER
 
 	EP_TRIGGER_CREATED
 	EP_TRIGGER_DEFAULTS

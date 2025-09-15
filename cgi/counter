@@ -82,20 +82,6 @@ $status = "running" if $daemon->is_running();
 $status = "stalled" if $daemon->has_stalled();
 print "indexer: $status\n";
 
-if( $repo->dataset( 'epm' ) )
-{
-	print "epm: ";
-	my $first = 1;
-	$repo->dataset( 'epm' )->dataobj_class->map($repo, sub
-	{
-		my( undef, undef, $epm ) = @_;
-		print "; " if !$first;
-		$first = 0;
-		print $epm->value( "epmid" ) . "=" . $epm->value( "version" );
-	});
-}
-print "\n";
-
 print 'includes: ';
 my $base_path = $repo->config( 'base_path' );
 my $first = 1;
@@ -108,5 +94,11 @@ for my $component (@{$repo->includes}) {
 	print $component . '=' . $comp_cfg->{version};
 }
 print "\n";
+
+my $content = '';
+$repo->run_trigger( EPrints::Const::EP_TRIGGER_CGI_COUNTER,
+	content => \$content,
+);
+print $content;
 
 exit;
