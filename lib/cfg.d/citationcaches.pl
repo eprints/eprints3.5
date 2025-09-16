@@ -10,7 +10,6 @@ $c->{datasets}->{citationcache} = {
 
 # Exclude specific data objects from caching
 $c->{citation_caching}->{excluded_dataobjs} = [
-	'epm',
 	'loginticket',
 	'subject',
 ];
