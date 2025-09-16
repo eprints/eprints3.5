@@ -187,11 +187,13 @@ sub render_set_input
 		defaults_at_top => 1,
 		name => $basename,
 		id => $basename,
-		default => $default,
+		selected => $default,
 		multiple => $self->{multiple},
 		height => $self->{input_rows},
 		'aria-labelledby' => $self->get_labelledby( $basename ),
-		'aria-describedby' => $self->get_describedby( $basename, $one_field_component ) );
+		'aria-describedby' => $self->get_describedby( $basename, $one_field_component ),
+		default => $self->{default_value},
+	);
 
 } 
 
