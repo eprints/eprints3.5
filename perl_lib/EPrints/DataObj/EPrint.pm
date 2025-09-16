@@ -2702,10 +2702,6 @@ Callbacks may optionally be defined in the ArchiveConfig.
 
  validate_eprint( $eprint, $session, [$for_archive] )
 	
-=item set_eprint_defaults
-
- set_eprint_defaults( $data, $session )
-
 =item set_eprint_automatic_fields
 
  set_eprint_automatic_fields( $eprint )

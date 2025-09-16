@@ -174,6 +174,10 @@ Called just before the object is removed from the database.
 
 =item EP_TRIGGER_DEFAULTS
 
+Called when a new object is being created to set its default values.
+
+	data - What values it will currently be created with (after core has set defaults)
+
 =item EP_TRIGGER_STATUS_CHANGE
 
 =item EP_TRIGGER_BEFORE_COMMIT

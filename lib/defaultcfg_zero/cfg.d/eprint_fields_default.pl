@@ -1,11 +1,8 @@
+$c->add_dataset_trigger( 'eprint', EP_TRIGGER_DEFAULTS, sub {
+	my( %params ) = @_;
 
-$c->{set_eprint_defaults} = sub
-{
-	my( $data, $repository ) = @_;
-
-	$data->{type} = "other";
-};
-
+	$params{data}->{type} = 'other';
+});
 
 =head1 COPYRIGHT
 

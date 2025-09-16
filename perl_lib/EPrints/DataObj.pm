@@ -452,14 +452,16 @@ sub get_defaults
     my $old_default_fn = "set_".$class->get_dataset_id."_defaults";
     if( $session->can_call( $old_default_fn ) )
     {
+		$session->log( "UPGRADE: configuration uses '$old_default_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_DEFAULTS'." );
         $session->call(
             $old_default_fn,
             $data,
             $session,
             $data->{_parent} );
     }
+	$dataset->run_trigger( EPrints::Const::EP_TRIGGER_DEFAULTS, data => $data );
 
-    return $data;
+	return $data;
 }
 
 

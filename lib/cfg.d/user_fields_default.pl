@@ -1,13 +1,12 @@
+$c->add_dataset_trigger( 'user', EP_TRIGGER_DEFAULTS, sub {
+	my( %params ) = @_;
+	my $data = $params{data};
 
-$c->{set_user_defaults} = sub
-{
-	my( $data, $repository ) = @_;
+	$data->{hideemail} = 'TRUE';
 
-	$data->{hideemail} = "TRUE";
-
-	# Default columns shown in Items screens
-	$data->{items_fields} = [ "lastmod", "title", "type", "eprint_status" ];
-};
+	# Default columns show in Items screens
+	$data->{items_fields} = [ 'lastmod', 'title', 'type', 'eprint_status' ];
+});
 
 =head1 COPYRIGHT
 
