@@ -1792,14 +1792,7 @@ sub log
 		$msg = join("\n",@m2);
 	}
 
-	if( $self->can_call( 'log' ) )
-	{
-		$self->call( 'log', $self, $msg );
-	}
-	else
-	{
-		print STDERR "$msg\n";
-	}
+	$self->run_trigger( EP_TRIGGER_LOG, message => $msg );
 }
 
 

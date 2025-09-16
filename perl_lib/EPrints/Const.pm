@@ -118,6 +118,10 @@ Continue normal processing.
 
 =item EP_TRIGGER_LOG
 
+Called to log something important. By default it sends everything to STDERR meaning it ends up in the Apache error log. This should be used if you want to add extra information (such as the repository ID) to log messages or log to a particular file.
+
+	message - string that should be logged
+
 =item EP_TRIGGER_BEGIN
 
 Called immediately after the 'session_init' config method (see archive config or lib/cfg.d/session.pl). These triggers should not set a return value, so all of them can run. Could be used to pre-cache information in the session, or other 'expensive' tasks that should run once.

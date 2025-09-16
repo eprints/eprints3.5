@@ -24,15 +24,13 @@ $c->{loghandler}->{enable} = 1;
 
 ######################################################################
 #
-# log( $repository, $message )
+# EP_TRIGGER_LOG replaces log( $repository, $message )
 #
 ######################################################################
 # $repository 
 # - repository object
 # $message 
 # - log message string
-#
-# returns: nothing 
 #
 ######################################################################
 # This method is called to log something important. By default it 
@@ -43,18 +41,26 @@ $c->{loghandler}->{enable} = 1;
 #
 ######################################################################
 
-$c->{log} = sub
-{
-	my( $repository, $message ) = @_;
+$c->add_trigger( EP_TRIGGER_LOG,
+	sub {
+		my %params = @_;
+		my $repo = $params{repository};
+		my $message = $params{message};
 
-	print STDERR $message."\n";
+		if ( $repo->can_call( 'log' ) ) {
+			$repo->call( 'log', $repo, "UPGRADE: configuration uses 'log'. Please review upgrade advice for trigger 'EP_TRIGGER_LOG'." );
+			$repo->call( 'log', $repo, $message );
+		} else {
+			print STDERR $message . "\n";
 
-	# You may wish to use this line instead if you have many repositories, but if you
-	# only have on then it's just more noise.
-	#print STDERR "[".$repository->get_id()."] ".$message."\n";
-};
-
-
+			# You may wish to use this line instead if you have many repositories,
+			# but if you only have one then it's just more noise.
+			# print STDERR "[".$repo->get_id()."] ".$message."\n";
+		}
+	},
+	priority => 1,
+	id => 'LOG',
+);
 
 =head1 COPYRIGHT
 
