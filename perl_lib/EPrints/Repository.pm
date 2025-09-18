@@ -3470,7 +3470,7 @@ sub render_option_list
 	my( $self , %params ) = @_;
 
 	#params:
-	# default  : array or scalar
+	# selected : array or scalar (filled by 'default' if not specified')
 	# height   :
 	# multiple : allow multiple selections
 	# pairs    :
@@ -3486,23 +3486,28 @@ sub render_option_list
 	# onchange : all an onchange event handler to be registered
 	# aria-labelledby :
 	# aria-describedby :
+	# default  : scalar (or array which it will take the first item of)
 
-	my %defaults = ();
-	if( ref( $params{default} ) eq "ARRAY" )
+	$params{selected} = $params{default} if not defined $params{selected};
+	# 'default' accepts arrays so it can be used as an alias for 'selected'
+	# however multiple defaults doesn't actually make sense so it takes the
+	# first.
+	my $default = ref( $params{default} ) eq 'ARRAY' ? $params{default}->[0] : $params{default};
+
+	my %selected = ();
+	if( ref( $params{selected} ) eq "ARRAY" )
 	{
-		foreach( @{$params{default}} )
+		foreach( @{$params{selected}} )
 		{
-			$defaults{$_} = 1;
+			$selected{$_} = 1;
 		}
 	}
-	elsif( defined $params{default} )
+	elsif( defined $params{selected} )
 	{
-		$defaults{$params{default}} = 1;
+		$selected{$params{selected}} = 1;
 	}
 
-
 	my $dtop = defined $params{defaults_at_top} && $params{defaults_at_top};
-
 
 	my @alist = ();
 	my @list = ();
@@ -3516,13 +3521,13 @@ sub render_option_list
 		}
 	}		
 						
-	if( $dtop && scalar keys %defaults )
+	if( $dtop && scalar keys %selected )
 	{
 		my @pairsa;
 		my @pairsb;
 		foreach my $pair (@{$pairs})
 		{
-			if( $defaults{$pair->[0]} )
+			if( $selected{$pair->[0]} )
 			{
 				push @pairsa, $pair;
 			}
@@ -3543,7 +3548,8 @@ sub render_option_list
 		push @$pairs_info, {
 			key => $pair->[0],
 			desc => $pair->[1],
-			selected => $defaults{$pair->[0]},
+			selected => $selected{$pair->[0]},
+			default => ($pair->[0] eq $default),
 		};
 
 		$size++;
@@ -3586,7 +3592,7 @@ sub render_option_list
 
 =begin InternalDoc
 
-=item $option = $repository->render_single_option( $key, $desc, $selected, $disabled )
+=item $option = $repository->render_single_option( $key, $desc, $selected, $default )
 
 Used by render_option_list.
 
@@ -3597,13 +3603,13 @@ Used by render_option_list.
 
 sub render_single_option
 {
-	my( $self, $key, $desc, $selected, $disabled ) = @_;
+	my( $self, $key, $desc, $selected, $default ) = @_;
 
 	return $self->template_phrase( "view:Repository:render_single_option", { item => {
 		key => $key,
 		desc => $desc,
 		selected => $selected,
-		disabled => $disabled,
+		default => $default,
 	} } );
 }
 

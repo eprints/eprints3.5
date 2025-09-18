@@ -191,7 +191,7 @@ sub get_basic_input_elements
 		name => $monthid,
 		id => $monthid,
 		values => \@EPrints::MetaField::Date::MONTHKEYS,
-		default => $month,
+		selected => $month,
 		labels => $self->_month_names( $session ) ) );
 
 	##############################################
@@ -214,7 +214,7 @@ sub get_basic_input_elements
 		name => $dayid,
 		id => $dayid,
 		values => \@daykeys,
-		default => $day,
+		selected => $day,
 		labels => \%daylabels ) );
 
 	##############################################
@@ -237,7 +237,7 @@ sub get_basic_input_elements
 		name => $hourid,
 		id => $hourid,
 		values => \@hourkeys,
-		default => $hour,
+		selected => $hour,
 		labels => \%hourlabels ) );
 
 	##############################################
@@ -260,7 +260,7 @@ sub get_basic_input_elements
 		name => $minuteid,
 		id => $minuteid,
 		values => \@minutekeys,
-		default => $minute,
+		selected => $minute,
 		labels => \%minutelabels ) );
 
 	##############################################
@@ -283,7 +283,7 @@ sub get_basic_input_elements
 		name => $secondid,
 		id => $secondid,
 		values => \@secondkeys,
-		default => $second,
+		selected => $second,
 		labels => \%secondlabels ) );
 
 	##############################################

@@ -839,7 +839,7 @@
         </epc:attribute>
       </epc:if>
       <epc:foreach expr="pairs" iterator="pair">
-        <epv:render_single_option key="{$pair{key}}" selected="{$pair{selected}}">
+        <epv:render_single_option key="{$pair{key}}" selected="{$pair{selected}}" default="{$pair{default}}">
           <epc:print expr="$pair{desc}"/>
         </epv:render_single_option>
       </epc:foreach>
@@ -928,6 +928,9 @@
     <option value="{key}">
       <epc:if test="selected">
         <epc:attribute name="selected">selected</epc:attribute>
+      </epc:if>
+      <epc:if test="default">
+        <epc:attribute name="data-default">data-default</epc:attribute>
       </epc:if>
       <epc:print expr="desc"/>
     </option>
@@ -1222,6 +1225,9 @@
     <span id="{id}"><epc:print expr="index"/>. </span>
   </epp:phrase>
   <epp:phrase id="view:MetaField:get_input_elements:multiple:arrows">
+    <a type="image" href="javascript:" alt="clear" title="clear row" name="{clear{name}}" onclick="return EPJS_clear_row('{clear{basename}}', {clear{index}});">
+      <img src="{clear{src}}" alt="clear" />
+    </a>
     <input type="image" alt="down" title="move down" src="{arrow_down{src}}" name="{arrow_down{name}}" class="epjs_ajax" value="1"/>
     <epc:if test="arrow_up">
       <input type="image" alt="up" title="move up" src="{arrow_up{src}}" name="{arrow_up{name}}" class="epjs_ajax" value="1"/>

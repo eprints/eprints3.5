@@ -110,11 +110,12 @@ sub get_basic_input_elements
 			values=>\@values,
 			labels=>\%labels,
 			name=>$basename,
-			default=>$value,
+			selected=>$value,
 			class=>join(" ", @classes),
 			onclick=>$onclick,
 			'aria-labelledby' => $self->get_labelledby( $basename ),
 			'aria-describedby' => $self->get_describedby( $basename, $one_field_component ),
+			default => $self->{default_value},
 		);
 		return [[{ el=>$session->render_option_list( %settings ) }]];
 	}

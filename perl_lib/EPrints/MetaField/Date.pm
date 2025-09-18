@@ -221,7 +221,7 @@ sub get_basic_input_elements
 		name => $monthid,
 		id => $monthid,
 		values => \@EPrints::MetaField::Date::MONTHKEYS,
-		default => $month,
+		selected => $month,
 		labels => $self->_month_names( $session ) ) );
 
 	$div->appendChild( $session->make_text(" ") );
@@ -243,7 +243,7 @@ sub get_basic_input_elements
 		name => $dayid,
 		id => $dayid,
 		values => \@daykeys,
-		default => $day,
+		selected => $day,
 		labels => \%daylabels ) );
 
 	$frag->appendChild( $div );

@@ -199,11 +199,12 @@ sub get_basic_input_elements
 			class => join(" ", @classes),
 			readonly => $readonly,
 			id => $basename,
-			default => $value,
+			selected => $value,
 			multiple => 0,
 			height => 1,
 			'aria-labelledby' => $self->get_labelledby( $basename ),
 			'aria-describedby' => $self->get_describedby( $basename, $one_field_component ),
+			default => $self->{default_value},
 	) } ]] );
 }
 
