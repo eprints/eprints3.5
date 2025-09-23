@@ -1241,8 +1241,8 @@
           </a>
         </div>
       </epc:if>
-      <div id="{prefix}_content" class="{content{class}} bg-white p-2 rounded">
-        <div id="{content_inner{id}}">
+      <div id="{prefix}_content" class="{content{class}} bg-white rounded">
+        <div id="{content_inner{id}}" class="p-2">
           <epc:comment>Add the help text if it is included, generally starts hidden (unless !no_toggle)</epc:comment>
           <epc:if test="has_help">
             <div id="{help_item{prefix}}" class="{help_item{hide_class}}">
