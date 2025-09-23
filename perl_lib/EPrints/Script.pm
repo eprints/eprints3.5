@@ -106,7 +106,7 @@ sub print
 	}
 	if( $result->[1] eq "BOOLEAN"  )
 	{
-		return $state->{session}->make_text( $result->[0]?"TRUE":"FALSE" );
+		return $state->{session}->make_text( $result->[0]?"true":"false" );
 	}
 	if( $result->[1] eq "STRING"  )
 	{
