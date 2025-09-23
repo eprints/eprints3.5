@@ -1,45 +1,43 @@
 ######################################################################
 #
-# validate_document( $document, $repository, $for_archive ) 
+# EP_TRIGGER_VALIDATE 'document' dataset trigger
 #
 ######################################################################
-# $document 
+# $dataobj 
 # - Document object
 # $repository 
 # - Repository object (the current repository)
 # $for_archive
-# - boolean (see comments at the start of the validation section)
-#
-# returns: @problems
-# - ARRAY of DOM objects (may be null)
+# - Is this being checked to go live (`1` means it is)
+# $problems
+# - ARRAYREF of DOM objects
 #
 ######################################################################
+#
 # Validate a document. validate_document_meta will be called auto-
 # matically, so you don't need to duplicate any checks.
 #
 ######################################################################
 
-
-$c->{validate_document} = sub
-{
-	my( $document, $repository, $for_archive ) = @_;
-
-	my @problems = ();
-
-	my $xml = $repository->xml();
-
-	# CHECKS IN HERE
+$c->add_dataset_trigger( 'document', EPrints::Const::EP_TRIGGER_VALIDATE, sub {
+	my( %args ) = @_;
+	my( $repository, $document, $problems ) = @args{qw( repository dataobj problems )};
 
 	# "other" documents must have a description set
 	if( $document->value( "format" ) eq "other" &&
 	   !EPrints::Utils::is_set( $document->value( "formatdesc" ) ) )
 	{
-		my $fieldname = $xml->create_element( "span", class=>"ep_problem_field:documents" );
-		push @problems, $repository->html_phrase( 
+		my $fieldname = $repository->make_element( "span", class=>"ep_problem_field:documents" );
+		push @$problems, $repository->html_phrase( 
 					"validate:need_description" ,
 					type=>$document->render_citation("brief"),
 					fieldname=>$fieldname );
 	}
+}, id => 'other_without_description' );
+
+$c->add_dataset_trigger( 'document', EPrints::Const::EP_TRIGGER_VALIDATE, sub {
+	my( %args ) = @_;
+	my( $repository, $document, $problems ) = @args{qw( repository dataobj problems )};
 
 	# security can't be "public" if date embargo set
 	if( !$repository->config( "retain_embargo_dates" ) && 
@@ -47,11 +45,16 @@ $c->{validate_document} = sub
 		EPrints::Utils::is_set( $document->value( "date_embargo" ) )
 		)
 	{
-		my $fieldname = $xml->create_element( "span", class=>"ep_problem_field:documents" );
-		push @problems, $repository->html_phrase( 
+		my $fieldname = $repository->make_element( "span", class=>"ep_problem_field:documents" );
+		push @$problems, $repository->html_phrase( 
 					"validate:embargo_check_security" ,
 					fieldname=>$fieldname );
 	}
+}, id => 'public_with_embargo' );
+
+$c->add_dataset_trigger( 'document', EPrints::Const::EP_TRIGGER_VALIDATE, sub {
+	my( %args ) = @_;
+	my( $repository, $document, $problems ) = @args{qw( repository dataobj problems )};
 
 	# embargo expiry date must be a full year, month and day and must be in the future
 	if( EPrints::Utils::is_set( $document->value( "date_embargo" ) ) )
@@ -62,16 +65,16 @@ $c->{validate_document} = sub
 
 		if ( !EPrints::Utils::is_set( $month ) || !EPrints::Utils::is_set( $day ) )
 		{
-			my $fieldname = $xml->create_element( "span", class=>"ep_problem_field:documents" );
-                        push @problems, $repository->html_phrase( "validate:embargo_incomplete_date", fieldname=>$fieldname );
+			my $fieldname = $repository->make_element( "span", class=>"ep_problem_field:documents" );
+                        push @$problems, $repository->html_phrase( "validate:embargo_incomplete_date", fieldname=>$fieldname );
 		}
 		elsif ( !$repository->config( "retain_embargo_dates" ) )
 		{
 			if( $year < $thisyear || ( $year == $thisyear && $month < $thismonth ) ||
 				( $year == $thisyear && $month == $thismonth && $day <= $thisday ) )
 			{
-				my $fieldname = $xml->create_element( "span", class=>"ep_problem_field:documents" );
-				push @problems,
+				my $fieldname = $repository->make_element( "span", class=>"ep_problem_field:documents" );
+				push @$problems,
 					$repository->html_phrase( "validate:embargo_invalid_date",
 					fieldname=>$fieldname );
 			}
@@ -79,16 +82,13 @@ $c->{validate_document} = sub
 		elsif ( $document->value( "security" ) eq "public" && ( $year > $thisyear || ( $year == $thisyear && $month > $thismonth ) || 
 			( $year == $thisyear && $month == $thismonth && $day > $thisday ) ) )
 		{
-			my $fieldname = $xml->create_element( "span", class=>"ep_problem_field:documents" );
-			push @problems, $repository->html_phrase(
+			my $fieldname = $repository->make_element( "span", class=>"ep_problem_field:documents" );
+			push @$problems, $repository->html_phrase(
 				"validate:embargo_check_security",
 				fieldname=>$fieldname );
 		}
 	}
-
-
-	return( @problems );
-};
+}, id => 'invalid_embargo' );
 
 =head1 COPYRIGHT
 

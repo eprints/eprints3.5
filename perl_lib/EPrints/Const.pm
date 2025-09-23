@@ -186,6 +186,12 @@ Called when a new object is being created to set its default values.
 
 =item EP_TRIGGER_VALIDATE
 
+Called when data object fields are being checked for their validity. This will occur after C<EP_TRIGGER_VALIDATE_FIELD> so should only be used for complex multi-field validation.
+
+	dataobj - The data object this is being run on
+	problems - ARRAYREF of DOM problems encountered
+	for_archive - Whether this is being validated to go live (`1` means it is)
+
 =item EP_TRIGGER_VALIDATE_FIELD
 
 Validate a field's value.

@@ -2500,12 +2500,20 @@ sub validate
 	my $old_validate_fn = "validate_".$self->get_dataset_id;
 	if( $self->{session}->can_call( $old_validate_fn ) )
 	{
+		$self->{session}->log( "UPGRADE: configuration uses '$old_validate_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_VALIDATE'." );
 		push @problems, $self->{session}->call( 
 			$old_validate_fn,
 			$self, 
 			$self->{session},
 			$for_archive );
 	}
+
+	$self->{dataset}->run_trigger(
+		EPrints::Const::EP_TRIGGER_VALIDATE,
+		dataobj => $self,
+		problems => \@problems,
+		for_archive => $for_archive,
+	);
 
 	return \@problems;
 }
