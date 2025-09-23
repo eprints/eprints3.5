@@ -1189,12 +1189,13 @@
         <epc:print expr="$handled_field{handled_field}"/>
       </epc:foreach>
       <div id="{title_bar{id}}" class="p-2 bg-white rounded {title_bar{class}}">
-        <epc:if test="!has_help">
+        <div class="d-flex justify-content-between">
           <div id="{title_div{id}}" class="ep_sr_title">
             <epc:choose>
+              <epc:comment>Add the minus button to the left of collapsible components (defaults to hidden)</epc:comment>
               <epc:when test="is_collapsed">
-                <a onclick="EPJS_toggleSlideScroll('{contentid}',false,'{main_id}');EPJS_toggle('{colbarid}',true);EPJS_toggle('{barid}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link">
-                  <img alt="+" src="/style/images/minus.svg" border="0">
+                <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
+                  <img alt="-" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
                     <epc:print expr="col_link{render_title}"/>
                   </img>
                 </a>
@@ -1202,53 +1203,33 @@
                   <epc:print expr="col_link{render_title}"/>
                 </div>
               </epc:when>
+              <epc:comment>If the component is non-collapsible then we just add the title here</epc:comment>
               <epc:otherwise>
                 <epc:print expr="render_title"/>
               </epc:otherwise>
             </epc:choose>
           </div>
-        </epc:if>
-        <div class="">
-          <div class="d-flex justify-content-between">
-            <div>
-              <div id="{title_div{id}}" class="">
-                <epc:choose>
-                  <epc:when test="is_collapsed">
-                    <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
-                      <img alt="+" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
-                        <epc:print expr="col_link{render_title}"/>
-                      </img>
-                    </a>
-                    <div class="ep_no_js">
-                      <epc:print expr="col_link{render_title}"/>
-                    </div>
-                  </epc:when>
-                  <epc:otherwise>
-                    <epc:print expr="render_title"/>
-                  </epc:otherwise>
-                </epc:choose>
-              </div>
-            </div>
-            <epc:if test="!no_toggle and has_help">
-              <div align="right">
-                <div class="ep_only_js">
-                  <div class="ep_sr_show_help ep_toggle" id="{help_item{prefix}}_show">
-                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/help.svg" title="Show help" alt="?"/>
-                    </a>
-                  </div>
-                  <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
-                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
-                    </a>
-                  </div>
+          <epc:comment>Add the question and minus buttons to the right of a component with toggleable help (defaults to '?')</epc:comment>
+          <epc:if test="!no_toggle and has_help">
+            <div align="right">
+              <div class="ep_only_js">
+                <div class="ep_sr_show_help ep_toggle " id="{help_item{prefix}}_show">
+                  <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                    <img border="0" src="/style/images/help.svg" title="Show help" alt="?"/>
+                  </a>
+                </div>
+                <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
+                  <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
+                    <img border="0" src="/style/images/minus.svg" title="Hide help" alt="-"/>
+                  </a>
                 </div>
               </div>
-            </epc:if>
-          </div>
+            </div>
+          </epc:if>
         </div>
       </div>
-      <epc:if test="is_collapsed">
+      <epc:comment>Add the plus button to the left of collapsible components (can't be with the '-' button as the whole of `{title_bar{id}}` is hidden</epc:comment>
+	  <epc:if test="is_collapsed">
         <div class="p-2 bg-white rounded ep_only_js ep_toggle" id="{col_div{id}}">
           <a class="ep_sr_collapse_link text-black" onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false">
             <img alt="+" src="/style/images/plus.svg" style="margin-right: 5px;" border="0">
@@ -1259,6 +1240,7 @@
       </epc:if>
       <div id="{prefix}_content" class="{content{class}} bg-white p-2 rounded">
         <div id="{content_inner{id}}">
+          <epc:comment>Add the help text if it is included, generally starts hidden (unless !no_toggle)</epc:comment>
           <epc:if test="has_help">
             <div id="{help_item{prefix}}" class="{help_item{hide_class}}">
               <div id="{help_item{prefix}}_inner" class="p-2 alert alert-info">
