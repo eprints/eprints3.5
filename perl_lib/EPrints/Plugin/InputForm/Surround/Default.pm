@@ -60,10 +60,14 @@ sub render
 	my $barid = $component->{prefix}."_titlebar";
 	my $title_bar_class="";
 	my $content_class="";
+	my $col_div_class="";
 	if( $component->is_collapsed )
 	{
 		$title_bar_class = "ep_no_js";
 		$content_class = "ep_no_js";
+	} elsif( $component->{collapse} )
+	{
+		$col_div_class = "ep_no_js";
 	}
 		
 	$item->{title_bar} = { class => $title_bar_class, id => $barid };
@@ -85,10 +89,11 @@ sub render
 	$item->{ajax_content_target} = { id => $component->{prefix}."_ajax_content_target" };
 	$item->{contents} = $component->render_content( $self );
 	$item->{is_collapsed} = $component->is_collapsed;
-	if( $component->is_collapsed )
+	$item->{can_collapse} = $component->{collapse}; # If the component is collapsible (even if it currently has a value)
+	if( $component->{collapse} )
 	{
 		my $colbarid = $component->{prefix}."_col";
-		$item->{col_div} = { id => $colbarid };
+		$item->{col_div} = { id => $colbarid, class => $col_div_class };
 
 		my $contentid = $component->{prefix}."_content";
 		my $main_id = $component->{prefix};
