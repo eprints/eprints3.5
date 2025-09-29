@@ -1195,9 +1195,9 @@
         <div class="d-flex justify-content-between">
           <div id="{title_div{id}}" class="ep_sr_title">
             <epc:choose>
-              <epc:comment>Add the minus button to the left of collapsible components (defaults to hidden)</epc:comment>
-              <epc:when test="is_collapsed">
-                <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
+              <epc:comment>Add the minus button to the left of collapsible components (defaults to hidden unless the component has a value (!is_collapsed))</epc:comment>
+              <epc:when test="can_collapse">
+                <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',{!is_collapsed},'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',{is_collapsed});EPJS_toggle('{col_link{barid}}',{!is_collapsed});return false" class="ep_only_js ep_toggle ep_sr_collapse_link text-black">
                   <img alt="-" src="/style/images/minus.svg" style="margin-right: 5px;" border="0">
                     <epc:print expr="col_link{render_title}"/>
                   </img>
@@ -1231,10 +1231,10 @@
           </epc:if>
         </div>
       </div>
-      <epc:comment>Add the plus button to the left of collapsible components (can't be with the '-' button as the whole of `{title_bar{id}}` is hidden</epc:comment>
-	  <epc:if test="is_collapsed">
-        <div class="p-2 bg-white rounded ep_only_js ep_toggle" id="{col_div{id}}">
-          <a class="ep_sr_collapse_link text-black" onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false">
+      <epc:comment>Add the plus button to the left of collapsible components (can't be with the '-' button as the whole of `{title_bar{id}}` is hidden)</epc:comment>
+	  <epc:if test="can_collapse">
+        <div class="p-2 bg-white rounded ep_only_js ep_toggle {col_div{class}}" id="{col_div{id}}">
+          <a class="ep_sr_collapse_link text-black" onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',{!is_collapsed},'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',{is_collapsed});EPJS_toggle('{col_link{barid}}',{!is_collapsed});return false">
             <img alt="+" src="/style/images/plus.svg" style="margin-right: 5px;" border="0">
               <epc:print expr="col_link{render_title}"/>
             </img>
