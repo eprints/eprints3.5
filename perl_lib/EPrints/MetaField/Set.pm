@@ -295,7 +295,7 @@ sub render_set_input
 		my $row;
 		if( $input_style eq "long" || $input_style eq "medium" )
 		{
-			$row = $session->make_element( "dt", class => "d-inline", id => $basename."_".$opt."_title" );
+			$row = $session->make_element( "dt", class => "d-inline pe-1", id => $basename."_".$opt."_title" );
         	        my $checked = undef;
                 	my $type = "radio";
 	                if( $self->{multiple} )
@@ -329,8 +329,9 @@ sub render_set_input
 				) );
 	                	$row->appendChild( $session->make_text( " ".$labels->{$opt} ));
         	        	$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_desc" );
+						my $label = $dd->appendChild( $session->make_element( 'label', for => "${basename}_$opt" ) );
                 		my $phrasename = $self->{confid}."_optdetails_".$self->{name}."_".$opt;
-                		$dd->appendChild( $session->html_phrase( $phrasename ));
+                		$label->appendChild( $session->html_phrase( $phrasename ));
 			}
 			else 
 			{
@@ -344,11 +345,12 @@ sub render_set_input
 	                                checked => $checked,
         	                        'aria-labelledby' => $basename."_".$opt."_title",
                 	        ) );
-	                        $dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_label", 'aria-describedby'=>$self->get_labelledby( $basename ) );
-				$dd->appendChild( $session->make_text( " ".$labels->{$opt} ) );
+				$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_label", 'aria-describedby'=>$self->get_labelledby( $basename ) );
+				my $label = $dd->appendChild( $session->make_element( 'label', for => "${basename}_$opt" ) );
+				$label->appendChild( $session->make_text( $labels->{$opt} ) );
 			}
 			$list->appendChild( $row );
-                        $list->appendChild( $dd );
+			$list->appendChild( $dd );
 			$list->appendChild( $session->make_element( "br" ) );
 		}
 		else

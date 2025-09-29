@@ -172,8 +172,9 @@ sub get_basic_input_elements
 			$dt->appendChild( $inputs->{$option} );
 			$f->appendChild( $dt );
 			my $dd = $session->make_element( "dd", class=>"d-inline", id => $basename . "_" . $option . "_label" );
-			$dd->appendChild( $session->html_phrase( $self->{confid} . "_radio_" . $self->{name} . "_" . $option ) ) unless $option eq "unspecified";
-			$dd->appendChild( $self->unspecified_phrase( $session ) ) if $option eq "unspecified";
+			my $label = $dd->appendChild( $session->make_element( 'label', for => "${basename}_$option" ) );
+			$label->appendChild( $session->html_phrase( $self->{confid} . "_radio_" . $self->{name} . "_" . $option ) ) unless $option eq "unspecified";
+			$label->appendChild( $self->unspecified_phrase( $session ) ) if $option eq "unspecified";
 			$f->appendChild( $dd );
 			$f->appendChild( $session->make_element( "br" ) );
 		}
