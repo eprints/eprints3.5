@@ -234,3 +234,8 @@ div.ep_toggleable {
 	display: none;
 }
 
+/* Hide help buttons on collapsed components */
+div.ep_sr_title:has(label.ep_styled_checkbox > input:not(:checked)) ~ div.ep_only_js {
+	display: none;
+}
+
