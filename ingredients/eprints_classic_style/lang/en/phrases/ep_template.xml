@@ -757,8 +757,8 @@
       <epc:choose>
         <epc:when test="has_help">
           <div class="ep_multi_input ep_table_cell" colspan="{if (has_toggle, '1', '2')}" id="{help_prefix}_outer">
-            <div id="{help_prefix}" class="ep_multi_inline_help {if (has_toggle, 'ep_no_js')}">
-              <div id="{help_prefix}_inner" role="definition" aria-labelledby="{prefix}_label">
+            <div id="{help_prefix}" class="ep_toggleable {if (has_toggle, 'ep_no_js')}">
+              <div id="{help_prefix}_inner" class="ep_multi_inline_help" role="definition" aria-labelledby="{prefix}_label">
                 <epc:print expr="help"/>
               </div>
             </div>
@@ -774,16 +774,11 @@
       <epc:choose>
         <epc:when test="has_toggle">
           <div class="ep_multi_help ep_only_js_table_cell ep_toggle ep_table_cell">
-            <div class="ep_sr_show_help ep_only_js" id="{help_prefix}_show">
-              <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
-                <img alt="{string_phrase(&quot;lib/session:show_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:show_help_title&quot;)}" src="{string_phrase(&quot;lib/session:show_help_src&quot;)}"/>
-              </a>
-            </div>
-            <div class="ep_sr_hide_help ep_hide" id="{help_prefix}_hide">
-              <a onclick="EPJS_toggleSlide('{help_prefix}',false,'block');EPJS_toggle('{help_prefix}_hide',false,'block');EPJS_toggle('{help_prefix}_show',true,'block');return false" href="#">
-                <img alt="{string_phrase(&quot;lib/session:hide_help_alt&quot;)}" title="{string_phrase(&quot;lib/session:hide_help_title&quot;)}" src="{string_phrase(&quot;lib/session:hide_help_src&quot;)}"/>
-              </a>
-            </div>
+            <label class="ep_styled_checkbox">
+              <input type="checkbox" id="{help_prefix}_checkbox" onclick="EPJS_checkboxSlide('{help_prefix}');" />
+              <img class="ep_unchecked" src="/style/images/help.png" alt="?" />
+              <img class="ep_checked" src="/style/images/minus.png" alt="-" />
+            </label>
           </div>
         </epc:when>
         <epc:otherwise>
@@ -1131,80 +1126,49 @@
       <epc:foreach expr="handled_fields" iterator="handled_field">
         <epc:print expr="$handled_field{handled_field}"/>
       </epc:foreach>
-      <div id="{title_bar{id}}" class="ep_sr_title_bar {title_bar{class}}">
-        <epc:if test="!has_help">
-          <div id="{title_div{id}}" class="ep_sr_title">
-            <epc:choose>
-              <epc:when test="is_collapsed">
-                <a onclick="EPJS_toggleSlideScroll('{contentid}',false,'{main_id}');EPJS_toggle('{colbarid}',true);EPJS_toggle('{barid}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link">
-                  <img alt="+" src="/style/images/minus.png" border="0">
+      <div id="{title_bar{id}}" class="ep_sr_title_bar">
+        <div class="ep_sr_title_bar_inner">
+          <div>
+            <div id="{title_div{id}}" class="ep_sr_title">
+              <epc:choose>
+                <epc:when test="can_collapse">
+                  <label class="ep_only_js ep_styled_checkbox">
+                    <input type="checkbox" id="{prefix}_content_checkbox" onclick="EPJS_checkboxSlide('{prefix}_content');">
+                      <epc:if test="!is_collapsed">
+                        <epc:attribute name="checked">checked</epc:attribute>
+                      </epc:if>
+                    </input>
+                    <img class="ep_unchecked" src="/style/images/plus.png" alt="+" />
+                    <img class="ep_checked" src="/style/images/minus.png" alt="-" />
+                    <span class="align-middle"><epc:print expr="col_link{render_title}" /></span>
+                  </label>
+                  <div class="ep_no_js">
                     <epc:print expr="col_link{render_title}"/>
-                  </img>
-                </a>
-                <div class="ep_no_js">
-                  <epc:print expr="col_link{render_title}"/>
-                </div>
-              </epc:when>
-              <epc:otherwise>
-                <epc:print expr="render_title"/>
-              </epc:otherwise>
-            </epc:choose>
-          </div>
-        </epc:if>
-        <epc:if test="!no_toggle and has_help">
-          <div class="ep_sr_title_bar_inner">
-            <div>
-              <div>
-                <div id="{title_div{id}}" class="ep_sr_title">
-                  <epc:choose>
-                    <epc:when test="is_collapsed">
-                      <a onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false" class="ep_only_js ep_toggle ep_sr_collapse_link">
-                        <img alt="+" src="/style/images/minus.png" style="margin-right: 5px;" border="0">
-                          <epc:print expr="col_link{render_title}"/>
-                        </img>
-                      </a>
-                      <div class="ep_no_js">
-                        <epc:print expr="col_link{render_title}"/>
-                      </div>
-                    </epc:when>
-                    <epc:otherwise>
-                      <epc:print expr="render_title"/>
-                    </epc:otherwise>
-                  </epc:choose>
-                </div>
-              </div>
-              <div align="right">
-                <div class="ep_only_js">
-                  <div class="ep_sr_show_help ep_toggle " id="{help_item{prefix}}_show">
-                    <a onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/help.png" title="Show help" alt="+"/>
-                    </a>
                   </div>
-                  <div class="ep_sr_hide_help ep_toggle ep_hide" id="{help_item{prefix}}_hide">
-                    <a href="#" onclick="EPJS_toggleSlide('{help_item{prefix}}',false);EPJS_toggle('{help_item{prefix}}_hide',false);EPJS_toggle('{help_item{prefix}}_show',true);return false">
-                      <img border="0" src="/style/images/minus.png" title="Hide help" alt="-"/>
-                    </a>
-                  </div>
-                </div>
-              </div>
+                </epc:when>
+                <epc:otherwise>
+                  <epc:print expr="render_title"/>
+                </epc:otherwise>
+              </epc:choose>
             </div>
+            <div />
+            <epc:if test="!no_toggle and has_help">
+              <div align="right" class="ep_only_js">
+                <label class="ep_styled_checkbox">
+                  <input type="checkbox" id="{help_item{prefix}}_checkbox" onclick="EPJS_checkboxSlide('{help_item{prefix}}');" />
+                  <img class="ep_unchecked" src="/style/images/help.png" title="Show help" alt="?" />
+                  <img class="ep_checked" src="/style/images/minus.png" title="Hide help" alt="-" />
+                </label>
+              </div>
+            </epc:if>
           </div>
-        </epc:if>
-      </div>
-      <epc:if test="is_collapsed">
-        <div class="ep_sr_collapse_bar ep_only_js ep_toggle" id="{col_div{id}}">
-          <a class="ep_sr_collapse_link" onclick="EPJS_toggleSlideScroll('{col_link{contentid}}',false,'{col_link{main_id}}');EPJS_toggle('{col_link{colbarid}}',true);EPJS_toggle('{col_link{barid}}',false);return false">
-            <img alt="+" src="/style/images/plus.png" style="margin-right: 5px;" border="0">
-              <epc:print expr="col_link{render_title}"/>
-            </img>
-          </a>
         </div>
-      </epc:if>
-      <div id="{prefix}_content" class="{content{class}} ep_sr_content">
-        <div id="{content_inner{id}}">
+      </div>
+      <div id="{prefix}_content" class="{content{class}} ep_toggleable">
+        <div id="{prefix}_content_inner" class="ep_sr_content">
           <epc:if test="has_help">
-            <div id="{help_item{prefix}}" class="ep_sr_help {help_item{hide_class}}">
-              <div id="{help_item{prefix}}_inner" class="">
+            <div id="{help_item{prefix}}" class="{help_item{hide_class}} ep_toggleable">
+              <div id="{help_item{prefix}}_inner" class="ep_sr_help">
                 <epc:print expr="help_item{render_help}"/>
               </div>
             </div>
@@ -1260,23 +1224,20 @@
         </div>
       </div>
       <div class="ep_upload_doc_expansion_bar ep_only_js">
-        <a onclick="EPJS_toggleSlideScroll('{doc_prefix}_opts',{if(hide, 'false', 'true')},'{doc_prefix}_block');EPJS_toggle('{doc_prefix}_opts_hide',{if(hide, 'false', 'true')},'block');EPJS_toggle('{doc_prefix}_opts_show',{if (hide, 'true','false')},'block');return false">
-          <div id="{doc_prefix}_opts_show" class="ep_update_doc_options {if (hide, '','ep_hide')}">
-            <label for="{doc_prefix}_opts_show">
-              <epc:print expr="show_label"/>
-            </label>
-            <input type="image" src="{imagesurl}/style/images/plus.svg" alt="+" id="{doc_prefix}_opts_show"/>
-          </div>
-          <div id="{doc_prefix}_opts_hide" class="ep_update_doc_options {if (hide, 'ep_hide', '')}">
-            <label for="{doc_prefix}_opts_hide">
-              <epc:print expr="hide_label"/>
-            </label>
-            <input type="image" src="{imagesurl}/style/images/minus.svg" alt="-" id="{doc_prefix}_opts_hide"/>
-          </div>
-        </a>
+	    <label class="ep_styled_checkbox ms-auto">
+          <input type="checkbox" id="{doc_prefix}_opts_checkbox" onclick="EPJS_checkboxSlide('{doc_prefix}_opts');">
+            <epc:if test="!hide"><epc:attribute name="checked">checked</epc:attribute></epc:if>
+          </input>
+
+          <span class="ep_unchecked align-middle"><epc:print expr="show_label"/></span>
+          <img class="ep_unchecked ms-1" src="/style/images/plus.png" title="Show options" alt="+" />
+
+          <span class="ep_checked align-middle"><epc:print expr="hide_label"/></span>
+          <img class="ep_checked ms-1" src="/style/images/minus.png" title="Hide options" alt="-" />
+        </label>
       </div>
-      <div class="ep_upload_doc_content {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
-        <div class="" id="{doc_prefix}_opts_inner">
+      <div class="ep_toggleable {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
+        <div class="ep_upload_doc_content" id="{doc_prefix}_opts_inner">
           <epc:print expr="doc_metadata"/>
         </div>
       </div>
