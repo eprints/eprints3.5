@@ -1302,22 +1302,21 @@
         </div>
       </div>
       <div class="ep_upload_doc_expansion_bar ep_only_js p-2 mt-2 border-top">
-        <a class="d-flex text-black" onclick="EPJS_toggleSlideScroll('{doc_prefix}_opts',{if(hide, 'false', 'true')},'{doc_prefix}_block');EPJS_toggle('{doc_prefix}_opts_hide',{if(hide, 'false', 'true')},'block');EPJS_toggle('{doc_prefix}_opts_show',{if (hide, 'true','false')},'block');return false">
-          <div id="{doc_prefix}_opts_show" class="ep_update_doc_options ms-auto {if (hide, '','ep_hide')}">
-            <label for="{doc_prefix}_opts_show" class="p-1">
-              <epc:print expr="show_label"/>
-            </label>
-            <input class="align-middle ms-1" type="image" src="{imagesurl}/style/images/plus.svg" alt="+" id="{doc_prefix}_opts_show"/>
-          </div>
-          <div id="{doc_prefix}_opts_hide" class="ep_update_doc_options ms-auto {if (hide, 'ep_hide', '')}">
-            <label for="{doc_prefix}_opts_hide">
-              <epc:print expr="hide_label"/>
-            </label>
-            <input class="align-middle ms-1" type="image" src="{imagesurl}/style/images/minus.svg" alt="-" id="{doc_prefix}_opts_hide"/>
-          </div>
-        </a>
+        <div class="d-flex">
+          <label class="ep_styled_checkbox ms-auto">
+            <input type="checkbox" id="{doc_prefix}_opts_checkbox" onclick="EPJS_checkboxSlide('{doc_prefix}_opts');">
+              <epc:if test="!hide"><epc:attribute name="checked">checked</epc:attribute></epc:if>
+            </input>
+
+            <span class="ep_unchecked align-middle"><epc:print expr="show_label"/></span>
+            <img class="ep_unchecked ms-1" src="/style/images/plus.svg" title="Show options" alt="+" />
+
+            <span class="ep_checked align-middle"><epc:print expr="hide_label"/></span>
+            <img class="ep_checked ms-1" src="/style/images/minus.svg" title="Hide options" alt="-" />
+          </label>
+        </div>
       </div>
-      <div class="ep_upload_doc_content {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
+      <div class="ep_upload_doc_content ep_toggleable {if (hide, 'ep_no_js', '')}" id="{doc_prefix}_opts">
         <div class="" id="{doc_prefix}_opts_inner">
           <epc:print expr="doc_metadata"/>
         </div>
