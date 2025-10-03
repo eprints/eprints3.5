@@ -203,3 +203,39 @@ div.ep_table {
 	padding-top: 2em;
 	text-align: center;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+	div.ep_toggleable {
+		transition: height .3s;
+	}
+}
+
+div.ep_toggleable {
+	overflow: hidden;
+}
+
+.ep_styled_checkbox {
+	cursor: pointer;
+}
+.ep_styled_checkbox img {
+	margin-right: 6px;
+}
+
+.ep_styled_checkbox input {
+	display: none;
+}
+.ep_styled_checkbox .ep_checked {
+	display: none;
+}
+.ep_styled_checkbox input:checked ~ .ep_checked {
+	display: inline;
+}
+.ep_styled_checkbox input:checked ~ .ep_unchecked {
+	display: none;
+}
+
+/* Hide help buttons on collapsed components */
+div.ep_sr_title:has(label.ep_styled_checkbox > input:not(:checked)) ~ div.ep_only_js {
+	display: none;
+}
+
