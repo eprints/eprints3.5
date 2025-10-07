@@ -2541,12 +2541,20 @@ sub get_warnings
 	my $old_warnings_fn = $self->get_dataset_id."_warnings";
 	if( $self->{session}->can_call( $old_warnings_fn ) )
 	{
+		$self->{session}->log( "UPGRADE: configuration uses '$old_warnings_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_WARNINGS'." );
 		push @warnings, $self->{session}->call( 
 			$old_warnings_fn,
 			$self, 
 			$self->{session},
 			$for_archive );
 	}
+
+	$self->{dataset}->run_trigger(
+		EPrints::Const::EP_TRIGGER_WARNINGS,
+		dataobj => $self,
+		warnings => \@warnings,
+		for_archive => $for_archive,
+	);
 
 	return \@warnings;
 }

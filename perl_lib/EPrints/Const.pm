@@ -203,6 +203,12 @@ Validate a field's value.
 
 =item EP_TRIGGER_WARNINGS
 
+Called to generate warnings about the state of a data object (e.g. missing or inappropriate metadata field values).
+
+	dataobj - The data object this is being run on
+	warnings - ARRAYREF of DOM warnings encountered
+	for_archive - Whether this is being checked to go live (`1` means it is)
+
 =item EP_TRIGGER_FILES_MODIFIED
 
 =item EP_TRIGGER_MEDIA_INFO
