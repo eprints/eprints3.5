@@ -6,7 +6,7 @@ $c->add_dataset_trigger( 'user', EP_TRIGGER_DEFAULTS, sub {
 
 	# Default columns show in Items screens
 	$data->{items_fields} = [ 'lastmod', 'title', 'type', 'eprint_status' ];
-});
+}, id => 'core_user_defaults' );
 
 =head1 COPYRIGHT
 

@@ -59,7 +59,7 @@ $c->add_trigger( EP_TRIGGER_LOG,
 		}
 	},
 	priority => 1,
-	id => 'LOG',
+	id => 'log',
 );
 
 =head1 COPYRIGHT
