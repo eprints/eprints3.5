@@ -1,35 +1,32 @@
 ######################################################################
 #
-# validate_user( $user, $repository, $for_archive ) 
+# EP_TRIGGER_VALIDATE 'user' dataset trigger
 #
 ######################################################################
-# $user 
+#
+# $dataobj 
 # - User object
 # $repository 
 # - Repository object (the current repository)
 # $for_archive
-# - boolean (see comments at the start of the validation section)
-#
-# returns: @problems
-# - ARRAY of DOM objects (may be null)
+# - Is this being checked to go live (`1` means it is)
+# $problems
+# - ARRAYREF of DOM objects
 #
 ######################################################################
+#
 # Validate a user, although all the fields will already have been
 # checked with validate_field so only complex problems need to be
 # tested.
 #
 ######################################################################
 
-$c->{validate_user} = sub
-{
-	my( $user, $repository, $for_archive ) = @_;
-
-	my @problems = ();
-
-	# CHECKS IN HERE
-
-	return( @problems );
-};
+#$c->add_dataset_trigger( 'user', EPrints::Const::EP_TRIGGER_VALIDATE, sub {
+#	my( %args ) = @_;
+#	my( $repository, $user, $for_archive, $problems ) = @args{qw( repository dataobj for_archive problems )};
+#
+#	push @$problems, $repository->make_text( 'Demo user validation trigger' );
+#}, id => 'demo_id' );
 
 1;
 

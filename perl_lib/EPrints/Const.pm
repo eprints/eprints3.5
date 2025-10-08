@@ -118,6 +118,10 @@ Continue normal processing.
 
 =item EP_TRIGGER_LOG
 
+Called to log something important. By default it sends everything to STDERR meaning it ends up in the Apache error log. This should be used if you want to add extra information (such as the repository ID) to log messages or log to a particular file.
+
+	message - string that should be logged
+
 =item EP_TRIGGER_BEGIN
 
 Called immediately after the 'session_init' config method (see archive config or lib/cfg.d/session.pl). These triggers should not set a return value, so all of them can run. Could be used to pre-cache information in the session, or other 'expensive' tasks that should run once.
@@ -170,6 +174,10 @@ Called just before the object is removed from the database.
 
 =item EP_TRIGGER_DEFAULTS
 
+Called when a new object is being created to set its default values.
+
+	data - What values it will currently be created with (after core has set defaults)
+
 =item EP_TRIGGER_STATUS_CHANGE
 
 =item EP_TRIGGER_BEFORE_COMMIT
@@ -177,6 +185,12 @@ Called just before the object is removed from the database.
 =item EP_TRIGGER_AFTER_COMMIT
 
 =item EP_TRIGGER_VALIDATE
+
+Called when data object fields are being checked for their validity. This will occur after C<EP_TRIGGER_VALIDATE_FIELD> so should only be used for complex multi-field validation.
+
+	dataobj - The data object this is being run on
+	problems - ARRAYREF of DOM problems encountered
+	for_archive - Whether this is being validated to go live (`1` means it is)
 
 =item EP_TRIGGER_VALIDATE_FIELD
 
@@ -188,6 +202,12 @@ Validate a field's value.
 	problems - ARRAYREF of DOM problems encountered
 
 =item EP_TRIGGER_WARNINGS
+
+Called to generate warnings about the state of a data object (e.g. missing or inappropriate metadata field values).
+
+	dataobj - The data object this is being run on
+	warnings - ARRAYREF of DOM warnings encountered
+	for_archive - Whether this is being checked to go live (`1` means it is)
 
 =item EP_TRIGGER_FILES_MODIFIED
 

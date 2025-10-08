@@ -452,14 +452,16 @@ sub get_defaults
     my $old_default_fn = "set_".$class->get_dataset_id."_defaults";
     if( $session->can_call( $old_default_fn ) )
     {
+		$session->log( "UPGRADE: configuration uses '$old_default_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_DEFAULTS'." );
         $session->call(
             $old_default_fn,
             $data,
             $session,
             $data->{_parent} );
     }
+	$dataset->run_trigger( EPrints::Const::EP_TRIGGER_DEFAULTS, data => $data );
 
-    return $data;
+	return $data;
 }
 
 
@@ -2498,12 +2500,20 @@ sub validate
 	my $old_validate_fn = "validate_".$self->get_dataset_id;
 	if( $self->{session}->can_call( $old_validate_fn ) )
 	{
+		$self->{session}->log( "UPGRADE: configuration uses '$old_validate_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_VALIDATE'." );
 		push @problems, $self->{session}->call( 
 			$old_validate_fn,
 			$self, 
 			$self->{session},
 			$for_archive );
 	}
+
+	$self->{dataset}->run_trigger(
+		EPrints::Const::EP_TRIGGER_VALIDATE,
+		dataobj => $self,
+		problems => \@problems,
+		for_archive => $for_archive,
+	);
 
 	return \@problems;
 }
@@ -2531,12 +2541,20 @@ sub get_warnings
 	my $old_warnings_fn = $self->get_dataset_id."_warnings";
 	if( $self->{session}->can_call( $old_warnings_fn ) )
 	{
+		$self->{session}->log( "UPGRADE: configuration uses '$old_warnings_fn'. Please review upgrade advice for trigger 'EP_TRIGGER_WARNINGS'." );
 		push @warnings, $self->{session}->call( 
 			$old_warnings_fn,
 			$self, 
 			$self->{session},
 			$for_archive );
 	}
+
+	$self->{dataset}->run_trigger(
+		EPrints::Const::EP_TRIGGER_WARNINGS,
+		dataobj => $self,
+		warnings => \@warnings,
+		for_archive => $for_archive,
+	);
 
 	return \@warnings;
 }

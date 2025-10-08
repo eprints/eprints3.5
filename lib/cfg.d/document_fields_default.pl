@@ -1,11 +1,11 @@
+$c->add_dataset_trigger( 'document', EP_TRIGGER_DEFAULTS, sub {
+	my( %params ) = @_;
+	my $repo = $params{repository};
+	my $data = $params{data};
 
-$c->{set_document_defaults} = sub 
-{
-	my( $data, $repository, $eprint ) = @_;
-
-	$data->{language} = $repository->get_langid();
-	$data->{security} = "public";
-};
+	$data->{language} = $repo->get_langid();
+	$data->{security} = 'public';
+}, id => 'core_document_defaults' );
 
 $c->{eprint_details_document_fields} = [
         "content",
