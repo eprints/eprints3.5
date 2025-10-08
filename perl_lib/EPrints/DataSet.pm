@@ -629,15 +629,30 @@ sub register_field
 	if( exists $self->{field_index}->{$fieldname} )
 	{
 		my $old_field = $self->{field_index}->{$fieldname};
-		if(
+		if ( $old_field->property( "provenance" ) eq "config" )
+		{
+			if ( !$field->property( "replace_config" ) )
+			{
+				EPrints->abort( "Duplicate field name encountered in configuration without 'replace_config' property: ".$self->base_id.".".$fieldname );
+			}
+		}
+		elsif(
 			$system ||
 			$old_field->property( "provenance" ) ne "core" ||
 			!$field->property( "replace_core" )
-		  )
+		)
 		{
 			EPrints->abort( "Duplicate field name encountered: ".$self->base_id.".".$fieldname );
 		}
 		$self->unregister_field( $old_field );
+	}
+	elsif( $field->property( "replace_config" ) )
+	{
+		$self->{repository}->log( "Initial field configuration contains 'replace_config' property: ".$self->base_id.".".$fieldname );
+	}
+	elsif( $field->property( "replace_core" ) )
+	{
+		$self->{repository}->log( "Initial field configuration contains 'replace_core' property: ".$self->base_id.".".$fieldname );
 	}
 
 	push @{$self->{fields}}, $field;
