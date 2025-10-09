@@ -113,46 +113,32 @@ sub EPrints::Box::render
 	$nojstitle->appendChild( $session->clone_for_me( $options{title},1 ) );
 	$div_title->appendChild( $nojstitle );
 
-	my $collapse_bar = $session->make_element( "div", class=>"ep_only_js", id=>$colbarid );
-	my $collapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_toggleSlideScroll('${contentid}',true,'${id}');EPJS_toggle('${colbarid}',true);EPJS_toggle('${barid}',false);return false", href=>"#" );
-	$collapse_link->appendChild( $session->make_element( "img", alt=>"-", src=>$options{hide_icon_url}, border=>0 ) );
-	$collapse_link->appendChild( $session->make_text( " " ) );
-	$collapse_link->appendChild( $session->clone_for_me( $options{title},1 ) );
-	$collapse_bar->appendChild( $collapse_link );
-	$div_title->appendChild( $collapse_bar );
-
-	my $a = "true";
-	my $b = "false";
-	if( $options{collapsed} ) 
-	{ 
-		$b = "true";
-		$a = "false";
-	}
-	my $uncollapse_bar = $session->make_element( "div", class=>"ep_only_js", id=>$barid );
-	my $uncollapse_link = $session->make_element( "a", class=>"ep_box_collapse_link", onclick => "EPJS_toggleSlideScroll('${contentid}',false,'${id}');EPJS_toggle('${colbarid}',$a);EPJS_toggle('${barid}',$b);return false", href=>"#" );
-	$uncollapse_link->appendChild( $session->make_element( "img", alt=>"+", src=>$options{show_icon_url}, border=>0 ) );
-	$uncollapse_link->appendChild( $session->make_text( " " ) );
-	$uncollapse_link->appendChild( $session->clone_for_me( $options{title},1 ) );
-	$uncollapse_bar->appendChild( $uncollapse_link );
-	$div_title->appendChild( $uncollapse_bar );
+	my $bar = $div_title->appendChild( $session->make_element( 'div', class => 'ep_only_js' ) );
+	my $checkbox_label = $bar->appendChild( $session->make_element( 'label', class => 'ep_styled_checkbox' ) );
+	my $checkbox = $checkbox_label->appendChild( $session->make_element(
+		'input',
+		type => 'checkbox',
+		id => "${contentid}_checkbox",
+		onclick => "EPJS_checkboxSlide('${contentid}')"
+	) );
+	$checkbox_label->appendChild( $session->make_element( 'img', class => 'ep_unchecked', src => $options{show_icon_url}, alt => '?' ) );
+	$checkbox_label->appendChild( $session->make_element( 'img', class => 'ep_checked', src => $options{hide_icon_url}, alt => '-' ) );
+	my $checkbox_span = $checkbox_label->appendChild( $session->make_element( 'span', class => 'align-middle' ) );
+	$checkbox_span->appendChild( $session->clone_for_me( $options{title}, 1 ) );
 	
 	# Body	
-	my $div_body = $session->make_element( "div", class=>"ep_summary_box_body", id=>$contentid );
-	my $div_body_inner = $session->make_element( "div", id=>$contentid."_inner", style=>$options{content_style} );
+	my $div_body = $session->make_element( "div", class=>"ep_toggleable", id=>$contentid );
+	my $div_body_inner = $session->make_element( "div", class => 'ep_summary_box_body', id=>$contentid."_inner", style=>$options{content_style} );
 	$div_body->appendChild( $div_body_inner );
 	$div->appendChild( $div_body );
 	$div_body_inner->appendChild( $options{content} );
 
-	if( $options{collapsed} ) 
-	{ 
-		$collapse_bar->setAttribute( "style", "display: none" ); 
+	if( $options{collapsed} ) {
 		$div_body->setAttribute( "style", "display: none" ); 
+	} else {
+		$checkbox->setAttribute( 'checked', 'checked' );
 	}
-	else
-	{
-		$uncollapse_bar->setAttribute( "style", "display: none" ); 
-	}
-		
+
 	return $div;
 }
 
