@@ -61,7 +61,7 @@ sub render_action_link
 		configfile => $conffile,
 	);
 
-	$opts{class} = "ep_tm_key_tools_item_link" if not defined $opts{class};
+	$opts{class} = "nav-link text-black" if not defined $opts{class};
 	my $link = $self->{session}->render_link( $uri, undef, %opts );
 	$link->appendChild( $self->{session}->html_phrase( "lib/session:edit_page" ) );
 
