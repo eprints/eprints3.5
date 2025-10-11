@@ -121,7 +121,7 @@ sub EPrints::Box::render
 		id => "${contentid}_checkbox",
 		onclick => "EPJS_checkboxSlide('${contentid}')"
 	) );
-	$checkbox_label->appendChild( $session->make_element( 'img', class => 'ep_unchecked', src => $options{show_icon_url}, alt => '?' ) );
+	$checkbox_label->appendChild( $session->make_element( 'img', class => 'ep_unchecked', src => $options{show_icon_url}, alt => '+' ) );
 	$checkbox_label->appendChild( $session->make_element( 'img', class => 'ep_checked', src => $options{hide_icon_url}, alt => '-' ) );
 	my $checkbox_span = $checkbox_label->appendChild( $session->make_element( 'span', class => 'align-middle' ) );
 	$checkbox_span->appendChild( $session->clone_for_me( $options{title}, 1 ) );
