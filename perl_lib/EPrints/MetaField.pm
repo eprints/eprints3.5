@@ -67,6 +67,10 @@ Indicates where the field was initialised from. "core" fields are defined in L<D
 
 Normally any attempt to define two fields with the same name will fail. However, you can replace a core system field by specifying the "replace_core" property. This should be used very carefully!
 
+=item replace_config => 0
+
+This is similar to C<replace_core> but is only applicable to fields that were defined earlier in configuration rather than in a core code file (e.g. C<EPrints::DataObj::...>. This should still be used carefully but its potential to be dangerous is less.
+
 =back
 
 =end InternalDoc
@@ -2546,6 +2550,7 @@ sub get_property_defaults
 	return (
 		provenance => EP_PROPERTY_FROM_CONFIG,
 		replace_core => EP_PROPERTY_FALSE,
+		replace_config => EP_PROPERTY_FALSE,
 		allow_null 	=> EP_PROPERTY_TRUE,
 		browse_link 	=> EP_PROPERTY_UNDEF,
 		can_clone 	=> EP_PROPERTY_TRUE,
