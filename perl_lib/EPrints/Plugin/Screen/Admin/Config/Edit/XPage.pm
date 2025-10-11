@@ -61,11 +61,9 @@ sub render_action_link
 		configfile => $conffile,
 	);
 
-	$opts{class} = "nav-link text-black" if not defined $opts{class};
-	my $link = $self->{session}->render_link( $uri, undef, %opts );
-	$link->appendChild( $self->{session}->html_phrase( "lib/session:edit_page" ) );
-
-	return $link;
+	$opts{uri} = $uri;
+	$opts{link_title} = $self->{session}->html_phrase( "lib/session:edit_page" );
+	return $self->SUPER::render_action_link( %opts );
 }
 
 1;
