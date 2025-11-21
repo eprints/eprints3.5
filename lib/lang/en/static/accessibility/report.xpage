@@ -341,11 +341,6 @@
     <td>19 (of 39) alerts are caused by thumbnail image previews of PDFs having the same alternative text, as a result of the original PDF filenames are the same, due to the way the import_test_data script works. The other 20 (of 39) alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. (Based on a search where "Item Status" is "Live Archive".)</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/cgi/users/home?screen=BatchEdit&amp;cache=1">/cgi/users/home?screen=BatchEdit&amp;...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;21</div></td>
-    <td>None. (Based on using results from earlier admin item search.)</td>
-  </tr>
-  <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AIssueSearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AIssueSearch</a></td>
     <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;46&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;66</div></td>
     <td>None</td>
