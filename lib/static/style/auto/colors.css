@@ -31,11 +31,8 @@ h1, h2, h3, h4 {
 
 .ep_tm_header {
 	background-color: #fff;
-	background-image: url(images/logo_background_light.png);
-	background-repeat: repeat-y;
 }
 .ep_tm_menu, .ep_tm_menu li:hover {
-	background-image: url(images/bar_glass.png) ;
 	background-position: 0px 5px;
 }
 .ep_tm_footer {
@@ -78,7 +75,6 @@ h1, h2, h3, h4 {
 
 .ep_form_action_button, .ep_form_internal_button, .ep_tm_searchbarbutton, .ep_blister_node_selected {
 	border-color: #5b97c7 #13324a #13324a #5287b3;
-	background-image: url(images/bar_12px.png);
 	background-color: #1f4f76;
 	color: white;
 }
@@ -92,7 +88,6 @@ h1, h2, h3, h4 {
 .ep_blister_node {
 	border-color: #cccccc;
 	background-color: #e8e8ff;
-	background-image: url(images/bar_solid_12px.png);
 	color: #000000;
 }
 .ep_blister_node:active {
@@ -109,10 +104,6 @@ h1, h2, h3, h4 {
 ,.ep_view_group_by /* view.css */
 {
 	background-color: #ffffff;
-}
-.ep_summary_box_title, .ep_sr_title_bar, .ep_sr_collapse_bar {
-	background-image: url(images/bar_solid_12px.png);
-	background-repeat: repeat-x;
 }
 .ep_sr_content, .ep_summary_box_body,
 .ep_tab_panel,
@@ -155,11 +146,6 @@ th.ep_row, td.ep_row {
 
 /* messages.css */
 
-.ep_msg_message_content, .ep_msg_warning_content, .ep_msg_error_content, .ep_msg_other_content {
-	background-image: url(images/bar_solid_48px.png);
-	background-repeat: repeat-x;
-}
-
 .ep_msg_message_content {
 	background-color: #80ff80;
 	border-color: #80ff80;
@@ -192,5 +178,4 @@ td.ep_columns_cell {
 ,.ep_view_group_by /* view.css */
 {
 	border-color: #cccccc;
-	background-image: url(images/bar_24px.png);
 }
