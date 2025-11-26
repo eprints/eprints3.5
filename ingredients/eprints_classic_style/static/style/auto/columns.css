@@ -1,0 +1,75 @@
+
+/* paginated columns */
+
+.ep_columns {
+	margin: auto;
+	border: 1px solid #888;
+	border-radius: 5%;
+}
+
+td.ep_columns_cell {
+	border-style: none none solid none;
+	border-width: 1px;
+	border-color: #ccc;
+}
+
+
+th.ep_columns_title, td.ep_columns_alter {
+	border-width: 1px;
+	font-weight: normal;
+}
+
+th.ep_columns_title {
+	border-style: none none solid none;
+}
+td.ep_columns_alter {
+	border-style: solid none none none;
+}
+th.ep_columns_title:first-child, td.ep_columns_alter:first-child {
+	border-left-style: solid;
+}
+
+
+th.ep_columns_title a {
+	font-weight: normal;
+}
+
+
+td.ep_columns_no_items {
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	padding: 0.5em;
+	text-align: center;
+	font-size: 120%;
+}
+
+.ep_columns_add {
+	text-align: center;
+}
+
+.ep_columns_title_inner, .ep_columns_alter_inner {
+	display: table;
+	border-width: 0; 
+	margin-left:auto;
+	margin-right: auto;
+}
+
+.ep_columns_title_inner > div, .ep_columns_alter_inner > div {
+	display: table-row;
+}
+
+.ep_columns_title_inner > div > div, .ep_columns_alter_inner > div > div {
+        display: table-cell;
+}
+
+.ep_columns_title_inner_sort {
+	width: 22px; 
+	text-align: right;
+	vertical-align: middle;
+}
+
+.ep_columns_title_inner_sort img {
+	border: 0px;
+	padding: 4px;
+}

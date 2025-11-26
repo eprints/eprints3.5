@@ -1,0 +1,60 @@
+
+/* style for metafields */
+
+dl.ep_field_set_long dt {
+	margin-bottom: 0.2em;
+	font-weight: bold;
+}
+
+dl.ep_field_set_long dd {
+	margin-bottom: 0.5em;
+}
+
+.ep_compound, .ep_compound_list > div {
+	display: table; 
+	border: 1px; 
+	border-spacing: 0; 
+	border-collapse: separate; 
+	padding: 2px;
+}
+
+.ep_compound_header_row, .ep_compound_data_row, .ep_compound_list > div > div {
+	display: table-row;
+}
+
+.ep_compound_header_cell, .ep_compound_data_row > div, .ep_compound_list > div > div > div {
+	display: table-cell; 
+	padding: 0.2em 0.5em;
+}
+
+.ep_compound_header_cell {
+	font-weight: bold;
+}
+
+.ep_compound_single {
+	display: table; 
+	border: 1px;
+}
+
+#c6_editperms_1_type_label::after {
+        content: "";
+}
+
+.ep_itemref_desc {
+	padding: 0 0.5em;
+}
+
+.ep_field_set_long > dd
+{
+	padding-left: 0.5em;
+}
+
+.ep_field_legend {
+	display: none;
+}
+
+/* Used by Longtext_counter to highlight when it is over the word limit*/
+.ep_over_word_limit {
+	color: red;
+	font-weight: bold;
+}

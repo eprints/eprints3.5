@@ -1,0 +1,124 @@
+
+/* EPrints 3 search form style */
+
+
+
+/* buttons are on the form, controls on the results */
+.ep_search_buttons, .ep_search_controls, .ep_search_controls_bottom {
+	border-style: solid none;
+	border-width: 1px;
+	text-align: center;
+	padding: 4px 0px;
+	margin: 4px 0px 12px 0px;
+}
+
+.ep_search_fields {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+.ep_search_fields th {
+	padding: 4px;
+}
+	
+.ep_search_fields td {
+	padding: 4px;
+}	
+
+.ep_search_export {
+	margin: 0.25em auto 0.25em auto;
+}
+
+.ep_search_export div[role="toolbar"] {
+	margin: 1em;
+}
+
+.ep_search_reorder {
+	margin: 0.4em auto 0 auto;
+	text-align: center;
+}
+
+.ep_search_tool {
+	white-space: nowrap;
+}
+.ep_search_tool img {
+	vertical-align: -2px;
+	padding-left: 0.5em;
+}
+.ep_search_tool a {
+	text-decoration: none;
+}
+
+
+.ep_search_feed {
+	white-space: nowrap;
+}
+.ep_search_feed img {
+	vertical-align: -2px;
+	padding-left: 0.5em;
+}
+.ep_search_feed a {
+	text-decoration: none;
+	color: #666;
+}
+
+.ep_search_results
+{
+	margin: 1em auto 1em auto;
+}
+
+.ep_search_desc
+{
+	text-align: center;
+	margin: 0.25em 0 0 0;
+}
+
+.ep_search_result 
+{
+	display: table-row;
+}
+
+.ep_search_result > div
+{
+	padding: 4px 0.5em 4px 4px;
+	border-bottom: dashed #bbf 1px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.ep_search_result_docs
+{
+	white-space: nowrap;
+	float: right;
+	min-height: 48px;
+}
+
+.ep_paginate_list
+{
+	margin: auto;
+	display: table;
+	width: 100%;
+}
+
+.ep_search_field_name
+{
+	font-weight: bold;
+	margin-top: 0.5em;
+}
+
+input.ep_form_search_advanced_link, input.ep_form_search_advanced_link:hover {
+        border: none;
+        text-decoration: underline;
+        background: none;
+        color: #00f;
+        cursor: pointer;
+}
+
+span.search_desc {
+	font-style: italic;
+	text-decoration: underline;
+}
+
+.ep_search_reorder {
+    margin: 0.4em 0 0 auto;
+    text-align: center;
+}
