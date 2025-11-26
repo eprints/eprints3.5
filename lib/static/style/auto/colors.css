@@ -71,57 +71,6 @@ h1, h2, h3, h4 {
 	border-right: none;
 }
 
-/* form.css */
-
-.ep_form_action_button, .ep_form_internal_button, .ep_tm_searchbarbutton, .ep_blister_node_selected {
-	border-color: #5b97c7 #13324a #13324a #5287b3;
-	background-color: #1f4f76;
-	color: white;
-}
-.ep_form_action_button:active, .ep_form_internal_button:active, .ep_tm_searchbarbutton:active, .ep_blister_node_selected:active {
-	border-color: #13324a #5287b3 #5287b3 #13324a;
-	background-color: #276496;
-}
-
-/* blister.css */
-
-.ep_blister_node {
-	border-color: #cccccc;
-	background-color: #e8e8ff;
-	color: #000000;
-}
-.ep_blister_node:active {
-	border-color: #276496;
-}
-
-/* summary.css surround.css */
-
-.ep_summary_box_title, .ep_summary_box_body, .ep_sr_title_bar, .ep_sr_content, .ep_sr_collapse_bar
-,.ep_tab_panel
-,.ep_toolbox_content /* toolbox.css */
-/* upload.css */
-,.ep_search_buttons, .ep_search_controls, .ep_search_controls_bottom /* search.css */
-,.ep_view_group_by /* view.css */
-{
-	background-color: #ffffff;
-}
-.ep_sr_content, .ep_summary_box_body,
-.ep_tab_panel,
-.ep_toolbox_content /* toolbox.css */
-/* upload.css */
-{
-}
-.ep_summary_box_title, .ep_summary_box_body, .ep_sr_title_bar, .ep_sr_content, .ep_sr_collapse_bar
-,.ep_tab_panel, .ep_tab_bar li, .ep_tab_bar li a
-,.ep_toolbox_content /* toolbox.css */
-/* upload.css */
-{
-	border-color: #ccc;
-}
-
-/* tabs.css */
-
-
 /* unselected tab */
 .ep_tab_bar li a {
 	background-color: #f0f0f0; 
