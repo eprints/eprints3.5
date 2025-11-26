@@ -1,0 +1,22 @@
+.ep_eprint_contributions_contributor_name {
+    width: 200px;
+}
+
+.ep_eprint_contributions_contributor_id_value {
+    width: 200px;
+}
+
+.ep_eprint_contributions_contributor_id_type {
+    width: 110px;
+}
+
+.ep_entity_span, .ep_entity_button {
+    display: table-cell;
+    width: 100%;
+    padding-right: 0.3em;
+}
+
+.ep_entity_button {
+    text-align: right;
+}
+
