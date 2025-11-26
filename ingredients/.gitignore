@@ -1,5 +1,8 @@
 # Ignore everything in this directory
-/*
-# Except this file
+*
+# Do not ignore this file
 !.gitignore
+
+# Do not ignore this directory and all of its contents
+!eprints_classic_style/
 !eprints_classic_style/**

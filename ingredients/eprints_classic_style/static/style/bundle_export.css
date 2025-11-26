@@ -1,0 +1,19 @@
+h1, h2 {
+	font-weight: 500;
+}
+
+a {
+	text-decoration: none;
+}
+
+.ep_search_result_docs {
+	min-height: 40px;	
+}
+
+.ep_outer_group {
+	font-family: sans-serif;
+}
+
+img[alt="orcid logo"] {
+	display: none;
+}
