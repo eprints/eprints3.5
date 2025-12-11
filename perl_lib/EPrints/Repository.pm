@@ -1406,6 +1406,8 @@ sub _load_namedsets
 			open( FILE, $file ) || EPrints::abort( "Could not read $file" );
 
 			my @types = ();
+			my @type_groups = ();
+			my $group_counter = -1;
 			foreach my $line (<FILE>)
 			{
 				$line =~ s/\015?\012?$//s;
@@ -1415,11 +1417,24 @@ sub _load_namedsets
 				my @values = split(' ',$line);
 				$line = $values[0];
 				next if (!defined $line);
-				push @types, $line;
+				if ( substr( $line, 0, 1 ) eq "-" )
+				{
+					$line =~ s/^-\s*//;
+					$type_groups[++$group_counter] = {
+						id => $line,
+						types => [],
+					};
+				}
+				else
+				{
+					push @types, $line;
+					push @{$type_groups[$group_counter]->{types}}, $line if $group_counter >= 0;
+				}
 			}
 			close FILE;
 
 			$self->{types}->{$type_set} = \@types;
+			$self->{type_groups}->{$type_set} = \@type_groups if $group_counter >= 0;
 		}
 
 	}
@@ -1435,7 +1450,7 @@ sub _load_namedsets
 =item @type_ids = $repository->get_types( $type_set )
 
 Return an array of keys for the named set. Comes from 
-/cfg/types/foo.xml
+/cfg/namedsets/foo.xml
 
 =end InternalDoc
 
@@ -1454,6 +1469,35 @@ sub get_types
 
 	return @{$self->{types}->{$type_set}};
 }
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item %type_groups = $repository->get_type_groups( $type_set )
+
+Return a hash of groups for the named set. Comes from
+/cfg/namedsets/foo.xml
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+sub get_type_groups
+{
+    my( $self, $type_set ) = @_;
+
+    if( !defined $self->{type_groups}->{$type_set} )
+    {
+        $self->log( "Request for unknown named set: $type_set" );
+        return ();
+    }
+
+    return @{$self->{type_groups}->{$type_set}};
+}
+
 
 ######################################################################
 # 
@@ -3371,7 +3415,7 @@ sub render_language_name
 
 =begin InternalDoc
 
-=item $xhtml = $repository->render_type_name( $type_set, $type ) 
+=item $xhtml = $repository->render_type_name( $type_set, $type )
 
 Return a DOM object containing the description of the specified type
 in the type set. eg. "eprint", "article"
@@ -3388,12 +3432,14 @@ sub render_type_name
         return $self->html_phrase( $type_set."_typename_".$type );
 }
 
+
+
 ######################################################################
 =pod
 
 =begin InternalDoc
 
-=item $string = $repository->get_type_name( $type_set, $type ) 
+=item $string = $repository->get_type_name( $type_set, $type )
 
 As above, but return a utf-8 string. Used in <option> elements, for
 example.
@@ -3409,6 +3455,53 @@ sub get_type_name
 
         return $self->phrase( $type_set."_typename_".$type );
 }
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $xhtml = $repository->render_type_group_name( $type_set, $type_group )
+
+Return a DOM object containing the description of the specified group
+of types in the type set. eg. "people", "associations"
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+sub render_type_group_name
+{
+    my( $self, $type_set, $type_group ) = @_;
+
+	return $self->html_phrase( $type_set."_typegroupname_".$type_group );
+}
+
+
+
+######################################################################
+=pod
+
+=begin InternalDoc
+
+=item $string = $repository->get_type_group_name( $type_set, $type_group )
+
+As above, but return a utf-8 string. Used in <optgroup> elements, for
+example.
+
+=end InternalDoc
+
+=cut
+######################################################################
+
+sub get_type_group_name
+{
+    my( $self, $type_set, $type_group ) = @_;
+
+	return $self->phrase( $type_set."_typegroupname_".$type_group );
+}
+
 
 ######################################################################
 =pod
@@ -3469,6 +3562,7 @@ sub render_option_list
 	# pairs    :
 	# values   :
 	# labels   :
+	# groups   :
 	# name     :
 	# legend   :
 	# checkbox :
@@ -3534,10 +3628,12 @@ sub render_option_list
 
 	my $size = 0;
 	my $pairs_info = [];
+	my $pairs_index = {};
 	my $two_column_mode = 0;
 
 	foreach my $pair ( @{$pairs} )
 	{
+		$pairs_index->{$pair->[0]} = scalar @$pairs_info;
 		push @$pairs_info, {
 			key => $pair->[0],
 			desc => $pair->[1],
@@ -3546,6 +3642,22 @@ sub render_option_list
 		};
 
 		$size++;
+	}
+
+	my $groups = $params{groups};
+	my $groups_info = [];
+	foreach my $group ( @$groups )
+	{
+		my $group_pairs = [];
+		foreach my $option ( @{$group->{options}} )
+		{
+			push @$group_pairs, $pairs_info->[$pairs_index->{$option}];
+			delete $pairs_info->[$pairs_index->{$option}];
+	    }
+		push @$groups_info, {
+			label => $group->{label},
+			pairs => $group_pairs,
+		};
 	}
 
 	if( !$params{checkbox} )
@@ -3574,6 +3686,7 @@ sub render_option_list
 		aria_describedby => EPrints::Utils::is_set( $params{"aria-describedby"} ) ? $params{"aria-describedby"} : undef,
 		size => $size,
 		pairs => $pairs_info,
+		groups => $groups_info,
 		height => $params{height},
 	} } );
 }
@@ -5697,7 +5810,7 @@ sub init_from_request
 	return 1;
 }
 
-my @CACHE_KEYS = qw/ id citations class config datasets field_defaults html_templates template_path langs plugins storage template_mtime text_templates types workflows loadtime noise /;
+my @CACHE_KEYS = qw/ id citations class config datasets field_defaults html_templates template_path langs plugins storage template_mtime text_templates types type_groups workflows loadtime noise /;
 my %CACHED = map { $_ => 1 } @CACHE_KEYS;
 
 sub cleanup

@@ -48,6 +48,47 @@ sub tags
 	return $self->{repository}->get_types( $self->{set_name} );
 }
 
+sub tag_groups
+{
+    my( $self ) = @_;
+
+    return $self->{repository}->get_type_groups( $self->{set_name} );
+}
+
+sub tags_and_labels
+{
+    my( $self , $session ) = @_;
+    my @tags = $self->tags( $session );
+    my %labels = ();
+
+    foreach( @tags )
+    {
+        $labels{$_} = EPrints::Utils::tree_to_utf8(
+            $self->render_option( $session, $_ ) );
+    }
+
+	my @tag_groups = $self->tag_groups( $session );
+	my @groups = ();
+	foreach( @tag_groups )
+	{
+		push @groups, {
+			label => EPrints::Utils::tree_to_utf8( $self->render_option_group( $session, $_->{id} ) ),
+			options => $_->{types},
+		};
+	}
+
+	if( $self->get_property( 'order_labels' ) )
+	{
+		# Order the labels alphabetically
+		my @otags = sort { $a ne 'other' && $b ne 'other' && ($labels{$a} cmp $labels{$b}) } @tags;
+		return (\@otags, \%labels );
+	}
+
+    return (\@tags, \%labels, \@groups );
+}
+
+
+
 sub get_unsorted_values
 {
 	my( $self, $session, $dataset, %opts ) = @_;
@@ -78,12 +119,26 @@ sub render_option
 	return $session->render_type_name( $self->{set_name}, $value );
 }
 
+sub render_option_group
+{
+    my( $self, $session, $value ) = @_;
+
+    if( defined $self->get_property("render_option_group") )
+    {
+        return $self->call_property( "render_option_group", $session, $value );
+    }
+
+    return $session->render_type_group_name( $self->{set_name}, $value );
+}
+
+
 sub get_property_defaults
 {
 	my( $self ) = @_;
 	my %defaults = $self->SUPER::get_property_defaults;
 	$defaults{set_name} = $EPrints::MetaField::REQUIRED;
 	$defaults{options} = $EPrints::MetaField::UNDEF;
+	$defaults{render_option_group} = $EPrints::MetaField::UNDEF;
 	return %defaults;
 }
 

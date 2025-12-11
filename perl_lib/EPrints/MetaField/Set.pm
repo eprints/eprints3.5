@@ -169,7 +169,7 @@ sub get_basic_input_elements
 {
 	my( $self, $session, $value, $basename, $staff, $obj, $one_field_component ) = @_;
 
-	my( $tags, $labels ) = $self->input_tags_and_labels( $session, $obj );
+	my( $tags, $labels, $groups ) = $self->input_tags_and_labels( $session, $obj );
 
 	# If it's not multiple and not required there 
 	# must be a way to unselect it.
@@ -195,6 +195,7 @@ sub get_basic_input_elements
 	return( [ [ { el=>$session->render_option_list(
 			values => $tags,
 			labels => $labels,
+			groups => $groups,
 			name => $basename,
 			class => join(" ", @classes),
 			readonly => $readonly,

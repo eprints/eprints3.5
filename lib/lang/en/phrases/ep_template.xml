@@ -885,6 +885,15 @@
           <epc:print expr="$pair{desc}"/>
         </epv:render_single_option>
       </epc:foreach>
+      <epc:foreach expr="groups" iterator="group">
+        <optgroup label="{$group{label}}">
+          <epc:foreach expr="$group{pairs}" iterator="pair">
+            <epv:render_single_option key="{$pair{key}}" selected="{$pair{selected}}" default="{$pair{default}}">
+               <epc:print expr="$pair{desc}"/>
+            </epv:render_single_option>
+          </epc:foreach>
+        </optgroup>
+      </epc:foreach>
     </select>
   </epp:phrase>
   <epp:phrase id="view:Repository:render_option_list">
