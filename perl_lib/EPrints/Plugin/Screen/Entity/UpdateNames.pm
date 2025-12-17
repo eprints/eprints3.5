@@ -21,7 +21,7 @@ sub new
 
 	$self->{actions} = [qw/ update_names /];
 
-	$self->{icon} = "action_edit.png";
+	$self->{icon} = "action_edit.svg";
 
 	$self->{appears} = [
 		{

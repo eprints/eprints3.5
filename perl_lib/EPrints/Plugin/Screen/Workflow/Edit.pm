@@ -20,7 +20,7 @@ sub new
 
 	$self->{actions} = [qw/ stop save next prev /];
 
-	$self->{icon} = "action_edit.png";
+	$self->{icon} = "action_edit.svg";
 
 	$self->{appears} = [
 		{

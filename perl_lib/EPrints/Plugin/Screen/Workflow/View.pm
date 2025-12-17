@@ -16,7 +16,7 @@ sub new
 
 	my $self = $class->SUPER::new(%params);
 
-	$self->{icon} = "action_view.png";
+	$self->{icon} = "action_view.svg";
 
 	$self->{appears} = [
 		{

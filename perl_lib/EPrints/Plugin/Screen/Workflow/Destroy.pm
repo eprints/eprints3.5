@@ -18,7 +18,7 @@ sub new
 
 	$self->{actions} = [qw/ remove cancel /];
 
-	$self->{icon} = "action_remove.png";
+	$self->{icon} = "action_remove.svg";
 
 	$self->{appears} = [
 		{
