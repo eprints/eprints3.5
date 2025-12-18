@@ -16,7 +16,7 @@ sub new
 
 	my $self = $class->SUPER::new(%params);
 
-	$self->{icon} = "action_bounce.png";
+	$self->{icon} = "action_bounce.svg";
 	$self->{appears} = [
 		{
 			place => "eprint_editor_actions",

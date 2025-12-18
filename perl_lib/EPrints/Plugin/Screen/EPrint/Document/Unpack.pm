@@ -19,7 +19,7 @@ sub new
 
 	my $self = $class->SUPER::new(%params);
 
-	$self->{icon} = "action_unpack.png";
+	$self->{icon} = "action_unpack.svg";
 
 	$self->{appears} = [
 		{

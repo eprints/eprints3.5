@@ -19,7 +19,7 @@ sub new
 
 	my $self = $class->SUPER::new(%params);
 
-	$self->{icon} = "action_entity.png";
+	$self->{icon} = "action_entity.svg";
 
 	$self->{appears} = [];
 	foreach my $datasetid ( @{$self->{session}->config( 'entities', 'datasets' )} )
