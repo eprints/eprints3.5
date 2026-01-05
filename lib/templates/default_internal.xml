@@ -42,7 +42,7 @@
         <nav class="navbar navbar-expand-sm p-3 border" style="background: #FFFFFF;">
           <div class="container-fluid">
             <a class="navbar-brand" href="/">
-              <img src="https://www.eprints.org/uk/wp-content/uploads/EprintsServices2015url-small.png" alt="Bootstrap" width="150"/>
+              <img src="{$config{rel_path}}/images/eprints-url-logo.png" alt="EPrints logo with URL" width="150"/>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav_mainNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
               <span class="navbar-toggler-icon"/>
