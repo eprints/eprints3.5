@@ -771,8 +771,10 @@ sub install
 
 sub run_script
 {
-	my( $repoid, $script, @opts ) = @_;
+	my( $repo, $script, @opts ) = @_;
 
+	Carp::croak "Fatal! Repository to execute script against is not valid"
+		unless defined $repo && $repo->isa( "EPrints::Repository" );
 	my $dir = EPrints::Config::get( "bin_path" );
 	Carp::croak "Fatal! bin_path not defined"
 		if !defined $dir;
@@ -3513,7 +3515,7 @@ sub upgrade
 	my $repo = &repository( $repoid, check_db => 0 );
 	
 	print STDERR "Stopping indexer ...\n";
-	run_script( $repoid, "indexer", "stop" );	
+	run_script( $repo, "indexer", "stop" );
 
 	my $db = $repo->database();
 
