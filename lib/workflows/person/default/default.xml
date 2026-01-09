@@ -12,7 +12,7 @@
   <component id="c_person_section_other" type="Field::Multi">
     <title><epc:phrase ref="person_section_other" /></title>
     <field ref="dept" />
-    <field ref="organisation" input_lookup_url="{$config{rel_cgipath}}/users/lookup/entity_search" input_lookup_params="entity_types=organisation&amp;entity_id_field=organisation" />
+    <field ref="organisation" input_lookup_url="{$config{rel_cgipath}}/users/lookup/entity" input_lookup_params="entity_types=organisation&amp;entity_id_field=organisation" />
     <field ref="address" />
     <field ref="country" />
     <field ref="url" />
