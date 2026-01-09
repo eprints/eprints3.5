@@ -9,26 +9,17 @@ $session->send_http_header( content_type=>$content );
 my @rows;
 my %rows_index;
 
-my $entity_name = $session->param( "q" );
-
-my $entity_types = $session->param( "entity_types" );
-my $entity_id_field = $session->param( "entity_id_field" ) ? $session->param( "entity_id_field" ) : 'entity_id';
-my $entity_type_field = $session->param( "entity_type_field" ) ? $session->param( "entity_type_field" ) : 'entity_type';
+my $entity_name = $session->param( "_contributor_name" );
+my $entity_id_value = $session->param( "_contributor_id_value" );
 my $datasets;
-if  ( $entity_types )
+if ( $entity_name || $entity_id_value )
 {
-	$datasets = [ split( ',', $entity_types ) ];
-	print STDERR "datasets: $datasets\n";
+	$datasets = $session->config( 'entities', 'datasets' );
 }
-else
+foreach my $datasetid ( @$datasets ) 
 {
-        $datasets = $session->config( 'entities', 'datasets' );
-}
-
-foreach my $datasetid ( @$datasets )
-{
-        my $dataset = $session->dataset( $datasetid );
-        my $dataset_key = $dataset->get_key_field->name;
+	my $dataset = $session->dataset( $datasetid );
+	my $dataset_key = $dataset->get_key_field->name;
 
 	my $hdsn_func = $session->config( 'entities', $datasetid, 'human_deserialise_name' );
 	my $deserialised_entity_name;
@@ -56,9 +47,11 @@ foreach my $datasetid ( @$datasets )
 	my $Q_name_table = $database->quote_identifier($dataset->get_sql_sub_table_name($name_field));
 	my $Q_id_table = $database->quote_identifier($dataset->get_sql_sub_table_name($id_field));
 	my $Q_id_type_table = $database->quote_identifier($dataset->get_sql_sub_table_name($id_type_field));
+	# my $Q_eprintid = $database->quote_identifier( "eprintid" );
 	my $Q_datasetid = $database->quote_identifier( $dataset_key );
 	my $Q_pos = $database->quote_identifier( "pos" );
 	my $Q_num_matches = $database->quote_identifier( "num_matches" );
+	# my $Q_eprint_status = $database->quote_identifier( "eprint_status" );
 
 	my $sql = "SELECT 1 ".$database->sql_AS." $Q_num_matches," .
 		join(",", map { $database->quote_identifier($_) } @fields) . ",`$datasetid`.`$dataset_key`" .
@@ -106,12 +99,8 @@ foreach my $datasetid ( @$datasets )
 
 	$sql .= " GROUP BY ".join(",",map { $database->quote_identifier($_) } @fields) .
 		', `' . $dataset->get_sql_table_name . '`.`' . $dataset->get_key_field->get_sql_names . '`' .
-		" ORDER BY $Q_num_matches DESC";
-
-	if ( scalar @orders > 0 )
-	{
-		$sql .= "," . join( ',', @orders );
-	}
+		" ORDER BY $Q_num_matches DESC," .
+		join( ',', @orders );
 
 	my $sth = $session->get_database->prepare_select( $sql, 'limit' => 40 );
 	$session->get_database->execute( $sth , $sql );
@@ -133,12 +122,8 @@ foreach my $datasetid ( @$datasets )
 		push @rows, $item;
 
 		my $frag = $session->make_doc_fragment;
-		if ( scalar @$datasets > 1 )
-		{
-			$frag->appendChild( $session->html_phrase( 'datasetname_' . $datasetid ) );
-        	        $frag->appendChild( $session->make_text( ": " ) );
-		}
-
+		$frag->appendChild( $session->html_phrase( 'eprint_fieldopt_contributions_contributor_datasetid_' . $datasetid ) );
+		$frag->appendChild( $session->make_text( ": " ) );
 		$frag->appendChild( $session->make_text( $serialised_name ) );
 		if( EPrints::Utils::is_set( $id ) )
 		{
@@ -149,10 +134,18 @@ foreach my $datasetid ( @$datasets )
 
 		$item->{xhtml} = $frag;
 		my $entity = $dataset->dataobj( $entityid );
+		my $es_frag = $session->make_doc_fragment;
+		my $es_link = $session->make_element( 'a', href => $entity->get_url, target => '_blank' );
 		my $entity_span = $id ? $id : $serialised_name;
+		$es_link->appendChild( $session->make_text( $entity_span ) );
+		$es_frag->appendChild( $es_link );
 		$item->{values} = [
-			"for:value:component:_$entity_id_field" => $entityid,
-			"for:value:component:_$entity_type_field" => $datasetid,
+			"for:value:relative:_contributor_datasetid" => $datasetid,
+			"for:value:relative:_contributor_name" => $serialised_name,
+			"for:value:relative:_contributor_id_value" => $id,
+			"for:value:relative:_contributor_id_type" => $id_type,
+			"for:value:relative:_contributor_entityid" => $entityid,
+			"for:value:relative:_contributor_entity_span" => $es_frag,
 		];
 	}
 

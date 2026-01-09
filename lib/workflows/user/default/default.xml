@@ -11,7 +11,7 @@
   <component id="c_user_section_personal" type="Field::Multi">
     <title><epc:phrase ref="user_section_personal" /></title>
     <field ref="name" required="yes" />
-    <field ref="personid" />
+    <field ref="personid" input_lookup_url="{$config{rel_cgipath}}/users/lookup/entity_search" input_lookup_params="entity_types=person&amp;entity_id_field=personid"/>
   </component>
 
   <epc:if test="usertype = 'editor'">

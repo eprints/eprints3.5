@@ -6,20 +6,8 @@ push @{$c->{fields}->{person}},
 
 {
 	name => 'organisation',
-	type => 'dataobjref',
+	type => 'itemref',
 	datasetid => 'organisation',
-	fields => [
-		{
-			sub_name => 'name',
-			type => 'text',
-			input_cols => 35,
-		},
-		{
-			sub_name => 'id_value',
-			type => 'id',
-			input_cols =>  30,
-		},
-	],
 },
 
 {
