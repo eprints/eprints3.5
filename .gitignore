@@ -2,3 +2,4 @@ cfg
 perl_lib/EPrints/SystemSettings.pm
 site_lib
 tmp
+.vscode
