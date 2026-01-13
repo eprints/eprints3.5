@@ -1,0 +1,177 @@
+.ep_summary_page_actions { margin-bottom: 10px; }
+
+ul.ep_panel_buttons
+{
+  padding-left: 0; 
+  display: inline-block;
+  margin-bottom: 2px;
+  min-width: 90%;
+}
+
+li.ep_panel_links
+{
+  float: left;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 6px;
+  margin-right: 2px;
+  transition: 0.2s;
+  list-style: none;
+  min-width: 10px;
+  text-align: center;
+}
+
+li.ep_panel_links:hover
+{
+  background-color: #ddd;
+}
+
+li.ep_panel_links.active
+{
+  background-color: #eee;
+}
+
+li.ep_panel_first
+{
+  margin-left: 20px;
+}
+
+li.ep_panel_nav
+{
+  display: inherit;
+  float: right;
+}
+
+.ep_panel_content
+{
+}
+
+/* if we end up with nested panels */
+.ep_panel_content .ep_panel_content
+{
+  box-shadow: 0 2px 6px rgba(085, 005, 255, 0.3);
+}
+
+.ep_panel_table
+{
+  display: table;
+  margin-top: 10px;
+}
+
+.ep_panel_table_row
+{
+  display: table-row;
+}
+
+.ep_panel_table_header
+{
+  display: table-cell;
+  text-align: right;
+  padding: 3px;
+  font-weight: bold;
+  width: 150px;
+}
+
+.ep_panel_table_cell
+{
+  display: table-cell;
+  vertical-align: top;
+  padding: 3px;
+}
+
+.ep_panel_simple_title
+{
+  margin-bottom: 10px;
+}
+
+.ep_panel_controls
+{
+  display: inline-block;
+  float: right;
+  padding-right: 5px;
+  padding-top: 20px;
+  font-family: monospace;
+}
+
+.ep_panel_title
+{
+  display: none;
+}
+
+#ep_panel_controls_close,
+#ep_panel_controls_open
+{
+  cursor: pointer;
+}
+
+#ep_panel_controls_close
+{
+  display: none;
+}
+
+.ep_panel_hide
+{
+  display: none;
+}
+
+.ep_open_panel_all
+{
+  display: block;
+  margin-bottom: 10px;
+}
+
+.ep_panel_blank
+{
+  border: inherit;
+  box-shadow: inherit!important;
+}
+
+.ep_panels_all_opened #panel_blank
+{
+  display: block;
+}
+div.irstats2_summary_page_container_small {
+  width: 48%;
+}
+@media only screen and (max-width: 1000px) {
+  div.irstats2_summary_page_container_small {
+    width: 100%;
+  }
+  .ep_panels {
+    columns: 1;
+  }
+}
+
+
+/* toggle control related */
+
+.ep_panel_controls_toggle_a, .ep_panel_controls_toggle_b, .ep_panel_controls_toggle_a:hover, .ep_panel_controls_toggle_b:hover
+{
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: transparent;
+  height: 15px;
+  width: 15px;
+  font-size: 0px !important;
+  padding-right: 5px;
+}
+
+.ep_panel_controls_toggle_a
+{
+  background-image: url(/style/images/column1.png);
+}
+.ep_panel_controls_toggle_b
+{
+  background-image: url(/style/images/column2.png);
+}
+
+.ep_panels_all_closed
+{
+  column-count: 1 !important;
+}
+
+/* disable the toggle controls */
+/* .ep_panel_controls_toggle_a { display: none !important; } */
+

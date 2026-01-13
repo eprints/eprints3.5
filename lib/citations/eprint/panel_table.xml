@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+
+<div class="ep_panel_content" id="ep_panel_{tmp__id}">
+<div class="ep_panel_title" id="{tmp__id}_title"><epc:print expr="$title"/></div>
+  <div class="ep_panel_body" id="{tmp__id}_content">
+    <div id="{tmp__id}_content_inner">         
+      <div class="ep_panel_table">
+<div class="ep_panel_{$dataset}_dynamic_data">
+        <epc:foreach expr="$dynamic_data_start{keys}" iterator="key">
+          <div class="ep_panel_table_row ep_panel_table_row_{$key}">
+            <div class="ep_panel_table_header"><epc:print expr="$key" />:</div>
+            <div class="ep_panel_table_cell"><epc:print expr="$dynamic_data_start.property($key)" /></div>
+          </div>
+        </epc:foreach>
+</div>
+<div class="ep_panel_{$dataset}_data">
+        <epc:foreach expr="$data{keys}" iterator="key">
+          <div class="ep_panel_table_row ep_panel_table_row_{$key}">
+            <div class="ep_panel_table_header"><epc:print expr="$key" />:</div>
+            <div class="ep_panel_table_cell"><epc:print expr="$data.property($key)" /></div>
+          </div>
+        </epc:foreach>
+</div>
+<div class="ep_panel_{$dataset}_dynamic_data">
+        <epc:foreach expr="$dynamic_data{keys}" iterator="key">
+          <div class="ep_panel_table_row ep_panel_table_row_{$key}">
+            <div class="ep_panel_table_header"><epc:print expr="$key" />:</div>
+            <div class="ep_panel_table_cell"><epc:print expr="$dynamic_data.property($key)" /></div>
+          </div>
+        </epc:foreach>
+</div>
+<div class="ep_panel_{$dataset}_metadata">
+        <epc:foreach expr="$data{metadata}" iterator="fieldname">
+          <epc:if test="is_set($item.property($fieldname))">
+            <div class="ep_panel_table_row ep_panel_table_row_{$fieldname}">
+              <div class="ep_panel_table_header"><epc:phrase ref="{$dataset}_fieldname_{$fieldname}" />:</div>
+              <div class="ep_panel_table_cell"><epc:print expr="$item.property($fieldname)" /></div>
+            </div>
+          </epc:if>
+        </epc:foreach>
+</div>
+<div class="ep_panel_{$dataset}_dynamic_data">
+        <epc:foreach expr="$dynamic_data_end{keys}" iterator="key">
+          <div class="ep_panel_table_row ep_panel_table_row_{$key}">
+            <div class="ep_panel_table_header"><epc:print expr="$key" />:</div>
+            <div class="ep_panel_table_cell"><epc:print expr="$dynamic_data_end.property($key)" /></div>
+          </div>
+        </epc:foreach>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+</cite:citation>

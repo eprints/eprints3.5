@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+
+<div class="ep_panel_content" id="ep_panel_{tmp__id}">
+<div class="ep_panel_title ep_panel_simple_title" id="{tmp__id}_title"><epc:print expr="$title"/></div>
+  <script type="text/javascript">
+    var target="url_target_<epc:print expr="$panel_set_id"/>__<epc:print expr="$id"/>";
+    new Ajax.Updater(target, "<epc:print expr="$panel_url" />",{method:'get', evalScripts:true});
+  </script>
+  <div class="ep_panel_ajax" id="url_target_{tmp__id}"></div>
+</div>
+</cite:citation>

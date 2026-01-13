@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+
+<div class="ep_panel_content" id="ep_panel_{tmp__id}">
+<div class="ep_panel_title ep_panel_simple_title" id="{tmp__id}_title"><epc:print expr="$title"/></div>
+  <div class="ep_panel_body" id="{tmp__id}_content">
+    <div id="{tmp__id}_content_inner">         
+      <epc:foreach expr="$data{metadata}" iterator="fieldname">
+        <epc:if test="is_set($item.property($fieldname))">
+          <div class="ep_panel_table_cell"><epc:print expr="$item.property($fieldname)" /></div>
+        </epc:if>
+      </epc:foreach>
+    </div>
+  </div>
+</div>
+</cite:citation>
