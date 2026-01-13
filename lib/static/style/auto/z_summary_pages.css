@@ -1,0 +1,113 @@
+
+/* 
+ * This CSS file will be applied after all the built in styles.
+ * 
+ * CSS files are loaded in alphabetic order, hence the  "zzz" in 
+ * the filename to force it to load after the other css files!
+ * 
+ * Add any local over-rides here. 
+ * 
+ * To totally replace a system css file, create a file of the same 
+ * name in this directory. eg. messages.css
+ * 
+*/
+
+/* tweak template to help resizing browser */
+div.ep_tm_page_content
+{
+  max-width: 1024px;
+  width: auto !important;
+}
+
+.ep_panel_content
+{
+}
+
+.ep_open_panel_all
+{
+  min-height: inherit;
+}
+
+.ep_panel_container[id^=ep_panel_set_docs_]
+{
+  margin-top: 10px;
+}
+
+.ep_panel_container[id^=ep_panel_set_docs_] .ep_panel_content
+{
+}
+
+.ep_panel_container[id^=ep_panel_set_docs_] .ep_panels_all_opened 
+{
+}
+@media only screen and (max-width: 800px)
+{
+  .ep_panel_container[id^=ep_panel_set_docs_] .ep_panels_all_opened 
+  {
+  }
+}
+@media only screen and (max-width: 600px)
+{
+  .ep_panel_container[id^=ep_panel_set_docs_] .ep_panels_all_opened 
+  {
+    columns: 1;
+    -webkit-columns: 1;
+    -moz-columns: 1;
+  }
+}
+
+.ep_panel_container[id^=ep_panel_set_docs_] .ep_panel_simple_title
+{
+  display: none !important;
+}
+
+/* matches and tidies Safari, matches Chrome and is harmless */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+{
+  .ep_panel_container[id^=ep_panel_set_eprint_] .ep_panels_all_opened > div { padding-top: 6px; } 
+  .ep_panel_container[id^=ep_panel_set_docs_] .ep_panels_all_opened > div { padding-top: 6px; } 
+}
+
+.summary_page_doc_icon
+{
+  float: left;
+}
+.summary_page_doc_info
+{
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  min-height: 51px;
+}
+
+.ep_summary_page_actions_small
+{
+  float: right;
+}
+.ep_summary_page_actions_small img.ep_form_action_icon
+{
+  width: 15px;
+}
+
+.ep_document_citation_wrapper
+{
+  display: inline;
+}
+.ep_document_citation_wrapper .document_filename,
+.ep_document_citation_wrapper .document_security,
+.ep_document_citation_wrapper .document_license
+{
+  font-size: 80%;
+}
+
+
+.ep_panel_container_document .ep_panel_content
+{
+/*  box-shadow: 0 1px 3px rgba(100, 100, 100, 0.3);*/
+}
+
+.ep_panels
+{
+    display: flex;
+    flex-wrap: wrap;
+}
