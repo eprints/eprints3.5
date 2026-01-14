@@ -258,6 +258,7 @@ my $PRIVMAP =
         "config/remove_field",
         "config/regen_abstracts",
         "config/regen_citations",
+        "config/regen_entities",
         "config/regen_views",
         "config/edit/perl",
 
