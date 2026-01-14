@@ -26,6 +26,10 @@ sub new
 	{
 		push @{$self->{appears}}, 
 		{
+			place => "eprint_entity_page_actions",
+			position => 100,
+		},
+		{
 			place => $datasetid . "_item_actions",
 			position => 800,
 		};
