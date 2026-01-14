@@ -363,7 +363,7 @@ sub _render_search
 		$field->get_name."_search_bar",
 		label => $label,
 		input => $self->{search}->render_simple_fields(
-			noenter => 0,
+			noenter => 1, # without this pressing enter on this input will result in the form for the entire stage being submitted - throwing us back to the first stage.
 			size => 40,
 			'aria-labelledby' => $prefix . "q_label",
 		),
