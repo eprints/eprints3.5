@@ -6,10 +6,6 @@
 
 <cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:epc="http://eprints.org/ep3/control" xmlns:cite="http://eprints.org/ep3/citation" >
 
-  <p style="margin-bottom: 1em">
-    <epc:print expr="$item.citation('default')" />
-  </p>
-
   <table style="margin-bottom: 1em; margin-top: 1em;" cellpadding="3">
     <epc:comment> 
        The below block loops over a list of field names taken from person_render.pl
@@ -29,6 +25,17 @@
     </tr>
   </table>
 
-  <epc:phrase ref="entity_page:publications_list" entity_type="person" entity_id="{$item.id()}" />
+  <epc:phrase ref="entity_page:publications"/>
+  <epc:print expr="entity_eprint_citations('person',$item.property('personid'),'group=type')" />
+
+  <epc:if test="!$flags{preview}">
+    <epc:phrase ref="entity_page:actions"/>
+    <dl class="ep_entity_page_actions">
+    <epc:foreach expr="entity_action_list('eprint_entity_page_actions',$item)" iterator="action">
+      <dt><epc:print expr="$action.action_icon()" /></dt>
+      <dd><epc:print expr="$action.action_title()" /></dd>
+    </epc:foreach>
+    </dl>
+  </epc:if>
 
 </cite:citation>

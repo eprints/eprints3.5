@@ -769,6 +769,33 @@ sub run_action_list
 	return [ \@list, "ARRAY" ];
 }
 
+sub run_entity_action_list
+{
+    my( $self, $state, $list_id, $item ) = @_;
+
+    my $screen_processor = EPrints::ScreenProcessor->new(
+        session => $state->{session},
+        screenid => "Error",
+    );
+
+    my $screen = $screen_processor->screen;
+    $screen->properties_from;
+
+    my @list = $screen->list_items( $list_id->[0], filter=>0 );
+    if( defined $item )
+    {
+		$screen_processor->{dataset} = $item->[0]->{dataset}->id;
+        $screen_processor->{dataobj} = $item->[0]->get_id;
+        foreach my $action ( @list )
+        {
+            $action->{hidden} = ['dataset','dataobj'];
+        }
+    }
+
+    return [ \@list, "ARRAY" ];
+}
+
+
 sub run_action_button
 {
 	my( $self, $state, $action_p ) = @_;
@@ -1009,6 +1036,87 @@ sub run_documents
 	}
 	return [ [$eprint->[0]->get_all_documents()],  "ARRAY" ];
 }
+
+sub run_entity_eprint_citations
+{
+	my( $self, $state, $entity_type, $entity_id, @opts ) = @_;
+
+	my %options = (
+		order => '-date',
+		group => 'date_year',
+	);
+	foreach my $opt ( @opts )
+	{
+		my @kv = split( "=", $opt->[0] );
+		$options{$kv[0]} = $kv[1];
+	}
+
+	my $entity = EPrints::DataObj::Entity->get( $state->{session}, $entity_type->[0], $entity_id->[0] );
+
+	my $frag = $state->{session}->make_doc_fragment;
+	my $eprints_lists = $entity->get_eprints( 'archive', $options{order}, $options{group} );
+	my $eprint_ds = $state->{session}->dataset( 'eprint' );
+	my $grp_phrase_template = undef;
+	if ( $eprint_ds->has_field( $options{group} ) )
+	{
+		my $group_field = $eprint_ds->get_field( $options{group} );
+		if ( ref $group_field eq "EPrints::MetaField::Set" )
+		{
+			$grp_phrase_template = "eprint_fieldopt_" . $options{group} . "_";
+			$options{reverse} = 0 unless defined $options{reverse};
+		}
+		elsif ( ref $group_field eq "EPrints::MetaField::Namedset" )
+		{
+			$grp_phrase_template = $group_field->property( 'set_name' ) . "_typename_";
+			$options{reverse} = 0 unless defined $options{reverse};
+		}
+	}
+
+    if ( substr( $options{order}, 0, 1 ) eq '-' && ! defined $options{reverse} )
+    {
+        $options{reverse} = 1;
+    }
+
+	if ( scalar keys( %$eprints_lists ) == 1 && defined $eprints_lists->{ungrouped} )
+	{
+		$eprints_lists->{ungrouped}->map( sub {
+			my( $session, $dataset, $eprint ) = @_;
+
+			my $p = $session->make_element( "p" );
+			$p->appendChild( $eprint->render_citation_link );
+			$frag->appendChild( $p );
+		});
+	}
+	else
+	{
+		my @group_keys = sort( keys %$eprints_lists );
+		@group_keys = reverse @group_keys if $options{reverse};
+		foreach my $group ( @group_keys )
+		{
+			my $h3 = $state->{session}->make_element( "h3", "class" => "ep_entity_pubs_group" );
+			if ( $grp_phrase_template )
+			{
+				$h3->appendChild( $state->{session}->html_phrase( $grp_phrase_template . $group ) );
+			}
+			else
+			{
+				$h3->appendChild( $state->{session}->make_text( $group ) );
+			}
+			$frag->appendChild( $h3 );
+			$eprints_lists->{$group}->map( sub {
+				my( $session, $dataset, $eprint ) = @_;
+
+				my $p = $session->make_element( "p" );
+				$p->appendChild( $eprint->render_citation );
+				$frag->appendChild( $p );
+			});
+		}
+	}
+
+	return [ $frag, "XHTML" ];
+}
+
+
 
 sub run_has_role
 {

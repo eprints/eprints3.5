@@ -1,12 +1,11 @@
 $c->{person_page_metadata} = [qw/
-    names
+    name
     ids
 	dept
 	organisation
 	address
 	country
 	url
-    lastmod
 /];
 
 ######################################################################
