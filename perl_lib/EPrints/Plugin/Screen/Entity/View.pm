@@ -26,7 +26,7 @@ sub new
 	{
 		push @{$self->{appears}}, 
 		{
-			place => "eprint_entity_page_actions",
+			place => "entity_page_actions",
 			position => 100,
 		},
 		{
@@ -183,11 +183,7 @@ sub render_common_action_buttons
 {
 	my( $self ) = @_;
 
-	my $frag = $self->{session}->make_doc_fragment;
-
-	$frag->appendChild( $self->render_action_list_bar( "entity_actions_bar", ['dataset, entity'] ) );
-
-	return $frag;
+	return  $self->render_action_list_bar( "entity_actions_bar", [ 'dataset', 'entity' ] );
 }
 
 
