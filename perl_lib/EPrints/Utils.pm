@@ -675,8 +675,15 @@ sub _render_citation_aux
 
 Return the EPrint::MetaField from $dataset with the given name.
 
-If fieldname has a semicolon followed by render options then these
-are passed as render options to the new EPrints::MetaField object.
+If fieldname has a semicolon followed by render options then these 
+are passed as render options to the new EPrints::MetaField object. 
+Example: date;res=year. Render options (prepended with render_, 
+so for res=year render_year already exists) must be already existing 
+field metadata or defined in MetaField::get_property_defaults
+
+If fieldname contains a full stop then the end field is given to
+the new EPrints::MetaField object with the previous fields as
+its join_path. Example: documents.format
 
 =end
 
@@ -688,21 +695,28 @@ sub field_from_config_string
 {
 	my( $dataset, $fieldname ) = @_;
 
-	my %q = ();
+	my %field_properties = ();
+
+	# get the fieldname up to the first semicolon
 	if( $fieldname =~ s/^([^;]*)(;(.*))?$/$1/ )
 	{
+		# check to see if there is at least one render option (something after the first semicolon)
 		if( defined $3 )
 		{
 			foreach my $render_pair ( split( /;/, $3 ) )
 			{
-				my( $k, $v ) = split( /=/, $render_pair );
-				$v = 1 unless defined $v;
-				if( $k eq "options" )
+				# splitting further by semicolons into expected key=value pairs;
+				# split the key=value pair
+				my( $key, $value ) = split( /=/, $render_pair );
+				$value = 1 unless defined $value;
+				if( $key eq "options" )
 				{
-					$q{$k} = [ split( ",", $v ) ];
+					# Splitting comma separated string (eg options=a,b,c) into a list
+					$field_properties{$key} = [ split( ",", $value ) ];
 					next;
 				}
-				$q{($k eq "top"?"top":"render_$k")} = $v;
+				# if the key is not "top" prepend "render_"
+				$field_properties{($key eq "top"?"top":"render_$key")} = $value;
 			}
 		}
 	}
@@ -713,6 +727,8 @@ sub field_from_config_string
 	my @fnames = split /\./, $fieldname;
 	foreach my $fname ( @fnames )
 	{
+		# if there is a dot, we iterate down the string into the subfields and datasets. $field is updated so it is always the field of the dataset of the deepest subfield
+		# without a dot this will just run once
 		if( !defined $dataset )
 		{
 			EPrints::abort( "Attempt to get a field or subfield from a non existent dataset. Could be due to a sub field of a inappropriate field type." );
@@ -741,19 +757,21 @@ sub field_from_config_string
 	{
 		EPrints::abort( "Can't make field from config_string: $fieldname" );
 	}
+
+	# get all the fields and their datasets up to but not including the last subfield
 	pop @join;
 	if( scalar @join )
 	{
-		$q{"join_path"} = \@join;
+		$field_properties{"join_path"} = \@join;
 	}
 
-	if( scalar keys %q  )
+	if( scalar keys %field_properties  )
 	{
 		$field = $field->clone;
 	
-		foreach my $k ( keys %q )
+		foreach my $property_name ( keys %field_properties )
 		{
-			$field->set_property( $k, $q{$k} );
+			$field->set_property( $property_name, $field_properties{$property_name} );
 		}
 	}
 	
@@ -1240,7 +1258,7 @@ sub _crypt_sha512
 
 	my $rounds = 10000;
 	while(--$rounds) {
-	    $digest = Digest::SHA::sha512( $digest );
+		$digest = Digest::SHA::sha512( $digest );
 	}
 	$digest = Digest::SHA::sha512_hex( $digest );
 
