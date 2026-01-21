@@ -122,6 +122,7 @@ sub get_system_field_info
 			],
 			input_boxes => 1,
 			required => 1,
+			render_value => 'render_entity_ids',
 	},
 
 	{
@@ -136,8 +137,8 @@ sub get_system_field_info
 		fields=>[
 			{
 				sub_name => 'name',
-			type => 'text',
-			input_cols => 30,
+				type => 'text',
+				input_cols => 30,
 				required => 1,
 			},
 			{
@@ -151,6 +152,7 @@ sub get_system_field_info
 		],
 		multiple => 1,
 		input_boxes => 1,
+		render_value => 'render_entity_names',
 	},
 
 	{

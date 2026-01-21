@@ -1,6 +1,7 @@
 $c->{person_page_metadata} = [qw/
-    name
-    ids
+	name
+	names
+	ids
 	dept
 	organisation
 	address
