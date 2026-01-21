@@ -29,6 +29,8 @@ Where I<command> is one of:
 
 =item cleanup_cachemaps <repo>
 
+=item clear_caches <repo> [<cache>...]
+
 =item config_core <repo>
 
 =item config_db <repo>
@@ -50,6 +52,8 @@ Where I<command> is one of:
 =item erase_fulltext_index <repo>
 
 =item export_init_config <repo>
+
+=item generate_cache <repo> <cache>
 
 =item help
 
@@ -105,6 +109,10 @@ Type I<epadmin help> for further help.
 
 Drop any orphaned cache tables.
 
+=item B<epadmin> clear_caches I<repository_id> [I<cache>, I<cache> ...]
+
+Clear a cache or caches so that next time an item from this cache is requested it is regenerated.  (Alias for refresh_abstracts, refresh_entities, refresh_views, etc.). Specifying the cache 'all' will refresh all caches.
+
 =item B<epadmin> config_core I<repository_id>
 
 Set hostname, contact email and repository name. 
@@ -148,6 +156,10 @@ This is useful if you only setup the fulltext indexing after your repository is 
 This exports the configuration for your repository as a YAML file, which can be used to create a repository using C<epadmin create --config CONFIG_FILE>
 
 It should be noted this is only the initial setup configuration, not the full configuration for a repository.
+
+=item B<epadmin> generate_cache I<repository_id> I<cache>
+
+Generates a cache or caches. (Alias for generate_abstracts generate_entities, generate_views, etc.).  Whole cache will be generated so individuals scriptsmay be better for more targeted generation.
 
 =item B<epadmin> help
 
@@ -357,6 +369,7 @@ my $db_ok = 0;
 my $core_ok = 0;
 
 my @PASSWORD_CHARS = ( 'a'..'z','A'..'Z','0'..'9' );
+my @ALL_CACHES = ( 'abstracts', 'citations', 'entities', 'views' );
 
 my $eprints = EPrints->new();
 
@@ -375,6 +388,7 @@ else
 	my $repoid = shift @ARGV;
 	argument_error( $action ) unless defined $repoid;
 	if( $action eq "cleanup_cachemaps" ) { cleanup_cachemaps( $repoid ); }
+	elsif( $action eq "clear_caches" ) { clear_caches( $repoid, @ARGV ); }
 	elsif( $action eq "config_core" ) { config_core( &repository($repoid) ); }
 	elsif( $action eq "config_db" ) { config_db( $repoid ); }
 	elsif( $action eq "database_type_info" ) { database_type_info( $repoid ); }
@@ -385,6 +399,7 @@ else
 	elsif( $action eq "erase_eprints" ) { erase_eprints( $repoid ); }
 	elsif( $action eq "erase_fulltext_index" ) { erase_fulltext_index( $repoid ); }
 	elsif( $action eq "export_init_config" ) { export_init_config( $repoid ); }
+	elsif( $action eq "generate_cache" ) { generate_cache( $repoid, @ARGV ); }
 	elsif( $action eq "logout_all_users" ) { logout_all_users( $repoid,@ARGV ); }
 	elsif( $action eq "reload" ) { reload( $repoid ); }
 	elsif( $action eq "refresh_abstracts" ) { refresh_abstracts( $repoid ); }
@@ -781,7 +796,6 @@ sub run_script
 	my $path = "$dir/$script";
 	Carp::croak "Fatal! Wanted to execute $path, but it doesn't exist."
 		if !-e $path;
-
 	system( 'perl', $path, @opts );
 }
 
@@ -805,6 +819,41 @@ sub cleanup_cachemaps
 	{
 		$repo->log( "No orphaned cache tables found" );
 	}
+}
+
+sub clear_caches
+{
+	my( $repoid, @caches ) = @_;
+
+	my $repo = &repository( $repoid );
+
+	if ( !defined $caches[0] )
+	{
+		print STDERR "ERROR: You need to specify 'all' to refresh all caches or at least one cache from the following list:\n\n\t".join("\n\t", @ALL_CACHES)."\n\n";
+		exit 1;
+	}
+	if ( $caches[0] eq "all" )
+	{
+		@caches = @ALL_CACHES;
+	}
+	foreach my $cache ( @caches )
+	{
+		unless ( grep(/^$cache$/, @ALL_CACHES) ) 
+		{
+			print STDERR "ERROR: '$cache' is not a recognised cache!\n";
+			next;
+		}
+		my $file = $repo->config( "variables_path" )."/$cache.timestamp";
+		unless( open( CHANGEDFILE, ">$file" ) )
+		{
+			EPrints::abort( "Cannot write to file $file" );
+		}
+		print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+		close CHANGEDFILE;
+		print "Cleared cache '$cache'.\n" if $noise > 0;
+	}
+
+	reload( $repo );
 }
 
 sub config_core
@@ -2254,6 +2303,41 @@ sub export_init_config
 	print $yp->dump_string( $config_yaml );
 
 	print STDERR "\n# Be sure to set the database admin username and password and a suitable password for the initial EPrints user, unless you wish to be prompted for these settings when using this configuration file to create a new repository archive.\n\n"
+}
+
+sub generate_cache
+{
+	my( $repoid, @caches ) = @_;
+
+	if ( scalar @caches != 1 )
+	{
+		print STDERR "ERROR: generate_cache can only generate one cache at a time.  Caches available include:\n\n\t".join("\n\t", @ALL_CACHES)."\n\n";
+		exit 1;
+	}
+
+	if ( $caches[0] eq "abstracts" || $caches[0] eq "entities" || $caches[0] eq "views" )
+	{
+		my $repo = &repository( $repoid );
+		my @cmd_parts = ( $repo, "generate_".$caches[0] );
+		if ( $noise > 1 )
+		{
+				push @cmd_parts, "--verbose";
+		}
+		elsif ( $noise < 1 )
+		{
+			push @cmd_parts, "--quiet";
+		}
+		push @cmd_parts, $repoid;
+		run_script( @cmd_parts );
+	}
+    elsif ( $caches[0] eq "citations" )
+    {
+        print "Citations cannot be pregenerated.  Try using './epadmin <REPO> clear_caches citations' instead\n";
+    }
+	else
+	{
+		 print STDERR "ERROR: '$caches[0]' is not a recognised cache!\n";
+	}
 }
 
 sub logout_all_users
