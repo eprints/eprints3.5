@@ -111,3 +111,8 @@ div.ep_tm_page_content
     display: flex;
     flex-wrap: wrap;
 }
+
+.audio-preview {
+    width: 100%;
+    padding: 10px;
+}

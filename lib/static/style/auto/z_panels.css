@@ -50,7 +50,6 @@ li.ep_panel_nav
 /* if we end up with nested panels */
 .ep_panel_content .ep_panel_content
 {
-  box-shadow: 0 2px 6px rgba(085, 005, 255, 0.3);
 }
 
 .ep_panel_table
