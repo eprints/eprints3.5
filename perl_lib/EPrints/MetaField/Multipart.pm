@@ -11,11 +11,16 @@
 
 =head1 NAME
 
-B<EPrints::MetaField::Multipart> - no description
-
+B<EPrints::MetaField::Multipart> - Represents multiple sub fields grouped together
 =head1 DESCRIPTION
 
-not done
+Very similar to EPrints::MetaField::Compound, does conceptially the same job but is
+subtly different: Multipart does not support the multiple flag on its subfields.
+A single table is created in the database and each subfield is a column.
+
+Because the multipart does not support a multiple subfield, a nested multipart in a multipart
+field will have all its fields squashed down into the parent multipart table. If you want the 
+equviliant of a nested multipart, use a Compound as the parent
 
 =over 4
 

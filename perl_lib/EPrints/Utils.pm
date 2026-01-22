@@ -675,10 +675,13 @@ sub _render_citation_aux
 
 Return the EPrint::MetaField from $dataset with the given name.
 
+Compound fields are not directly supported, but you can add a subfield
+with compoundfield_subfieldname, example: contributions_contributor
+
 If fieldname has a semicolon followed by render options then these 
 are passed as render options to the new EPrints::MetaField object. 
 Example: date;res=year. Render options (prepended with render_, 
-so for res=year render_year already exists) must be already existing 
+so for res=year render_res already exists) must be already existing 
 field metadata or defined in MetaField::get_property_defaults
 
 If fieldname contains a full stop then the end field is given to
@@ -727,7 +730,7 @@ sub field_from_config_string
 	my @fnames = split /\./, $fieldname;
 	foreach my $fname ( @fnames )
 	{
-		# if there is a dot, we iterate down the string into the subfields and datasets. $field is updated so it is always the field of the dataset of the deepest subfield
+		# if there is a dot, we iterate down the string into the subfields and datasets. $field is updated so it is always the deepest subfield
 		# without a dot this will just run once
 		if( !defined $dataset )
 		{
