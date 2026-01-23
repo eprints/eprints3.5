@@ -1,0 +1,23 @@
+/* display the panels as a flow of boxes instead of tabs */
+
+ul.ep_panel_buttons
+{
+  display: none;
+}
+
+.ep_panel_content
+{
+  display: inline-block;
+  float: left;
+  width: 220px;
+  height: 260px;
+  overflow: auto;
+  margin: 4px;
+}
+
+/* example colours */
+
+#panel1 .ep_panel_content { background-color: #ddffdd; }
+#panel2 .ep_panel_content { background-color: #eeeeff; }
+#panel3 .ep_panel_content { background-color: #ddffdd; }
+#panel4 .ep_panel_content { background-color: #eeeeff; }
