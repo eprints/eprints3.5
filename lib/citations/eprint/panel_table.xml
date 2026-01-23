@@ -2,7 +2,7 @@
 <cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
 
 <div class="ep_panel_content" id="ep_panel_{tmp__id}">
-<div class="ep_panel_title fs-4" id="{tmp__id}_title"><epc:print expr="$title"/></div>
+<div class="ep_panel_title fs-5" id="{tmp__id}_title"><epc:print expr="$title"/></div>
   <div class="ep_panel_body" id="{tmp__id}_content">
     <div id="{tmp__id}_content_inner">         
       <div class="ep_panel_table">
