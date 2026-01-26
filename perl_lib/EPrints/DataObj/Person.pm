@@ -105,23 +105,24 @@ sub get_system_field_info
 	},
 
 
-		{
-			name => 'ids',
-			type => 'compound',
-			multiple => 1,
-			fields => [
-				{
-					sub_name => 'id',
-					type => 'id',
-				},
-				{
-					sub_name => 'id_type',
-					type => 'namedset',
-					set_name => $class->get_dataset_id . "_id_type",
-				},
-			],
-			input_boxes => 1,
-			required => 1,
+	{
+		name => 'ids',
+		type => 'compound',
+		multiple => 1,
+		fields => [
+			{
+				sub_name => 'id',
+				type => 'id',
+			},
+			{
+				sub_name => 'id_type',
+				type => 'namedset',
+				set_name => $class->get_dataset_id . "_id_type",
+			},
+		],
+		input_boxes => 1,
+		required => 1,
+		render_value => 'render_entity_ids',
 	},
 
 	{
@@ -151,6 +152,7 @@ sub get_system_field_info
 		],
 		multiple => 1,
 		input_boxes => 1,
+		render_value => 'render_entity_names',
 	},
 
 	{

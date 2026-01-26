@@ -1594,7 +1594,7 @@ sub render_citation
 	if ( !defined $params{no_cache} || !$params{no_cache} )
 	{
 		my @excluded_dataobjs = ( 'loginticket', 'subject' );
-		my @excluded_styles = ( 'result' );
+		my @excluded_styles = ( 'entity_page', 'result', 'summary_page' );
 		@excluded_dataobjs = @{$self->{session}->config( "citation_caching", "excluded_dataobjs" )} if defined $self->{session}->config( "citation_caching", "excluded_dataobjs" );
 		@excluded_styles = @{$self->{session}->config( "citation_caching", "excluded_styles" )} if defined $self->{session}->config( "citation_caching", "excluded_styles" );
 		$citation_caching_enabled = defined $self->{session}->config( "citation_caching", "enabled" ) && $self->{session}->config( "citation_caching", "enabled" ) && !$citation->{disable_caching} && !(grep { $self->{dataset}->confid eq $_ } @excluded_dataobjs) && !(grep { $style eq $_ } @excluded_styles);

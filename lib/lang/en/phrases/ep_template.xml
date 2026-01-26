@@ -211,7 +211,7 @@
                 </epc:param>
               </epc:phrase>
               <epc:whitespace empty="preserve"> </epc:whitespace>
-              <epc:if test="page_size != ''">
+              <epc:if test="page_size = ''">
                 <epc:phrase ref="lib/searchexpression:results_page_size">
                   <epc:param name="n_10">
                     <epv:link uri="{url}&amp;{basename}page_size=10">10</epv:link>

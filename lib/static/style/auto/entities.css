@@ -20,3 +20,19 @@
     text-align: right;
 }
 
+ul.ep_entity_names_list {
+	list-style-position: inside;
+	padding-left: 0;
+}
+dl.ep_entity_ids_list {
+  display: grid;
+  grid-gap: 4px 16px;
+  grid-template-columns: max-content;
+}
+dl.ep_entity_ids_list > dt {
+  font-weight: bold;
+}
+dl.ep_entity_ids_list > dd {
+  margin: 0;
+  grid-column-start: 2;
+}

@@ -6,11 +6,7 @@
 
 <cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:epc="http://eprints.org/ep3/control" xmlns:cite="http://eprints.org/ep3/citation" >
 
-  <p style="margin-bottom: 1em">
-    <epc:print expr="$item.citation('default')" />
-  </p>
-
-  <table style="margin-bottom: 1em; margin-top: 1em;" cellpadding="3">
+  <table class="ep_summary_table" id="ep_person_summary_table">
     <epc:comment> 
        The below block loops over a list of field names taken from person_render.pl
        Edit the list of metadata to show in the entity page table in person_render.pl
@@ -18,17 +14,28 @@
     <epc:foreach expr="$config{person_page_metadata}" iterator="fieldname">
       <epc:if test="is_set($item.property($fieldname))">
         <tr>
-          <th align="right"><epc:phrase ref="person_fieldname_{$fieldname}" />:</th>
-          <td valign="top"><epc:print expr="$item.property($fieldname)" /></td>
+          <th><epc:phrase ref="person_fieldname_{$fieldname}" />:</th>
+          <td><epc:print expr="$item.property($fieldname)" /></td>
         </tr>
       </epc:if>
     </epc:foreach>
     <tr>
-      <th align="right">URI:</th>
-      <td valign="top"><a href="{$item.uri()}"><epc:print expr="$item.uri()" /></a></td>
+      <th>URI:</th>
+      <td><a href="{$item.uri()}"><epc:print expr="$item.uri()" /></a></td>
     </tr>
   </table>
 
-  <epc:phrase ref="entity_page:publications_list" entity_type="person" entity_id="{$item.id()}" />
+  <epc:phrase ref="entity_page:publications"/>
+  <epc:print expr="entity_eprint_citations('person',$item.property('personid'),'group=type')" />
+
+  <epc:if test="!$flags{preview}">
+    <epc:phrase ref="entity_page:actions"/>
+    <dl class="ep_entity_page_actions">
+    <epc:foreach expr="entity_action_list('entity_page_actions',$item)" iterator="action">
+      <dt><epc:print expr="$action.action_icon()" /></dt>
+      <dd><epc:print expr="$action.action_title()" /></dd>
+    </epc:foreach>
+    </dl>
+  </epc:if>
 
 </cite:citation>

@@ -78,8 +78,9 @@ sub render_value
 {
 	my( $self, $session, $value, $alllangs, $nolink, $object ) = @_;
 
-	if( $alllangs )
+	if( $alllangs || defined $self->property( "render_value" ) )
 	{
+		$alllangs = 1;
 		return $self->SUPER::render_value( 
 				$session,$value,$alllangs,$nolink,$object);
 	}

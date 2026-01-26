@@ -5326,6 +5326,35 @@ sub expire_abstracts
 	return 1;
 }
 
+=begin InternalDoc
+
+=item $success = $repository->expire_entities()
+
+Cause the enttities pages to regenerate next time they are requested by expiring them.
+
+Returns success if done successfully.
+
+=end InternalDoc
+
+=cut
+
+sub expire_entities
+{
+    my ( $self ) = @_;
+
+    my $file = $self->get_conf( "variables_path" )."/entities.timestamp";
+
+    unless( open( CHANGEDFILE, ">$file" ) )
+    {
+        return 0;
+    }
+
+    print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+    close CHANGEDFILE;
+
+    return 1;
+}
+
 
 
 ######################################################################
@@ -5701,11 +5730,13 @@ sub check_developer_mode
 
 	my $always_reload_config = 1;
 	my $disable_abstracts_cache = 1;
+	my $disable_entities_cache = 1;
 	my $disable_views_cache = 0;
 	if ( defined $self->{config}->{developer_mode} )
 	{
 		$always_reload_config = $self->{config}->{developer_mode}->{always_reload_config};
 		$disable_abstracts_cache = $self->{config}->{developer_mode}->{disable_abstracts_cache};
+		$disable_entities_cache = $self->{config}->{developer_mode}->{disable_entities_cache};
 		$disable_views_cache = $self->{config}->{developer_mode}->{disable_views_cache};
 	}
 	
@@ -5734,6 +5765,21 @@ sub check_developer_mode
 		print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
 		close CHANGEDFILE;
 	}
+
+
+    if ( $disable_entities_cache )
+	{
+
+        my $file = $self->config( "variables_path" )."/entities.timestamp";
+
+        unless( open( CHANGEDFILE, ">$file" ) )
+        {
+            EPrints::abort( "Cannot write to file $file" );
+        }
+
+        print CHANGEDFILE "This file last poked at: ".EPrints::Time::human_time()."\n";
+        close CHANGEDFILE;
+    }
 
 	if ( $disable_views_cache )
         {

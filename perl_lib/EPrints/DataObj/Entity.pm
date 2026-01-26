@@ -99,7 +99,7 @@ sub get_system_field_info
 
 =over 4
 
-=item $entity = EPrints::DataObj::Entity->get( $session, $datasetid, $objectid )
+=item $entity = EPrints::DataObj::Entity->get( $class, $session, $datasetid, $objectid )
 
 Load the entity from C<$datasetid> with the ID from C<$objectid>
 from the database and return it as the appropriate sub-class of an
@@ -110,16 +110,16 @@ C<EPrints::DataObj::Entity> object.
 
 sub get
 {
-    my( $session, $datasetid, $objectid ) = @_;
+	my( $class, $session, $datasetid, $objectid ) = @_;
 
-    unless ( grep /$datasetid/, @{ $session->config( 'entities', 'datasets' ) } )
-    {
-            $session->log("ERROR: $datasetid is not a type of entity!");
-    }
+	unless ( grep /$datasetid/, @{ $session->config( 'entities', 'datasets' ) } )
+	{
+			$session->log("ERROR: $datasetid is not a type of entity!");
+	}
 
-    return $session->get_database->get_single(
-        $session->dataset( $datasetid ),
-        $objectid );
+	return $session->get_database->get_single(
+		$session->dataset( $datasetid ),
+		$objectid );
 }
 
 ######################################################################
@@ -191,10 +191,10 @@ sub get_name
   return $self->value( 'name' ) unless $date;
   foreach my $name ( @{$self->value( 'names' )} )
   {
-        if ( ( !$name->{from} && !$name->{to} ) || ( ( !defined $name->{from} || $date ge $name->{from} ) && ( !defined $name->{to} || $date le $name->{to} ) ) )
-        {
+		if ( ( !$name->{from} && !$name->{to} ) || ( ( !defined $name->{from} || $date ge $name->{from} ) && ( !defined $name->{to} || $date le $name->{to} ) ) )
+		{
 			return $name->{name};
-        }
+		}
   }
 }
 
@@ -255,7 +255,7 @@ sub get_url
 {
 	my( $self , $proto ) = @_;
 
-    return( $self->url_stem( $proto ) );
+	return( $self->url_stem( $proto ) );
 }
 
 
@@ -273,90 +273,88 @@ N.B. This includes the trailing slash, unlike the local_path method.
 
 sub url_stem
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
-    my $repository = $self->{session}->get_repository;
+	my $repository = $self->{session}->get_repository;
 	my $dataset = $repository->get_dataset( $self->get_dataset_id );
 
-    my $url;
-    $url = $repository->get_conf( 'base_url' );
-    $url .= '/id/'.$dataset->id.'/';
-    $url .= $self->get_value( $dataset->key_field->get_name )+0;
-    $url .= '/';
+	my $url;
+	$url = $repository->get_conf( 'base_url' );
+	$url .= '/id/'.$dataset->id.'/';
+	$url .= $self->get_value( $dataset->key_field->get_name )+0;
+	$url .= '/';
 
-    return $url;
+	return $url;
 }
 
 ######################################################################
 =pod
 
-=item $person->generate_static
+=item $entity->generate_static
 
-Generate the static version of the abstract/summary web page. In a
+Generate the static version of the profile web page. In a
 multi-language repository this will generate one version per language.
 
-If called on eprints in the C<inbox> or C<buffer>, remove the
-abstract/summary page.
 
 =cut
 ######################################################################
 
 sub generate_static
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
-    $self->remove_static;
+	$self->remove_static;
 
-    # We is going to temporarily change the language of our session to
-    # render the abstracts in each language.
-    my $real_langid = $self->{session}->get_langid;
+	# We is going to temporarily change the language of our session to
+	# render the abstracts in each language.
+	my $real_langid = $self->{session}->get_langid;
 
-    my @langs = @{$self->{session}->get_repository->get_conf( "languages" )};
-    foreach my $langid ( @langs )
-    {
-        $self->{session}->change_lang( $langid );
-        my $full_path = $self->_htmlpath( $langid );
+	my @langs = @{$self->{session}->get_repository->get_conf( "languages" )};
+	foreach my $langid ( @langs )
+	{
+		$self->{session}->change_lang( $langid );
+		my $full_path = $self->_htmlpath( $langid );
 
-        my @created = EPrints::Platform::mkdir( $full_path );
+		my @created = EPrints::Platform::mkdir( $full_path );
 
-        my( $page, $title, $links, $template ) = $self->render;
+		my( $page, $title, $links, $template ) = $self->render;
 
-        my $link = $self->{session}->make_element(
-            "link",
-            rel=>"canonical",
-            href=>$self->url_stem
-        );
-        $links = $self->{session}->make_doc_fragment() if( !defined $links );
-        $links->appendChild( $link );
-        $links->appendChild( $self->{session}->make_text( "\n" ) );
+		my $link = $self->{session}->make_element(
+			"link",
+			rel=>"canonical",
+			href=>$self->url_stem
+		);
+		$links = $self->{session}->make_doc_fragment() if( !defined $links );
+		$links->appendChild( $link );
+		$links->appendChild( $self->{session}->make_text( "\n" ) );
 
-        my @plugins = $self->{session}->plugin_list(
-                    type=>"Export",
-                    can_accept=>"dataobj/".$self->{dataset}->confid,
-                    is_advertised => 1,
-                    is_visible=>"all" );
-        if( scalar @plugins > 0 ) {
-            foreach my $plugin_id ( @plugins )
-            {
-                $plugin_id =~ m/^[^:]+::(.*)$/;
-                my $id = $1;
-                my $plugin = $self->{session}->plugin( $plugin_id );
-                my $link = $self->{session}->make_element(
-                    "link",
-                    rel=>"alternate",
-                    href=>$plugin->dataobj_export_url( $self ),
-                    type=>$plugin->param("mimetype"),
-                    title=>EPrints::XML::to_string( $plugin->render_name ), );
-                $links->appendChild( $link );
-                $links->appendChild( $self->{session}->make_text( "\n" ) );
-            }
-        }
-        $self->{session}->write_static_page(
-            $full_path . "/index",
-            {title=>$title, page=>$page, head=>$links, template=>$self->{session}->make_text($template) },
-             );
-    }
-    $self->{session}->change_lang( $real_langid );
+		my @plugins = $self->{session}->plugin_list(
+					type=>"Export",
+					can_accept=>"dataobj/".$self->{dataset}->confid,
+					is_advertised => 1,
+					is_visible=>"all" );
+		if( scalar @plugins > 0 ) {
+			foreach my $plugin_id ( @plugins )
+			{
+				$plugin_id =~ m/^[^:]+::(.*)$/;
+				my $id = $1;
+				my $plugin = $self->{session}->plugin( $plugin_id );
+				my $link = $self->{session}->make_element(
+					"link",
+					rel=>"alternate",
+					href=>$plugin->dataobj_export_url( $self ),
+					type=>$plugin->param("mimetype"),
+					title=>EPrints::XML::to_string( $plugin->render_name ), );
+				$links->appendChild( $link );
+				$links->appendChild( $self->{session}->make_text( "\n" ) );
+			}
+		}
+		$self->{session}->write_static_page(
+			$full_path . "/index",
+			{title=>$title, page=>$page, head=>$links, template=>$self->{session}->make_text($template) },
+			 );
+	}
+	$self->{session}->change_lang( $real_langid );
 }
 
 
@@ -372,32 +370,32 @@ Remove the static web page or pages.
 
 sub remove_static
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
-    my $langid;
-    foreach $langid
-        ( @{$self->{session}->get_repository->get_conf( "languages" )} )
-    {
-        EPrints::Utils::rmtree( $self->_htmlpath( $langid ) );
-    }
+	my $langid;
+	foreach $langid
+		( @{$self->{session}->get_repository->get_conf( "languages" )} )
+	{
+		EPrints::Utils::rmtree( $self->_htmlpath( $langid ) );
+	}
 }
 
 ######################################################################
 #
-# $path = $eprint->_htmlpath( $langid )
+# $path = $entity->_htmlpath( $langid )
 #
-# return the filesystem path in which the static files for this eprint
-# are stored.
+# return the filesystem path in which the static files for this
+# entity are stored.
 #
 ######################################################################
 
 sub _htmlpath
 {
-    my( $self, $langid ) = @_;
+	my( $self, $langid ) = @_;
 
-    return $self->{session}->get_repository->get_conf( "htdocs_path" ).
-        "/".$langid."/".$self->get_dataset_id."/".
-        $self->store_path;
+	return $self->{session}->get_repository->get_conf( "htdocs_path" ).
+		"/".$langid."/".$self->get_dataset_id."/".
+		$self->store_path;
 }
 
 
@@ -414,11 +412,58 @@ Get the storage path for this entity data object.
 sub store_path
 
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
-    return entityid_to_path( $self->id );
+	return entityid_to_path( $self->id );
 }
 
+sub get_eprint_ids
+{
+	my( $self, $status, $group ) = @_;
+
+	my $group_field = defined $group ? ", eprint.$group" : "";
+
+	my $sql = "SELECT DISTINCT eprint.eprintid$group_field FROM eprint INNER JOIN eprint_contributions_contributor ON eprint.eprintid = eprint_contributions_contributor.eprintid WHERE eprint_contributions_contributor.contributions_contributor_datasetid = '".$self->get_dataset_id."' AND eprint_contributions_contributor.contributions_contributor_entityid = '".$self->id."' ";
+	if ( $status )
+	{
+		$sql .= "AND eprint.eprint_status = '$status' ";
+	}
+
+	my $sth = $self->{session}->get_database->prepare_select( $sql );
+	$self->{session}->get_database->execute( $sth , $sql );
+
+	my $eprintids = {};
+	while ( my @row = $sth->fetchrow_array )
+	{
+		my $group_id = defined $row[1] ? $row[1] : 'ungrouped';
+		push @{$eprintids->{$group_id}}, $row[0];
+	}
+
+	return $eprintids;
+}
+
+sub get_eprints
+{
+	my( $self, $status, $order, $group ) = @_;
+
+	my $dataset_id = defined $status ? $status : 'eprint';
+	my $dataset = $self->{session}->dataset( $dataset_id );
+
+	my $eprint_ids = $self->get_eprint_ids( $status, $group );
+
+	my $lists = {};
+
+	foreach $group ( keys %$eprint_ids )
+	{
+		$lists->{$group} = $dataset->list( $eprint_ids->{$group} );
+		unless ( $order )
+		{
+			$lists->{$group} = $lists->{$group}->reorder( $order );
+		}
+	}
+
+	return $lists;
+}
 
 #####################################################################
 =pod
@@ -433,9 +478,8 @@ Returns C<1> to indicate that is expected that he entity has changed.
 ######################################################################
 
 sub add_name
-
 {
-    my( $self, $name, $commit ) = @_;
+	my( $self, $name, $commit ) = @_;
 
 	my $names = $self->get_value( 'names' );
 	push @$names, { name => $name };
@@ -457,15 +501,14 @@ Returns C<1> to indicate that is expected that he entity has changed.
 ######################################################################
 
 sub add_id
-
 {
-    my( $self, $value, $type, $commit ) = @_;
+	my( $self, $value, $type, $commit ) = @_;
 
-    my $ids = $self->get_value( 'ids' );
-    push @$ids, { id_value => $value, id_type => $type };
-    $self->set_value( 'ids', $ids );
-    $self->commit( 1 ) if $commit;
-    return 1;
+	my $ids = $self->get_value( 'ids' );
+	push @$ids, { id_value => $value, id_type => $type };
+	$self->set_value( 'ids', $ids );
+	$self->commit( 1 ) if $commit;
+	return 1;
 }
 
 ######################################################################
@@ -481,13 +524,13 @@ provided.
 
 sub entityid_to_path
 {
-    my( $id ) = @_;
+	my( $id ) = @_;
 
-    my $path = sprintf("%08d", $id);
-    $path =~ s#(..)#/$1#g;
-    substr($path,0,1) = '';
+	my $path = sprintf("%08d", $id);
+	$path =~ s#(..)#/$1#g;
+	substr($path,0,1) = '';
 
-    return $path;
+	return $path;
 }
 
 ######################################################################
@@ -540,13 +583,13 @@ in the C<deleted> dataset.
 
 sub render
 {
-    my( $self, $preview ) = @_;
+	my( $self, $preview ) = @_;
 
-    my( $dom, $title, $links, $template );
+	my( $dom, $title, $links, $template );
 
 	return $self->{session}->get_repository->call(
-        	$self->get_dataset_id . "_render",
-            $self, $self->{session}, $preview 
+			$self->get_dataset_id . "_render",
+			$self, $self->{session}, $preview 
 		);
 }
 
@@ -562,7 +605,7 @@ Return the URL of the control page for this entity.
 
 sub get_control_url
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
 	my $dataset = $self->{session}->get_repository->get_dataset( $self->get_dataset_id );
 	my $key_field_name = $dataset->key_field->get_name;
@@ -611,7 +654,7 @@ data object.
 
 sub human_serialise_name
 {
-    my( $self, $name ) = @_;
+	my( $self, $name ) = @_;
 
 	if ( !defined $name && $self->can( 'get_value' ) ) 
 	{
@@ -623,7 +666,7 @@ sub human_serialise_name
 		return &$f( $name );
 	}
 
-    return $name;
+	return $name;
 }
 
 ######################################################################
@@ -639,14 +682,14 @@ can be saved to an entity record's name field.
 
 sub human_deserialise_name
 {
-    my( $self, $serialised_name ) = @_;
+	my( $self, $serialised_name ) = @_;
 
-    if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_deserialise_name' ) )
-    {
-        return &$f( $serialised_name );
-    }
+	if ( my $f = $self->{session}->config( 'entities', $self->get_dataset_id, 'human_deserialise_name' ) )
+	{
+		return &$f( $serialised_name );
+	}
 
-    return $serialised_name;
+	return $serialised_name;
 }
 
 
@@ -736,7 +779,7 @@ Returns the name of the entity at a particular point in time.
 
 Options:
 
-        no_id - boolean specifying entity must currently have no ID.
+		no_id - boolean specifying entity must currently have no ID.
 
 =cut
 ######################################################################
@@ -836,54 +879,56 @@ object.
 
 sub commit
 {
-    my( $self, $force ) = @_;
+	my( $self, $force ) = @_;
 
-    if( scalar( keys %{$self->{changed}} ) == 0 )
-    {
-        # don't do anything if there isn't anything to do
-        return( 1 ) unless $force;
-    }
+	if( scalar( keys %{$self->{changed}} ) == 0 )
+	{
+		# don't do anything if there isn't anything to do
+		return( 1 ) unless $force;
+	}
 
-    # Remove empty slots in multiple fields
-    $self->tidy;
+	# Remove empty slots in multiple fields
+	$self->tidy;
 
-    $self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_BEFORE_COMMIT,
-        dataobj => $self,
-        changed => $self->{changed},
-    );
+	$self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_BEFORE_COMMIT,
+		dataobj => $self,
+		changed => $self->{changed},
+	);
 
 	$self->update_triggers();
 
-    # Write the data to the database
-    my $success = $self->{session}->get_database->update(
-        $self->{dataset},
-        $self->{data},
-        $force ? $self->{data} : $self->{changed} );
+	# Write the data to the database
+	my $success = $self->{session}->get_database->update(
+		$self->{dataset},
+		$self->{data},
+		$force ? $self->{data} : $self->{changed} );
 
-    if( !$success )
-    {
-        my $db_error = $self->{session}->get_database->error;
-        $self->{session}->get_repository->log(
-            "Error committing ".$self->get_dataset_id.".".
-            $self->get_id.": ".$db_error );
-        return 0;
-    }
+	if( !$success )
+	{
+		my $db_error = $self->{session}->get_database->error;
+		$self->{session}->get_repository->log(
+			"Error committing ".$self->get_dataset_id.".".
+			$self->get_id.": ".$db_error );
+		return 0;
+	}
 
-    # Queue changes for the indexer (if indexable)
-    $self->queue_changes();
+	# Queue changes for the indexer (if indexable)
+	$self->queue_changes();
 
-    $self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_AFTER_COMMIT,
-        dataobj => $self,
-        changed => $self->{changed},
-    );
+	$self->dataset->run_trigger( EPrints::Const::EP_TRIGGER_AFTER_COMMIT,
+		dataobj => $self,
+		changed => $self->{changed},
+	);
 
-    # clear changed fields
-    $self->clear_changed();
+	# clear changed fields
+	$self->clear_changed();
 
-    # clear citations unless this is a citation
-    $self->clear_citationcaches() if defined $self->{session}->config( "citation_caching", "enabled" ) && $self->{session}->config( "citation_caching", "enabled" ) && $self->{dataset}->confid ne "citationcache";
+	# clear citations unless this is a citation
+	$self->clear_citationcaches() if defined $self->{session}->config( "citation_caching", "enabled" ) && $self->{session}->config( "citation_caching", "enabled" ) && $self->{dataset}->confid ne "citationcache";
 
-    return $success;
+	$self->remove_static;
+
+	return $success;
 }
 
 
@@ -900,14 +945,14 @@ is written to the database.
 
 sub update_triggers
 {
-    my( $self ) = @_;
+	my( $self ) = @_;
 
-    $self->SUPER::update_triggers();
+	$self->SUPER::update_triggers();
 
-    if( $self->{non_volatile_change} )
-    {
-        $self->set_value( "lastmod", EPrints::Time::get_iso_timestamp() );
-    }
+	if( $self->{non_volatile_change} )
+	{
+		$self->set_value( "lastmod", EPrints::Time::get_iso_timestamp() );
+	}
 }
 
 
