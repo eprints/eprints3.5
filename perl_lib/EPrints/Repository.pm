@@ -1487,15 +1487,15 @@ Return a hash of groups for the named set. Comes from
 
 sub get_type_groups
 {
-    my( $self, $type_set ) = @_;
+	my( $self, $type_set ) = @_;
 
-    if( !defined $self->{type_groups}->{$type_set} )
-    {
-        $self->log( "Request for unknown named set: $type_set" );
-        return ();
-    }
+	if( !defined $self->{type_groups}->{$type_set} )
+	{
+		# No need to log this as not all named sets have type groups.
+		return ();
+	}
 
-    return @{$self->{type_groups}->{$type_set}};
+	return @{$self->{type_groups}->{$type_set}};
 }
 
 
