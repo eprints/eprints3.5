@@ -116,3 +116,7 @@ div.ep_tm_page_content
     width: 100%;
     padding: 10px;
 }
+
+.ep_summary_content_main > div > div > .ep_panel_wrapper {
+    width: 100%;
+}
