@@ -26,6 +26,10 @@ sub new
 	{
 		push @{$self->{appears}}, 
 		{
+			place => "entity_page_actions",
+			position => 100,
+		},
+		{
 			place => $datasetid . "_item_actions",
 			position => 800,
 		};
@@ -179,11 +183,7 @@ sub render_common_action_buttons
 {
 	my( $self ) = @_;
 
-	my $frag = $self->{session}->make_doc_fragment;
-
-	$frag->appendChild( $self->render_action_list_bar( "entity_actions_bar", ['dataset, entity'] ) );
-
-	return $frag;
+	return  $self->render_action_list_bar( "entity_actions_bar", [ 'dataset', 'entity' ] );
 }
 
 
