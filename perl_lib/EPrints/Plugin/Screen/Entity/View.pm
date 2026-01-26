@@ -117,11 +117,30 @@ sub can_be_viewed
 	return $self->allow( $self->{processor}->{dataset}->id . "/view" ) & $self->who_filter;
 }
 
+sub render_status
+{
+	my( $self ) = @_;
+
+	my $entity = $self->{processor}->{entity};
+
+	my $url = $entity->uri;
+
+	my $div = $self->{session}->make_element( "div", class=>"ep_block" );
+
+	my $link = $self->{session}->render_link( $url );
+	$div->appendChild( $link );
+	$link->appendChild( $self->{session}->make_text( $url ) );
+
+	return $div;
+}
+
 sub render
 {
 	my( $self ) = @_;
 
 	my $chunk = $self->{session}->make_doc_fragment;
+
+	$chunk->appendChild( $self->render_status );
 
 	my $div = $self->{session}->make_element( "div", class => "ep_block" );
 	my $buttons = $self->render_common_action_buttons;
