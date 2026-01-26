@@ -2,6 +2,13 @@
 
 EPrints::Plugin::Search::Internal
 
+=head1 DESCRIPTION
+
+Enhances EPrints::Search with the ability to find and highlight search terms
+in the text snippets of a search results.
+
+See EPrints::Plugin::Search for examples of how to use this search
+
 =cut
 
 package EPrints::Plugin::Search::Internal;

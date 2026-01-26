@@ -259,7 +259,7 @@ END
 		{
 			# Put the MetaFields in a list
 			push @meta_fields,
-	EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
+			EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
 		}
 
 		my $id =  $fielddata->{id};
@@ -292,7 +292,7 @@ END
 		{
 			# Put the MetaFields in a list
 			push @meta_fields,
-	EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
+			EPrints::Utils::field_from_config_string( $self->{dataset}, $fieldname );
 		}
 
 		my %opts = %$filterdata;
