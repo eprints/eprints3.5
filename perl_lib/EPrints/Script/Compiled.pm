@@ -306,6 +306,21 @@ sub run_is_set
 	return [ EPrints::Utils::is_set( $param->[0] ), "BOOLEAN" ];
 } 
 
+sub run_field_exists
+{
+	my( $self, $state, $objvar, $value ) = @_;
+	
+	if( !defined $objvar->[0] )
+	{
+		return [ 0, "BOOLEAN" ];
+	}
+	
+	# Check if the dataset has this field
+	my $has_field = $objvar->[0]->get_dataset->has_field( $value->[0] );
+	
+	return [ $has_field ? 1 : 0, "BOOLEAN" ];
+}
+
 sub run_citation_link
 {
 	my( $self, $state, $object, $citationid ) = @_;

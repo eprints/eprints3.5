@@ -1,9 +1,9 @@
 $c->{organisation_page_metadata} = [qw/
-    names
-    ids
+	name
+	names
+	ids
 	address
 	country
-    lastmod
 /];
 
 ######################################################################

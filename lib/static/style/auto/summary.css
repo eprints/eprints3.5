@@ -69,3 +69,13 @@
 	float: left;
 	margin-left: 0.5em;
 }
+
+.ep_summary_table {
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
+.ep_summary_table tr > th, .ep_summary_table tr > td {
+	vertical-align: top;
+	padding: 3px;
+}

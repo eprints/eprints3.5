@@ -10,6 +10,3 @@
 [submodule "ingredients/latest_additions"]
 	path = ingredients/latest_additions
 	url = ../latest_additions.git
-[submodule "eprints_panels"]
-	path = ingredients/eprints_panels
-	url = https://github.com/eprints/eprints_panels

@@ -3395,7 +3395,7 @@ Titles and Help for the System Fields
     <epp:phrase id="person_id_type_typename_email">Email</epp:phrase>
     <epp:phrase id="person_id_type_typename_username">Username</epp:phrase>
     <epp:phrase id="person_fieldname_name">Primary Name</epp:phrase>
-    <epp:phrase id="person_fieldname_names">Names</epp:phrase>
+    <epp:phrase id="person_fieldname_names">All Names</epp:phrase>
     <epp:phrase id="person_fieldname_names_name">Name</epp:phrase>
     <epp:phrase id="person_fieldname_names_from">From</epp:phrase>
     <epp:phrase id="person_fieldname_names_to">To</epp:phrase>
@@ -3443,7 +3443,7 @@ Titles and Help for the System Fields
     <epp:phrase id="organisation_id_type_typename_url">URL</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_email">Email</epp:phrase>
     <epp:phrase id="organisation_fieldname_name">Primary Name</epp:phrase>
-    <epp:phrase id="organisation_fieldname_names">Name</epp:phrase>
+    <epp:phrase id="organisation_fieldname_names">All Names</epp:phrase>
     <epp:phrase id="organisation_fieldname_names_name">Name</epp:phrase>
     <epp:phrase id="organisation_fieldname_names_from">From</epp:phrase>
     <epp:phrase id="organisation_fieldname_names_to">To</epp:phrase>

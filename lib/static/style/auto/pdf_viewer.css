@@ -1,0 +1,8 @@
+#pdf-viewer-wrapper {
+	width: 100%;
+}
+
+#pdf-viewer-overlay {
+    opacity: 0.8;
+    position: absolute;
+}

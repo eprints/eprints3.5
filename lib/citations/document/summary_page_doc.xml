@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+
+<!-- 
+-->
+
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:epc="http://eprints.org/ep3/control" xmlns:cite="http://eprints.org/ep3/citation" >
+
+	<div class="card" style="width: 18rem;">
+	
+	    <epc:choose>
+            <epc:when test="format = 'video'">
+	      <video src="{$item.url()}" width="100%" class="ep_embedded_video" controls="true"></video>
+            </epc:when>
+            <epc:when test="format = 'audio'">
+              <audio class="audio-preview" controls="true">
+                <source src="{$item.url()}"/>
+              </audio>
+            </epc:when>
+            <epc:when test="$item.thumbnail_url('lightbox').is_set()">
+	      <img src="{$item.thumbnail_url('lightbox')}" class="card-img-top object-fit-cover" style="height: 200px;" alt="lightbox image"/>
+            </epc:when>
+	    <epc:otherwise>
+	      <img src="/style/images/fileicons/image.png" class="card-img-top object-fit-scale" style="height: 200px;" alt="lightbox image"/>
+	    </epc:otherwise>
+            </epc:choose>
+
+
+            <div class="summary_page_doc_info card-body">
+
+              <div class="ep_document_citation_wrapper card-title"><epc:print expr="$item.citation('summary_page_doc_info')" /></div><br/>
+
+              <a href="{$item.url()}" class="ep_document_link"><epc:phrase ref="summary_page:download"/> (<epc:print expr="$item.doc_size().human_filesize()" />)</a>
+              <epc:if test="$item.is_public()">
+			  <epc:choose>
+			  <epc:when test="$item.thumbnail_url('video_mp4').is_set()">
+			  | <epc:print expr="$item.preview_link(phrase('lib/document:preview'),'docs','video_mp4')" />
+			  </epc:when>
+			  <epc:when test="$item.thumbnail_url('audio_mp4').is_set()">
+			  | <epc:print expr="$item.preview_link(phrase('lib/document:preview'),'docs','audio_mp4')" />
+			  </epc:when>
+			  <epc:when test="$item.thumbnail_url('lightbox').is_set()">
+			  | <epc:print expr="$item.preview_link(phrase('lib/document:preview'),'docs','lightbox')" />
+			  </epc:when>
+			  </epc:choose>
+			  </epc:if>
+
+<!-- not in use
+              <epc:if test="!$item.is_public() and $item.contact_email().is_set()">
+                | <a href="{$config{http_cgiurl}}/request_doc?docid={$item{docid}"><epc:phrase ref="request:button" /></a>
+              </epc:if>
+              <ul>
+              <epc:foreach expr="$item.related_objects('http://eprints.org/relation/hasVersion')" iterator="rel">
+                <epc:if test="$rel{relation_type}!='http://eprints.org/relation/isVolatileVersionOf'">
+                  <li><epc:print expr="$rel.citation_link('default')" /></li>
+                </epc:if>
+              </epc:foreach>
+              </ul>
+-->
+            </div>
+            </div>
+</cite:citation>
