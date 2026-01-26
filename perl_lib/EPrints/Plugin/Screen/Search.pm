@@ -2,7 +2,17 @@
 
 EPrints::Plugin::Screen::Search
 
+=head1 DESCRIPTION
+
+This class renders the search page, for both simple and advanced search.
+
+The parent class of AbstractSearch uses EPrints::Search as the underlying search object in $self->{processor}->{search},
+however this class overrides that and uses the plugin version of search (EPrints::Plugin::Search::Internal), adding
+the ability to highlight text in search results.
+
 =cut
+
+
 
 package EPrints::Plugin::Screen::Search;
 
@@ -21,6 +31,38 @@ sub new
 	push @{$self->{actions}}, "advanced", "savesearch";
 
 	return $self;
+}
+
+sub get_facet_config
+{
+	my( $self ) = @_;
+
+	return [
+		{
+			field_id => "type"
+		},
+		{
+			field_id => "department"
+		},
+		{
+			field_id => "ispublished"
+		},
+		{
+			field_id => "publisher"
+		},
+		{
+			field_id => "publication"
+		},
+		{
+			field_id => "date;res=year",
+			# Name the field 'Year' rather than 'Date'
+			field_name => "metafield_fieldopt_min_resolution_year",
+		},
+		# {
+		# 	field_id => "contributors"
+
+		# },
+	];
 }
 
 sub datasets
@@ -569,33 +611,6 @@ sub from
 		}
 		$self->{processor}->{search_subscreen} = "form";
 	}
-}
-
-sub get_facet_config
-{
-	my( $self ) = @_;
-
-	return [
-		{
-			field_id => "type"
-		},
-		{
-			field_id => "department"
-		},
-		{
-			field_id => "ispublished"
-		},
-		{
-			field_id => "publisher"
-		},
-		{
-			field_id => "publication"
-		},
-		{
-			field_id => "date;res=year",
-			# Name the field 'Year' rather than 'Date'
-			field_name => "metafield_fieldopt_min_resolution_year",
-		},	];
 }
 
 sub get_facet_parameters

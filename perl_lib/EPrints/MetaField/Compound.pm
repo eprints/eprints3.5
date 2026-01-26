@@ -18,7 +18,8 @@ combines several other fields into a data structure.
 
 =head1 DESCRIPTION
 
-not done
+Will create a table for each subfield. Very similar to a EPrints::MetaField::Multipart,
+but supports the multiple flag for subfields.
 
 =over 4
 
