@@ -1122,7 +1122,7 @@ sub run_entity_eprint_citations
 				my( $session, $dataset, $eprint ) = @_;
 
 				my $p = $session->make_element( "p" );
-				$p->appendChild( $eprint->render_citation );
+				$p->appendChild( $eprint->render_citation_link );
 				$frag->appendChild( $p );
 			});
 		}

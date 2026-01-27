@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!-- 
+	Citation Styles for person records.
+-->
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+  <div class="col">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <a href="{$item.uri()}" class="text-decoration-none">
+          <h5 class="card-title">
+            <epc:print expr="name"/>
+          </h5>
+          <epc:if test="$type">
+            <h6 class="card-subtitle mb-2 text-muted">
+              <epc:print expr="$type"/>
+            </h6>
+          </epc:if>
+        </a>
+        <div class="card-text">
+          <div class="accordion" id="accordion-{$item.property('personid')}-parent">
+            <div class="accordion-item">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-{$item.property('personid')}" aria-expanded="false" aria-controls="accordion-{$item.property('personid')}">
+                <h2 class="accordion-header fs-6 p-0">
+	        Publications 
+  	      </h2>
+              </button>
+              <div id="accordion-{$item.property('personid')}" class="accordion-collapse collapse px-3" data-bs-parent="accordion-{$item.property('personid')}-parent">
+                <epc:print expr="entity_eprint_citations('person',$item.property('personid'),'group=type')"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</cite:citation>
