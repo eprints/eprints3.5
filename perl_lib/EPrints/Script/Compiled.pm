@@ -1072,7 +1072,7 @@ sub run_entity_eprint_citations
 	my $eprints_lists = $entity->get_eprints( 'archive', $options{order}, $options{group} );
 	my $eprint_ds = $state->{session}->dataset( 'eprint' );
 	my $grp_phrase_template = undef;
-	if ( $eprint_ds->has_field( $options{group} ) )
+	if ( $options{group} && $eprint_ds->has_field( $options{group} ) )
 	{
 		my $group_field = $eprint_ds->get_field( $options{group} );
 		if ( ref $group_field eq "EPrints::MetaField::Set" )
