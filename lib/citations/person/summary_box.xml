@@ -19,13 +19,14 @@
         <div class="card-text">
           <div class="accordion" id="accordion-{$item.property('personid')}-parent">
             <div class="accordion-item">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-{$item.property('personid')}" aria-expanded="false" aria-controls="accordion-{$item.property('personid')}">
+              <button class="accordion-button collapsed p-2" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-{$item.property('personid')}" aria-expanded="false" aria-controls="accordion-{$item.property('personid')}">
                 <h2 class="accordion-header fs-6 p-0">
 	        Publications 
   	      </h2>
               </button>
-              <div id="accordion-{$item.property('personid')}" class="accordion-collapse collapse px-3" data-bs-parent="accordion-{$item.property('personid')}-parent">
-                <epc:print expr="entity_eprint_citations('person',$item.property('personid'),'group=type')"/>
+              <div id="accordion-{$item.property('personid')}" class="accordion-collapse collapse p-3" data-bs-parent="accordion-{$item.property('personid')}-parent">
+                <epc:print expr="entity_eprint_citations('person',$item.property('personid'),'group=', 'limit=3')"/>
+		<a class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true" href="{$item.uri()}">See full publications list</a>
               </div>
             </div>
           </div>
