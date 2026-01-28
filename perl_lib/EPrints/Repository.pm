@@ -1383,7 +1383,7 @@ sub _load_namedsets
 {
 	my( $self ) = @_;
 
-        my @paths = EPrints::Init::get_lib_paths( $self->get_load_order, 'namedsets' );
+	my @paths = EPrints::Init::get_lib_paths( $self->get_load_order, 'namedsets' );
 
 	foreach my $dir ( @paths )
 	{
@@ -1407,7 +1407,6 @@ sub _load_namedsets
 
 			my @types = ();
 			my @type_groups = ();
-			my $group_counter = -1;
 			foreach my $line (<FILE>)
 			{
 				$line =~ s/\015?\012?$//s;
@@ -1420,7 +1419,7 @@ sub _load_namedsets
 				if ( substr( $line, 0, 1 ) eq "-" )
 				{
 					$line =~ s/^-\s*//;
-					$type_groups[++$group_counter] = {
+					push @type_groups, {
 						id => $line,
 						types => [],
 					};
@@ -1428,13 +1427,20 @@ sub _load_namedsets
 				else
 				{
 					push @types, $line;
-					push @{$type_groups[$group_counter]->{types}}, $line if $group_counter >= 0;
+					push @{$type_groups[$#type_groups]->{types}}, $line if scalar @type_groups;
 				}
 			}
 			close FILE;
 
 			$self->{types}->{$type_set} = \@types;
-			$self->{type_groups}->{$type_set} = \@type_groups if $group_counter >= 0;
+			if ( scalar @type_groups )
+			{
+				$self->{type_groups}->{$type_set} = \@type_groups;
+			}
+			elsif ( defined $self->{type_groups}->{$type_set} )
+			{
+				delete $self->{type_groups}->{$type_set};
+			}
 		}
 
 	}
