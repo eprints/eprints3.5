@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!-- 
+	Citation Styles for person records.
+-->
+<cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <a href="{$item.uri()}" class="text-decoration-none">
+          <h5 class="card-title">
+            <epc:print expr="name"/>
+          </h5>
+          <epc:if test="$type">
+            <h6 class="card-subtitle mb-2 text-muted">
+              <epc:print expr="$type"/>
+            </h6>
+          </epc:if>
+        </a>
+      </div>
+    </div>
+  </div>
+</cite:citation>

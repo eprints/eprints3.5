@@ -1059,6 +1059,7 @@ sub run_entity_eprint_citations
 	my %options = (
 		order => '-date',
 		group => 'date_year',
+		limit => undef, 	# currently only works when paired with group=ungrouped
 	);
 	foreach my $opt ( @opts )
 	{
@@ -1092,14 +1093,19 @@ sub run_entity_eprint_citations
         $options{reverse} = 1;
     }
 
+        my $c = 0;
 	if ( scalar keys( %$eprints_lists ) == 1 && defined $eprints_lists->{ungrouped} )
 	{
 		$eprints_lists->{ungrouped}->map( sub {
 			my( $session, $dataset, $eprint ) = @_;
 
+			return if defined $options{limit} && $c >= $options{limit};
+
 			my $p = $session->make_element( "p" );
 			$p->appendChild( $eprint->render_citation_link );
 			$frag->appendChild( $p );
+
+			$c++;
 		});
 	}
 	else
@@ -1122,7 +1128,7 @@ sub run_entity_eprint_citations
 				my( $session, $dataset, $eprint ) = @_;
 
 				my $p = $session->make_element( "p" );
-				$p->appendChild( $eprint->render_citation );
+				$p->appendChild( $eprint->render_citation_link );
 				$frag->appendChild( $p );
 			});
 		}

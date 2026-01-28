@@ -1,3 +1,56 @@
+$c->{filter_eprint_contributions_by_entity_type} = sub {
+	# This function returns a filtered list of contributions
+	# The filtering will take place over 1 loop of the input arra listy
+	# Example: I want only the 'people' from the list of contributions in this eprint using $filter_entity_type = 'person'
+	# Example: I want only 'people' who are 'authors' of this eprint using: $filter_entity_type = 'person' and $filter_sub_type = 'author'
+	# Example: I want 'people' who are 'authors' and have a specific email domain: $filter_entity_type = 'person' and $filter_sub_type = 'author' and a $filter_callback sub() => { #logic to regex email adresses }
+	my( $session, $contributions, $filter_entity_type, $filter_sub_type, $filter_callback ) = @_;
+
+	return () if !defined $contributions;
+	return $contributions if !defined $filter_entity_type && !defined $filter_sub_type && !defined $filter_callback;
+	return $contributions if defined $filter_entity_type && $filter_entity_type ne "organisation" && $filter_entity_type ne "person"; 
+
+	my @filtered_contributions = ();
+
+	for my $contribution ( @$contributions )
+	{
+		# 1. check entity type
+		#	$contributions = $session->get_repository->call( 'filter_eprint_contributions_by_entity_type', $session, $contributions, "person" )
+		#
+		if ( defined $filter_entity_type && $contribution->{contributor}->{datasetid} ne $filter_entity_type )
+		{
+			next;
+		}
+
+		## 2. check sub type
+		# 	$contributions = $session->get_repository->call( 'filter_eprint_contributions_by_entity_type', $session, $contributions, undef, "AUT" );
+		#
+		if ( defined $filter_sub_type && $contribution->{type} ne $filter_sub_type )
+		{
+			next;
+		}
+
+		## 3. check callback - the callback should return 1 keep contribution or 0 don't keep
+		#        $contributions = $session->get_repository->call( 'filter_eprint_contributions_by_entity_type', $session, $contributions, undef, undef, sub {
+		#        my ( $contributions, $contribution ) = @_;
+                #        	if ( defined $contribution->{contributor}->{id_value} && $contribution->{contributor}->{id_value} eq "specific.id.value" ) {
+                #        	        return 1; # Keep
+                #        	} else {
+                #        	        return 0; # Remove
+                #       	}
+        	#	 });
+		#
+		if ( defined $filter_callback && $filter_callback->($contributions, $contribution) ) 
+		{
+			next;
+		}
+
+		push @filtered_contributions, $contribution;
+	}
+
+	return \@filtered_contributions;
+};
+
 $c->{render_contributions_contributor} = sub {
 
 	my( $session, $field, $value, $alllangs, $nolink, $object ) = @_;

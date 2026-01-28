@@ -456,7 +456,7 @@ sub get_eprints
 	foreach $group ( keys %$eprint_ids )
 	{
 		$lists->{$group} = $dataset->list( $eprint_ids->{$group} );
-		unless ( $order )
+		if ( $order )
 		{
 			$lists->{$group} = $lists->{$group}->reorder( $order );
 		}
