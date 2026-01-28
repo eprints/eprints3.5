@@ -1658,7 +1658,8 @@ sub render_citation
 
 	if( $use_cached_version )
 	{
-		my $citation_text = "<citation>" . $res->get_value( 'citation_text' ) . "</citation>";
+		my $citation_text_value = $res->is_set( 'citation_text' ) ? $res->get_value( 'citation_text' ) : '';
+		my $citation_text = "<citation>$citation_text_value</citation>";
 		$citation_htmlobj = EPrints::XML->contents_of( EPrints::XML->parse_string( $citation_text )->documentElement() );  # convert to HTML Object
 	}
 	else
