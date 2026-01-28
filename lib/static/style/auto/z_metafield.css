@@ -14,3 +14,7 @@ table.ep_metafield_compound td
   padding-left: 5px;
   padding-right: 5px;
 }
+
+.ep_form_field_input select option, .ep_form_field_input select optgroup {
+	text-align: left;
+}
