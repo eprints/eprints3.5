@@ -873,9 +873,12 @@ This is an alias for:
 
 sub render_description
 {
-	my( $self ) = @_;
+	my( $self, $use_citation ) = @_;
 
-	return $self->render_value( "name" );
+	if ( $use_citation )
+	{
+		return $self->render_citation( $use_citation );
+	}
 }
 
 

@@ -1663,6 +1663,7 @@ sub render_subj_menu
 			push @{$subjects_to_show}, $value;
 		}
 	}
+	my $use_citation = defined $menu->{use_subject_citation} ? $menu->{use_subject_citation} : "edit";
 
 	my $f = $repo->make_doc_fragment;
 	foreach my $field ( @{$fields} )
@@ -1673,7 +1674,10 @@ sub render_subj_menu
 				defined $menu->{top} ? $menu->{top} : $field->get_property( "top" ),
 				undef,
 				($has_submenu?3:2),
-				$sizes ) );
+				$sizes,
+				$use_citation,
+			)
+		);
 	}
 
 	return $f;
@@ -1775,6 +1779,7 @@ sub render_navigation_aids
 		
 		my $mode = 2;
 		if( $pagetype eq "menu" ) { $mode = 4; }
+		my $use_citation = defined $menu->{use_subject_citation} ? $menu->{use_subject_citation} : "edit";
 		foreach my $field ( @{$menu_fields} )
 		{
 			my $div_box = $repo->make_element( "div", class=>"ep_toolbox" );
@@ -1786,8 +1791,11 @@ sub render_navigation_aids
 					\@ids, 
 					defined $menu->{top} ? $menu->{top} : $field->get_property( "top" ),
 					$path_values->[-1], 
-					$mode, 
-					$opts{sizes} ) );
+					$mode,
+					$opts{sizes},
+					$use_citation,
+				)
+			); 
 		}
 	}
 
