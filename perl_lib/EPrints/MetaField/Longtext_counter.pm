@@ -57,24 +57,41 @@ sub get_basic_input_elements
 		'aria-labelledby' => $self->get_labelledby( $basename ),
 	);
 	my $describedby = $self->get_describedby( $basename, $one_field_component );
-        $attributes{'aria-describedby'} = $describedby if EPrints::Utils::is_set( $describedby );
+	$attributes{'aria-describedby'} = $describedby if EPrints::Utils::is_set( $describedby );
 	my $textarea = $session->make_element( "textarea", %attributes );
-        $textarea->appendChild( $session->make_text( $value ) );
+	$textarea->appendChild( $session->make_text( $value ) );
 
-        my $frag = $session->make_doc_fragment;
-        $frag->appendChild($textarea);
+	my $frag = $session->make_doc_fragment;
+	$frag->appendChild($textarea);
 
-        my $p = $session->make_element( "p", id=>$basename . "_counter_line" );
-        $p->appendChild($session->make_element( "span", id=>$basename."_display_count"));
-        if (($self->{maxwords}) ne $defaults{maxwords})
-        {
-                $p->appendChild( $session->make_text( "/".$self->{maxwords} ) );
-        }
+	my $final_max_words = 0;
+
+	if ( defined $self->{maxwords} && $self->{maxwords} )
+	{
+		$final_max_words = $self->{maxwords};
+	}
+	elsif ( !defined $self->{maxwords} && $defaults{maxwords} )
+	{
+		$final_max_words = $defaults{maxwords};
+	}
+
+	my @words = split( /\s+/, $value );
+	my $p;
+	if ( $final_max_words && scalar @words > $final_max_words )
+	{
+		$p = $session->make_element( "p", id=>$basename . "_counter_line", class => "ep_over_word_limit");
+	}
+	else
+	{
+		$p = $session->make_element( "p", id=>$basename . "_counter_line" );
+	}
+	$p->appendChild($session->make_element( "span", id=>$basename."_display_count"));
+	$p->appendChild( $session->make_text( "/".$final_max_words ) ) if $final_max_words;
 	$p->appendChild( $session->html_phrase( "lib/metafield:words" ) );
-        $frag->appendChild( $p );
 
+	$frag->appendChild( $p );
 
-$frag->appendChild( $session->make_javascript( <<EOJ ) );
+	$frag->appendChild( $session->make_javascript( <<EOJ ) );
 function getWordCount(words_string)
 {
 	var words = words_string.split(/\\W+/);
@@ -94,7 +111,7 @@ function getWordCount(words_string)
 	element.addEventListener('input', () => {
 		const totalWords = getWordCount(element.value);
 		counterDisplay.innerText = totalWords;
-		if (totalWords > $self->{maxwords}) {
+		if (max_words > 0 && totalWords > $final_max_words) {
 			counterLine.setAttribute('class', 'ep_over_word_limit');
 		} else if (counterLine.getAttribute('class') === 'ep_over_word_limit') {
 			counterLine.removeAttribute('class');
@@ -103,12 +120,11 @@ function getWordCount(words_string)
 
 	const totalWords = getWordCount(element.value);
 	counterDisplay.innerText = totalWords;
-	if (totalWords > $self->{maxwords}) {
+	if ((max_words > 0 && totalWords > $final_max_words) {
 		counterLine.setAttribute('class', 'ep_over_word_limit');
 	}
 }
 EOJ
-
 
         return [ [ { el=>$frag } ] ];
 }
@@ -117,7 +133,7 @@ sub get_property_defaults
 {
         my( $self ) = @_;
         my %defaults = $self->SUPER::get_property_defaults;
-        $defaults{maxwords} = 500;
+        $defaults{maxwords} = 0;
         return %defaults;
 }
 
