@@ -2113,7 +2113,10 @@ sub cache_table
 {
 	my( $self, $id ) = @_;
 
-	return "cache".$id;
+	my $cachemap = $self->get_cachemap( $id );
+	return $cachemap->get_sql_table_name() if $cachemap;
+
+    EPrints::abort( "Cache with ID '$id' not found" );
 }
 
 
