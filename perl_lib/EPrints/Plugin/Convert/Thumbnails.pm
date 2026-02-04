@@ -169,10 +169,9 @@ $DEFAULT{ffmpeg_formats} = {qw(
 # thumbnail sizes to output
 $DEFAULT{sizes} = {(
 	small => [66,50],
-	medium => [200,150],
-	preview => [400,300],
-	# preview => [600,600],
-	lightbox => [640,480],
+	medium => [400,300],
+	preview => [1200,600],
+	lightbox => [1048,768],
 )};
 # enable/disable audio/video previews
 $DEFAULT{video} = 1;

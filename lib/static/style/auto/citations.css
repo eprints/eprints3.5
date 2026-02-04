@@ -8,3 +8,8 @@ span.document_format
 {
 }
 
+.abstract-top-image
+{
+        max-height: 600px; 
+        max-width: 1200px;
+}
