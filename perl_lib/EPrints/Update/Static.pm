@@ -117,10 +117,7 @@ sub update_static_file
 
 	my $target_mtime = EPrints::Utils::mtime( $target );
 
-	unless ( -e $session->config( "variables_path" ) . "/developer_mode_on" && $session->config( "developer_mode", "disable_static_cache" ) )
-	{
-		return if( defined $target_mtime && $target_mtime > $source_mtime ); # nothing to do
-	}
+	return if( defined $target_mtime && $target_mtime > $source_mtime ); # nothing to do
 
 	$target =~ m/^(.*)\/([^\/]+)/;
 	my( $target_dir, $target_file ) = ( $1, $2 );
@@ -153,7 +150,7 @@ sub update_static_file
 
 sub update_auto_css
 {
-	my( $session, $target_dir, $static_dirs ) = @_;
+	my( $session, $target_dir, $static_dirs, $opts ) = @_;
 
 	my @dirs = map { "$_/style/auto" } grep { defined } @$static_dirs;
 
@@ -161,13 +158,14 @@ sub update_auto_css
 			$session->get_repository,
 			"$target_dir/style/auto.css",
 			"css",
-			\@dirs
+			\@dirs,
+			$opts,
 		);
 }
 
 sub update_auto_js
 {
-	my( $session, $target_dir, $static_dirs ) = @_;
+	my( $session, $target_dir, $static_dirs, $opts ) = @_;
 
 	my @dirs = map { "$_/javascript/auto" } grep { defined } @$static_dirs;
 
@@ -176,6 +174,7 @@ sub update_auto_js
 			"$target_dir/javascript/auto.js",
 			"js",
 			\@dirs,
+			$opts,
 		);
 }
 
@@ -223,7 +222,7 @@ sub update_auto
 	{
 		opendir(my $dh, $dir) or next;
 		# if a file is removed the dir mtime will change
-		$out_of_date = 1 if (stat($dir))[9] > $target_time;
+		$out_of_date = 1 if EPrints::Utils::mtime( $dir )  > $target_time;
 		foreach my $fn (readdir($dh))
 		{
 			next if exists $map{$fn};
@@ -231,7 +230,7 @@ sub update_auto
 			next if $fn !~ /\.$ext$/;
 			next if -d "$dir/$fn";
 
-			$out_of_date = 1 if (stat("$dir/$fn"))[9] > $target_time;
+			$out_of_date = 1 if  EPrints::Utils::mtime( "$dir/$fn" ) > $target_time;
 
 			$map{$fn} = "$dir/$fn";
 		}
@@ -239,10 +238,25 @@ sub update_auto
 
 	}
 
-	$out_of_date = 1 if !$out_of_date && -f $repo->config( 'config_path' )."/package.yml" && (stat($repo->config( 'config_path' )."/package.yml"))[9] > $target_time;
-	$out_of_date = 1 if !$out_of_date && -f $repo->config( 'base_path' )."/perl_lib/EPrints/SystemSettings.pm" && (stat($repo->config( 'base_path' )."/perl_lib/EPrints/SystemSettings.pm"))[9] > $target_time;
+	my $load_path_hash_file = $repo->config( "variables_path" )."/".$ext."_load_path.md5";
+	my $load_path_hash_from_file = "";
+	if ( -f $load_path_hash_file )
+	{
+		open( my $lph_fh, "<:raw", $load_path_hash_file );
+		$load_path_hash_from_file = join('', <$lph_fh>);
+		close( $lph_fh );
+	}
 
-	return $target unless $out_of_date;
+	my $load_path_hash = Digest::MD5::md5_hex( join( ';', @$dirs ));
+	if ( $load_path_hash ne $load_path_hash_from_file )
+	{
+		$out_of_date = 1;
+		open(my $lph_fh, ">:raw", $load_path_hash_file) or EPrints::abort( "Can't write to $target: $!" );
+		print $lph_fh $load_path_hash;
+		close( $lph_fh );
+	}
+
+	return $target unless $out_of_date || $opts->{force};
 
 	EPrints::Platform::mkdir( $target_dir );
 
@@ -397,7 +411,7 @@ sub copy_xhtml
 
 =begin COPYRIGHT
 
-Copyright 2023 University of Southampton.
+Copyright 2024 University of Southampton.
 EPrints 3.4 is supplied by EPrints Services.
 
 http://www.eprints.org/eprints-3.4/
