@@ -1960,7 +1960,7 @@ sub render_icon_link
 		if( !defined $preview_url ) { $opts{preview} = 0; }
 	}
 
-	my $img_alt = $self->value('main');
+	my $img_alt = $self->value('main') ? $self->value('main') : '';
 	$img_alt = $self->value('formatdesc') if EPrints::Utils::is_set( $self->value('formatdesc') );
 
 	return $self->{session}->template_phrase( "view:DataObj/Document:render_icon_link", { item => {
