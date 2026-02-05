@@ -139,7 +139,7 @@ if( !$seensome )
 $page->appendChild( $session->html_phrase( "general:frontpage_link" ) );
 
 my $title = $session->html_phrase( "cgi/latest:title" );
-$session->build_page( $title, $page, "latest", undef, "default_internal" );
+$session->build_page( $title, $page, "latest", undef, "default" );
 $session->send_page();
 
 $session->terminate;

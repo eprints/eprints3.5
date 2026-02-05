@@ -145,7 +145,7 @@ if(0){
 	# 	$template = "article_template";
 	# }
 	# return ( $page, $title, $links, $template );
-	return( $page, $title, $links, "default_internal" );
+	return( $page, $title, $links, "default" );
 };
 
 # To only include specific fields in the <meta name="eprints.X" content="..." /> tags, defined a list of fields
