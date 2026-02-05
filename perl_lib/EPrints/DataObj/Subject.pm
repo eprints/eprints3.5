@@ -879,6 +879,7 @@ sub render_description
 	{
 		return $self->render_citation( $use_citation );
 	}
+	return $self->render_value( "name" );
 }
 
 
