@@ -207,7 +207,7 @@ sub render_result_row
 
 	#if we have a template, add it on the end of the item's url
 	my %params;
-	if( defined $self->{processor}->{sconf}->{template} and $self->{processor}->{sconf}->{template} ne "default" )
+	if( defined $self->{processor}->{sconf}->{template} && $self->{processor}->{sconf}->{template} ne "default" )
 	{
 		$params{url} = $result->url . "?template=" . $self->{processor}->{sconf}->{template};
         }
