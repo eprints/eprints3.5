@@ -1,0 +1,9 @@
+.mega_help_text{
+    font-size: large;
+    Border: solid darkred;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    background-color: lightyellow;
+    color: black;
+}
