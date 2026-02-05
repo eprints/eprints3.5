@@ -1,4 +1,12 @@
-
+# Set the timezone `MetaField::Time` and `MetaField::Date` are rendered with.
+#
+# This should be set to either `undef` (UTC) or a String from the
+# [tz database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones),
+# such as 'Europe/London' or 'Pacific/Kiritimati'.
+#
+# You must install the `DateTime` CPAN module before setting this to anything
+# other than `undef` (`cpan install DateTime`).
+$c->{timezone} = undef;
 
 ######################################################################
 #
@@ -59,6 +67,13 @@ $c->{cache_maxlife} = 12;
 
 # Maximum number of persistent cache tables to allow
 $c->{cache_max} = 100;
+
+# If a search request contains a 'cache' param referencing a cache that
+# does not exist, by default EPrints will automatically re-run the search.
+#
+# Setting this config option to 1 will prevent the search being re-run,
+# and render an error message instead.
+# $c->{cache_not_found_no_search} = 1;
 
 # Ignore static paths
 # generate_static will complain about files under archive's /html/LANG/

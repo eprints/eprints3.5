@@ -517,12 +517,6 @@ sub post_config_handler_module_isolation
 
 	return OK unless Apache2::MPM->can( "is_threaded" ); # Assume OK if called by unit test or something not Apache.
 
-	if( Apache2::MPM->is_threaded )
-	{
-        print STDERR ( "Warning! Running EPrints under threads is experimental and liable to break" );
-
-	}
-
 	# check for configuration using methods removed from Apache2.4
  	my $check_security = !Apache2::Connection->can( 'remote_ip' );
 

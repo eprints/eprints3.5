@@ -62,13 +62,13 @@ sub get_property_defaults
 	my( $self ) = @_;
 
 	my %defaults = $self->SUPER::get_property_defaults;
+    $defaults{cache_during_load} = $EPrints::MetaField::FALSE;
+    $defaults{cache_on_demand} = $EPrints::MetaField::FALSE;
 	$defaults{datasetid} = $EPrints::MetaField::REQUIRED; 
 	$defaults{dataset_fieldname} = "datasetid";
 	$defaults{dataobj_fieldname} = "objectid";
-	$defaults{show_in_fieldlist} = 0;
-	$defaults{cache_during_load} = 0;
-	$defaults{cache_on_demand} = 0;
-	$defaults{match} = "IN";
+    $defaults{match} = "IN";
+	$defaults{show_in_fieldlist} = $EPrints::MetaField::FALSE;
 
 	return %defaults;
 }

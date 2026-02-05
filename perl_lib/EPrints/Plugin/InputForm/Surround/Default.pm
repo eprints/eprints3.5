@@ -46,11 +46,15 @@ sub render
 	my $comp_name = $component->get_name();
 
 	my $label_id = $component->{prefix} . "_label";
-	$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_label" if defined $component->{config}->{field} && $component->{config}->{field}->{name};
-	if ( defined $component->{config} && defined $component->{config}->{field} && ( ( defined $component->{config}->{field}->{form_input_style} &&  $component->{config}->{field}->{form_input_style} eq "checkbox" ) || ( $component->{config}->{field}->{input_style} && $component->{config}->{field}->{input_style} eq "checkbox" ) ) )
+	if ( defined $component->{config} && defined $component->{config}->{field} )
 	{
-		$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_legend_label";
-	} 
+		$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_label" if defined $component->{config}->{field}->{name};
+		$label_id = $component->{prefix} . "_".$component->{config}->{field}->{sub_name}."_label" if defined $component->{config}->{field}->{sub_name};
+		if ( ( defined $component->{config}->{field}->{form_input_style} && $component->{config}->{field}->{form_input_style} eq "checkbox" ) || ( defined $component->{config}->{field}->{input_style} && $component->{config}->{field}->{input_style} eq "checkbox" ) )
+		{
+			$label_id = $component->{prefix} . "_".$component->{config}->{field}->{name}."_legend_label";
+		}
+	}
 
 	foreach my $field_id ( $component->get_fields_handled )
 	{

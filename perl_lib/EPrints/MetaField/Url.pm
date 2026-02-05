@@ -36,16 +36,30 @@ sub get_sql_type
 	return $self->EPrints::MetaField::Longtext::get_sql_type( $session );
 }
 
+sub sql_row_from_value
+{
+	my( $self, $session, $value ) = @_;
+
+	return undef unless defined $value;
+	# Prevent 'javascript:' links from being saved as there are no benevolent
+	# uses for them.
+	return undef if $value =~ /^\s*javascript:/;
+
+	return $self->SUPER::sql_row_from_value( $session, $value );
+}
+
 sub get_property_defaults
 {
 	my( $self ) = @_;
-	return (
+	my %defaults = (
 		$self->SUPER::get_property_defaults, # Id
 		$self->EPrints::MetaField::Longtext::get_property_defaults, # LongText - maxlength
-		text_index => 1,
-		sql_index => 0,
-		match => "IN"
+		match => "IN",
+		sql_index => $EPrints::MetaField::FALSE,
+		text_index => $EPrints::MetaField::TRUE,
 	);
+	$defaults{render_dont_link} = $EPrints::MetaField::FALSE;
+	return %defaults;
 }
 
 sub render_single_value
