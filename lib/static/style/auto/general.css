@@ -153,7 +153,7 @@ th.ep_title_row {
 .ep_block td {
 	text-align: left;
 }
-
+/* only applies to the div containing a link with an icon, used for search results */
 .ep_preview_container:has(>a>.ep_doc_icon){
 	border: solid black 1px;
 	margin: 2px;
