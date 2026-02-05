@@ -11,7 +11,7 @@ span.document_format
 .abstract-top-image
 {
         max-height: 600px; 
-        max-width: 1296px;
+        max-width: 100%;
 }
 
 .abstract-top-container{
@@ -22,5 +22,5 @@ span.document_format
         border-radius: 5px;
         /* will round the corners of video or image */
         overflow: hidden; 
-        width:1296px;
+        width:100%;
 }
