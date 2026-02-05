@@ -169,10 +169,9 @@ $DEFAULT{ffmpeg_formats} = {qw(
 # thumbnail sizes to output
 $DEFAULT{sizes} = {(
 	small => [66,50],
-	medium => [200,150],
-	preview => [400,300],
-	# preview => [600,600],
-	lightbox => [640,480],
+	medium => [400,300],
+	preview => [1200,600],
+	lightbox => [1048,768],
 )};
 # enable/disable audio/video previews
 $DEFAULT{video} = 1;
@@ -593,16 +592,12 @@ sub call_convert
 		# geom^ requires 6.3.8
 		if( $version > 6.3 )
 		{
-			$self->_system($convert, "-strip", "-colorspace", "sRGB", "-auto-orient", "-flatten", "-background", "white", "-thumbnail","$geom^", "-gravity", "center", "-extent", $geom, "-bordercolor", "gray", "-border", "1x1", $src."[0]", "JPEG:$dst");
+			$self->_system($convert, "-strip", "-colorspace", "sRGB", "-auto-orient", "-flatten", "-background", "white", "-thumbnail","$geom^", "-gravity", "center", "-extent", $geom, "-bordercolor", "gray", "-border", "0x0", $src."[0]", "JPEG:$dst");
 		}
 		else
 		{
-			$self->_system($convert, "-strip", "-colorspace", "sRGB", "-auto-orient", "-flatten", "-background", "white", "-thumbnail","$geom>", "-extract", $geom, "-bordercolor", "gray", "-border", "1x1", $src."[0]", "JPEG:$dst");
+			$self->_system($convert, "-strip", "-colorspace", "sRGB", "-auto-orient", "-flatten", "-background", "white", "-thumbnail","$geom>", "-extract", $geom, "-bordercolor", "gray", "-border", "0x0", $src."[0]", "JPEG:$dst");
 		}
-	}
-	elsif( $size eq "medium" )
-	{
-		$self->_system($convert, "-strip", "-colorspace", "sRGB", "-auto-orient", "-flatten", "-trim", "+repage", "-size", "$geom", "-thumbnail","$geom>", "-background", "white", "-gravity", "center", "-extent", $geom, "-bordercolor", "white", "-border", "0x0", $src."[0]", "JPEG:$dst");
 	}
 	else
 	{
