@@ -427,6 +427,7 @@ my $PRIVMAP =
         "eprint/buffer/reject_with_email:editor",
         "eprint/buffer/move_inbox:editor",
         "eprint/buffer/move_archive:editor",
+		"eprint/buffer/move_deletion:editor",
         "eprint/buffer/use_as_template:editor",
         "eprint/buffer/derive_version:editor",
         "eprint/buffer/edit:editor",
@@ -457,6 +458,7 @@ my $PRIVMAP =
         "eprint/deletion/messages:editor",
 
         "eprint/deletion/move_archive:editor",
+		"eprint/deletion/move_buffer:editor",
         "eprint/deletion/use_as_template:editor",
         "eprint/deletion/derive_version:editor",
         "eprint/deletion/takelock:editor",

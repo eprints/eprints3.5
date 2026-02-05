@@ -53,6 +53,7 @@ XML::DOM              1.46
 XML::LibXML           2.0210
 XML::NamespaceSupport 1.12
 XML::Parser           2.47
+XML::SAX::ExpatXS     1.33
 
 YAML::Tiny            1.76
 

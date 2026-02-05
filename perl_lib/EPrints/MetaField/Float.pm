@@ -55,7 +55,8 @@ sub ordervalue_basic
 {
 	my( $self , $value ) = @_;
 
-	unless( EPrints::Utils::is_set( $value ) )
+	my $regexp = defined $self->property( 'regexp' ) ? $self->property( 'regexp' ) : '.*';
+	unless( EPrints::Utils::is_set( $value ) || $value =~ /^($regexp)$/ )
 	{
 		return "";
 	}
@@ -88,7 +89,8 @@ sub get_search_conditions_not_ex
 {
 	my( $self, $session, $dataset, $search_value, $match, $merge, $search_mode ) = @_;
 
-	my $number = '[0-9]+\.?[0-9]*';
+	my %defaults = $self->get_property_defaults;
+	my $number = $defaults{regexp};
 	if( $search_value =~ m/^$number$/ )
 	{
 		my @r = ();
@@ -106,6 +108,26 @@ sub get_search_conditions_not_ex
 	}
 
 	return $self->SUPER::get_search_conditions_not_ex( $session, $dataset, $search_value, $match, $merge, $search_mode );
+}
+
+sub empty_value
+{
+    my ( $self ) = @_;
+    $self->property( 'allow_null' ) == 1 ? undef : 0;
+}
+
+sub sql_row_from_value
+{
+	my( $self, $session, $value ) = @_;
+
+	my $regexp = defined $self->property( 'regexp' ) ? $self->property( 'regexp' ) : '.*';
+	if ( defined $value && $value !~ m/^($regexp)$/ )
+	{
+		$value = undef;
+		$session->log( "WARNING: Value for field '".$self->name."' as it is not a valid floating point number or does not match field's regexp." );
+	}
+
+	return( $value );
 }
 
 ######################################################################

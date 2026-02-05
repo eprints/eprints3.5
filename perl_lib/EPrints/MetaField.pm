@@ -114,9 +114,11 @@ use Unicode::Collate;
 
 $EPrints::MetaField::VARCHAR_SIZE = 255;
 
+$EPrints::MetaField::FALSE        = EP_PROPERTY_FALSE;
 $EPrints::MetaField::FROM_CONFIG  = EP_PROPERTY_FROM_CONFIG;
 $EPrints::MetaField::NO_CHANGE    = EP_PROPERTY_NO_CHANGE;
 $EPrints::MetaField::REQUIRED     = EP_PROPERTY_REQUIRED;
+$EPrints::MetaField::TRUE         = EP_PROPERTY_TRUE;
 $EPrints::MetaField::UNDEF        = EP_PROPERTY_UNDEF;
 
 $EPrints::MetaField::COLLATOR     = Unicode::Collate->new();
@@ -526,6 +528,7 @@ sub render_input_field
 				eval {
 					$v = $self->call_property_eval( "toform", $v, $session, $obj, $basename );
 					push @$new_value, $v;
+					1;
 				} or do {
 					$new_value = $self->call_property( "toform", $value, $session, $obj, $basename );
 					last;
@@ -1812,8 +1815,10 @@ sub get_describedby
 {
 	my ( $self, $basename, $one_field_component ) = @_;
 
+	return "" if defined $self->{show_help} && $self->{show_help} eq "never";
 	return "" if defined $self->{dataset} && !$self->repository->get_lang->has_non_empty_phrase( $self->{dataset}->confid . "_fieldhelp_" . $self->get_name );
 	return "" if defined $self->{parent} && !$self->repository->get_lang->has_non_empty_phrase( $self->{dataset}->confid . "_fieldhelp_" . $self->{parent}->get_name );
+	return "" if defined $self->{help_xhtml} && EPrints::Utils::tree_to_utf8( $self->{help_xhtml} ) eq "";
 
 	my $basename_top = $basename;
         $basename_top =~ s/_\d+_/_/ if $self->{multiple} || ( defined $self->{parent} && $self->{parent}->{multiple} );
@@ -1899,14 +1904,15 @@ sub form_value_single
 
 	my $value = $self->form_value_basic( $session, $basename, $object );
 
-        if( defined $self->{fromform} )
-        {
+	if( defined $self->{fromform} )
+	{
 		eval {
-	                $value = $self->call_property_eval( "fromform", $value, $session, $object, $basename );
+			$value = $self->call_property_eval( "fromform", $value, $session, $object, $basename );
+			1;
 		} or do {
 			$value = $self->call_property( "fromform", [ $value ], $session, $object, $basename );
 		};
-        }
+	}
 
 	return undef unless( EPrints::Utils::is_set( $value ) );
 	return $value;
@@ -2362,7 +2368,7 @@ sub characters
 		return;
 	}
 
-	my $value = $epdata->{$self->name};
+	my $value = $epdata->{$self->name} ? $epdata->{$self->name} : '';
 	if( $state->{depth} == 2 ) # <foo><item>XXX
 	{
 		$value->[-1] .= $data->{Data};
@@ -2548,81 +2554,64 @@ sub get_search_group { return 'basic'; }
 sub get_property_defaults
 {
 	return (
-		provenance => EP_PROPERTY_FROM_CONFIG,
-		replace_core => EP_PROPERTY_FALSE,
-		replace_config => EP_PROPERTY_FALSE,
 		allow_null 	=> EP_PROPERTY_TRUE,
-		browse_link 	=> EP_PROPERTY_UNDEF,
-		can_clone 	=> EP_PROPERTY_TRUE,
-		confid 		=> EP_PROPERTY_NO_CHANGE,
-		export_as_xml 	=> EP_PROPERTY_TRUE,
-		false_first	=> EP_PROPERTY_FALSE,
-		fromform 	=> EP_PROPERTY_UNDEF,
-		fromsearchform  => EP_PROPERTY_UNDEF,
-		get_item	=> EP_PROPERTY_UNDEF,
-		import		=> EP_PROPERTY_TRUE,
-		input_add_boxes => EP_PROPERTY_FROM_CONFIG,
-		input_boxes 	=> EP_PROPERTY_FROM_CONFIG,
-		input_cols 	=> EP_PROPERTY_FROM_CONFIG,
-		input_lookup_url 	=> EP_PROPERTY_UNDEF,
-		input_lookup_params 	=> EP_PROPERTY_UNDEF,
-		input_ordered 	=> EP_PROPERTY_TRUE,
-		join_phraseid   => EP_PROPERTY_UNDEF,
-		make_single_value_orderkey 	=> EP_PROPERTY_UNDEF,
-		make_value_orderkey 		=> EP_PROPERTY_UNDEF,
-		show_in_fieldlist	=> EP_PROPERTY_TRUE,
-		maxlength 	=> $EPrints::MetaField::VARCHAR_SIZE,
-		maxwords	=> EP_PROPERTY_UNDEF,
-		multiple 	=> EP_PROPERTY_FALSE,
-		name 		=> EP_PROPERTY_REQUIRED,
-		show_in_html	=> EP_PROPERTY_TRUE,
-		render_input 	=> EP_PROPERTY_UNDEF,
-		render_search_input => EP_PROPERTY_UNDEF,
-		render_single_value 	=> EP_PROPERTY_UNDEF,
-		render_quiet	=> EP_PROPERTY_FALSE,
-		render_column_quiet    => EP_PROPERTY_FALSE,
-		render_magicstop	=> EP_PROPERTY_FALSE,
-		render_noreturn	=> EP_PROPERTY_FALSE,
-		render_dont_link	=> EP_PROPERTY_FALSE,
-		render_value 	=> EP_PROPERTY_UNDEF,
-		render_limit	=> EP_PROPERTY_UNDEF,
-		render_dynamic 	=> EP_PROPERTY_FALSE,
-		render_custom   => EP_PROPERTY_UNDEF,
-		render_item	=> EP_PROPERTY_UNDEF,
-		render_path	=> EP_PROPERTY_TRUE,
-		required 	=> EP_PROPERTY_FALSE,
-		requiredlangs 	=> [],
-		search_cols 	=> EP_PROPERTY_FROM_CONFIG,
-		show_help	=> EP_PROPERTY_UNDEF,
-		sql_index 	=> EP_PROPERTY_TRUE,
-		sql_langid 	=> EP_PROPERTY_UNDEF,
-		sql_sorted	=> EP_PROPERTY_FALSE,
-		text_index 	=> EP_PROPERTY_FALSE,
-		toform 		=> EP_PROPERTY_UNDEF,
-		type 		=> EP_PROPERTY_REQUIRED,
-		sub_name	=> EP_PROPERTY_UNDEF,
-		parent_name	=> EP_PROPERTY_UNDEF,
-		parent		=> EP_PROPERTY_UNDEF,
-		volatile	=> EP_PROPERTY_FALSE,
-		virtual		=> EP_PROPERTY_FALSE,
+		browse_link => EP_PROPERTY_UNDEF,
+		can_clone => EP_PROPERTY_TRUE,
+		confid => EP_PROPERTY_NO_CHANGE,
 		default_value => EP_PROPERTY_UNDEF,
-		separator       => EP_PROPERTY_UNDEF,
-		match       => "EQ",
-		merge       => "ALL",
-
-		help_xhtml	=> EP_PROPERTY_UNDEF,
-		title_xhtml	=> EP_PROPERTY_UNDEF,
-		join_path	=> EP_PROPERTY_UNDEF,
-
-		# http://wiki.eprints.org/w/Category:EPrints_Metadata_Fields
-		# deprecated or "buggy"
-		input_advice_right => EP_PROPERTY_UNDEF,
-		input_advice_below => EP_PROPERTY_UNDEF,
-		input_assist	=> EP_PROPERTY_FALSE,
-		as_list 	=> EP_PROPERTY_UNDEF,
-		readonly	=> EP_PROPERTY_FALSE,
-		expanded_subjects => [],
-);
+		export_as_xml => EP_PROPERTY_TRUE,
+		fromform => EP_PROPERTY_UNDEF,
+		fromsearchform => EP_PROPERTY_UNDEF,
+		help_xhtml => EP_PROPERTY_UNDEF,
+		import => EP_PROPERTY_TRUE,
+		input_add_boxes => EP_PROPERTY_FROM_CONFIG,
+		input_boxes => EP_PROPERTY_FROM_CONFIG,
+		input_cols => EP_PROPERTY_FROM_CONFIG,
+		input_lookup_url => EP_PROPERTY_UNDEF,
+		input_lookup_params => EP_PROPERTY_UNDEF,
+		input_ordered => EP_PROPERTY_TRUE,
+		join_path => EP_PROPERTY_UNDEF,
+		join_phraseid => EP_PROPERTY_UNDEF,
+		make_single_value_orderkey => EP_PROPERTY_UNDEF,
+		make_value_orderkey => EP_PROPERTY_UNDEF,
+		match => "EQ",
+		maxlength => $EPrints::MetaField::VARCHAR_SIZE,
+		merge => "ALL",
+		multiple => EP_PROPERTY_FALSE,
+		name => EP_PROPERTY_REQUIRED,
+		parent_name => EP_PROPERTY_UNDEF,
+		parent => EP_PROPERTY_UNDEF,
+		provenance => EP_PROPERTY_FROM_CONFIG,
+		render_column_quiet => EP_PROPERTY_FALSE,
+		render_dont_link => EP_PROPERTY_UNDEF,
+		render_input => EP_PROPERTY_UNDEF,
+		render_magicstop => EP_PROPERTY_FALSE,
+		render_noreturn => EP_PROPERTY_FALSE,
+		render_quiet => EP_PROPERTY_FALSE,
+		render_search_input => EP_PROPERTY_UNDEF,
+		render_single_value => EP_PROPERTY_UNDEF,
+		render_value => EP_PROPERTY_UNDEF,
+		replace_config => EP_PROPERTY_FALSE,
+		replace_core => EP_PROPERTY_FALSE,
+		show_in_fieldlist => EP_PROPERTY_TRUE,
+		show_in_html => EP_PROPERTY_TRUE,
+		readonly => EP_PROPERTY_FALSE,
+		required => EP_PROPERTY_FALSE,
+		search_cols => EP_PROPERTY_FROM_CONFIG,
+		show_help => EP_PROPERTY_UNDEF,
+		show_in_fieldlist => EP_PROPERTY_TRUE,
+		show_in_html => EP_PROPERTY_TRUE,
+		sql_index => EP_PROPERTY_TRUE,
+		sql_langid => EP_PROPERTY_UNDEF,
+		sql_sorted => EP_PROPERTY_FALSE,
+		text_index => EP_PROPERTY_FALSE,
+		title_xhtml => EP_PROPERTY_UNDEF,
+		toform => EP_PROPERTY_UNDEF,
+		type => EP_PROPERTY_REQUIRED,
+		sub_name => EP_PROPERTY_UNDEF,
+		virtual => EP_PROPERTY_FALSE,
+		volatile => EP_PROPERTY_FALSE,
+	);
 }
 
 =begin InternalDoc

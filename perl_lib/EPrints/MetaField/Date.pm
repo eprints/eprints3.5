@@ -116,15 +116,16 @@ sub render_single_value
 	$l = 7 if( defined $res && $res eq "month" );
 	$l = 4 if( defined $res && $res eq "year" );
 
+	my $timezone = $session->config( 'timezone' );
 	if( $self->{render_style} eq "short" )
 	{
-		return EPrints::Time::render_short_date( $session, substr( $value,0,$l ) );
+		return EPrints::Time::render_short_date( $session, substr( $value,0,$l ), $timezone );
 	}
 	elsif( $self->{render_style} eq "dow" )
 	{
-		return EPrints::Time::render_date_with_dow( $session, substr( $value,0,$l ) );
+		return EPrints::Time::render_date_with_dow( $session, substr( $value,0,$l ), $timezone );
 	}
-	return EPrints::Time::render_date( $session, substr( $value,0,$l ) );
+	return EPrints::Time::render_date( $session, substr( $value,0,$l ), $timezone );
 }
 	
 @EPrints::MetaField::Date::MONTHKEYS = ( 
@@ -455,11 +456,11 @@ sub get_property_defaults
 {
 	my( $self ) = @_;
 	my %defaults = $self->SUPER::get_property_defaults;
+	$defaults{input_style} = "long";
 	$defaults{min_resolution} = "day";
+	$defaults{regexp} = qr/\d\d\d\d(?:-\d\d(?:-\d\d)?)?/;
 	$defaults{render_res} = "day";
 	$defaults{render_style} = "long";
-	$defaults{input_style} = "long";
-	$defaults{regexp} = qr/\d\d\d\d(?:-\d\d(?:-\d\d)?)?/;
 	return %defaults;
 }
 

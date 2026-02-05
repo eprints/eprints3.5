@@ -970,6 +970,18 @@ For more information see <a href="http://eprints.org/d/?keyword=MetaFields">Meta
     <epp:phrase id="lib/searchexpression:export_error_search"><p>The search failed to execute correctly.</p></epp:phrase>
     <epp:phrase id="lib/searchexpression:export_error_format"><p>The requested output format is not available.</p></epp:phrase>
     <epp:phrase id="lib/searchexpression:savesearch">Save search</epp:phrase>
+	<epp:phrase id="lib/searchexpression:cache_not_found_warning">Search results not found (cache id <epc:pin name="cacheid"/>)</epp:phrase>
+    <epp:phrase id="lib/searchexpression:cache_not_found_no_exp">The page you requested contained a reference to an old search result set. Please visit the search page and start your search again.</epp:phrase>
+    <!-- NB the use of javascript here it to possibly avoid bots following the new link. -->
+    <epp:phrase id="lib/searchexpression:cache_not_found">
+      <p>The page you requested contains a reference to an invalid search result set. Copy this URL into your browser to re-run the search.</p>
+      <script>
+        let no_cache_pre = document.createElement("pre");
+        no_cache_pre.style.whiteSpace = 'pre-wrap';
+        no_cache_pre.append( eprints_http_root + '<epc:pin name="url"/>' );
+        document.currentScript.after(no_cache_pre);
+      </script>
+    </epp:phrase>
 
 <!-- Search::Field (Used to be SearchField)-->
 
@@ -2655,8 +2667,8 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/InputForm/Component/Documents:upload_failed" ref="Plugin/InputForm/Component/Upload:upload_failed"/>
 
     <!-- Subject component -->
-    <epp:phrase id="Plugin/InputForm/Component/Field/Subject:selections">Current selections:</epp:phrase>
 
+    <epp:phrase id="Plugin/InputForm/Component/Field/Subject:selections">Current selections:</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:search_no_matches"><p>No matches</p></epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:subjects_search_bar"><div class="ep_subjectinput_searchbar"><epc:pin name="label"/>: <epc:pin name="input"/> <epc:pin name="search_button"/> <epc:pin name="clear_button"/></div></epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:subjects_search_label_text">Search for subject</epp:phrase>
@@ -2664,6 +2676,18 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:search_clear_button">Clear</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:add">Add</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:remove">Remove</epp:phrase>
+
+
+	<!-- AjaxSubject component -->
+
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:selections" ref="Plugin/InputForm/Component/Field/Subject:selections"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:search_no_matches" ref="Plugin/InputForm/Component/Field/Subject:search_no_matches"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:subjects_search_bar" ref="Plugin/InputForm/Component/Field/Subject:subjects_search_bar"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:subjects_search_label_text" ref="Plugin/InputForm/Component/Field/Subject:subjects_search_label_text"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:search_search_button" ref="Plugin/InputForm/Component/Field/Subject:search_search_button"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:search_clear_button" ref="Plugin/InputForm/Component/Field/Subject:search_clear_button"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:add" ref="Plugin/InputForm/Component/Field/Subject:add"/>
+	<epp:phrase id="Plugin/InputForm/Component/Field/AjaxSubject:remove" ref="Plugin/InputForm/Component/Field/Subject:remove"/>
 
 
     <!-- Component errors -->
