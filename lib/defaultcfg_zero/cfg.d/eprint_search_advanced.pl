@@ -17,7 +17,7 @@ $c->{search}->{advanced} =
 	},
 	default_order => "bytitle",
 	show_zero_results => 1,
-	template => "default_internal",
+	template => "default",
 };
 
 

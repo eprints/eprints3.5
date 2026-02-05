@@ -2562,7 +2562,7 @@ sub render_citation_link
 	{
 		$params{url} = $item->url . "?template=" . $self->{item_template}
 	}
-        elsif ( defined $self->{template} && !defined $self->{item_template} )
+        elsif ( defined $self->{template} && !defined $self->{item_template} && $self->{template} ne 'default' )
 	{
                 $params{url} = $item->url . "?template=" . $self->{template};
         }	
