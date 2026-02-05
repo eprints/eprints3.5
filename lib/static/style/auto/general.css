@@ -153,9 +153,15 @@ th.ep_title_row {
 .ep_block td {
 	text-align: left;
 }
-.ep_doc_icon
-{
-	padding: 2px;
+
+.ep_preview_container:has(>a>.ep_doc_icon){
+	border: solid black 1px;
+	margin: 2px;
+	min-width:66px;
+	min-height:50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .no_link_decor a {

@@ -11,5 +11,16 @@ span.document_format
 .abstract-top-image
 {
         max-height: 600px; 
-        max-width: 1200px;
+        max-width: 1296px;
+}
+
+.abstract-top-container{
+        background-color: #eeeeee;
+        display: flex;
+        justify-content: center;
+        margin-bottom:5px;
+        border-radius: 5px;
+        /* will round the corners of video or image */
+        overflow: hidden; 
+        width:1296px;
 }
