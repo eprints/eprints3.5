@@ -87,6 +87,7 @@
 
 .ep_search_result_docs
 {
+	display: flex;
 	white-space: nowrap;
 	float: right;
 	min-height: 48px;

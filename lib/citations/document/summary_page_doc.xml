@@ -6,23 +6,22 @@
 <cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:epc="http://eprints.org/ep3/control" xmlns:cite="http://eprints.org/ep3/citation" >
 
 	<div class="card" style="width: 18rem;">
-	
-	    <epc:choose>
-            <epc:when test="format = 'video'">
-	      <video src="{$item.url()}" width="100%" class="ep_embedded_video" controls="true"></video>
-            </epc:when>
-            <epc:when test="format = 'audio'">
-              <audio class="audio-preview" controls="true">
-                <source src="{$item.url()}"/>
-              </audio>
-            </epc:when>
-            <epc:when test="$item.thumbnail_url('lightbox').is_set()">
-	      <img src="{$item.thumbnail_url('lightbox')}" class="card-img-top object-fit-cover" style="height: 200px;" alt="lightbox image"/>
-            </epc:when>
-	    <epc:otherwise>
-	      <img src="/style/images/fileicons/image.png" class="card-img-top object-fit-scale" style="height: 200px;" alt="lightbox image"/>
-	    </epc:otherwise>
-            </epc:choose>
+    <epc:choose>
+      <epc:when test="format = 'video'">
+        <video src="{$item.url()}" width="100%" class="ep_embedded_video" controls="true"></video>
+      </epc:when>
+      <epc:when test="format = 'audio'">
+        <audio class="audio-preview" controls="true">
+          <source src="{$item.url()}"/>
+        </audio>
+      </epc:when>
+      <epc:when test="$item.thumbnail_url('medium').is_set()">
+        <img src="{$item.thumbnail_url('medium')}" class="card-img-top object-fit-cover" style="height: 200px;" alt="lightbox image"/>
+      </epc:when>
+      <epc:otherwise>
+        <img src="/style/images/fileicons/image.png" class="card-img-top object-fit-scale" style="height: 200px;" alt="lightbox image"/>
+      </epc:otherwise>
+    </epc:choose>
 
 
             <div class="summary_page_doc_info card-body">
