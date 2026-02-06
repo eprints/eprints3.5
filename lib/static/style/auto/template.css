@@ -197,3 +197,7 @@ hr.ep_tm_last {
 {
 	footer { height: 54px; }
 }
+
+li.nav-item:hover #ep_tm_menu_browse {
+	display: block !important;
+}
