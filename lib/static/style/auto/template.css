@@ -200,4 +200,5 @@ hr.ep_tm_last {
 
 li.nav-item:hover #ep_tm_menu_browse {
 	display: block !important;
+	margin-top: 0 !important;
 }
