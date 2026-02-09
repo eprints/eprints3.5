@@ -3644,7 +3644,7 @@ sub render_option_list
 			key => $pair->[0],
 			desc => $pair->[1],
 			selected => $selected{$pair->[0]},
-			default => ($pair->[0] eq $default),
+			default => (defined $default && $pair->[0] eq $default),
 		};
 
 		$size++;
@@ -3929,9 +3929,9 @@ sub render_button
 {
 	my( $self, %opts ) = @_;
 
-	my %item = {
+	my %item = (
 		opts => [],
-	};
+	);
 
 	if( defined $opts{class} )
 	{
