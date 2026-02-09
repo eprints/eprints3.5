@@ -126,7 +126,7 @@ use Pod::Usage;
 my $version = 0;
 my $verbose = 0;
 my $quiet = 0;
-my $force = 0
+my $force = 0;
 my $prune = 0;
 my $reload = 0;
 my $help = 0;
