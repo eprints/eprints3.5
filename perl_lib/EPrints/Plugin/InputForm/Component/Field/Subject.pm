@@ -142,7 +142,7 @@ sub render_content
 	if( scalar @values )
 	{
 		$out->appendChild( $self->_format_subjects(
-			table_class => "ep_subjectinput_selections",
+			table_class => "ep_subjectinput_selections ms-4",
 			subject_class => "ep_subjectinput_selected_subject",
 			button_class => "ep_subjectinput_selected_remove",
 			button_text => $self->phrase( "remove" ),
@@ -228,6 +228,7 @@ sub _render_node
 	{
 		$title = $session->xml->create_data_element( "a",
 			$title,
+			class => "text-decoration-none text-black ms-2 align-middle",
 		);
 	}
 
@@ -236,7 +237,7 @@ sub _render_node
 	{
 		$frag->appendChild( $session->xml->create_data_element( "span",
 			$title,
-			class => "ep_subjectinput_selected",
+			class => "ep_subjectinput_selected ms-2 my-3 d-block text-secondary",
 		) );
 	}
 	# can be selected

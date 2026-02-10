@@ -2670,7 +2670,26 @@ Titles and Help for the System Fields
 
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:selections">Current selections:</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:search_no_matches"><p>No matches</p></epp:phrase>
-    <epp:phrase id="Plugin/InputForm/Component/Field/Subject:subjects_search_bar"><div class="ep_subjectinput_searchbar"><epc:pin name="label"/>: <epc:pin name="input"/> <epc:pin name="search_button"/> <epc:pin name="clear_button"/></div></epp:phrase>
+
+    <epp:phrase id="Plugin/InputForm/Component/Field/Subject:subjects_search_bar">
+      <div class="ep_subjectinput_searchbar mb-3 border rounded m-3 mb-4 p-3 shadow-sm">
+        <div class="row g-2 align-items-center justify-content-center">
+          <div class="col-auto">
+            <label class="col-form-label mb-0"><epc:pin name="label"/>:</label>
+          </div>
+          <div class="col-auto d-flex gap-3">
+            <epc:pin name="input"/>
+          </div>
+          <div class="col-auto">
+            <epc:pin name="search_button"/>
+          </div>
+          <div class="col-auto">
+            <epc:pin name="clear_button"/>
+          </div>
+        </div>
+      </div>
+    </epp:phrase>
+
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:subjects_search_label_text">Search for subject</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:search_search_button">Search</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Field/Subject:search_clear_button">Clear</epp:phrase>
