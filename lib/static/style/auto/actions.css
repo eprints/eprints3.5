@@ -19,6 +19,10 @@ ul.ep_action_list li:first-child {
 	margin-left: 0;
 }
 
+ul.ep_action_list li input.ep_form_action_icon {
+    vertical-align: middle;
+}
+
 dl.ep_action_list {
 	margin: 0;
 	padding: 0;
@@ -73,4 +77,3 @@ div.ep_action_list .ep_action_row div:first-child form input{
 div.ep_action_list .ep_action_row div{
         display: inline-block;
 }
-

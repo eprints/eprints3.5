@@ -34,7 +34,7 @@ sub new
 { place => "eprint_review_actions", action => "move_archive", position => 200, },
 { place => "eprint_review_actions", action => "move_deletion", position => 600, },
 	];
-	$self->{action_icon} = { move_archive => "action_approve.svg",  move_deletion => "action_deprecate.png" };
+	$self->{action_icon} = { move_archive => "action_approve.svg",  move_deletion => "action_deprecate.svg" };
 
 	return $self;
 }
