@@ -63,7 +63,10 @@ sub paginate_list
 	$offset += 0;
 	$url .= "&".$basename."offset=$offset"; # $basename\_offset used by paginate_list
 
-	my $pagesize = defined $opts{page_size} ? $opts{page_size} + 0 : ($session->param( $basename."page_size" ) + 0 || 10);
+	my $opts_page_size = defined $opts{page_size} && $opts{page_size} =~ /\d+/ ? $opts{page_size} : 0;
+	my $session_page_size = defined $session->param( $basename."page_size" ) && $session->param( $basename."page_size" ) =~ /\d+/ ? $session->param( $basename."page_size" ) : 10;
+	my $pagesize = $opts_page_size ? $opts_page_size : $session_page_size;
+
 	$url .= "&${basename}page_size=$pagesize";
 
 	# Sort param

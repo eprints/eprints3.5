@@ -122,7 +122,7 @@ SKIP:
     ok(defined $category, "Contains eprint status");
 
     skip "Missing eprint status", 2 if !defined $category;
-    $category->setAttribute( "term", "inbox" );
+    $category->setAttribute( "term", "buffer" );
     $r = $ua->request( HTTP::Request->new(
             PATCH => $edit_link,
             [
@@ -143,7 +143,7 @@ SKIP:
         my $doc = XML::LibXML->load_xml( string => $r->content );
         my( $category ) = $xpc->findnodes( q{/atom:entry/atom:category[@scheme='http://eprints.org/ep2/data/2.0/eprint/eprint_status']}, $doc->documentElement );
 
-        is($category->getAttribute( "term" ), "inbox", "Status changed");
+        is($category->getAttribute( "term" ), "buffer", "Status changed");
     };
 
     ok(0, "Status changed") if $@;
