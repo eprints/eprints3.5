@@ -37,7 +37,7 @@ sub render
 {
 	my( $self ) = @_;
 
-	my ($data,$title) = $self->dataobj->render_export_links; 
+	my ($data,$title) = $self->dataobj->render_export_links( 1 );
 
 	my $div = $self->{session}->make_element( "div",class=>"ep_block" );
 	$div->appendChild( $data );
