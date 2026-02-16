@@ -58,7 +58,7 @@ foreach my $field_data ( @fields )
 		],
 		contributors => [
 			 { id=>"23",name=>{given=>"John",family=>"Connor"}, 
-				type=>"http://www.loc.gov/loc.terms/relators/CRP"},
+				type=>"http://id.loc.gov/vocabulary/relators/crp"},
 		],
 		title => "Test title",
 		abstract => "blah blah",
