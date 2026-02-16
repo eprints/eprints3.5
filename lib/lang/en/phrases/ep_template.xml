@@ -1190,7 +1190,7 @@
     </div>
   </epp:phrase>
   <epp:phrase id="view:perl_lib/EPrints/Plugin/InputForm/Surround/Default:render">
-    <div class="mb-3 bg-light bg-opacity-10 border rounded shadow-sm" id="{prefix}">
+    <div class="ep_sr_component mb-3 bg-light bg-opacity-10 border rounded shadow-sm" id="{prefix}">
       <a name="{prefix}"/>
       <epc:foreach expr="handled_fields" iterator="handled_field">
         <epc:print expr="$handled_field{handled_field}"/>
@@ -1233,7 +1233,7 @@
           </epc:if>
         </div>
       </div>
-      <div id="{prefix}_content" class="bg-white rounded {content{class}}">
+      <div id="{prefix}_content" class="ep_sr_content bg-white rounded {content{class}}">
         <epc:if test="can_collapse">
           <epc:attribute name="class">bg_white rounded ep_toggleable <epc:print expr="content{class}" /></epc:attribute>
         </epc:if>
