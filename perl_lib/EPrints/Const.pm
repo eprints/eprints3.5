@@ -232,6 +232,10 @@ Add extra information to the bottom of the C<cgi/counter> page.
 
 	content - SCALARREF of string
 
+=item EP_TRIGGER_EPADMIN_TEST
+
+Carry out an extra test when running C<bin/epadmin test>.
+
 =item EP_TRIGGER_INDEX_FIELDS
 
 Add the changed fields for the given data object to the index engine(s).
@@ -362,6 +366,7 @@ use constant {
 	EP_TRIGGER_DYNAMIC_TEMPLATE => 16,
 	EP_TRIGGER_THUMBNAIL_TYPES => 17,
 	EP_TRIGGER_CGI_COUNTER => 18,
+	EP_TRIGGER_EPADMIN_TEST => 19,
 };
 
 # Dataset triggers
@@ -495,6 +500,7 @@ use constant {
 	EP_TRIGGER_DYNAMIC_TEMPLATE
 	EP_TRIGGER_THUMBNAIL_TYPES
 	EP_TRIGGER_CGI_COUNTER
+	EP_TRIGGER_EPADMIN_TEST
 
 	EP_TRIGGER_CREATED
 	EP_TRIGGER_DEFAULTS
