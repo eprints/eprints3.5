@@ -30,7 +30,13 @@ sub can_be_viewed
 {
 	my( $self ) = @_;
 
-	return $self->allow( $self->dataset->id."/export" );
+	my @plugins = $self->{session}->get_plugins(
+		type=>"Export",
+		can_accept=>"dataobj/".$self->{processor}->{dataset}->id,
+		is_advertised=>1,
+		is_visible=>"staff" );
+
+	return $self->allow( $self->dataset->id."/export" ) && scalar @plugins;
 }
 
 sub render
