@@ -23,7 +23,7 @@ sub new
 	my $self = $class->SUPER::new( %opts );
 
 	$self->{name} = "HTML Citation";
-	$self->{accept} = [ 'dataobj/eprint', 'list/eprint' ];
+	$self->{accept} = [ 'dataobj/eprint', 'dataobj/organisation', 'dataobj/person','list/eprint', 'list/organisation', 'list/person' ];
 	$self->{visible} = "all";
 	$self->{suffix} = ".html";
 	$self->{mimetype} = "text/html; charset=utf-8";

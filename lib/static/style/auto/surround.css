@@ -36,14 +36,11 @@
 
 .ep_sr_component .ep_sr_title {
 	font-weight: bold;
-	font-size: 115%;
+	font-size: 1rem;
 	color: #444;
 }
 .ep_sr_component .ep_sr_content {
-	clear: both;
-	padding: 6px;
-	border-style: none solid solid solid;
-	border-width: 1px;
+	font-size: 1rem;
 }
 
 /* collapse bar */
