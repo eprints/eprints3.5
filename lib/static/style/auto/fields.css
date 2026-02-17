@@ -58,3 +58,7 @@ dl.ep_field_set_long dd {
 	color: red;
 	font-weight: bold;
 }
+
+.ep_field_set_long label, .ep_field_set_medium label {
+	display: inline;
+}
