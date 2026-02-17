@@ -265,10 +265,14 @@ sub render_set_input
 
 	my( $fieldset, $list );
 
-	if( $input_style eq "long" || $input_style eq "medium" )
+	if( $input_style eq "long" )
 	{
 		$list = $session->make_element( "dl", class=>"form-control m-0 ep_field_set_" . $input_style );
-	}	
+	}
+	elsif ( $input_style eq "medium" )	
+	{
+		 $list = $session->make_element( "ul", class=>"form-control m-0 ep_field_set_" . $input_style );
+	}
 	else
 	{
 		$list = $session->make_element( "fieldset", class=>"ep_option_list" );
@@ -297,65 +301,86 @@ sub render_set_input
                 }
 
 		my $row;
-		if( $input_style eq "long" || $input_style eq "medium" )
+		if( $input_style eq "long")
 		{
 			$row = $session->make_element( "dt", class => "d-inline pe-1", id => $basename."_".$opt."_title" );
-        	        my $checked = undef;
-                	my $type = "radio";
-	                if( $self->{multiple} )
-        	        {
-                	        $type = "checkbox";
-                        	foreach( @{$default} )
-	                        {
-        	                        $checked = "checked" if( $_ eq $opt );
-                	        }
-	                }
-        	        else
-	                {
-        	                $type = "radio";
-                	        if( defined $default->[0] && $default->[0] eq $opt )
-                        	{
-	                                $checked = "checked";
-        	                }
-                	}
+			my $checked = undef;
+			my $type = "radio";
+			if( $self->{multiple} )
+			{
+				$type = "checkbox";
+				foreach( @{$default} )
+				{
+					$checked = "checked" if( $_ eq $opt );
+				}
+			}
+			else
+			{
+				$type = "radio";
+				if( defined $default->[0] && $default->[0] eq $opt )
+				{
+					$checked = "checked";
+				}
+			}
+	
 			my $dd;
 			if ( $input_style eq "long" )
 			{
-		                $row->appendChild( $session->render_noenter_input_field(
-        		                type => $type,
-                		        name => $basename,
-                        		id => $basename."_".$opt,
-	                        	value => $opt,
-	        	                class => join(" ", @classes),
-        	        	        checked => $checked,
-					'aria-labelledby' => $basename."_".$opt."_title",
+				$row->appendChild( $session->render_noenter_input_field(
+					type => $type,
+					name => $basename,
+					id => $basename."_".$opt,
+					value => $opt,
+					class => join(" ", @classes),
+					checked => $checked,
 					'aria-describedby' => $basename."_".$opt."_desc",
 				) );
-	                	$row->appendChild( $session->make_text( " ".$labels->{$opt} ));
-        	        	$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_desc" );
-                		my $phrasename = $self->{confid}."_optdetails_".$self->{name}."_".$opt;
-                		$dd->appendChild( $session->html_phrase( $phrasename ));
-			}
-			else 
-			{
-				$row->appendChild( $session->render_noenter_input_field(
-	                                type => $type,
-        	                        name => $basename,
-					title => $labels->{$opt},
-                	                id => $basename."_".$opt,
-                        	        value => $opt,
-                                	class => join(" ", @classes),
-	                                checked => $checked,
-        	                        'aria-labelledby' => $basename."_".$opt."_title",
-                	        ) );
-				$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_label", 'aria-describedby'=>$self->get_labelledby( $basename ) );
-				my $label = $dd->appendChild( $session->make_element( 'label', for => "${basename}_$opt" ) );
-				$label->appendChild( $session->make_text( $labels->{$opt} ) );
+				my $label = $row->appendChild( $session->make_element( 'label', for => "${basename}_$opt" ) );
+				$label->appendChild( $session->make_text( " ".$labels->{$opt} ));
+				$dd = $session->make_element( "dd", class => "d-inline", id=>$basename."_".$opt."_desc" );
+				my $phrasename = $self->{confid}."_optdetails_".$self->{name}."_".$opt;
+				$dd->appendChild( $session->html_phrase( $phrasename ));
 			}
 			$list->appendChild( $row );
 			$list->appendChild( $dd );
 			$list->appendChild( $session->make_element( "br" ) );
 		}
+		elsif ( $input_style eq "medium" )
+		{   
+			$row = $session->make_element( "li", class => "d-inline pe-1", id => $basename."_".$opt."_title" );
+			my $checked = undef;
+			my $type = "radio";
+			if( $self->{multiple} )
+			{
+				$type = "checkbox";
+				foreach( @{$default} )
+				{
+					$checked = "checked" if( $_ eq $opt );
+				}
+			}
+			else
+			{
+				$type = "radio";
+				if( defined $default->[0] && $default->[0] eq $opt )
+				{
+					$checked = "checked";
+				}
+			}
+			$row->appendChild( $session->render_noenter_input_field(
+				type => $type,
+				name => $basename,
+				title => $labels->{$opt},
+				id => $basename."_".$opt,
+				value => $opt,
+				class => join(" ", @classes),
+				checked => $checked,
+				'aria-labelledby' => $basename."_".$opt."_title",
+			) );
+			my $label = $row->appendChild( $session->make_element( 'label', for => "${basename}_$opt" ) );
+            $label->appendChild( $session->make_text( " ".$labels->{$opt} ));
+			$list->appendChild( $row );
+			$list->appendChild( $session->make_element( "br" ) );
+		}	
 		else
 		{
 			$row = $session->make_element( "div" );
