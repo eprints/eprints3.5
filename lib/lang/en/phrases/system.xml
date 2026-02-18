@@ -2599,7 +2599,7 @@ Titles and Help for the System Fields
     <!-- Upload component -->
 
     <epp:phrase id="Plugin/InputForm/Component/Upload:title">Add a new document</epp:phrase>
-        <epp:phrase id="Plugin/InputForm/Component/Upload:help"><p style="margin: 0px">To upload a document to this repository, click the <em><epc:phrase ref="template/navigation:browse"/></em> button below to select the file and the <em><epc:phrase ref="metapage_title_files"/></em> button to upload it to the archive. You may then add additional files to the document (such as images for HTML files) or upload more files to create additional documents.</p></epp:phrase>
+    <epp:phrase id="Plugin/InputForm/Component/Upload:help"><p style="margin: 0px">To upload a document to this repository, either drag files onto the box below, or click the box below to open a dialogue to select the file. The files will then be uploaded to the archive. You may then add additional files to the document (such as images for HTML files) or upload more files to create additional documents.</p></epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Documents:convert_document">Convert Document Format</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Documents:convert_document_button">Convert</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Documents:convert_document_help">To convert this document to another format select the format you wish to convert it to and click <em><epc:phrase ref="Plugin/InputForm/Component/Documents:convert_document_button"/></em>. The conversion will create a <b>new</b> document - your old document will not be lost.</epp:phrase>
@@ -2615,7 +2615,7 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_compressed">New document(s) (from Archive): </epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_targz">New document (from .tar.gz file): </epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_url">Capture from URL: </epp:phrase>
-    <epp:phrase id="Plugin/InputForm/Component/Upload:drag_and_drop">Drop files here to begin uploading.</epp:phrase>
+    <epp:phrase id="Plugin/InputForm/Component/Upload:drag_and_drop">Click here or drag and drop files here to begin uploading.</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:file_label">Select file to upload</epp:phrase>
 
     <epp:phrase id="Plugin/InputForm/UploadMethod/xcompressed:extract_type">Extraction Result: </epp:phrase>

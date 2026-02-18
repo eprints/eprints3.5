@@ -1,0 +1,13 @@
+.input_with_droppable{
+    display: none;
+}
+
+.UploadMethod_file_container{
+    width:100%;
+    height:150px;
+    border: green dashed 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

@@ -233,63 +233,72 @@ sub render
 
 	my $f = $xml->create_document_fragment;
 
-	my $container = $xml->create_element( "div",
+	my $upload_label = $xml->create_element("label",
 		class => "UploadMethod_file_container",
 		id => join('_', $self->{prefix}, "dropbox"),
 	);
-	$f->appendChild( $container );
 
-	$container->appendChild( $xml->create_data_element( "div",
-			$session->html_phrase( "Plugin/InputForm/Component/Upload:drag_and_drop" ),
-			style => "display: none;",
-			id => join('_', $self->{prefix}, "dropbox_help"),
-		) );
+	# Broadly following recommendations from https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
 
-	# file selection label
-	my $label = $xml->create_element( "label", for=>$ffname, class=>"ep_upload_file_label" );
-	$label->appendChild( $session->html_phrase( "Plugin/InputForm/Component/Upload:file_label" ) ); 
-	$container->appendChild( $label );
-
-	# file selection button
-	$container->appendChild( $xml->create_element( "input",
+	my $upload_input = $xml->create_element( "input",
 		name => $ffname,
 		id => $ffname,
+		class => "input_with_droppable",
 		type => "file",
+		multiple => "true",
 		onchange => "UploadMethod_file_change(this,'$self->{parent}->{prefix}','$self->{prefix}')",
-		) );
+	);
+	$upload_label->appendChild( $session->html_phrase( "Plugin/InputForm/Component/Upload:drag_and_drop" ) );
+	$upload_label->appendChild($upload_input);
 
-	# upload button
-	my $add_format_button = $session->render_button(
-		value => $self->{session}->phrase( "Plugin/InputForm/Component/Upload:add_format" ), 
-		class => "ep_form_internal_button ep_no_js",
-		name => "_internal_".$self->{prefix}."_add_format",
-		id => "_internal_".$self->{prefix}."_add_format",
-		);
-	$container->appendChild( $session->make_text( " " ) );
-	$container->appendChild( $add_format_button );
+	$f->appendChild($upload_label);
 
-	$container->appendChild( $xml->create_element( "div",
+	$f->appendChild( $xml->create_element( "div",
 			id => join('_', $self->{prefix}, "progress_table"),
 			class => "UploadMethod_file_progress_table",
 		) );
 
-	$container->appendChild( $session->make_javascript( <<EOJ ) );
-var div = document.getElementById('$self->{prefix}_dropbox');
-var body = document.getElementsByTagName ('body').item (0);
+	$f->appendChild( $session->make_javascript( <<EOJ ) );
+var label_dropzone = document.getElementById('$self->{prefix}_dropbox');
 var controller = new Screen_EPrint_UploadMethod_File ('$self->{prefix}', '$component');
-div.addEventListener('drop', function(evt) {
-		controller.dragFinish (evt);
-		controller.drop (evt);
+label_dropzone.addEventListener('drop', function(evt) {
+		controller.drop(evt);
 	});
-body.addEventListener('ep:dragcommence', function(evt) {
-		controller.dragCommence (evt);
-	});
-body.addEventListener('ep:dragfinish', function(evt) {
-		controller.dragFinish (evt);
-	});
+//cancel window default drop behaviour (for files) elsewhere
+window.addEventListener("drop", (e) => {
+  if ([...e.dataTransfer.items].some((item) => item.kind === "file")) {
+    e.preventDefault();
+  }
+});
+//cancel dragover for element and elsewhere (only want drop event)
+label_dropzone.addEventListener("dragover", (e) => {
+	const fileItems = [...e.dataTransfer.items].filter(
+    (item) => item.kind === "file",
+  );
+  if (fileItems.length > 0) {
+    e.preventDefault();
+    if (fileItems.some((item) => item.kind === "file")) {
+      e.dataTransfer.dropEffect = "copy";
+    } else {
+      e.dataTransfer.dropEffect = "none";
+    }
+  }
+});
+
+window.addEventListener("dragover", (e) => {
+  const fileItems = [...e.dataTransfer.items].filter(
+    (item) => item.kind === "file",
+  );
+  if (fileItems.length > 0) {
+    e.preventDefault();
+    if (!label_dropzone.contains(e.target)) {
+      e.dataTransfer.dropEffect = "none";
+    }
+  }
+});
 EOJ
 
-	$container->appendChild( $session->make_javascript( undef, src => '/javascript/hashwasm_md5.umd.min.js' ) );
+	$f->appendChild( $session->make_javascript( undef, src => '/javascript/hashwasm_md5.umd.min.js' ) );
 
 	return $f;
 }
