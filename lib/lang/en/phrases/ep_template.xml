@@ -146,15 +146,13 @@
     </epc:if>
     <div class="accordion mb-3" id="accordionResults">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="resultsOptions">
-          <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
-            <h6 class="m-0">
-              <strong>
-                <epc:phrase ref="lib/searchexpression:results_only:title"/>
-              </strong>
-            </h6>
-          </button>
-        </h2>
+        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults" aria-expanded="true" aria-controls="collapseResults">
+          <h6 id="resultsOptions" class="m-0">
+            <strong>
+              <epc:phrase ref="lib/searchexpression:results_only:title"/>
+            </strong>
+          </h6>
+        </button>
         <div id="collapseResults" class="accordion-collapse collapse show" aria-labelledby="resultsOptions" data-bs-parent="#accordionResults">
           <div class="accordion-body">
             <div class="d-flex ep_search_control">
@@ -1129,7 +1127,7 @@
   <epp:phrase id="lib/searchexpression:export_section">
     <div class="accordion mb-4" id="accordionExport">
       <div class="accordion-item">
-        <button class="accordion-button bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExport" aria-expanded="false" aria-controls="collapseExport">
+        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExport" aria-expanded="false" aria-controls="collapseExport">
           <h6 id="exportOptions" class="m-0">
             <strong>
               <epc:phrase ref="lib/searchexpression:export_section:title"/>
