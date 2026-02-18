@@ -362,7 +362,7 @@ SKIP: {
 		satisfy_all => 0 );
 
 	$searchexp->add_field( $dataset->field( "contributors" ), {
-		type => "http://www.loc.gov/loc.terms/relators/ACT",
+		type => "https://id.loc.gov/vocabulary/relators/act",
 		name => { family => "Léricolais", given => "I." },
 	}, "EX" );
 
