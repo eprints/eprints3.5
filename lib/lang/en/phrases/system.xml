@@ -2615,7 +2615,7 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_compressed">New document(s) (from Archive): </epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_targz">New document (from .tar.gz file): </epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:new_from_url">Capture from URL: </epp:phrase>
-    <epp:phrase id="Plugin/InputForm/Component/Upload:drag_and_drop">Click here or drag and drop files here to begin uploading.</epp:phrase>
+    <epp:phrase id="Plugin/InputForm/Component/Upload:drag_and_drop">Click this box or drag and drop files here to begin uploading.</epp:phrase>
     <epp:phrase id="Plugin/InputForm/Component/Upload:file_label">Select file to upload</epp:phrase>
 
     <epp:phrase id="Plugin/InputForm/UploadMethod/xcompressed:extract_type">Extraction Result: </epp:phrase>
