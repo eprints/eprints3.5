@@ -1114,7 +1114,7 @@
     </div>
   </epp:phrase>
   <epp:phrase id="view:EPrints/ScreenProcessor:render_messages">
-    <div class="ep_messages">
+    <div id="ep_messages">
       <epc:foreach expr="dom_messages" iterator="dom_message">
         <epc:print expr="$dom_message{message}"/>
       </epc:foreach>
