@@ -17,7 +17,7 @@ push @{$c->{fields}->{eprint}},
 			sub_name => 'type',
 			type => 'namedset',
 			set_name => "contributor_type",
-			default_value => 'http://www.loc.gov/loc.terms/relators/AUT',
+			default_value => 'http://id.loc.gov/vocabulary/relators/aut',
 		},
 		{
 			sub_name => 'contributor',
