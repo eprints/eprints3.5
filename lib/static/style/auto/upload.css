@@ -11,3 +11,7 @@
     justify-content: center;
     cursor: pointer;
 }
+
+.ep_upload_file_table .ep_table_data, .ep_upload_file_table .ep_table_header {
+	word-break: break-all;
+}
