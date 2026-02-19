@@ -1088,6 +1088,10 @@
         <epc:if test="!stage">
           <epc:print expr="'btn btn-primary btn-sm m-1'"/>
         </epc:if>
+        <epc:if test="class">
+          <epc:print expr="' '"/>
+          <epc:print expr="class"/>
+        </epc:if>
       </epc:attribute>
       <epc:foreach expr="opts" iterator="attr">
         <epc:attribute name="{$attr{name}}">
