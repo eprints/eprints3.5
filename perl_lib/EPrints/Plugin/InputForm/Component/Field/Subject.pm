@@ -242,13 +242,14 @@ sub _render_node
 	}
 	# can be selected
 	elsif( $subject->can_post )
-	{
-		$frag->appendChild( $session->render_button(
+	{	
+		my $label = $frag->appendChild( $session->xml->create_data_element("label") );
+		$label->appendChild( $session->render_button(
 			class=> "ep_subjectinput_add_button",
 			name => join('_', '_internal', $self->{prefix}, $subject->id, 'add'),
 			value => $self->phrase( "add" ) ) );
-		$frag->appendChild( $session->make_text( " " ) );
-		$frag->appendChild( $title );
+		$label->appendChild( $session->make_text( " " ) );
+		$label->appendChild( $title );
 	}
 	else
 	{

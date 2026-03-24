@@ -137,7 +137,8 @@ sub get_basic_input_elements
 			onclick => $onclick,
 			class => join(" ", @classes),
 			value => "TRUE",
-			'aria-labelledby' => $basename . "_true_label" );
+			# no aria-labelledby as this is labeled by a <label for...> block, added below
+			 );
 		$inputs->{false} = $session->render_noenter_input_field(
 			type => "radio",
 			checked=>( defined $value && $value eq 
@@ -148,7 +149,8 @@ sub get_basic_input_elements
 			onclick => $onclick,
 			class => join(" ", @classes),
 			value => "FALSE",
-			'aria-labelledby' => $basename . "_false_label" );
+			# no aria-labelledby as this is labeled by a <label for...> block, added below
+			 );
 		if( !$self->get_property( "required" ) )
                 {
                         $inputs->{unspecified} = $session->render_noenter_input_field(
@@ -158,8 +160,7 @@ sub get_basic_input_elements
                                 id => $basename . "_unspecified",
                                 class => join(" ", @classes),
                                 onclick => $onclick,
-                                value => "",
-				'aria-labelledby' => $basename . "_unspecified_label" )
+                                value => "")
 		}
 
 		my @options = qw/ true false /;
