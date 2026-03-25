@@ -11,6 +11,7 @@ pipeline{
     stages{
         stage('Configure'){
             steps{
+                echo "test"
                 // echo "halp $ARCHIVE_CREDS"
                 // withCredentials([usernamePassword(credentialsId: 'playwright_db_user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 //     sh 'pwd && echo $PASSWORD'
