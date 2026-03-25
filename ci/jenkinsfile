@@ -27,7 +27,7 @@ pipeline{
                     checkout scm
                     withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
                         dir("ci/pytest"){
-                            sh './ci/pytest/jenkins_run_tests.sh $secretFile'
+                            sh './jenkins_run_tests.sh $secretFile'
                         }
                     }
                 }
