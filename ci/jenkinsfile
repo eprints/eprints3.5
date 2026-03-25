@@ -11,17 +11,9 @@ pipeline{
     stages{
         stage('Configure'){
             steps{
-                echo "test"
-                sh "whoami"
-                // echo "halp $ARCHIVE_CREDS"
-                // withCredentials([usernamePassword(credentialsId: 'playwright_db_user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                //     sh 'pwd && echo $PASSWORD'
-
-                //     }
+                sh "pwd"
                  withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                    // do something with the file, for instance 
-                    sh 'pwd && echo $secretFile'
-                    // sh 'cp $secretFile /home/eprints3/tempfile'
+                    sh 'ci/scripts/create_eprints_archive playwright $secretFile'
                 }
                 sh "pwd"
             }
