@@ -5,7 +5,7 @@
 
 ARCHIVE_NAME=$1
 ARCHIVE_CONFIG_FILE=$2
-# URL=$3
+# SECUREVHOST_FILE=$3
 
 if [[ "$ARCHIVE_NAME" == "" ]]; then 
 	echo "No archive specified"
@@ -14,7 +14,11 @@ fi
 if [[ "$ARCHIVE_CONFIG_FILE" == "" ]]; then
 	echo "No location specified"
 	exit 2
-fi
+# fi
+# if [[ "$SECUREVHOST_FILE" == "" ]]; then
+#         echo "No SECUREVHOST_FILE specified"
+#         exit 3
+# fi
 # if [[ "$URL" == "" ]]; then
 #         echo "No URL specified"
 #         exit 3
@@ -37,10 +41,11 @@ fi
 # ln -s $ARCHIVE_CONFIG_FILE $EPRINTS_PATH
 rm -rf $EPRINTS_PATH/archives
 $EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
-mkdir $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
-chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
-cp /home/eprints/ci/config/${ARCHIVE_NAME}/securevhost.conf $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/
-chmod 664 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/securevhost.conf
+# ssl was set up with certbot - not the usual hosted eprinted convention. don't need this
+# mkdir $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
+# chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
+# cp $SECUREVHOST_FILE $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/
+# chmod 664 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/securevhost.conf
 # $EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE_NAME} # TODO
 # ln -s $EPRINTS_PATH/archives/${ARCHIVE_NAME}/var/ $EPRINTS_PATH/archives/${ARCHIVE_NAME}/html/en/ # why was this here?
 sudo systemctl start httpd
