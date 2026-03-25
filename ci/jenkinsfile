@@ -5,7 +5,14 @@ pipeline{
     // }
     stages{
         stage('Configure EPrints'){
+            agent {
+                node {
+                    label 'playwright'
+                    customWorkspace '/opt/eprints3/'
+                }
+            }
             steps{
+                
                 node('eprints_35_deploy') {
                     customWorkspace '/opt/eprints3/'
                     sh "pwd"
