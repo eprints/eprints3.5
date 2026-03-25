@@ -7,19 +7,18 @@ pipeline{
         stage('Configure EPrints'){
             agent {
                 node {
-                    label 'playwright'
+                    label 'eprints_35_deploy'
                     customWorkspace '/opt/eprints3/'
                 }
             }
             steps{
                 
-                node('eprints_35_deploy') {
-                    customWorkspace '/opt/eprints3/'
-                    sh "pwd"
-                    withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                        sh 'ci/bin/create_eprints_archive playwright $secretFile'
-                    }
+                customWorkspace '/opt/eprints3/'
+                sh "pwd"
+                withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
                 }
+            
                 
             }
         }
