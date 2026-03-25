@@ -2,7 +2,7 @@ pipeline{
     agent {
         node {
             label 'playwright'
-            customWorkspace '/opt/eprints3'
+            customWorkspace '/opt/eprints3/'
         }
     }
     //  environment {
