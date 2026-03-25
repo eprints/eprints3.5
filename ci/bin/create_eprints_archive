@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#adapted from eprints_ci
+
+ARCHIVE=$1
+LOCATION=$2
+URL=$3
+
+if [[ "$ARCHIVE" == "" ]]; then 
+	echo "No archive specified"
+	exit 1
+fi
+if [[ "$LOCATION" == "" ]]; then
+	echo "No location specified"
+	exit 2
+fi
+if [[ "$URL" == "" ]]; then
+        echo "No URL specified"
+        exit 3
+fi
+
+d=`dirname $0`
+# DIR=`cd $d; pwd`
+# cd $DIR/../
+
+EPRINTS_PATH="/opt/eprints3"
+
+# killall -9 indexer
+sudo systemctl stop httpd
+sudo systemctl stop epindexer
+if [[ -d /var/lib/mysql/$ARCHIVE ]]; then
+	sudo mysql -e "DROP DATABASE $ARCHIVE;"
+	sudo mysql -e "DROP USER $ARCHIVE@localhost;"
+fi
+# rm -f $EPRINTS_PATH
+# ln -s $LOCATION $EPRINTS_PATH
+rm -rf $EPRINTS_PATH/archives
+$EPRINTS_PATH/bin/epadmin create --config=/home/eprints/ci/${ARCHIVE}/create.yml
+mkdir $EPRINTS_PATH/archives/${ARCHIVE}/ssl
+chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE}/ssl
+cp /home/eprints/ci/config/${ARCHIVE}/securevhost.conf $EPRINTS_PATH/archives/${ARCHIVE}/ssl/
+chmod 664 $EPRINTS_PATH/archives/${ARCHIVE}/ssl/securevhost.conf
+# $EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE} # TODO
+# ln -s $EPRINTS_PATH/archives/${ARCHIVE}/var/ $EPRINTS_PATH/archives/${ARCHIVE}/html/en/ # why was this here?
+sudo systemctl start httpd
+rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
+# $EPRINTS_PATH/bin/indexer start --retry
+sudo systemctl start epindexer
+# bin/check_event_queue $URL 10 10 30
