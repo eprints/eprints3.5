@@ -14,7 +14,7 @@ fi
 if [[ "$ARCHIVE_CONFIG_FILE" == "" ]]; then
 	echo "No location specified"
 	exit 2
-# fi
+fi
 # if [[ "$SECUREVHOST_FILE" == "" ]]; then
 #         echo "No SECUREVHOST_FILE specified"
 #         exit 3
