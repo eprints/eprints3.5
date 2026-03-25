@@ -2,7 +2,7 @@ pipeline{
     agent {
         node {
             label 'playwright'
-            customWorkspace '/opt/eprints3/'
+            // customWorkspace '/opt/eprints3/'
         }
     }
     //  environment {
@@ -21,6 +21,7 @@ pipeline{
                  withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
                     // do something with the file, for instance 
                     sh 'pwd && echo $secretFile'
+                    sh 'cp $secretFile /home/eprints3/tempfile'
                 }
                 sh "pwd"
             }
