@@ -18,7 +18,7 @@ pipeline{
                 //     }
                  withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
                     // do something with the file, for instance 
-                    sh 'cat $secretFile'
+                    sh 'pwd'
                 }
             }
         }

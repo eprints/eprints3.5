@@ -2,22 +2,22 @@
 
 #adapted from eprints_ci
 
-ARCHIVE=$1
-LOCATION=$2
-URL=$3
+ARCHIVE_NAME=$1
+ARCHIVE_CONFIG_FILE=$2
+# URL=$3
 
-if [[ "$ARCHIVE" == "" ]]; then 
+if [[ "$ARCHIVE_NAME" == "" ]]; then 
 	echo "No archive specified"
 	exit 1
 fi
-if [[ "$LOCATION" == "" ]]; then
+if [[ "$ARCHIVE_CONFIG_FILE" == "" ]]; then
 	echo "No location specified"
 	exit 2
 fi
-if [[ "$URL" == "" ]]; then
-        echo "No URL specified"
-        exit 3
-fi
+# if [[ "$URL" == "" ]]; then
+#         echo "No URL specified"
+#         exit 3
+# fi
 
 d=`dirname $0`
 # DIR=`cd $d; pwd`
@@ -28,20 +28,20 @@ EPRINTS_PATH="/opt/eprints3"
 # killall -9 indexer
 sudo systemctl stop httpd
 sudo systemctl stop epindexer
-if [[ -d /var/lib/mysql/$ARCHIVE ]]; then
-	sudo mysql -e "DROP DATABASE $ARCHIVE;"
-	sudo mysql -e "DROP USER $ARCHIVE@localhost;"
+if [[ -d /var/lib/mysql/$ARCHIVE_NAME ]]; then
+	sudo mysql -e "DROP DATABASE $ARCHIVE_NAME;"
+	sudo mysql -e "DROP USER $ARCHIVE_NAME@localhost;"
 fi
 # rm -f $EPRINTS_PATH
-# ln -s $LOCATION $EPRINTS_PATH
+# ln -s $ARCHIVE_CONFIG_FILE $EPRINTS_PATH
 rm -rf $EPRINTS_PATH/archives
-$EPRINTS_PATH/bin/epadmin create --config=/home/eprints/ci/${ARCHIVE}/create.yml
-mkdir $EPRINTS_PATH/archives/${ARCHIVE}/ssl
-chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE}/ssl
-cp /home/eprints/ci/config/${ARCHIVE}/securevhost.conf $EPRINTS_PATH/archives/${ARCHIVE}/ssl/
-chmod 664 $EPRINTS_PATH/archives/${ARCHIVE}/ssl/securevhost.conf
-# $EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE} # TODO
-# ln -s $EPRINTS_PATH/archives/${ARCHIVE}/var/ $EPRINTS_PATH/archives/${ARCHIVE}/html/en/ # why was this here?
+$EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
+mkdir $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
+chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
+cp /home/eprints/ci/config/${ARCHIVE_NAME}/securevhost.conf $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/
+chmod 664 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/securevhost.conf
+# $EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE_NAME} # TODO
+# ln -s $EPRINTS_PATH/archives/${ARCHIVE_NAME}/var/ $EPRINTS_PATH/archives/${ARCHIVE_NAME}/html/en/ # why was this here?
 sudo systemctl start httpd
 rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
 # $EPRINTS_PATH/bin/indexer start --retry
