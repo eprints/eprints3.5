@@ -1,7 +1,5 @@
 pipeline{
-    agent {
-        
-    }
+    agent any
     //  environment {
     //     ARCHIVE_CREDS     = credentials('playwright_db_user')
     // }
