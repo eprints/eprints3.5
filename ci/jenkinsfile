@@ -13,7 +13,7 @@ pipeline{
             steps{
                 sh "pwd"
                  withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                    sh 'ci/scripts/create_eprints_archive playwright $secretFile'
+                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
                 }
                 sh "pwd"
             }
