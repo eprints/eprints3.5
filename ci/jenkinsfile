@@ -5,13 +5,17 @@ pipeline{
             customWorkspace '/opt/eprints3'
         }
     }
-     environment {
-        ARCHIVE_CREDS     = credentials('playwright_db_user')
-    }
+    //  environment {
+    //     ARCHIVE_CREDS     = credentials('playwright_db_user')
+    // }
     stages{
         stage('Configure'){
             steps{
-                echo "halp $ARCHIVE_CREDS"
+                // echo "halp $ARCHIVE_CREDS"
+                withCredentials([usernamePassword(credentialsId: 'playwright_db_user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh 'pwd && echo $PASSWORD'
+
+                    }
             }
         }
     }
