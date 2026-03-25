@@ -12,7 +12,7 @@ pipeline{
                 }
             }
             steps{
-                scm
+                checkout scm
                 sh "pwd"
                 withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
                     sh 'ci/bin/create_eprints_archive playwright $secretFile'
@@ -24,7 +24,7 @@ pipeline{
         stage('Run Tests'){
             steps{
                 node('playwright'){
-                    scm
+                    checkout scm
                     withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
                         dir("ci/pytest"){
                             sh './ci/pytest/jenkins_run_tests.sh $secretFile'
