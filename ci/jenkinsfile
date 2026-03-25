@@ -1,23 +1,29 @@
 pipeline{
-    agent {
-        node {
-            label 'playwright'
-            customWorkspace '/opt/eprints3/'
-        }
-    }
+    // agent {
+        
+    // }
     //  environment {
     //     ARCHIVE_CREDS     = credentials('playwright_db_user')
     // }
     stages{
-        stage('Configure'){
+        stage('Configure EPrints'){
             steps{
-                sh "pwd"
-                 withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
+                node('eprints_35_deploy') {
+                    sh "pwd"
+                    withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                        sh 'ci/bin/create_eprints_archive playwright $secretFile'
+                    }
                 }
-                withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
-                    dir("ci/pytest"){
-                        sh 'source /home/eprints/pytest-venv/bin/activate && python -m pytest --creds $secretFile --url https://playwright.eprints-hosting.org/'
+                
+            }
+        }
+        stage('Run Tests'){
+            steps{
+                node('playwright'){
+                    withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
+                        dir("ci/pytest"){
+                            sh 'source /home/eprints/pytest-venv/bin/activate && python -m pytest --creds $secretFile --url https://playwright.eprints-hosting.org/'
+                        }
                     }
                 }
             }
