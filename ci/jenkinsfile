@@ -26,7 +26,7 @@ pipeline{
                 node('playwright'){
                     withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
                         dir("ci/pytest"){
-                            sh 'source /home/eprints/playwright-venv/bin/activate && python -m pytest --creds $secretFile --url https://playwright.eprints-hosting.org/'
+                            sh './ci/pytest/jenkins_run_tests.sh $secretFile'
                         }
                     }
                 }
