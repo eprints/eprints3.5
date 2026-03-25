@@ -1,8 +1,15 @@
 pipeline{
     agent {
-    node {
-        label 'playwright'
-        customWorkspace '/opt/eprints3'
+        node {
+            label 'playwright'
+            customWorkspace '/opt/eprints3'
+        }
     }
-}
+    stages{
+        stage('Configure'){
+            steps{
+                echo "halp"
+            }
+        }
+    }
 }
