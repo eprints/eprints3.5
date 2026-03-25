@@ -16,10 +16,11 @@ pipeline{
                 //     sh 'pwd && echo $PASSWORD'
 
                 //     }
-                 withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                    // do something with the file, for instance 
-                    sh 'pwd'
-                }
+                //  withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                //     // do something with the file, for instance 
+                //     sh 'pwd'
+                // }
+                sh "pwd"
             }
         }
     }
