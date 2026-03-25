@@ -10,3 +10,6 @@
 [submodule "ingredients/latest_additions"]
 	path = ingredients/latest_additions
 	url = ../latest_additions.git
+[submodule "ci/pytest/random_eprints"]
+	path = ci/pytest/random_eprints
+	url = ../random_eprints.git
