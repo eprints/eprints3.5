@@ -1,11 +1,11 @@
 flavour: 'pub'
 archive_id: 'playwright'
 core:
-  host: 'playwright.eprints-hosting.org'
+  host: 'testnode-1.eprints-hosting.org'
   port: 80
   aliases: []
   path: '/'
-  securehost: 'playwright.eprints-hosting.org'
+  securehost: 'testnode-1.eprints-hosting.org'
   secureport: 443
   adminemail: 'admin@example.eprints.org'
   phrases:
