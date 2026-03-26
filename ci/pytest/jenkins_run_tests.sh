@@ -26,6 +26,7 @@ export WORKSPACE=`pwd`
 printenv
 
 echo `which pytest`
+cp $CREDS_FILE credentials.json
 
 #--rootdir `pwd` 
 #-c $thisfilepath/pytest.ini
