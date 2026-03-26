@@ -33,7 +33,7 @@ pipeline{
                                     unstable(message: "${STAGE_NAME} is unstable")
                                 }
                             }
-                            
+                            // we always want to archive results even if the tests don't all pass
                             junit '*.xml'
                             archiveArtifacts 'test-results/**/*'
                         }

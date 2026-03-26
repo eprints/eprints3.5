@@ -1,11 +1,9 @@
 #!/bin/bash
 
-
 #adapted from eprints_ci
 
 ARCHIVE_NAME=$1
 ARCHIVE_CONFIG_FILE=$2
-# SECUREVHOST_FILE=$3
 
 if [[ "$ARCHIVE_NAME" == "" ]]; then 
 	echo "No archive specified"
@@ -15,30 +13,17 @@ if [[ "$ARCHIVE_CONFIG_FILE" == "" ]]; then
 	echo "No location specified"
 	exit 2
 fi
-# if [[ "$SECUREVHOST_FILE" == "" ]]; then
-#         echo "No SECUREVHOST_FILE specified"
-#         exit 3
-# fi
-# if [[ "$URL" == "" ]]; then
-#         echo "No URL specified"
-#         exit 3
-# fi
 
 d=`dirname $0`
-# DIR=`cd $d; pwd`
-# cd $DIR/../
 
 EPRINTS_PATH="/opt/eprints3"
 
-# killall -9 indexer
 sudo systemctl stop httpd
 sudo systemctl stop epindexer
 if [[ -d /var/lib/mysql/$ARCHIVE_NAME ]]; then
 	sudo mysql -e "DROP DATABASE $ARCHIVE_NAME;"
 	sudo mysql -e "DROP USER $ARCHIVE_NAME@localhost;"
 fi
-# rm -f $EPRINTS_PATH
-# ln -s $ARCHIVE_CONFIG_FILE $EPRINTS_PATH
 rm -rf $EPRINTS_PATH/archives
 $EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
 # fixup ssl. Assumes ssl was set up by certbot (when you will need to add line "PerlSetVar EPrints_Secure yes")
@@ -46,6 +31,4 @@ cp /home/eprints/playwright-le-ssl.conf /opt/eprints3/cfg/apache/playwright-le-s
 
 sudo systemctl start httpd
 rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
-# $EPRINTS_PATH/bin/indexer start --retry
 sudo systemctl start epindexer
-# bin/check_event_queue $URL 10 10 30
