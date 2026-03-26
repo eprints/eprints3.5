@@ -30,5 +30,4 @@ echo `which pytest`
 #--rootdir `pwd` 
 #-c $thisfilepath/pytest.ini
 #python -m 
-pytest
-# --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
+pytest --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
