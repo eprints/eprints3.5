@@ -20,12 +20,15 @@ python -m venv jenkins-venv
 source jenkins-venv/bin/activate
 
 pip install pytest fpdf2 playwright pytest-playwright
-playright install
+playwright install
 
 
 printenv
 
+echo `which pytest`
+
 #--rootdir `pwd` 
 #-c $thisfilepath/pytest.ini
 #python -m 
-pytest --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
+pytest
+# --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
