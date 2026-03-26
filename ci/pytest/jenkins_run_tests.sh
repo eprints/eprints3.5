@@ -4,6 +4,8 @@ CREDS_FILE=$1
 
 echo `pwd`
 
+export WORKSPACE=`pwd`
+
 source /home/eprints/playwright-venv/bin/activate
 
 printenv
