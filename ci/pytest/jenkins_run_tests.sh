@@ -31,5 +31,5 @@ cp $CREDS_FILE credentials.json
 #--rootdir `pwd` 
 #-c $thisfilepath/pytest.ini
 #python -m 
-pytest 
-#--creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
+pytest --url https://testnode-1.eprints-hosting.org/
+#--creds $CREDS_FILE 
