@@ -1,26 +1,23 @@
 pipeline{
     agent any
-    //  environment {
-    //     ARCHIVE_CREDS     = credentials('playwright_db_user')
-    // }
     stages{
-        // stage('Configure EPrints'){
-        //     agent {
-        //         node {
-        //             label 'eprints_35_deploy'
-        //             customWorkspace '/opt/eprints3/'
-        //         }
-        //     }
-        //     steps{
-        //         // checkout scm
-        //         sh "pwd"
-        //         withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-        //             sh 'ci/bin/create_eprints_archive playwright $secretFile'
-        //         }
+        stage('Configure EPrints'){
+            agent {
+                node {
+                    label 'eprints_35_deploy'
+                    customWorkspace '/opt/eprints3/'
+                }
+            }
+            steps{
+                // checkout scm
+                sh "pwd"
+                withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
+                }
             
                 
-        //     }
-        // }
+            }
+        }
         stage('Run Tests'){
             steps{
                 node('playwright'){
