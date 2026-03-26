@@ -68,5 +68,3 @@ def test_submit_article(logged_in_page, random_pdf_bytes, random_title):
     page.get_by_role("button", name="Deposit Item Now").click()
 
     page.get_by_role("button", name="Move to Repository").click()
-
-    page.get_by_role("button", name="This is not a real button").click()
