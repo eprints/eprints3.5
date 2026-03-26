@@ -41,13 +41,9 @@ fi
 # ln -s $ARCHIVE_CONFIG_FILE $EPRINTS_PATH
 rm -rf $EPRINTS_PATH/archives
 $EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
-# ssl was set up with certbot - not the usual hosted eprinted convention. don't need this
-# mkdir $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
-# chmod 2775 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl
-# cp $SECUREVHOST_FILE $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/
-# chmod 664 $EPRINTS_PATH/archives/${ARCHIVE_NAME}/ssl/securevhost.conf
-# $EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE_NAME} # TODO
-# ln -s $EPRINTS_PATH/archives/${ARCHIVE_NAME}/var/ $EPRINTS_PATH/archives/${ARCHIVE_NAME}/html/en/ # why was this here?
+# fixup ssl. Assumes ssl was set up by certbot (when you will need to add line "PerlSetVar EPrints_Secure yes")
+cp /home/eprints/playwright-le-ssl.conf /opt/eprints3/cfg/apache/playwright-le-ssl.conf
+
 sudo systemctl start httpd
 rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
 # $EPRINTS_PATH/bin/indexer start --retry
