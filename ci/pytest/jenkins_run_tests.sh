@@ -6,6 +6,6 @@ echo `pwd`
 
 source /home/eprints/playwright-venv/bin/activate
 
-echo `pwd`
+printenv
 
 python -m pytest --rootdir `pwd` --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
