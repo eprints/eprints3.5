@@ -28,7 +28,15 @@ pipeline{
                     checkout scm
                     withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
                         dir("ci/pytest"){
-                            sh './jenkins_run_tests.sh $secretFile'
+                            script {
+                                try {
+                                    sh './jenkins_run_tests.sh $secretFile'
+                                }
+                                catch (err) {                                        
+                                    unstable(message: "${STAGE_NAME} is unstable")
+                                }
+                            }
+                            
                             junit '*.xml'
                             archiveArtifacts 'test-results/**/*'
                         }

@@ -26,10 +26,10 @@ export WORKSPACE=`pwd`
 printenv
 
 echo `which pytest`
+#supplying CREDS_FILE on command line to pytest results in jenkins doing very weird things to the environment and pytest being unable to find its tests.
 cp $CREDS_FILE credentials.json
 
-#--rootdir `pwd` 
-#-c $thisfilepath/pytest.ini
-#python -m 
+
 pytest --url https://testnode-1.eprints-hosting.org/  --junitxml=results.xml
-#--creds $CREDS_FILE 
+
+rm credentials.json
