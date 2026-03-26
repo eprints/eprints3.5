@@ -6,7 +6,7 @@ echo `pwd`
 
 
 
-# source /home/eprints/playwright-venv/bin/activate
+source /home/eprints/playwright-venv/bin/activate
 
 
 
@@ -16,11 +16,11 @@ echo `pwd`
 export WORKSPACE=`pwd`
 
 
-python -m venv jenkins-venv
-source jenkins-venv/bin/activate
+# python -m venv jenkins-venv
+# source jenkins-venv/bin/activate
 
-pip install pytest fpdf2 playwright pytest-playwright
-playwright install
+# pip install pytest fpdf2 playwright pytest-playwright
+# playwright install
 
 
 printenv
