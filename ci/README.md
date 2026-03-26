@@ -2,7 +2,7 @@
 
 Please note, there is no support provided for this CI code.
 
-There is a jenkinsjob - using scripted pipeline in `jenkinsfile`.
+There is a jenkinsjob - using a pipeline in `jenkinsfile`.
 
 Playwright based tests using pytest under `pytest`. These should work fine without jenkins.
 
