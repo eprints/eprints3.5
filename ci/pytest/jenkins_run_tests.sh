@@ -6,14 +6,24 @@ echo `pwd`
 
 
 
-source /home/eprints/playwright-venv/bin/activate
+# source /home/eprints/playwright-venv/bin/activate
 
-printenv
+
 
 thisfilepath=`dirname "$(realpath $0)"`
 cd $thisfilepath
 echo `pwd`
 export WORKSPACE=`pwd`
+
+
+python -m venv jenkins-venv
+source jenkins-venv/bin/activate
+
+pip install pytest fpdf2 playwright pytest-playwright
+playright install
+
+
+printenv
 
 #--rootdir `pwd` 
 #-c $thisfilepath/pytest.ini
