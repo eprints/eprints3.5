@@ -30,7 +30,7 @@ pipeline{
                         dir("ci/pytest"){
                             sh './jenkins_run_tests.sh $secretFile'
                             junit '*.xml'
-                            archiveArtifacts 'test-results/*'
+                            archiveArtifacts 'test-results/**/*'
                         }
                     }
                 }
