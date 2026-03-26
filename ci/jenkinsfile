@@ -27,10 +27,10 @@ pipeline{
                     //not sure why we need checkout here but not on previous stage.
                     checkout scm
                     withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
-                        dir("ci/pytest"){
-                            sh 'ls -l'
-                            sh '/bin/bash jenkins_run_tests.sh $secretFile'
-                        }
+                        // dir("ci/pytest"){
+                        sh 'ls -l'
+                        sh '/bin/bash ./ci/pytest/jenkins_run_tests.sh $secretFile'
+                        // }
                     }
                 }
             }
