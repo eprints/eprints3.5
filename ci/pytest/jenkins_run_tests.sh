@@ -8,4 +8,5 @@ source /home/eprints/playwright-venv/bin/activate
 
 printenv
 
-python -m pytest --rootdir `pwd` --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
+#--rootdir `pwd` 
+python -m pytest --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
