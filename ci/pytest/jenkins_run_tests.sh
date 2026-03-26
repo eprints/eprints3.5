@@ -13,5 +13,6 @@ cd $thisfilepath
 echo `pwd`
 
 #--rootdir `pwd` 
-
-python -m pytest -c $thisfilepath/pytest.ini --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
+#-c $thisfilepath/pytest.ini
+#python -m 
+pytest --creds $CREDS_FILE --url https://playwright.eprints-hosting.org/
