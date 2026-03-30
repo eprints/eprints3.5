@@ -62,11 +62,28 @@ sub allow
 {
 	my( $self, $priv ) = @_;
 
+	unless ( defined $self->{processor}->{eprint} )
+	{
+		$self->{processor}->{eprint} = $self->{session}->request->pnotes( 'eprint' );
+	}
 	return 0 unless defined $self->{processor}->{eprint};
 
 	return 1 if( $self->{session}->allow_anybody( $priv ) );
 	return 0 if( !defined $self->{session}->current_user );
 	return $self->{session}->current_user->allow( $priv, $self->{processor}->{eprint} );
+}
+
+sub render_action_link
+{
+    my( $self, %opts ) = @_;
+
+    $opts{uri} = URI->new( $self->{session}->config( "rel_cgipath" ) . "/users/home" );
+    $opts{uri}->query_form(
+        screen => substr($self->{id},8),
+        eprintid => $self->{processor}->{eprint}->id,
+    );
+
+    return $self->SUPER::render_action_link( %opts );
 }
 
 sub render_tab_title

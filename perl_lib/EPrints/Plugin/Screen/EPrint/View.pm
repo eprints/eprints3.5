@@ -34,9 +34,22 @@ sub new
 			place => "eprint_review_actions",
 			position => 10,
 		},
+		{
+            place => "key_tools",
+            position => 175,
+        }
 	];
 
 	return $self;
+}
+
+sub render_action_link
+{
+	my( $self, %opts ) = @_;
+
+	$opts{link_title} = $self->{session}->html_phrase( "cgi:view_eprint:view_eprint" );
+
+	return $self->SUPER::render_action_link( %opts );
 }
 
 sub properties_from
