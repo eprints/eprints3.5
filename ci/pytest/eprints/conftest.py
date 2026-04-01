@@ -5,11 +5,14 @@ import pytest
 from random_eprints.random_eprints import get_random_eprint
 from playwright.sync_api import Page
 
+@pytest.fixture
+def random_eprint(pytestconfig):
+    eprint = get_random_eprint(pytestconfig.getoption('seed'), author_count=20)
+    return eprint
 
 @pytest.fixture
-def random_pdf():
-    eprint = get_random_eprint()
-    return eprint.pdf
+def random_pdf(random_eprint):
+    return random_eprint.pdf
 
 @pytest.fixture
 def random_pdf_bytes(random_pdf):
@@ -34,6 +37,6 @@ def logged_in_page(base_url, page: Page, credentials):
 
     return page
 
-@pytest.fixture
-def random_title():
-    return f"Title {datetime.now()}"
+# @pytest.fixture
+# def random_title():
+#     return f"Title {datetime.now()}"
