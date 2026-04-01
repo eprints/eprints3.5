@@ -27,6 +27,7 @@ def credentials(pytestconfig):
     with open(pytestconfig.getoption('creds')) as credentials_file:
         credentials = json.load(credentials_file)
     return credentials
+
 @pytest.fixture
 def logged_in_page(base_url, page: Page, credentials):
     page.goto(f"{base_url}/cgi/users/login")
@@ -36,6 +37,13 @@ def logged_in_page(base_url, page: Page, credentials):
     page.get_by_role("button", name="Login").click()
 
     return page
+
+
+@pytest.fixture
+def not_logged_in_page(base_url, page: Page):
+    page.goto(f"{base_url}")
+    return page
+
 
 # @pytest.fixture
 # def random_title():
