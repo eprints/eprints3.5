@@ -38,8 +38,10 @@ def test_create_account(not_logged_in_page, temp_user_info):
         not_logged_in_page.get_by_role("button", name="Register").click()
 
     fill_in_register_user()
+    expect(not_logged_in_page.get_by_text(f"You have registered with username {temp_user_info['username']}.",
+                                          exact=False)).to_be_visible()
 
-    # not_logged_in_page.get_by_role("button", name="Register").click(trial=True)
+    not_logged_in_page.get_by_text("Create Account").first.click()
 
     fill_in_register_user()
     expect(not_logged_in_page.get_by_text(f"A user with the email address {temp_user_info['email']} already exists.", exact=False)).to_be_visible()
