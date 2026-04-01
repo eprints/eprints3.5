@@ -1,7 +1,11 @@
 import json
+import string
+import random
 from datetime import datetime
 
 import pytest
+
+from eprints.utils import login
 from random_eprints.random_eprints import get_random_eprint
 from playwright.sync_api import Page
 
@@ -28,14 +32,17 @@ def credentials(pytestconfig):
         credentials = json.load(credentials_file)
     return credentials
 
+
+
 @pytest.fixture
 def logged_in_page(base_url, page: Page, credentials):
-    page.goto(f"{base_url}/cgi/users/login")
-
-    page.get_by_role("textbox", name="Username:").fill(credentials["test_user"]["name"])
-    page.get_by_role("textbox", name="Password:").fill(credentials["test_user"]["password"])
-    page.get_by_role("button", name="Login").click()
-
+    page.goto(f"{base_url}/")
+    # page.goto(f"{base_url}/cgi/users/login")
+    #
+    # page.get_by_role("textbox", name="Username:").fill(credentials["test_user"]["name"])
+    # page.get_by_role("textbox", name="Password:").fill(credentials["test_user"]["password"])
+    # page.get_by_role("button", name="Login").click()
+    login(page, credentials["test_user"]["name"], credentials["test_user"]["password"])
     return page
 
 
@@ -48,3 +55,15 @@ def not_logged_in_page(base_url, page: Page):
 # @pytest.fixture
 # def random_title():
 #     return f"Title {datetime.now()}"
+
+
+@pytest.fixture
+def temp_user_info():
+    return {
+        "username": "temporary_user",
+        "name_given": "Bob",
+        "name_family": "Surname",
+        "title": "Prof",
+        "email": "fake@eprints-hosting.org",
+        "password": ''.join([random.choice(string.ascii_letters) for i in range(10)])
+    }

@@ -18,3 +18,10 @@ def add_to_table(page, section_title, addme):
 
     table = section.locator("css=table")
     expect(table).to_be_visible()
+
+def login(page, username, password):
+    page.goto(f"cgi/users/login")
+
+    page.get_by_role("textbox", name="Username:").fill(username)
+    page.get_by_role("textbox", name="Password:").fill(password)
+    page.get_by_role("button", name="Login").click()
