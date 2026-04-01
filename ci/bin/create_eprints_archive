@@ -28,7 +28,7 @@ rm -rf $EPRINTS_PATH/archives
 $EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
 # fixup ssl. Assumes ssl was set up by certbot (when you will need to add line "PerlSetVar EPrints_Secure yes")
 cp /home/eprints/playwright-le-ssl.conf /opt/eprints3/cfg/apache/playwright-le-ssl.conf
-
+$EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE_NAME}
 sudo systemctl start httpd
 rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
 sudo systemctl start epindexer
