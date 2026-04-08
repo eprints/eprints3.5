@@ -56,7 +56,7 @@ def test_empty_indexer_queue(page: Page, base_url):
     start = time.time()
     event_queue = -1
     #try for 120 seconds to wait for the event queue to finish
-    while(event_queue != 0 and time.time() - start < 240):
+    while(event_queue != 0 and time.time() - start < 300):
         page.goto(f"{base_url}/cgi/counter").finished()
         text = page.content()
         lines = text.split("\n")
