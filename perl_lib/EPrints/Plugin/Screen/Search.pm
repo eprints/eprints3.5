@@ -859,7 +859,7 @@ sub render_facet_list
 
 			if( $show_expander && ( $index == ( $max_facet_list_length - 1 ) ) )
 			{
-				my $expander = $session->make_element( "a", "class" => "ep_facet_show_more", "href" => "#" );
+				my $expander = $session->make_element( "button", "class" => "ep_facet_show_more btn btn-secondary btn-sm" );
 
 				my $num = 1 + scalar( @defined_results ) - $max_facet_list_length;
 
