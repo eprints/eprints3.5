@@ -1,0 +1,5 @@
+pytest
+pytest-order
+fpdf2
+playwright
+pytest-playwright

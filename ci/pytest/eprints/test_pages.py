@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page, expect
 import re
 import pytest
@@ -47,3 +49,72 @@ def test_create_account(not_logged_in_page, temp_user_info):
     expect(not_logged_in_page.get_by_text(f"A user with the email address {temp_user_info['email']} already exists.", exact=False)).to_be_visible()
 
     # login(not_logged_in_page, temp_user_info["username"], temp_user_info["password"])
+
+# do this even more first
+@pytest.mark.order(1)
+def test_empty_indexer_queue(not_logged_in_page):
+    start = time.time()
+    event_queue = -1
+    #try for 120 seconds to wait for the event queue to finish
+    while(event_queue != 0 and time.time() - start < 120):
+        not_logged_in_page.goto("/cgi/counter").finished()
+        text = not_logged_in_page.content()
+        lines = text.split("\n")
+        for line in lines:
+            if line.startswith("event_queue:"):
+                event_queue = int(line.split(":")[1])
+
+    if event_queue != 0:
+        raise RuntimeError(f"Event queue still not finished. {event_queue} tasks remaining")
+
+
+
+
+#do this first as it expects nothing but the precanned test data to be present
+@pytest.mark.order(2)
+def test_simple_search(not_logged_in_page):
+    not_logged_in_page.get_by_placeholder("Search Journal articles, titles, dates, authors…").fill("article")
+    not_logged_in_page.get_by_role("button", name="Search").click()
+
+    expect(not_logged_in_page.get_by_text("100 results", exact=True).first).to_be_visible()
+
+    expect(not_logged_in_page.get_by_role("link", name="Refine search").first).to_be_visible()
+    expect(not_logged_in_page.get_by_role("link", name="New search").first).to_be_visible()
+    expect(not_logged_in_page.get_by_label("Order the results", exact=False).first).to_be_visible()
+    not_logged_in_page.get_by_text("Export options").click()
+    expect(not_logged_in_page.get_by_text("Export 100 results as", exact=False)).to_be_visible()
+    for link_text in ["Atom", "RSS 1.0", "RSS 2.0", "Conference or Workshop Item", "Show 5 more"]:
+        expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
+
+
+    def check_filter_result_count(filter_name, expected_count):
+        # get the next element along from the text
+        results = not_logged_in_page.get_by_role("link", name=filter_name).locator(
+            'xpath=/following-sibling::*', has_text=f"{expected_count}")
+        expect(results).to_be_visible()
+
+
+    filters = [("Fenderson Press", 14),
+               ("Conference or Workshop Item", 50),
+               ("Smith and Sons", 14),
+               ("Husbandry Times", 8),
+               ("2018", 17)
+               ]
+    for filter in filters:
+        #get the next element along from the text and check there are the expected number of results
+        check_filter_result_count(*filter)
+
+    not_logged_in_page.get_by_role("link", name="Show 5 more...").click()
+    check_filter_result_count("International Journal of Evolutionary Ideas", 2)
+
+
+    # TODO create issue to fix this. It appears the buttons are visible and (to playwright) stable before the javascript onclick handler has been attached.
+    # therefore a crude sleep after page load is enough for clicking the filters to trigger the js (which reloads the page and requires another sleep)
+    time.sleep(1)
+    not_logged_in_page.get_by_role("checkbox", name="2018").click()
+    html = not_logged_in_page.get_by_role("checkbox", name="2020").inner_html()
+    print(f"button html:{html}")
+    time.sleep(1)
+    not_logged_in_page.get_by_role("checkbox", name="2020").click()
+
+    expect(not_logged_in_page.get_by_text("30 results", exact=True).first).to_be_visible(timeout=10000)
