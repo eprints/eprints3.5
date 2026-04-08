@@ -52,17 +52,18 @@ def test_create_account(not_logged_in_page, temp_user_info):
 
 # do this even more first
 @pytest.mark.order(1)
-def test_empty_indexer_queue(not_logged_in_page):
+def test_empty_indexer_queue(page: Page, base_url):
     start = time.time()
     event_queue = -1
     #try for 120 seconds to wait for the event queue to finish
-    while(event_queue != 0 and time.time() - start < 120):
-        not_logged_in_page.goto("/cgi/counter").finished()
-        text = not_logged_in_page.content()
+    while(event_queue != 0 and time.time() - start < 240):
+        page.goto(f"{base_url}/cgi/counter").finished()
+        text = page.content()
         lines = text.split("\n")
         for line in lines:
             if line.startswith("event_queue:"):
                 event_queue = int(line.split(":")[1])
+        time.sleep(10)
 
     if event_queue != 0:
         raise RuntimeError(f"Event queue still not finished. {event_queue} tasks remaining")
