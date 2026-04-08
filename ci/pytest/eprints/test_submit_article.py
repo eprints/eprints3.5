@@ -1,5 +1,6 @@
 import re
 import time
+import pytest
 
 from playwright.sync_api import Page, expect
 
@@ -69,7 +70,7 @@ def test_submit_article(logged_in_page, random_eprint):
     dates_section = page.locator("css=.ep_form_field_input").filter(has_text="Dates")
     dates_section.locator(page.get_by_role("textbox", name="Year")).fill(f"{random_eprint.date.year}")
     dates_section.locator(page.get_by_label("Month:")).select_option(f"{random_eprint.date.month:02}")
-    dates_section.locator(page.get_by_label("Day:")).select_option(f"{random_eprint.date.day}")
+    dates_section.locator(page.get_by_label("Day:")).select_option(f"{random_eprint.date.day:02}")
     dates_section.locator(page.get_by_label("Event")).select_option(label='Published')
 
 
