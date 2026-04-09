@@ -6,7 +6,8 @@ from playwright.sync_api import Page, expect
 
 from eprints.utils import add_to_table
 
-
+#put last as it will alter data expected by the very prescriptive test_pages tests
+@pytest.mark.order(-1)
 def test_submit_article(logged_in_page, random_eprint):
 
     page = logged_in_page
