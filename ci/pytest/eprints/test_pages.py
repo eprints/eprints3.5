@@ -106,9 +106,6 @@ def test_simple_search(not_logged_in_page):
         #get the next element along from the text and check there are the expected number of results
         check_filter_result_count(*filter)
 
-    # TODO create issue to fix this. It appears the buttons are visible and (to playwright) stable before the javascript onclick handler has been attached.
-    # therefore a crude sleep after page load is enough for clicking the filters to trigger the js (which reloads the page and requires another sleep)
-    # time.sleep(1)
     not_logged_in_page.get_by_role("button", name="Show 5 more").click()
     check_filter_result_count("International Journal of Evolutionary Ideas", 2)
 
@@ -116,10 +113,6 @@ def test_simple_search(not_logged_in_page):
 
     not_logged_in_page.get_by_role("checkbox", name="2018").click()
     expect(not_logged_in_page.get_by_text("17 results", exact=True).first).to_be_visible()
-    # html = not_logged_in_page.get_by_role("checkbox", name="2020").inner_html()
-    # print(f"button html:{html}")
-    #previous button reloaded page, so need to wait for js to be attached
-    # time.sleep(1)
     not_logged_in_page.get_by_role("checkbox", name="2020").click()
 
     expect(not_logged_in_page.locator("css=.ep_search_result").first).to_contain_text("Mandarin Ducks in Myth and Legend")
