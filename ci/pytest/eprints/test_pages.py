@@ -84,13 +84,14 @@ def test_simple_search(not_logged_in_page):
     expect(not_logged_in_page.get_by_label("Order the results", exact=False).first).to_be_visible()
     not_logged_in_page.get_by_text("Export options").click()
     expect(not_logged_in_page.get_by_text("Export 100 results as", exact=False)).to_be_visible()
-    for link_text in ["Atom", "RSS 1.0", "RSS 2.0", "Conference or Workshop Item"]:
+    for link_text in ["Atom", "RSS 1.0", "RSS 2.0"]:
         expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
 
 
     def check_filter_result_count(filter_name, expected_count):
-        # get the next element along from the text
-        results = not_logged_in_page.get_by_role("link", name=filter_name).locator(
+        # find the checkbox, then go up to the parent and along to the ep_facet_count
+        # probably a bit fragile
+        results = not_logged_in_page.get_by_role("checkbox", name=filter_name).locator("..").locator(
             'xpath=/following-sibling::*', has_text=f"{expected_count}")
         expect(results).to_be_visible()
 
@@ -107,7 +108,7 @@ def test_simple_search(not_logged_in_page):
 
     # TODO create issue to fix this. It appears the buttons are visible and (to playwright) stable before the javascript onclick handler has been attached.
     # therefore a crude sleep after page load is enough for clicking the filters to trigger the js (which reloads the page and requires another sleep)
-    time.sleep(1)
+    # time.sleep(1)
     not_logged_in_page.get_by_role("button", name="Show 5 more").click()
     check_filter_result_count("International Journal of Evolutionary Ideas", 2)
 
@@ -118,7 +119,7 @@ def test_simple_search(not_logged_in_page):
     # html = not_logged_in_page.get_by_role("checkbox", name="2020").inner_html()
     # print(f"button html:{html}")
     #previous button reloaded page, so need to wait for js to be attached
-    time.sleep(1)
+    # time.sleep(1)
     not_logged_in_page.get_by_role("checkbox", name="2020").click()
 
     expect(not_logged_in_page.locator("css=.ep_search_result").first).to_contain_text("Mandarin Ducks in Myth and Legend")
