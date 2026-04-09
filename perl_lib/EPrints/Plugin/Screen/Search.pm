@@ -887,8 +887,9 @@ sub render_facet_list
 				"type" => "checkbox",
 				"checked" => $current_values{$result->{value}} );
 
-			# my $label = $session->make_element( "span", "class" => "ep_facet_label" );
-			my $label = $session->make_element( "a", "class" => "ep_facet_label", "href" => "#" );
+			my $label = $session->make_element( "label", "class" => "ep_facet_label" );
+			
+			$label->appendChild( $checkbox );
 
 			my $label_content;
 			my $field_type = $field->type;
@@ -912,7 +913,7 @@ sub render_facet_list
 			my $count = $session->make_element( "span", "class" => "ep_facet_count" );
 			$count->appendChild( $session->make_text( $result->{count} ) );
 
-			$entry->appendChild( $checkbox );
+			
 			$entry->appendChild( $label );
 			$entry->appendChild( $count );
 
