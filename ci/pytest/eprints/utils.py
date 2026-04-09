@@ -25,3 +25,11 @@ def login(page, username, password):
     page.get_by_role("textbox", name="Username:").fill(username)
     page.get_by_role("textbox", name="Password:").fill(password)
     page.get_by_role("button", name="Login").click()
+
+
+def select_locator(page, label, **kwargs):
+    '''
+    find the <select> element with label text
+    for reasons I've yet to determine, get_by_label("option",...) doesn't work
+    '''
+    return page.get_by_label(label, **kwargs).and_(page.locator("xpath=//select"))

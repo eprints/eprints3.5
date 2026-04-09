@@ -4,7 +4,7 @@ from playwright.sync_api import Page, expect
 import re
 import pytest
 
-from eprints.utils import login
+from eprints.utils import login, select_locator
 
 
 @pytest.mark.parametrize("link_name,expected_texts", [
@@ -68,7 +68,12 @@ def test_empty_indexer_queue(page: Page, base_url):
     if event_queue != 0:
         raise RuntimeError(f"Event queue still not finished. {event_queue} tasks remaining")
 
-
+def check_search_filter_result_count(page, filter_name, expected_count):
+    # find the checkbox, then go up to the parent and along to the ep_facet_count
+    # probably a bit fragile
+    results = page.get_by_role("checkbox", name=filter_name).locator("..").locator(
+        'xpath=/following-sibling::*', has_text=f"{expected_count}")
+    expect(results).to_be_visible()
 
 
 #do this first as it expects nothing but the precanned test data to be present
@@ -88,12 +93,7 @@ def test_simple_search(not_logged_in_page):
         expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
 
 
-    def check_filter_result_count(filter_name, expected_count):
-        # find the checkbox, then go up to the parent and along to the ep_facet_count
-        # probably a bit fragile
-        results = not_logged_in_page.get_by_role("checkbox", name=filter_name).locator("..").locator(
-            'xpath=/following-sibling::*', has_text=f"{expected_count}")
-        expect(results).to_be_visible()
+
 
 
     filters = [("Fenderson Press", 14),
@@ -104,10 +104,10 @@ def test_simple_search(not_logged_in_page):
                ]
     for filter in filters:
         #get the next element along from the text and check there are the expected number of results
-        check_filter_result_count(*filter)
+        check_search_filter_result_count(not_logged_in_page, *filter)
 
     not_logged_in_page.get_by_role("button", name="Show 5 more").click()
-    check_filter_result_count("International Journal of Evolutionary Ideas", 2)
+    check_search_filter_result_count(not_logged_in_page,"International Journal of Evolutionary Ideas", 2)
 
 
 
@@ -134,3 +134,69 @@ def test_simple_search(not_logged_in_page):
     not_logged_in_page.get_by_role("checkbox", name="Conference or Workshop Item").click()
 
     expect(not_logged_in_page.get_by_text("9 results", exact=True).first).to_be_visible()
+
+#do this firstish as it expects nothing but the precanned test data to be present
+@pytest.mark.order(3)
+def test_advanced_search(not_logged_in_page):
+    # should be a hidden text for the magnifiying glass button
+    not_logged_in_page.get_by_role("link", name="Advanced Search").click()
+
+    #check the h1 is "Advanced Search"
+    # expect(not_logged_in_page.locator("css=h1").filter(has=not_logged_in_page.get_by_text("Advanced Search"))).to_be_visible()
+    expect(not_logged_in_page.get_by_role("heading", name="Advanced Search")).to_be_visible()
+    #link back to simple search
+    expect(not_logged_in_page.get_by_role("link", name="simple search")).to_be_visible()
+
+    expect(not_logged_in_page.get_by_role("button", name="Reset the form").first).to_be_visible()
+    #
+    # for link_text in ["Atom", "RSS 1.0", "RSS 2.0"]:
+    #     expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
+
+    #check drop downs are present:
+    for text in ["Documents", "Title", "Creators", "Abstract", "Uncontrolled Keywords", "Journal or Publication Title", "Refereed", "Retrieved records must fulfill", "Order the results"]:
+
+        expect(select_locator(not_logged_in_page, text, exact=True)).to_be_visible()
+
+    not_logged_in_page.get_by_role("textbox", name="Title", exact=True).type("frog")
+
+    #can't click the first one as that's the simple search!
+    not_logged_in_page.get_by_role("button", name="Search", exact=True).nth(1).click()
+    # time.sleep(10)
+
+    expect(not_logged_in_page.get_by_text("8 results", exact=True).first).to_be_visible()
+
+    filters = [("Article", 8),
+               ("Published", 8),
+               ("Elseware Publishing", 4),
+               ("Fine Animal Breeding", 2),
+               ("2017", 2)
+               ]
+    for filter in filters:
+        # get the next element along from the text and check there are the expected number of results
+        check_search_filter_result_count(not_logged_in_page, *filter)
+    # check_search_filter_result_count(not_logged_in_page, "Article", 8)
+
+    expect(not_logged_in_page.get_by_role("button", name="Reorder").first).to_be_visible()
+
+    not_logged_in_page.get_by_text("Export options").click()
+
+    for link_text in ["Atom", "RSS 1.0", "RSS 2.0"]:
+        expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
+
+    not_logged_in_page.get_by_role("checkbox", name="Elseware Publishing").click()
+
+    expect(not_logged_in_page.get_by_text("4 results", exact=True).first).to_be_visible()
+
+    expect(not_logged_in_page.locator("css=.ep_search_result").nth(1)).to_contain_text(
+        "Dusky Tree Frogs in the Wild")
+    expect(not_logged_in_page.locator("css=.ep_search_result").nth(2)).to_contain_text("Giant Waxing Monkey Tree Frogs in the Wild")
+
+    #varying slightly from old selenium tests because I can't reproduce them or figure out exactly which filter they were choosing
+    not_logged_in_page.get_by_role("checkbox", name="Husbandry Times").click()
+    expect(not_logged_in_page.get_by_text("2 results", exact=True).first).to_be_visible()
+
+    expect(not_logged_in_page.locator("css=.ep_search_result").nth(0)).to_contain_text(
+        "Blue Poison Arrow Frogs in the Wild")
+    expect(not_logged_in_page.locator("css=.ep_search_result").nth(1)).to_contain_text(
+        "Habits of the Yellow and Black Poison Arrow Frogs")
+
