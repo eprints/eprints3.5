@@ -84,7 +84,7 @@ def test_simple_search(not_logged_in_page):
     expect(not_logged_in_page.get_by_label("Order the results", exact=False).first).to_be_visible()
     not_logged_in_page.get_by_text("Export options").click()
     expect(not_logged_in_page.get_by_text("Export 100 results as", exact=False)).to_be_visible()
-    for link_text in ["Atom", "RSS 1.0", "RSS 2.0", "Conference or Workshop Item", "Show 5 more"]:
+    for link_text in ["Atom", "RSS 1.0", "RSS 2.0", "Conference or Workshop Item"]:
         expect(not_logged_in_page.get_by_role("link", name=link_text, exact=False)).to_be_visible()
 
 
@@ -105,17 +105,38 @@ def test_simple_search(not_logged_in_page):
         #get the next element along from the text and check there are the expected number of results
         check_filter_result_count(*filter)
 
-    not_logged_in_page.get_by_role("link", name="Show 5 more...").click()
-    check_filter_result_count("International Journal of Evolutionary Ideas", 2)
-
-
     # TODO create issue to fix this. It appears the buttons are visible and (to playwright) stable before the javascript onclick handler has been attached.
     # therefore a crude sleep after page load is enough for clicking the filters to trigger the js (which reloads the page and requires another sleep)
     time.sleep(1)
+    not_logged_in_page.get_by_role("button", name="Show 5 more").click()
+    check_filter_result_count("International Journal of Evolutionary Ideas", 2)
+
+
+
     not_logged_in_page.get_by_role("checkbox", name="2018").click()
-    html = not_logged_in_page.get_by_role("checkbox", name="2020").inner_html()
-    print(f"button html:{html}")
+    expect(not_logged_in_page.get_by_text("17 results", exact=True).first).to_be_visible()
+    # html = not_logged_in_page.get_by_role("checkbox", name="2020").inner_html()
+    # print(f"button html:{html}")
+    #previous button reloaded page, so need to wait for js to be attached
     time.sleep(1)
     not_logged_in_page.get_by_role("checkbox", name="2020").click()
 
-    expect(not_logged_in_page.get_by_text("30 results", exact=True).first).to_be_visible(timeout=10000)
+    expect(not_logged_in_page.locator("css=.ep_search_result").first).to_contain_text("Mandarin Ducks in Myth and Legend")
+    expect(not_logged_in_page.locator("css=.ep_search_result").first).to_contain_text(
+        "(2020)")
+
+    expect(not_logged_in_page.get_by_text("30 results", exact=True).first).to_be_visible()
+
+    not_logged_in_page.get_by_label("Order the results").first.select_option(label="by title")
+    not_logged_in_page.get_by_role("button", name="Reorder").first.click()
+    #expect the top result to be the duck
+    expect(not_logged_in_page.locator("css=.ep_search_result").first).to_contain_text("Black-billed Whistling Duck")
+
+    #untick 2018
+    not_logged_in_page.get_by_role("checkbox", name="2018").click()
+
+    expect(not_logged_in_page.get_by_text("13 results", exact=True).first).to_be_visible()
+
+    not_logged_in_page.get_by_role("checkbox", name="Conference or Workshop Item").click()
+
+    expect(not_logged_in_page.get_by_text("9 results", exact=True).first).to_be_visible()
