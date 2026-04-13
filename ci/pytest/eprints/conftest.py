@@ -50,7 +50,11 @@ def logged_in_page(base_url, page: Page, credentials):
 def not_logged_in_page(base_url, page: Page):
     page.goto(f"{base_url}")
     return page
-
+@pytest.fixture
+def test_admin_user_info():
+    return {"title": "Mr",
+    "name_given": "Fred",
+    "name_family": "Blogs"}
 
 # @pytest.fixture
 # def random_title():

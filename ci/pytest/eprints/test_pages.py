@@ -284,23 +284,23 @@ def test_browse_page_authors(not_logged_in_page):
     assert len(unseen_authors) == 0
 
 
-def test_manage_profile_page(logged_in_page):
+def test_manage_profile_page(logged_in_page, test_admin_user_info):
 
-    title = "Mr"
-    given_name = "Fred"
-    family_name = "Blogs"
+    # title = "Mr"
+    # name_given = "Fred"
+    # name_family = "Blogs"
 
     logged_in_page.get_by_role("link", name="Profile").click()
     logged_in_page.get_by_role("button", name="Edit").first.click()
     logged_in_page.get_by_role("button", name="Next").first.click()
 
-    logged_in_page.get_by_role("textbox", name="Title").fill(title)
-    logged_in_page.get_by_role("textbox", name="Given Name / Initials").fill(given_name)
-    logged_in_page.get_by_role("textbox", name="Family Name").fill(family_name)
+    logged_in_page.get_by_role("textbox", name="Title").fill(test_admin_user_info["title"])
+    logged_in_page.get_by_role("textbox", name="Given Name / Initials").fill(test_admin_user_info["name_given"])
+    logged_in_page.get_by_role("textbox", name="Family Name").fill(test_admin_user_info["name_family"])
 
     logged_in_page.get_by_role("button", name="Save and Return").first.click()
 
-    expect(logged_in_page.get_by_text(f"{title} {given_name} {family_name}", exact=True).first).to_be_visible()
+    expect(logged_in_page.get_by_text(f"{test_admin_user_info['title']} {test_admin_user_info['name_given']} {test_admin_user_info['name_family']}", exact=True).first).to_be_visible()
 
     logged_in_page.get_by_role("link", name="Logout").click()
 
@@ -377,3 +377,38 @@ def test_admin_search_items_page(logged_in_page):
     expect(logged_in_page.get_by_role("heading", name="View Item: Observations on the Green Vine Snake")).to_be_visible()
 
     logged_in_page.get_by_role("link", name="Logout").click()
+
+@pytest.mark.order(after="test_manage_profile_page")
+def test_admin_search_users_page(logged_in_page, test_admin_user_info, temp_user_info):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name="Search users").click()
+
+    logged_in_page.get_by_role("checkbox", name="User").check()
+    logged_in_page.get_by_role("checkbox", name="Repository Administrator").check()
+
+    logged_in_page.get_by_role("button", name="Search").first.click()
+
+    def check_user(user_info, position):
+
+        expect(logged_in_page.get_by_text(f"{position}.	{user_info['title']} {user_info['name_given']} {user_info['name_family']}"))
+
+    check_user(test_admin_user_info, 1)
+    check_user(temp_user_info, 2)
+
+    logged_in_page.get_by_label("Order the results").first.select_option(label="By registration date (newest first)")
+    logged_in_page.get_by_role("button", name="Reorder").first.click()
+
+    check_user(test_admin_user_info, 2)
+    check_user(temp_user_info, 1)
+
+    logged_in_page.get_by_role("link", name="Refine search").first.click()
+
+
+    logged_in_page.get_by_role("textbox", name="Username").fill("admin")
+    logged_in_page.get_by_role("button", name="Search").first.click()
+
+    expect(logged_in_page.get_by_text("Displaying results 1 to 1 of 1").first).to_be_visible()
+
+    logged_in_page.get_by_role("link", name="Logout").click()
+
+
