@@ -16,9 +16,10 @@ echo `pwd`
 export WORKSPACE=`pwd`
 
 
-#supplying CREDS_FILE on command line to pytest results in jenkins doing very weird things to the environment and pytest being unable to find its tests.
+#supplying CREDS_FILE (a jenkins secret file) on command line to pytest results in jenkins doing very weird things to the environment and pytest being unable to find its tests.
+#I assume as a result of whatever jenkins does to prevent secrets ending up in the log
 cp $CREDS_FILE credentials.json
 
-pytest --url https://testnode-1.eprints-hosting.org/  --junitxml=results.xml
+pytest --url https://testnode-1.eprints-hosting.org/  --junitxml=results.xml -s
 
 rm credentials.json
