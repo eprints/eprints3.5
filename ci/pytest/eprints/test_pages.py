@@ -5,7 +5,7 @@ import re
 import pytest
 
 from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
-    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data
+    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data
 
 
 @pytest.mark.parametrize("link_name,expected_texts", [
@@ -216,10 +216,11 @@ def test_advanced_search(not_logged_in_page):
 
 @pytest.mark.parametrize("category_name,expected_totals,total_text", [
     ("Year", get_counts_from_titles_per_key(get_titles_for_year_from_test_data()), "Number of items"),
-    ("Subject", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data()), "Number of items at this level")
+    ("Subject", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data()), "Number of items at this level"),
+    # ("Division", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data(division=True)), "Number of items at this level")
 ])
 #was hoping to make this more generic, haven't succeeded
-def test_browse_page_generic(not_logged_in_page, category_name, expected_totals, total_text):
+def test_browse_page_generic(not_logged_in_page, category_name, expected_totals, total_text, scope):
     '''
     for year, subject and division they're all the same structure with different text. Author is different because it doesn't list them all on the top level page
     :param not_logged_in_page:
@@ -229,14 +230,67 @@ def test_browse_page_generic(not_logged_in_page, category_name, expected_totals,
     '''
     # category_name = "Year"
     # expected_totals = get_counts_from_titles_per_key(get_titles_for_year_from_test_data())
-    def get_to_top_level_browse():
-        not_logged_in_page.get_by_role("menuitem", name="Browse").hover()
-        not_logged_in_page.get_by_role("menuitem", name=f"Browse by {category_name}").click()
+    first_time=True
+    url = "/view/"
 
-    for info in expected_totals:
+    def get_to_top_level_browse():
+        #using the mouse is a tiny bit unreliable - I assume because js hooks haven't been registered? not entirely sure.
+        nonlocal first_time
+        nonlocal  url
+        if first_time:
+            time.sleep(1)
+            not_logged_in_page.get_by_role("menuitem", name="Browse").hover()
+            not_logged_in_page.get_by_role("menuitem", name=f"Browse by {category_name}").click()
+            url = not_logged_in_page.url
+            first_time = False
+        else:
+            not_logged_in_page.goto(url)
+    keys = [key for key in expected_totals]
+    if scope != "full" and len(keys) > 20:
+        #reduce quantity, no need for test to take an age
+        keys = [key for i,key in enumerate(keys) if i%3==0]
+
+    for info in keys:
         get_to_top_level_browse()
         #eg info = 2023 and expected_totals[info] = 8
         not_logged_in_page.get_by_role("link", name=info, exact=True).click()
         print(f"Expecting {expected_totals[info]} for {info}")
         expect(not_logged_in_page.get_by_text(f"{total_text}: {expected_totals[info]}")).to_be_visible()
+
+def test_browse_page_divisions(not_logged_in_page):
+    #test data only has one eprint with a division, so just go there manually for now
+    not_logged_in_page.goto("/view/divisions/sch=5Fmat/2016.html")
+    expect(not_logged_in_page.get_by_text("Number of items: 1.")).to_be_visible()
+
+def test_browse_page_authors(not_logged_in_page):
+    titles_by_author = get_titles_for_authors_from_test_data()
+    not_logged_in_page.get_by_role("menuitem", name="Browse").hover()
+    not_logged_in_page.get_by_role("menuitem", name=f"Browse by Author").click()
+
+    expected_texts = []
+    for author in titles_by_author:
+        expected_texts.append(f"{author} ({len(titles_by_author[author])})")
+    seen_texts = []
+
+    not_logged_in_page.wait_for_load_state()
+
+    links = not_logged_in_page.locator("xpath=//*[@class=\"ep_toolbox_content\"]//a")
+
+    def check_for_texts():
+        nonlocal seen_texts
+        for text in expected_texts:
+            if not_logged_in_page.get_by_text(text, exact=True).is_visible():
+                seen_texts.append(text)
+    #we start on A
+    check_for_texts()
+    #loop round all the alphabetical links and check we see all the authors we expect
+    for i in range(links.count()):
+        print(f"Navigating to View Authors {links.nth(i).inner_html()}")
+        links.nth(i).click()
+        not_logged_in_page.wait_for_load_state()
+        check_for_texts()
+
+    unseen_authors = [text for text in expected_texts if text not in seen_texts]
+    assert len(unseen_authors) == 0
+
 

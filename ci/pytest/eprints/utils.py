@@ -86,21 +86,53 @@ def get_counts_from_titles_per_key(titles_for_thing):
         counts[key] = len(titles_for_thing[key])
     return counts
 
-def get_titles_for_subject_from_test_data():
+def get_titles_for_authors_from_test_data():
+    root = get_test_data_xml()
+    author_info = {}
+    for eprint in root.iter("eprint"):
+        names = []
+        title = eprint.find("title").text
+        contributions_element = eprint.find("contributions")
+        for contributor in contributions_element.iter("contributor"):
+            if contributor.find("datasetid").text == "person":
+                #some have trailing spaces
+                name = contributor.find("name").text.strip()
+                #some end in a comma which eprints ignores
+                if name.endswith(","):
+                    name = name[:-1]
+                names.append(name)
+
+        for name in names:
+            if name in author_info:
+                author_info[name].append(title)
+            else:
+                author_info[name] = [title]
+    return author_info
+
+def get_titles_for_subject_from_test_data(division=False):
     root = get_test_data_xml()
 
     subject_tree = SubjectsAndDivisionsTree()
 
+    tree_title = "subjects"
+    if division:
+        tree_title = "divisions"
+
     subject_info = {}
     for eprint in root.iter("eprint"):
 
-        subjects_element = eprint.find("subjects")
+        subjects_element = eprint.find(tree_title)
+        if subjects_element is None:
+            continue
         subjects = [element.text for element in subjects_element]
         title = eprint.find("title").text
         for subject in subjects:
             # subject_title = subject
             try:
-                subject_title = subject_tree.subjects[subject]["title"]
+                if division:
+                    subject_title = subject_tree.divisions[subject]["title"]
+                else:
+                    subject_title = subject_tree.subjects[subject]["title"]
             except:
                 #this subject isn't in the tree. Skip it as it won't appear in the browse page either
                 continue
@@ -153,4 +185,5 @@ if __name__ == "__main__":
     # get_titles_for_year_from_test_data()
     # get_things_from_xml()
     # print(get_titles_for_subject_from_test_data())
-    print(get_titles_for_subject_from_test_data())
+    # print(get_titles_for_subject_from_test_data())
+    print(get_titles_for_authors_from_test_data())
