@@ -284,7 +284,7 @@ def test_browse_page_authors(not_logged_in_page):
     assert len(unseen_authors) == 0
 
 
-def test_profile_page(logged_in_page):
+def test_manage_profile_page(logged_in_page):
 
     title = "Mr"
     given_name = "Fred"
@@ -304,3 +304,24 @@ def test_profile_page(logged_in_page):
 
     logged_in_page.get_by_role("link", name="Logout").click()
 
+def test_admin_pages(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+
+
+    def button_present(text):
+        expect(logged_in_page.get_by_role("button", name=text)).to_be_visible()
+
+    for button_text in ["Search items", "Search issues", "Search users", "Search people", "Search organisations", "Search history"]:
+        button_present(button_text)
+
+    logged_in_page.get_by_text("System Tools").click()
+
+    for button_text in ["Status", "Create user", "Create person", "Create organisation", "Force Start Indexer", "Stop Indexer", "Regenerate Abstracts", "Regenerate Entities", "Regenerate Citations", "Regenerate Views", "Send Test Email", "Database Schema"]:
+        button_present(button_text)
+
+    logged_in_page.get_by_text("Config. Tools").click()
+
+    for button_text in ["Storage Manager", "Update Database", "Reload Configuration", "View Configuration", "Phrase Editor", "Template Tests", "Create a Page", "Edit subject", "Manage Metadata Fields"]:
+        button_present(button_text)
+
+    logged_in_page.get_by_role("link", name="Logout").click()
