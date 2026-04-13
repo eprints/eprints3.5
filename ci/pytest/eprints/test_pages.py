@@ -6,7 +6,9 @@ import pytest
 
 from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
     get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data
-
+'''
+These are intended to replace the "simple" selenium tests. Where possible they are based on the test data and are parameterised
+'''
 
 @pytest.mark.parametrize("link_name,expected_texts", [
     ("About", ["About the Repository"]),
@@ -50,8 +52,15 @@ def test_create_account(not_logged_in_page, temp_user_info):
     expect(not_logged_in_page.get_by_text(f"A user with the email address {temp_user_info['email']} already exists.", exact=False)).to_be_visible()
 
     # login(not_logged_in_page, temp_user_info["username"], temp_user_info["password"])
-
+@pytest.mark.order(0)
 def test_empty_indexer_queue(page: Page, base_url):
+    '''
+    "test" that waits for the indexer to have finished. Useful to check there isn't anything in the indexer that's broken
+    and that the data import has completely finished before the other tests launch
+    :param page:
+    :param base_url:
+    :return:
+    '''
     start = time.time()
     event_queue = -1
     #try for 120 seconds to wait for the event queue to finish
@@ -195,31 +204,12 @@ def test_advanced_search(not_logged_in_page):
     expect(not_logged_in_page.locator("css=.ep_search_result").nth(1)).to_contain_text(
         "Habits of the Yellow and Black Poison Arrow Frogs")
 
-# browse_years_results = {
-#     "2023": "8",
-#     "2022": "16",
-#     "2021": "7",
-#     "2020": "13",
-#     "2019": "10",
-#     "2018": "17",
-#     "2017": "13",
-#     "2016": "16",
-#     "1998": "1"
-# }
-
-# def test_browse_year(not_logged_in_page):
-#     not_logged_in_page.get_by_role("menuitem", name="Browse").hover()
-#     not_logged_in_page.get_by_role("menuitem", name="Browse by Year").click()
-#
-#     for year in browse_years_results.keys():
-#         expect(not_logged_in_page.get_by_text(f"{year} ({browse_years_results[year]})")).to_be_visible()
-
 @pytest.mark.parametrize("category_name,expected_totals,total_text", [
     ("Year", get_counts_from_titles_per_key(get_titles_for_year_from_test_data()), "Number of items"),
     ("Subject", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data()), "Number of items at this level"),
     # ("Division", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data(division=True)), "Number of items at this level")
 ])
-#was hoping to make this more generic, haven't succeeded
+#was hoping to make this more generic, only partially succeeded for year and subject
 def test_browse_page_generic(not_logged_in_page, category_name, expected_totals, total_text, scope):
     '''
     for year, subject and division they're all the same structure with different text. Author is different because it doesn't list them all on the top level page
@@ -293,4 +283,24 @@ def test_browse_page_authors(not_logged_in_page):
     unseen_authors = [text for text in expected_texts if text not in seen_texts]
     assert len(unseen_authors) == 0
 
+
+def test_profile_page(logged_in_page):
+
+    title = "Mr"
+    given_name = "Fred"
+    family_name = "Blogs"
+
+    logged_in_page.get_by_role("link", name="Profile").click()
+    logged_in_page.get_by_role("button", name="Edit").first.click()
+    logged_in_page.get_by_role("button", name="Next").first.click()
+
+    logged_in_page.get_by_role("textbox", name="Title").fill(title)
+    logged_in_page.get_by_role("textbox", name="Given Name / Initials").fill(given_name)
+    logged_in_page.get_by_role("textbox", name="Family Name").fill(family_name)
+
+    logged_in_page.get_by_role("button", name="Save and Return").first.click()
+
+    expect(logged_in_page.get_by_text(f"{title} {given_name} {family_name}", exact=True).first).to_be_visible()
+
+    logged_in_page.get_by_role("link", name="Logout").click()
 
