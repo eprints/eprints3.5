@@ -325,3 +325,55 @@ def test_admin_pages(logged_in_page):
         button_present(button_text)
 
     logged_in_page.get_by_role("link", name="Logout").click()
+
+
+def test_admin_search_issues_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name ="Search issues").click()
+    logged_in_page.get_by_role("button", name="Search").first.click()
+    expect(logged_in_page.get_by_text("Search has no matches.")).to_be_visible()
+
+    logged_in_page.get_by_role("link", name="Logout").click()
+
+
+def test_admin_search_items_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name ="Search items").click()
+
+    logged_in_page.get_by_role("textbox", name="Title", exact=True).fill("monkey")
+
+    logged_in_page.get_by_role("button", name="Search").first.click()
+
+    expect(logged_in_page.get_by_text("1.	McInerny, Γαία (2018) Giant Waxing Monkey Tree Frogs in the Wild. Natural World Journal (NWJ), 4 (19). pp. 145-191.")).to_be_visible()
+    expect(logged_in_page.get_by_text("2.	Joergensen, M. and Notley, V. and Beda, J. (2017) Waxing Monkey Frogs in the Wild. Fine Animal Breeding, 9 (17). pp. 117-163.")).to_be_visible()
+
+    select_locator(logged_in_page, "Order the results").first.select_option(label="by year (oldest first)")
+    logged_in_page.get_by_role("button", name="Reorder").first.click()
+
+    expect(logged_in_page.get_by_text(
+        "2.	McInerny, Γαία (2018) Giant Waxing Monkey Tree Frogs in the Wild. Natural World Journal (NWJ), 4 (19). pp. 145-191.")).to_be_visible()
+    expect(logged_in_page.get_by_text(
+        "1.	Joergensen, M. and Notley, V. and Beda, J. (2017) Waxing Monkey Frogs in the Wild. Fine Animal Breeding, 9 (17). pp. 117-163.")).to_be_visible()
+
+
+    logged_in_page.get_by_role("link", name="Refine search").first.click()
+    title_box = logged_in_page.get_by_role("textbox", name="Title", exact=True)
+    title_box.clear()
+    title_box.fill("snake")
+
+    logged_in_page.get_by_role("button", name="Search").first.click()
+
+    expect(logged_in_page.get_by_text(
+        "2.	Tachizaki, H. and Aφροδίτη, S. and Ciavola, C. and Leir, Γαία (2019) Observations on the Green Vine Snake. Fine Animal Breeding, 6 (20). pp. 35-66.")).to_be_visible()
+    expect(logged_in_page.get_by_text(
+        "1.	Paulitsch, R. and Tachizaki, F. and Calafat, E. (2018) Mating rituals of the Indigo Snake. Chinese Gamekeeping Journal, 5 (9). pp. 196-237.")).to_be_visible()
+
+    logged_in_page.get_by_text("Export options").click()
+
+    select_locator(logged_in_page, "Export 2 results as ").select_option(label="EP3 XML with Files Embedded")
+
+    logged_in_page.get_by_role("link", name="Observations on the Green Vine Snake.").click()
+
+    expect(logged_in_page.get_by_role("heading", name="View Item: Observations on the Green Vine Snake")).to_be_visible()
+
+    logged_in_page.get_by_role("link", name="Logout").click()
