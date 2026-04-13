@@ -4,7 +4,8 @@ from playwright.sync_api import Page, expect
 import re
 import pytest
 
-from eprints.utils import login, select_locator, get_expected_years_from_test_data
+from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
+    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data
 
 
 @pytest.mark.parametrize("link_name,expected_texts", [
@@ -213,11 +214,12 @@ def test_advanced_search(not_logged_in_page):
 #     for year in browse_years_results.keys():
 #         expect(not_logged_in_page.get_by_text(f"{year} ({browse_years_results[year]})")).to_be_visible()
 
-@pytest.mark.parametrize("category_name,expected_totals", [
-    ("Year", get_expected_years_from_test_data()),
-    # ("Subject", {})
+@pytest.mark.parametrize("category_name,expected_totals,total_text", [
+    ("Year", get_counts_from_titles_per_key(get_titles_for_year_from_test_data()), "Number of items"),
+    ("Subject", get_counts_from_titles_per_key(get_titles_for_subject_from_test_data()), "Number of items at this level")
 ])
-def test_browse_page_generic(not_logged_in_page, category_name, expected_totals):
+#was hoping to make this more generic, haven't succeeded
+def test_browse_page_generic(not_logged_in_page, category_name, expected_totals, total_text):
     '''
     for year, subject and division they're all the same structure with different text. Author is different because it doesn't list them all on the top level page
     :param not_logged_in_page:
@@ -225,6 +227,8 @@ def test_browse_page_generic(not_logged_in_page, category_name, expected_totals)
     :param category_name:  dict of title and number of results, eg {"2023": "8",...}
     :return:
     '''
+    # category_name = "Year"
+    # expected_totals = get_counts_from_titles_per_key(get_titles_for_year_from_test_data())
     def get_to_top_level_browse():
         not_logged_in_page.get_by_role("menuitem", name="Browse").hover()
         not_logged_in_page.get_by_role("menuitem", name=f"Browse by {category_name}").click()
@@ -232,6 +236,7 @@ def test_browse_page_generic(not_logged_in_page, category_name, expected_totals)
     for info in expected_totals:
         get_to_top_level_browse()
         #eg info = 2023 and expected_totals[info] = 8
-        not_logged_in_page.get_by_role("link", name=info).click()
-        expect(not_logged_in_page.get_by_text(f"Number of items: {expected_totals[info]}")).to_be_visible()
+        not_logged_in_page.get_by_role("link", name=info, exact=True).click()
+        print(f"Expecting {expected_totals[info]} for {info}")
+        expect(not_logged_in_page.get_by_text(f"{total_text}: {expected_totals[info]}")).to_be_visible()
 
