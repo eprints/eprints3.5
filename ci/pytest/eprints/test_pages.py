@@ -412,3 +412,33 @@ def test_admin_search_users_page(logged_in_page, test_admin_user_info, temp_user
     logged_in_page.get_by_role("link", name="Logout").click()
 
 
+def test_admin_search_history_page(logged_in_page, test_admin_user_info, temp_user_info):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name="Search history").click()
+
+    logged_in_page.get_by_role("checkbox", name="Created").check()
+
+    logged_in_page.get_by_role("button", name="Search", exact=True).first.click()
+
+    expect(logged_in_page.get_by_role("heading", name="Action matches any of \"Created\"", exact=True)).to_be_visible()
+    expect(logged_in_page.get_by_text("Displaying results 1 to 10").first).to_be_visible()
+
+    logged_in_page.get_by_label("Order the results").first.select_option(label="Time (oldest first)")
+    logged_in_page.get_by_role("button", name="Reorder").first.click()
+    expect(logged_in_page.locator("css=.ep_history_item").first).to_contain_text("African Elephants in Τάρταρος (eprint 1 r1)")
+
+    logged_in_page.get_by_role("link", name="Refine search").first.click()
+
+    logged_in_page.get_by_role("textbox", name="Object ID").fill("100")
+    logged_in_page.get_by_role("checkbox", name="Created").uncheck()
+    logged_in_page.get_by_role("button", name="Search", exact=True).first.click()
+
+    expect(logged_in_page.get_by_role("heading", name="Object ID is 100", exact=True)).to_be_visible()
+
+    expect(logged_in_page.get_by_text("Yellow Spotted Amazon River Turtle (eprint 100 r1)", exact=True)).to_be_visible()
+
+    logged_in_page.get_by_text("Export options").click()
+    select_locator(logged_in_page, "Export 1 results as").select_option(label="Object IDs")
+    logged_in_page.get_by_role("button", name="Export", exact=True).click()
+
+    expect(logged_in_page.get_by_text("380", exact=True)).to_be_visible()
