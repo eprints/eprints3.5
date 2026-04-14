@@ -326,7 +326,10 @@ def test_admin_pages(logged_in_page):
 
     logged_in_page.get_by_role("link", name="Logout").click()
 
+'''
+I wonder if it was possible to abstract out and unify the admin search pages. They're all a bit different in subtle ways, but do the same job.
 
+'''
 def test_admin_search_issues_page(logged_in_page):
     logged_in_page.get_by_role("link", name="Admin", exact=True).click()
     logged_in_page.get_by_role("button", name ="Search issues").click()
@@ -442,3 +445,15 @@ def test_admin_search_history_page(logged_in_page, test_admin_user_info, temp_us
     logged_in_page.get_by_role("button", name="Export", exact=True).click()
 
     expect(logged_in_page.get_by_text("380", exact=True)).to_be_visible()
+
+def test_admin_search_people_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name ="Search people").click()
+
+    logged_in_page.get_by_role("textbox", name="All Names").fill("Beda")
+
+    logged_in_page.get_by_role("button", name="Search", exact=True).first.click()
+
+    expect(logged_in_page.get_by_text("Displaying results 1 to 9 of 9").first).to_be_visible()
+
+    expect(logged_in_page.get_by_text("1.	Beda, B.")).to_be_visible()
