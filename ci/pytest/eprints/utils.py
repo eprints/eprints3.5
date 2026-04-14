@@ -181,6 +181,20 @@ def get_things_from_xml():
     #     for tag in eprint.iter():
     #         if
     #         # print(tag.text)
+    
+    
+def fill_in_register_user(page, user_info_dict, include_username=True):
+    page.get_by_label("Title").fill(user_info_dict["title"])
+    page.get_by_label("Given Name / Initials").fill(user_info_dict["name_given"])
+    page.get_by_label("Family Name").fill(user_info_dict["name_family"])
+    page.get_by_role("textbox", name="Email address").fill(user_info_dict["email"])
+    if include_username:
+        page.get_by_role("textbox", name="Username").fill(user_info_dict["username"])
+    page.get_by_role("textbox", name="password").fill(user_info_dict["password"])
+
+def get_full_name(user_info_dict):
+    return f"{user_info_dict['title']} {user_info_dict['name_given']} {user_info_dict['name_family']}"
+
 if __name__ == "__main__":
     # get_titles_for_year_from_test_data()
     # get_things_from_xml()

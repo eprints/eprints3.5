@@ -5,7 +5,9 @@ import re
 import pytest
 
 from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
-    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data
+    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data, \
+    fill_in_register_user
+
 '''
 These are intended to replace the "simple" selenium tests. Where possible they are based on the test data and are parameterised
 '''
@@ -29,26 +31,21 @@ def test_go_to_simple_page(not_logged_in_page, link_name, expected_texts):
 def test_create_account(not_logged_in_page, temp_user_info):
     not_logged_in_page.get_by_text("Create Account").first.click()
 
-    def fill_in_register_user():
+    def register_user():
 
         # not_logged_in_page.get_by_role("textbox", name="Title").fill(temp_user_info["title"])
         # not_logged_in_page.get_by_role("textbox", name="Given Name / Initials").fill(temp_user_info["name_given"])
         # not_logged_in_page.get_by_role("textbox", name="Family Name").fill(temp_user_info["name_family"])
-        not_logged_in_page.get_by_label("Title").fill(temp_user_info["title"])
-        not_logged_in_page.get_by_label("Given Name / Initials").fill(temp_user_info["name_given"])
-        not_logged_in_page.get_by_label("Family Name").fill(temp_user_info["name_family"])
-        not_logged_in_page.get_by_role("textbox", name="Email address").fill(temp_user_info["email"])
-        not_logged_in_page.get_by_role("textbox", name="Username").fill(temp_user_info["username"])
-        not_logged_in_page.get_by_role("textbox", name="password").fill(temp_user_info["password"])
+        fill_in_register_user(not_logged_in_page, temp_user_info)
         not_logged_in_page.get_by_role("button", name="Register").click()
 
-    fill_in_register_user()
+    register_user()
     expect(not_logged_in_page.get_by_text(f"You have registered with username {temp_user_info['username']}.",
                                           exact=False)).to_be_visible()
 
     not_logged_in_page.get_by_text("Create Account").first.click()
 
-    fill_in_register_user()
+    register_user()
     expect(not_logged_in_page.get_by_text(f"A user with the email address {temp_user_info['email']} already exists.", exact=False)).to_be_visible()
 
     # login(not_logged_in_page, temp_user_info["username"], temp_user_info["password"])
