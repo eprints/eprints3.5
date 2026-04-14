@@ -5,7 +5,7 @@ import random
 
 from playwright.sync_api import expect
 
-from eprints.utils import select_locator, fill_in_register_user, get_full_name
+from eprints.utils import select_locator, fill_in_register_user, get_full_name, get_random_user_info
 
 '''
 More imported and adapted selenium tests
@@ -15,15 +15,15 @@ More imported and adapted selenium tests
 def test_admin_create_destroy_user(logged_in_page):
     logged_in_page.get_by_role("link", name="Admin", exact=True).click()
     logged_in_page.get_by_text("System Tools").click()
-
-    temp_user = {
-        "username": "temporary_user2",
-        "name_given": "Flibble",
-        "name_family": "Wibble",
-        "title": "Dr",
-        "email": "wibbleflibble@eprints-hosting.org",
-        "password": ''.join([random.choice(string.ascii_letters) for i in range(10)])
-    }
+    temp_user = get_random_user_info()
+    # temp_user = {
+    #     "username": "temporary_user2",
+    #     "name_given": "Flibble",
+    #     "name_family": "Wibble",
+    #     "title": "Dr",
+    #     "email": "wibbleflibble@eprints-hosting.org",
+    #     "password": ''.join([random.choice(string.ascii_letters) for i in range(10)])
+    # }
 
     logged_in_page.get_by_role("button", name="Create user").click()
 

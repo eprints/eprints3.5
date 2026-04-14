@@ -1,3 +1,4 @@
+import datetime
 import gzip
 import os
 import xml
@@ -5,6 +6,8 @@ from xml.etree import ElementTree
 from playwright.sync_api import Page, expect
 import re
 import pathlib
+import random
+import string
 
 def get_section(page, section_title, parent_class="ep_form_field_input"):
     # return page.locator(f"css=.{parent_class}").filter(has=page.get_by_text("Creators"))#re.compile("Creators")))
@@ -194,6 +197,23 @@ def fill_in_register_user(page, user_info_dict, include_username=True):
 
 def get_full_name(user_info_dict):
     return f"{user_info_dict['title']} {user_info_dict['name_given']} {user_info_dict['name_family']}"
+
+def get_random_user_info():
+    now = datetime.datetime.now()
+    datestring = f"{now.year}_{now.month}_{now.day}_{now.hour}_{now.min}_{now.second}"
+
+    given = ''.join([random.choice(string.ascii_letters) for i in range(10)]).title()
+    family = ''.join([random.choice(string.ascii_letters) for i in range(10)]).title()
+
+    return {
+        "username": f"temporary_user_{datestring}",
+        "name_given": given,
+        "name_family": family,
+        "title": random.choice(["Dr", "Ms", "Prof", "Rev", "Mr"]),
+        "email": f"{given.lower}{family.lower()}@eprints-hosting.org",
+        "password": ''.join([random.choice(string.ascii_letters) for i in range(10)])
+    }
+
 
 if __name__ == "__main__":
     # get_titles_for_year_from_test_data()
