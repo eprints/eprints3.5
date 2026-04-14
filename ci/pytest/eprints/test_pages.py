@@ -457,3 +457,18 @@ def test_admin_search_people_page(logged_in_page):
     expect(logged_in_page.get_by_text("Displaying results 1 to 9 of 9").first).to_be_visible()
 
     expect(logged_in_page.get_by_text("1.	Beda, B.")).to_be_visible()
+
+def test_admin_search_organisation_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_role("button", name ="Search organisations").click()
+
+    logged_in_page.get_by_role("textbox", name="All Names").fill("Elseware")
+
+    logged_in_page.get_by_role("button", name="Search", exact=True).first.click()
+
+    logged_in_page.get_by_text("Export options").click()
+    select_locator(logged_in_page, "Export 1 results as").select_option(label="HTML Citation")
+    logged_in_page.get_by_role("button", name="Export", exact=True).click()
+
+    expect(logged_in_page.get_by_text("Elseware Publishing", exact=True)).to_be_visible()
+
