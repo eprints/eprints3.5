@@ -1,0 +1,3 @@
+Skipping indexer restarting tests - shouldn't this be in the remit of systemd and removed from the web ui?
+
+TODO email tests as I don't have a way to test those yet

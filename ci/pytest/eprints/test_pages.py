@@ -469,3 +469,35 @@ def test_admin_search_organisation_page(logged_in_page):
 
     expect(logged_in_page.get_by_text("Elseware Publishing", exact=True)).to_be_visible()
 
+def test_admin_database_schema_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_text("System Tools").click()
+    logged_in_page.get_by_role("button", name ="Database Schema").click()
+
+    texts = [
+        "Database Schema",
+        "Database Tables",
+        "Dataset Tables",
+        "Access Logs",
+        "Cache Tables",
+        "Documents",
+        "Eprints",
+        "Tasks",
+        "Files",
+        "Object Revisions",
+        "User Log-ins",
+        "User Notifications",
+        "Metafield",
+        "Organisations",
+        "Page",
+        "People",
+        "Requests",
+        "Saved Searches",
+        "Subjects",
+        "Users",
+        "Misc. Tables"
+    ]
+
+    for text in texts:
+
+        expect(logged_in_page.get_by_text(text).first).to_be_visible()
