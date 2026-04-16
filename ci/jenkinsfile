@@ -1,6 +1,6 @@
 pipeline{
     agent any
-    lock('eprints_35_deploy') {
+    lock('eprints_35_deploy_lock') {
         stages{
             stage('Configure EPrints'){
                 agent {
