@@ -1,48 +1,50 @@
 pipeline{
     agent any
-    
+    options {
+        lock resource: 'eprints_35_deploy_lock'
+    }
     stages{
-        lock('eprints_35_deploy_lock') {
-            stage('Configure EPrints'){
-                agent {
-                    node {
-                        label 'eprints_35_deploy'
-                        customWorkspace '/opt/eprints3/'
-                    }
-                }
-                steps{
-                    checkout scm
-                    sh "pwd"
-                    withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
-                        sh 'ci/bin/create_eprints_archive playwright $secretFile'
-                    }
-                
-                    
+        
+        stage('Configure EPrints'){
+            agent {
+                node {
+                    label 'eprints_35_deploy'
+                    customWorkspace '/opt/eprints3/'
                 }
             }
-            stage('Run Tests'){
-                steps{
-                    node('playwright'){
-                        // l
-                        checkout scm
-                        withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
-                            dir("ci/pytest"){
-                                script {
-                                    try {
-                                        sh './jenkins_run_tests.sh $secretFile'
-                                    }
-                                    catch (err) {                                        
-                                        unstable(message: "${STAGE_NAME} is unstable")
-                                    }
+            steps{
+                checkout scm
+                sh "pwd"
+                withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
+                }
+            
+                
+            }
+        }
+        stage('Run Tests'){
+            steps{
+                node('playwright'){
+                    // l
+                    checkout scm
+                    withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
+                        dir("ci/pytest"){
+                            script {
+                                try {
+                                    sh './jenkins_run_tests.sh $secretFile'
                                 }
-                                // we always want to archive results even if the tests don't all pass
-                                junit '*.xml'
-                                archiveArtifacts 'test-results/**/*'
+                                catch (err) {                                        
+                                    unstable(message: "${STAGE_NAME} is unstable")
+                                }
                             }
+                            // we always want to archive results even if the tests don't all pass
+                            junit '*.xml'
+                            archiveArtifacts 'test-results/**/*'
                         }
                     }
                 }
             }
         }
+    
     }
 }
