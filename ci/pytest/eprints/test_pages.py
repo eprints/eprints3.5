@@ -513,7 +513,7 @@ def test_admin_storage_manager_page(logged_in_page):
     logged_in_page.get_by_text("Config. Tools").click()
     logged_in_page.get_by_role("button", name ="Storage Manager").click()
 
-    expect(logged_in_page.get_by_role("heading", "Storage Manager")).to_be_visible()
+    expect(logged_in_page.get_by_role("heading", name="Storage Manager")).to_be_visible()
 
     texts = [
         "Local disk storage",

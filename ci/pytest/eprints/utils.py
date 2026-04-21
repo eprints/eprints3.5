@@ -248,7 +248,7 @@ def get_table_cell(table_locator, column_header, row):
 
     cell_locator = row_locator.filter(has_text=find_in_this_column).locator("td").nth(column_index)
 
-    print(cell_locator.all_inner_texts())
+    # print(cell_locator.all_inner_texts())
 
     return cell_locator
 
