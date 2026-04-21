@@ -226,6 +226,35 @@ def get_random_organisation_info():
     org["name"] = f"University of {org['name_family']}"
     return org
 
+def get_table_cell(table_locator, column_header, row):
+    '''
+
+    :param table_locator:  Locator for the table element
+    :param column_header: header text for the column required
+    :param row: dict of {'column header' : value_in_this_column_for_this_row}
+    :return:
+    '''
+    # headers = table_locator.locator("xpath=/tbody/tr/th").all_inner_texts()
+    headers = table_locator.get_by_role("columnheader").all_inner_texts()
+
+    find_by_column = [key for key in row.keys()][0]
+    find_in_this_column = row[find_by_column]
+
+    column_index = headers.index(column_header)
+
+    # cells_in_column = table_locator.get_by_role("row").get_by_text("find_in_this_column", exact=True)
+
+    row_locator = table_locator.locator("tr")
+
+    cell_locator = row_locator.filter(has_text=find_in_this_column).locator("td").nth(column_index)
+
+    print(cell_locator.all_inner_texts())
+
+    return cell_locator
+
+
+
+
 if __name__ == "__main__":
     # get_titles_for_year_from_test_data()
     # get_things_from_xml()

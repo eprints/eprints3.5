@@ -6,7 +6,7 @@ import pytest
 
 from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
     get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data, \
-    fill_in_register_user
+    fill_in_register_user, get_table_cell
 
 '''
 These are intended to replace the "simple" selenium tests. Where possible they are based on the test data and are parameterised
@@ -501,3 +501,73 @@ def test_admin_database_schema_page(logged_in_page):
     for text in texts:
 
         expect(logged_in_page.get_by_text(text).first).to_be_visible()
+
+'''
+Assumes running only on the test data
+TODO check text is in the right cells in the table? bit noddy otherwise
+I can't really tell if this is actually working properly.
+note - must be run before anything other than the eprints test data has been added
+'''
+def test_admin_storage_manager_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_text("Config. Tools").click()
+    logged_in_page.get_by_role("button", name ="Storage Manager").click()
+
+    expect(logged_in_page.get_by_role("heading", "Storage Manager")).to_be_visible()
+
+    texts = [
+        "Local disk storage",
+        "Documents:",
+        "600",
+        "Object Revisions:",
+        "100"
+    ]
+
+    for text in texts:
+        expect(logged_in_page.get_by_text(text).first).to_be_visible()
+
+
+def test_admin_reload_config(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_text("Config. Tools").click()
+    logged_in_page.get_by_role("button", name ="Reload Configuration").click()
+
+    expect(logged_in_page.get_by_text("Repository configuration reloaded!", exact=True)).to_be_visible()
+
+#should we even still support this feature? it's slightly mad
+# def test_admin_view_config(logged_in_page):
+#     logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+#     logged_in_page.get_by_text("Config. Tools").click()
+#     logged_in_page.get_by_role("button", name ="View Configuration").click()
+#
+#     expect(logged_in_page.get_by_text("Repository configuration reloaded!")).to_be_visible()
+
+def test_phrase_editor(logged_in_page, base_url):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_text("Config. Tools").click()
+    logged_in_page.get_by_role("button", name="Phrase Editor").click()
+
+    table = logged_in_page.locator("//table[@id='ep_phraseedit_table']")
+    edit_cell = get_table_cell(table, "Content", {"Identifier": "archive_name"})
+
+    test_text = "Text to replace the name of the reposity for testing here"
+
+    # textbox = edit_cell.get_by_role("textbox")
+    edit_cell.click()
+    edit_cell.get_by_role("textbox").fill(test_text)
+
+    edit_cell.get_by_role("button", name="Save").click()
+    expect(edit_cell.get_by_text("Phrase saved.")).to_be_visible()
+
+    # table.locator("xpath=/tbody/tr/th").all_inner_texts()
+    #archive_name
+    logged_in_page.get_by_role("link", name="Admin", exact=True).first.click()
+    logged_in_page.get_by_text("Config. Tools").click()
+    logged_in_page.get_by_role("button", name="Reload Configuration").click()
+    expect(logged_in_page.get_by_text("Repository configuration reloaded!", exact=True)).to_be_visible()
+
+    logged_in_page.goto(base_url)
+
+
+    #EPrints 3.5 Publications CI
+    expect(logged_in_page.get_by_text(test_text).first).to_be_visible()
