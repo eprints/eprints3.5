@@ -571,3 +571,52 @@ def test_phrase_editor(logged_in_page, base_url):
 
     #EPrints 3.5 Publications CI
     expect(logged_in_page.get_by_text(test_text).first).to_be_visible()
+
+#expects only the 100 test eprints
+def test_edit_subject_page(logged_in_page):
+    logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+    logged_in_page.get_by_text("Config. Tools").click()
+    logged_in_page.get_by_role("button", name="Edit subject").click()
+
+    expect(logged_in_page.get_by_role("heading", name="Edit subject: (Top Level)")).to_be_visible()
+
+    expect(logged_in_page.get_by_role("link", name="Library of Congress Subject Areas")).to_be_visible()
+
+    #bit fragile, ideally need a way of finding tables with expected headers?
+    table = logged_in_page.locator("//table")
+    cell = get_table_cell(table, "Eprints (Repository)", {"Children": "Library of Congress Subject Areas"})
+
+    expect(cell.get_by_text("101 (101)")).to_be_visible()
+
+    cell = get_table_cell(table, "Eprints (Repository)", {"Children": "University Structure"})
+
+    expect(cell.get_by_text("2 (2)")).to_be_visible()
+
+    subject_id = "subject_new_id"
+    subject_new_name = "subject_new_name"
+
+    logged_in_page.get_by_role("textbox", name="Subject ID String").fill(subject_id)
+    logged_in_page.get_by_role("button", name="Create").click()
+
+    expect(logged_in_page.get_by_text(f"Created new subject node with ID \"{subject_id}\". Please now enter a subject name and set the subject to be depositable, if applicable.")).to_be_visible()
+
+    logged_in_page.get_by_role("textbox", name="Name", exact=True).fill(subject_new_name)
+
+    select_locator(logged_in_page, "Language").select_option(label="English")
+
+    logged_in_page.get_by_role("button", name="Save changes").click()
+
+    expect(logged_in_page.get_by_text("Saved changes")).to_be_visible()
+
+    logged_in_page.get_by_role("link", name="(Top Level)").click()
+
+    cell = get_table_cell(table, "Actions", {"Children":subject_new_name})
+    cell.get_by_role("button", name="Unlink").click()
+
+    for text in [f"Deleting {subject_new_name}", "Unlinking this subject will cause it to be permanently deleted. Are you sure you want to do this?"]:
+        expect(logged_in_page.get_by_text(text)).to_be_visible()
+    logged_in_page.get_by_role("button", name="Remove").click()
+
+    expect(logged_in_page.get_by_text("Removed subject. This subject node has been deleted.")).to_be_visible()
+
+    expect(logged_in_page.get_by_text(subject_new_name)).not_to_be_visible()
