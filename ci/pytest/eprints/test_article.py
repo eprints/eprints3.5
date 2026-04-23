@@ -4,11 +4,12 @@ import pytest
 
 from playwright.sync_api import Page, expect
 
-from eprints.utils import add_to_table
+from eprints.utils import add_to_table, get_table_cell, get_full_name
+
 
 #put last as it will alter data expected by the very prescriptive test_pages tests
 @pytest.mark.order(-1)
-def test_submit_article(logged_in_page, random_eprint):
+def test_eprint_submit_article(logged_in_page, random_eprint):
 
     page = logged_in_page
 
@@ -75,7 +76,7 @@ def test_submit_article(logged_in_page, random_eprint):
     dates_section.locator(page.get_by_label("Event")).select_option(label='Published')
 
 
-    page.get_by_role("textbox", name="Journal or Publication Title").fill("Fake Journal")
+    page.get_by_role("textbox", name="Journal or Publication Title").fill(random_eprint.publication)
 
     page.get_by_role("button", name="Next →").first.click()
 
@@ -95,4 +96,74 @@ def test_submit_article(logged_in_page, random_eprint):
 
     page.get_by_role("button", name="Deposit Item Now").click()
 
+    expect(page.get_by_text("This item is in review. It will not appear in the repository until it has been checked by an editor.")).to_be_visible()
+
+    # page.get_by_role("button", name="Move to Repository").click()
+
+@pytest.mark.order(after="test_eprint_submit_article")
+def test_eprint_review(logged_in_page, test_admin_user_info, random_eprint):
+    page = logged_in_page
+    page.get_by_role("link", name="Review").first.click()
+    table = page.locator("xpath=//table")
+    actions_cell = get_table_cell(table, "Actions", {"Depositing User": get_full_name(test_admin_user_info)})
+    actions_cell.get_by_alt_text("View Item").click()
+
+    expect(page.get_by_role("heading", name=f"View Item: {random_eprint.title}")).to_be_visible()
+
+    page.get_by_text("Details").first.click()
+
+    expect(page.get_by_role("cell", name=random_eprint.publication)).to_be_visible()
+
+    page.get_by_text("Preview").first.click()
+
+    page.get_by_role("button", name="Return item (with notification)").click()
+
+    expect(page.get_by_role("heading", name=f"Return item (with notification): {random_eprint.title}")).to_be_visible()
+    expect(page.get_by_text("Please enter in the box below the reason for returning this item, and any possible fix. This will be emailed to the relevant author.")).to_be_visible()
+
+    expect(page.get_by_text("Change Reason")).to_be_visible()
+
+    page.get_by_role("button", name="Cancel").click()
+
+    page.get_by_role("button", name="Return item (with notification)").click()
+
+    page.get_by_role("button", name="Return Item").click()
+
+    for text in [f"Item status successfully changed.", "Email successfully sent."]:
+        expect(page.get_by_text(text)).to_be_visible()
+
+    page.get_by_text("Details").first.click()
+
+    expect(page.get_by_text("User Workarea")).to_be_visible()
+
+@pytest.mark.order(after="test_eprint_review")
+def test_eprint_resubmit(logged_in_page, test_admin_user_info, random_eprint):
+    page = logged_in_page
+    table = page.locator("xpath=//table")
+
+    actions_cell = get_table_cell(table, "Actions", {"Title": random_eprint.title})
+
+    actions_cell.get_by_alt_text("View Item").click()
+
+    #could follow the original test and do some editing here. Do we need to?
+
+    page.get_by_role("button", name="Deposit Item").click()
+
+    page.get_by_role("button", name="Deposit Item Now").click()
+
+    for text in ["Item has been deposited.", "Your item will not appear on the public website until it has been checked by an editor."]:
+        expect(page.get_by_text(text)).to_be_visible()
+
+@pytest.mark.order(after="test_eprint_resubmit")
+def test_eprint_rereview(logged_in_page, test_admin_user_info, random_eprint):
+    page = logged_in_page
+    page.get_by_role("link", name="Review").first.click()
+    table = page.locator("xpath=//table")
+    actions_cell = get_table_cell(table, "Actions", {"Depositing User": get_full_name(test_admin_user_info)})
+    actions_cell.get_by_alt_text("View Item").click()
+
+    page.get_by_text("Details").first.click()
+
     page.get_by_role("button", name="Move to Repository").click()
+
+    expect(page.get_by_text("Status of item changed to \"Live Archive\".")).to_be_visible()

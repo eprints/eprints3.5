@@ -6,3 +6,5 @@ Storage Manager may or may not be working as intended. the original selenium tes
 
 
 reload and view config - do we *really* want these features in 3.5?
+
+Manage Metadata Fields definitely should no longer exist!!

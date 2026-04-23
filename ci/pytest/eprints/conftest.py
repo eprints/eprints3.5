@@ -9,7 +9,7 @@ from eprints.utils import login
 from random_eprints.random_eprints import get_random_eprint
 from playwright.sync_api import Page
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def random_eprint(pytestconfig):
     eprint = get_random_eprint(pytestconfig.getoption('seed'), author_count=20)
     return eprint

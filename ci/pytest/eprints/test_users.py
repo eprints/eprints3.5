@@ -102,3 +102,8 @@ def test_admin_create_destroy_person_org(logged_in_page, entity_name, entity_inf
     expect(logged_in_page.get_by_text("Are you sure you want to destroy")).to_be_visible()
 
     logged_in_page.get_by_role("button", name="Remove").click()
+
+#
+# def test_editor_user(logged_in_page):
+#     logged_in_page.get_by_role("link", name="Admin", exact=True).click()
+#     logged_in_page.get_by_text("System Tools").click()
