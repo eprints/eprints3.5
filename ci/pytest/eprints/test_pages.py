@@ -586,11 +586,11 @@ def test_edit_subject_page(logged_in_page):
     table = logged_in_page.locator("//table")
     cell = get_table_cell(table, "Eprints (Repository)", {"Children": "Library of Congress Subject Areas"})
 
-    expect(cell.get_by_text("101 (101)")).to_be_visible()
+    expect(cell.get_by_text("100 (100)")).to_be_visible()
 
     cell = get_table_cell(table, "Eprints (Repository)", {"Children": "University Structure"})
 
-    expect(cell.get_by_text("2 (2)")).to_be_visible()
+    expect(cell.get_by_text("1 (1)")).to_be_visible()
 
     subject_id = "subject_new_id"
     subject_new_name = "subject_new_name"
