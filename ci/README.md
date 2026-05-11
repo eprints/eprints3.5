@@ -4,7 +4,7 @@ Please note, there is no support provided for this CI code.
 
 There is a jenkinsjob - using a pipeline in `jenkinsfile`.
 
-Playwright based tests using pytest under `pytest`. These should work fine without jenkins.
+Playwright based tests using pytest under `pytest`. These should work fine without jenkins. For more information on running the pytest code see `ci/pytest/README.md`.
 
 ## Jenkins secure configuration
 Jenkins will need a copies of (with real passwords) in Jenkins credential store:
