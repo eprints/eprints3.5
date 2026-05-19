@@ -1,0 +1,10 @@
+Skipping indexer restarting tests - shouldn't this be in the remit of systemd and removed from the web ui?
+
+TODO email tests as I don't have a way to test those yet
+
+Storage Manager may or may not be working as intended. the original selenium tests are a bit noddy and I was unaware this feature existed until just now.
+
+
+reload and view config - do we *really* want these features in 3.5?
+
+Manage Metadata Fields definitely should no longer exist!!

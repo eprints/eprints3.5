@@ -32,6 +32,10 @@ ul.ep_facet_entries {
     margin-right: 0.5em;
 }
 
+.ep_facet_label{
+    cursor: pointer;
+}
+
 .ep_facet_unspecified .ep_facet_label {
     font-style: italic;
 }

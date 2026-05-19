@@ -1,0 +1,33 @@
+flavour: 'pub'
+archive_id: 'playwright'
+core:
+  host: 'testnode-1.eprints-hosting.org'
+  port: 80
+  aliases: []
+  path: '/'
+  securehost: 'testnode-1.eprints-hosting.org'
+  secureport: 443
+  adminemail: 'admin@example.eprints.org'
+  phrases:
+    archive_name: 'EPrints 3.5 Publications CI'
+    organisation_name: 'EPrints Services'
+database:
+  dbname: 'playwright'
+  dbhost: 'localhost'
+  dbport: '#'
+  dbsock: '#'
+  dbuser: 'playwright'
+  dbpass: 'PASSWORD'
+  dbengine: 'InnoDB'
+  dbcharset: 'utf8mb4'
+  admin:
+    username: 'eprints'
+    password: 'PASSWORD'
+user:
+  username: 'admin'
+  usertype: 'admin'
+  password: 'PASSWORD'
+  email: 'admin@example.eprints.org'
+generate_static: 'yes'
+import_subjects: 'yes'
+generate_apacheconf: 'yes'
