@@ -233,6 +233,8 @@ my $PRIVMAP =
         "indexer/stop",
         "indexer/start",
         "indexer/force_start",
+        "indexer/retry_tasks",
+        "indexer/clear_tasks",
         "create_user",
         "create_person",
         "create_organisation",

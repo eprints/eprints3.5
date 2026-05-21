@@ -3049,6 +3049,7 @@ sub dequeue_events
 		elsif( $rows == 1 )
 		{
 			$event->set_value( "status", "inprogress" );
+			$event->set_value( "start_time", $until );
 			push @events, $event;
 		}
 		else
