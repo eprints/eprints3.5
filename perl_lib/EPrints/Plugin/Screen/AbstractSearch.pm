@@ -695,7 +695,7 @@ sub render_results
 
 	my $page = $self->{session}->make_doc_fragment;
 	$page->appendChild( $self->render_results_intro );
-	if ( $self->{search_result_style} eq "paginate" )
+	if ( defined $self->{search_result_style} && $self->{search_result_style} eq "paginate" )
 	{
 		$page->appendChild( 
 			EPrints::Paginate->paginate_list( 
