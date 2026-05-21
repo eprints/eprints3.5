@@ -1920,7 +1920,15 @@ sub add_record
 	}
 
 	# Now add the ACTUAL data:
-	return $self->update( $dataset, $data, $data );
+	my $rc = $self->update( $dataset, $data, $data );
+
+	# If the update failed then delete the empty record created by the earlier insert
+	if ( !$rc )
+	{
+		$self->remove( $dataset, $id );
+	}
+
+	return $rc;
 }
 
 
