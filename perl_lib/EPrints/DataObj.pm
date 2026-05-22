@@ -191,7 +191,7 @@ sub new_from_data
                     {
                         foreach my $k ( keys %{$datum[$i]} )
                         {
-                            delete $data->{$fieldname}[$i]{$k} if $data->{$fieldname}[$i]{$k} eq "";
+                            delete $data->{$fieldname}[$i]{$k} if ! defined $data->{$fieldname}[$i]{$k} || $data->{$fieldname}[$i]{$k} eq "";
                         }
                     }
                 }
@@ -1593,7 +1593,7 @@ sub render_citation
 	my $citation_caching_enabled = 0;
 	if ( !defined $params{no_cache} || !$params{no_cache} )
 	{
-		my @excluded_dataobjs = ( 'loginticket', 'subject' );
+		my @excluded_dataobjs = ( 'loginticket', 'subject', 'event_queue' );
 		my @excluded_styles = ( 'entity_page', 'result', 'summary_page' );
 		@excluded_dataobjs = @{$self->{session}->config( "citation_caching", "excluded_dataobjs" )} if defined $self->{session}->config( "citation_caching", "excluded_dataobjs" );
 		@excluded_styles = @{$self->{session}->config( "citation_caching", "excluded_styles" )} if defined $self->{session}->config( "citation_caching", "excluded_styles" );

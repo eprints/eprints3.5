@@ -6,14 +6,22 @@ use strict;
 
 my $repo = EPrints->new->current_repository;
 
-my $url = $repo->current_url( host => 1, path => 'cgi', 'search/simple' );
-$url .= '?q={searchTerms}&search_offset={startIndex}';
+my $url = $repo->current_url( host => 1, path => 'cgi', 'opensearch' );
+$url .= '?q={searchTerms}&startPage={pageNumber}';
 
 my @formats;
+# Optional config to only offer specific formats
+my $permitted_formats = $repo->config( 'opensearch', 'formats' );
 
-my $user = $repo->current_user;
 my $is_visible = "all";
-if( defined $user && ($user->value( "usertype" ) eq "admin" || $user->value( "usertype" ) eq "editor") )
+my $user = $repo->current_user;
+unless ( $user )
+{
+	use EPrints::Apache::Sword;
+	my $response = EPrints::Apache::Sword::authenticate( $repo, $repo->request );
+	$user = $response->{owner} if defined $response->{owner};
+}
+if( defined $user && $user->is_staff )
 {
 	$is_visible = "staff";
 }
@@ -24,11 +32,13 @@ foreach my $plugin (sort { ref($a) cmp ref($b) } $repo->get_plugins(
 	is_visible => $is_visible,
 ))
 {
+	next if( defined $permitted_formats && ! grep { $plugin->get_subtype eq $_ } @$permitted_formats );
+
 	my $mt=$plugin->param( "mimetype" );
 	$mt=~s/;.*$//;
 	push @formats, [ 'Url', undef,
 		indexOffset => 0,
-		template => "$url&output=".URI::Escape::uri_escape( $plugin->get_subtype ),
+		template => "$url&format=".URI::Escape::uri_escape( $plugin->get_subtype ),
 		type => $mt
 	];
 }

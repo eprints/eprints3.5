@@ -1920,7 +1920,15 @@ sub add_record
 	}
 
 	# Now add the ACTUAL data:
-	return $self->update( $dataset, $data, $data );
+	my $rc = $self->update( $dataset, $data, $data );
+
+	# If the update failed then delete the empty record created by the earlier insert
+	if ( !$rc )
+	{
+		$self->remove( $dataset, $id );
+	}
+
+	return $rc;
 }
 
 
@@ -3041,6 +3049,7 @@ sub dequeue_events
 		elsif( $rows == 1 )
 		{
 			$event->set_value( "status", "inprogress" );
+			$event->set_value( "start_time", $until );
 			push @events, $event;
 		}
 		else

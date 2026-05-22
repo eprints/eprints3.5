@@ -269,6 +269,20 @@ sub run_property
 		$objvar->[0] ];
 }
 
+sub run_raw_property
+{
+	my( $self, $state, $objvar, $fieldname ) = @_;
+
+	my( $value, $field ) = @{$self->run_property( $state, $objvar, $fieldname )};
+
+	if ( ref $value )
+	{
+			$value = JSON->new()->encode( $value );
+	}
+
+    return [ $value, "STRING" ]; 
+}
+
 sub run_MAIN_ITEM_PROPERTY
 {
 	my( $self, $state ) = @_;
@@ -294,9 +308,11 @@ sub run_substr
 sub run_contains
 {
         my( $self, $state, $string, $token, $length ) = @_;
-        my $t = $token->[0];
 
-        return [ $string->[0] =~ /$t/, "BOOLEAN" ];
+        my $t = $token->[0];
+        my $res = defined $string->[0] && $string->[0] =~ m/$t/ ? 1 : 0;
+
+        return [ $res, "BOOLEAN" ];
 }
 
 sub run_is_set
@@ -690,6 +706,13 @@ sub run_icon
 	}
 
 	return [ $doc->[0]->render_icon_link( %args ), "XHTML" ];
+}
+
+sub run_icon_url 
+{
+    my( $self, $state, $value ) = @_;
+
+    return [ $value->[0]->icon_url, "STRING" ];
 }
 
 
