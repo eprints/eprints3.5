@@ -12,6 +12,7 @@ $c->{datasets}->{citationcache} = {
 $c->{citation_caching}->{excluded_dataobjs} = [
 	'loginticket',
 	'subject',
+	'event_queue'
 ];
 
 # Exclude specific citation styles from caching
