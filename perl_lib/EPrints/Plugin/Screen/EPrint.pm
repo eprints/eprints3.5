@@ -62,7 +62,7 @@ sub allow
 {
 	my( $self, $priv ) = @_;
 
-	unless ( defined $self->{processor}->{eprint} )
+	if ( ! defined $self->{processor}->{eprint} && $self->{session}->request && $self->{session}->request->can( 'pnotes' ) )
 	{
 		$self->{processor}->{eprint} = $self->{session}->request->pnotes( 'eprint' );
 	}

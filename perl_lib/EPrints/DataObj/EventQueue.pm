@@ -273,7 +273,7 @@ treated as follows:
  HTTP_OK - action succeeded, event is removed if cleanup is TRUE
  HTTP_RESET_CONTENT - action succeeded, event is set 'waiting'
  HTTP_NOT_FOUND - action failed, event is removed if cleanup is TRUE
- HTTP_LOCKED - action failed, event is re-scheduled for 10 minutes time
+ HTTP_LOCKED - action failed, event is re-scheduled for 30 seconds time
  HTTP_INTERNAL_SERVER_ERROR - action failed, event is 'failed' and kept
 
 =cut
@@ -302,7 +302,7 @@ sub execute
 			);
 		}
 		$start_time = time() if !defined $start_time;
-		$start_time += 10 * 60; # try again in 10 minutes time
+		$start_time += 30; # try again in 30seconds time
 		$self->set_value( "start_time",
 			EPrints::Time::iso_datetime( $start_time )
 		);
