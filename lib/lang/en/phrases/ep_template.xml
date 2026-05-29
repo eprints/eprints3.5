@@ -909,8 +909,8 @@
                     <epc:choose>
                       <epc:when test="$index lt (array_length(pairs) / 2)">
                         <div class="form-check">
-                          <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" aria-labelledby="{name}_label" onchange="{onchange}" checked="{$pair{selected}}"/>
                           <label class="form-check-label">
+                            <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" onchange="{onchange}" checked="{$pair{selected}}"/>
                             <epc:print expr="$pair{desc}"/>
                           </label>
                         </div>
@@ -925,8 +925,8 @@
                     </epc:when>
                       <epc:otherwise>
                         <div class="form-check">
-                          <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" aria-labelledby="{name}_label" onchange="{onchange}" checked="{$pair{selected}}"/>
                           <label class="form-check-label">
+                            <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" onchange="{onchange}" checked="{$pair{selected}}"/>
                             <epc:print expr="$pair{desc}"/>
                           </label>
                         </div>
@@ -939,8 +939,8 @@
                 <div class="ep_option_list_cell">
                   <epc:foreach expr="pairs" iterator="pair">
                     <div class="form-check">
-                      <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" aria-labelledby="{name}_label" onchange="{onchange}" checked="{$pair{selected}}"/>
                       <label class="form-check-label">
+                        <epv:render_input_field type="checkbox" name="{name}" value="{$pair{key}}" class="form-check-input" onchange="{onchange}" checked="{$pair{selected}}"/>
                         <epc:print expr="$pair{desc}"/>
                       </label>
                     </div>
