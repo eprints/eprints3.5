@@ -13,6 +13,6 @@
 [submodule "ci/pytest/random_eprints"]
 	path = ci/pytest/random_eprints
 	url = ../random_eprints.git
-[submodule "jquery4eprints"]
+[submodule "ingredients/jquery4eprints"]
 	path = ingredients/jquery4eprints
 	url = ../jquery4eprints
