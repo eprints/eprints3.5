@@ -18,8 +18,6 @@ Installation guide: B<https://wiki.eprints.org/w/Installation>.
 
 For more information see B<https://www.eprints.org/software/>.
 
-=head1 35 DEVELOPER NOTES
-
 =head2 INSTALLATION INSTRUCTIONS
 
 See https://wiki.eprints.org/w/EPrints_3.5.0_Beta_1
@@ -65,7 +63,7 @@ EPrints can be contacted in the real world at
 
 =head1 COPYRIGHT
 
-Copyright 2000-2022 University of Southampton.
+Copyright 2000-2026 University of Southampton.
 
 EPrints is free software: you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published

@@ -298,33 +298,12 @@ sub update_inc_paths
 
 ######################################################################
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2023 University of Southampton.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
+
 EPrints 3.5 is supplied by EPrints Services.
 
-https://www.eprints.org/eprints-3.5/
-
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.5 L<https://www.eprints.org/>.
-
-EPrints 3.5 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.5 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.5.
-If not, see L<https://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE
