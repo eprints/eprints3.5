@@ -15,4 +15,4 @@
 	url = ../random_eprints.git
 [submodule "ingredients/jquery4eprints"]
 	path = ingredients/jquery4eprints
-	url = ../jquery4eprints
+	url = ../jquery4eprints.git
