@@ -20,7 +20,12 @@ Should you need a real world address for some reason, EPrints Services can be co
  SO17 1BJ
  United Kingdom
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-__LICENSE__
+=begin COPYRIGHT_AND_LICENSE
 
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
+
+EPrints 3.5 is supplied by EPrints Services.
+
+=end COPYRIGHT_AND_LICENSE

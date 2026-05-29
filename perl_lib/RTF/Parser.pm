@@ -641,14 +641,12 @@ sub _skip_group {
 
 Peter Sergeant C<pete@clueball.com>, originally by Philippe Verdret
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2004 B<Pete Sergeant>.
+=begin COPYRIGHT_AND_LICENSE
 
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-=head1 CREDITS
+EPrints 3.5 is supplied by EPrints Services.
 
-This work was carried out under a grant generously provided by The Perl Foundation -
-give them money!
+=end COPYRIGHT_AND_LICENSE
