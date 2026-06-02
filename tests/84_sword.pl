@@ -409,3 +409,15 @@ Copyright University of Southampton under the GNU Lesser General Public License.
 EPrints 3.5 is supplied by EPrints Services.
 
 =end COPYRIGHT_AND_LICENSE
+
+=cut
+
+__DATA__
+<?xml version="1.0" encoding="utf-8" ?>
+<entry xmlns="http://www.w3.org/2005/Atom">
+  <title>My New Title</title>
+  <summary>This is demonstration data only.</summary>
+  <id>http://yomiko.ecs.soton.ac.uk:8080/id/eprint/11278</id>
+  <category term="article" label="article" scheme="http://yomiko.ecs.soton.ac.uk:8080/data/eprint/type/"/>
+  <category term="inbox" label="inbox" scheme="http://eprints.org/ep2/data/2.0/eprint/eprint_status"/>
+</entry>
