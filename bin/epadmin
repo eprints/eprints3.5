@@ -722,6 +722,12 @@ END
 		}
 	}
 
+	my $get_jquery = "/ingredients/jquery4eprints/bin/get_jquery";
+	if ( -f $repo->config( 'base_path' ) . $get_jquery )
+	{
+		run_script( $repo, "..$get_jquery", "--force" );
+	}
+
 	if( $db_ok && $core_ok )
 	{
 		my $ok = EPrints::Utils::get_input( $EPrints::Utils::REGEXP_YESNO, "Do you want to update the apache config files? (you still need to add the 'Include' line)", "yes", $config, [ 'generate_apacheconf' ] );
