@@ -62,37 +62,17 @@ EPrints::XML::dispose( $doc );
 $session->terminate;
 
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=for COPYRIGHT BEGIN
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=for COPYRIGHT END
+=end COPYRIGHT_AND_LICENSE
 
-=for LICENSE BEGIN
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=for LICENSE END
-
-=cut
+=cut 
 
 __DATA__
 <?xml version="1.0" encoding="utf-8" ?>
@@ -100,9 +80,9 @@ __DATA__
   <eprint id="http://yomiko.ecs.soton.ac.uk:8080/id/eprint/100" xmlns="http://eprints.org/ep2/data/2.0">
     <eprintid>100</eprintid>
     <rev_number>2</rev_number>
-	<bad_field>asdasdasd</bad_field>
+    <bad_field>asdasdasd</bad_field>
     <documents>
-	  <bad_document></bad_document>
+      <bad_document></bad_document>
       <document id="http://yomiko.ecs.soton.ac.uk:8080/id/document/671">
         <docid>671</docid>
         <rev_number>3</rev_number>
@@ -263,12 +243,12 @@ __DATA__
     <metadata_visibility>show</metadata_visibility>
     <item_issues_count>0</item_issues_count>
     <creators>
-	  <bad_item>asdasd</bad_item>
+      <bad_item>asdasd</bad_item>
       <item>
         <name>
           <family>Toda</family>
           <given>Y.</given>
-		  <bad_name_part>XXX</bad_name_part>
+          <bad_name_part>XXX</bad_name_part>
         </name>
         <id></id>
       </item>

@@ -39,6 +39,10 @@ C<true>.
 
 The priority for this event.
 
+=item ignore_edit_lock (boolean)
+
+Do not care if the data object (e.g. eprint) is edit locked.
+
 =item start_time (time)
 
 The event should not be executed before this time.
@@ -220,6 +224,7 @@ sub get_system_field_info
 		{ name=>"eventqueueid", type=>"uuid", required=>1, },
 		{ name=>"cleanup", type=>"boolean", default_value=>"TRUE", },
 		{ name=>"priority", type=>"int", },
+		{ name=>"ignore_edit_lock", type=>"boolean" },
 		{ name=>"start_time", type=>"timestamp", required=>1, },
 		{ name=>"end_time", type=>"time", },
 		{ name=>"status", type=>"set", options=>[qw( waiting staged inprogress success failed )], default_value=>"waiting", },
@@ -273,7 +278,7 @@ treated as follows:
  HTTP_OK - action succeeded, event is removed if cleanup is TRUE
  HTTP_RESET_CONTENT - action succeeded, event is set 'waiting'
  HTTP_NOT_FOUND - action failed, event is removed if cleanup is TRUE
- HTTP_LOCKED - action failed, event is re-scheduled for 10 minutes time
+ HTTP_LOCKED - action failed, event is re-scheduled for 30 seconds time
  HTTP_INTERNAL_SERVER_ERROR - action failed, event is 'failed' and kept
 
 =cut
@@ -302,7 +307,7 @@ sub execute
 			);
 		}
 		$start_time = time() if !defined $start_time;
-		$start_time += 10 * 60; # try again in 10 minutes time
+		$start_time += 30; # try again in 30seconds time
 		$self->set_value( "start_time",
 			EPrints::Time::iso_datetime( $start_time )
 		);
@@ -406,20 +411,24 @@ sub _execute
 				$self->message( "error", $xml->create_text_node( "Bad parameters: No such item '$2' in dataset '$1'" ) );
 				return EPrints::Const::HTTP_NOT_FOUND;
 			}
-			my $locked = 0;
-			if( $param->isa( "EPrints::DataObj::EPrint" ) )
+
+			unless ( $self->value( "ignore_edit_lock" ) && $self->value( "ignore_edit_lock" ) eq "TRUE" )
 			{
-				$locked = 1 if( $param->is_locked() );
-			}
-			if( $param->isa( "EPrints::DataObj::Document" ) )
-			{
-				my $eprint = $param->get_parent;
-				$locked = 1 if( $eprint && $eprint->is_locked() );
-			}
-			if( $locked )
-			{
-				$self->message( "warning", $xml->create_text_node( $param->get_dataset->base_id.".".$param->id." is locked" ) );
-				return EPrints::Const::HTTP_LOCKED;
+				my $locked = 0;
+				if( $param->isa( "EPrints::DataObj::EPrint" ) )
+				{
+					$locked = 1 if( $param->is_locked() );
+				}
+				if( $param->isa( "EPrints::DataObj::Document" ) )
+				{
+					my $eprint = $param->get_parent;
+					$locked = 1 if( $eprint && $eprint->is_locked() );
+				}
+				if( $locked )
+				{
+					$self->message( "warning", $xml->create_text_node( $param->get_dataset->base_id.".".$param->id." is locked" ) );
+					return EPrints::Const::HTTP_LOCKED;
+				}
 			}
 		}
 	}
@@ -474,33 +483,12 @@ sub message
 
 L<EPrints::DataObj> and L<EPrints::DataSet>.
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2023 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE

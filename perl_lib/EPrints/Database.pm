@@ -1920,7 +1920,15 @@ sub add_record
 	}
 
 	# Now add the ACTUAL data:
-	return $self->update( $dataset, $data, $data );
+	my $rc = $self->update( $dataset, $data, $data );
+
+	# If the update failed then delete the empty record created by the earlier insert
+	if ( !$rc )
+	{
+		$self->remove( $dataset, $id );
+	}
+
+	return $rc;
 }
 
 
@@ -3041,6 +3049,7 @@ sub dequeue_events
 		elsif( $rows == 1 )
 		{
 			$event->set_value( "status", "inprogress" );
+			$event->set_value( "start_time", $until );
 			push @events, $event;
 		}
 		else
@@ -5066,33 +5075,12 @@ sub clear_user_messages
 To access database-stored objects use the methods provided by the 
 following modules: L<EPrints::Repository>, L<EPrints::DataSet>.
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE

@@ -34,9 +34,22 @@ sub new
 			place => "eprint_review_actions",
 			position => 10,
 		},
+		{
+            place => "key_tools",
+            position => 175,
+        }
 	];
 
 	return $self;
+}
+
+sub render_action_link
+{
+	my( $self, %opts ) = @_;
+
+	$opts{link_title} = $self->{session}->html_phrase( "cgi:view_eprint:view_eprint" );
+
+	return $self->SUPER::render_action_link( %opts );
 }
 
 sub properties_from
@@ -281,33 +294,12 @@ sub redirect_to_me_url
 1;
 
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=for COPYRIGHT BEGIN
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=for COPYRIGHT END
-
-=for LICENSE BEGIN
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=for LICENSE END
-
+=end COPYRIGHT_AND_LICENSE

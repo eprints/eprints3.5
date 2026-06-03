@@ -191,7 +191,7 @@ sub new_from_data
                     {
                         foreach my $k ( keys %{$datum[$i]} )
                         {
-                            delete $data->{$fieldname}[$i]{$k} if $data->{$fieldname}[$i]{$k} eq "";
+                            delete $data->{$fieldname}[$i]{$k} if ! defined $data->{$fieldname}[$i]{$k} || $data->{$fieldname}[$i]{$k} eq "";
                         }
                     }
                 }
@@ -1593,7 +1593,7 @@ sub render_citation
 	my $citation_caching_enabled = 0;
 	if ( !defined $params{no_cache} || !$params{no_cache} )
 	{
-		my @excluded_dataobjs = ( 'loginticket', 'subject' );
+		my @excluded_dataobjs = ( 'loginticket', 'subject', 'event_queue' );
 		my @excluded_styles = ( 'entity_page', 'result', 'summary_page' );
 		@excluded_dataobjs = @{$self->{session}->config( "citation_caching", "excluded_dataobjs" )} if defined $self->{session}->config( "citation_caching", "excluded_dataobjs" );
 		@excluded_styles = @{$self->{session}->config( "citation_caching", "excluded_styles" )} if defined $self->{session}->config( "citation_caching", "excluded_styles" );
@@ -2957,33 +2957,12 @@ sub remove_dataobj_relations
 
 L<EPrints::DataSet>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE

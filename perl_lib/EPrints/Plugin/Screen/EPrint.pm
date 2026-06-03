@@ -62,11 +62,28 @@ sub allow
 {
 	my( $self, $priv ) = @_;
 
+	if ( ! defined $self->{processor}->{eprint} && $self->{session}->request && $self->{session}->request->can( 'pnotes' ) )
+	{
+		$self->{processor}->{eprint} = $self->{session}->request->pnotes( 'eprint' );
+	}
 	return 0 unless defined $self->{processor}->{eprint};
 
 	return 1 if( $self->{session}->allow_anybody( $priv ) );
 	return 0 if( !defined $self->{session}->current_user );
 	return $self->{session}->current_user->allow( $priv, $self->{processor}->{eprint} );
+}
+
+sub render_action_link
+{
+    my( $self, %opts ) = @_;
+
+    $opts{uri} = URI->new( $self->{session}->config( "rel_cgipath" ) . "/users/home" );
+    $opts{uri}->query_form(
+        screen => substr($self->{id},8),
+        eprintid => $self->{processor}->{eprint}->id,
+    );
+
+    return $self->SUPER::render_action_link( %opts );
 }
 
 sub render_tab_title
@@ -263,33 +280,12 @@ sub hidden_bits
 1;
 
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=for COPYRIGHT BEGIN
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2022 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=for COPYRIGHT END
-
-=for LICENSE BEGIN
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=for LICENSE END
-
+=end COPYRIGHT_AND_LICENSE

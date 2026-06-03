@@ -348,6 +348,13 @@ sub _vis_level
 
 	return "staff" if defined $self->{session}->current_user && $self->{session}->current_user->is_staff;
 
+    if ( $self->{session}->request )
+    {
+        use EPrints::Apache::Sword;
+        my $response = EPrints::Apache::Sword::authenticate( $self->{session}, $self->{session}->request );
+        return "staff" if defined $response->{owner} && $response->{owner}->is_staff;
+    }
+
 	return "all";
 }
 
@@ -695,7 +702,7 @@ sub render_results
 
 	my $page = $self->{session}->make_doc_fragment;
 	$page->appendChild( $self->render_results_intro );
-	if ( $self->{search_result_style} eq "paginate" )
+	if ( defined $self->{search_result_style} && $self->{search_result_style} eq "paginate" )
 	{
 		$page->appendChild( 
 			EPrints::Paginate->paginate_list( 
@@ -1092,33 +1099,12 @@ sub _validated_cache_param
 
 1;
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2023 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE

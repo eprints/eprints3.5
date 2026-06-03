@@ -882,7 +882,16 @@ sub authz
 
 	if( defined($plugin) && $plugin->param( "visible" ) eq "staff" )
 	{
-		return HTTP_FORBIDDEN if !defined $user || !$user->is_staff;
+		# Allows staff export plugins to have more customised/relaxed access as they are read-only
+		if ( $plugin->{id} =~ m# ^Export::(.*)$ #x )
+		{
+			return HTTP_FORBIDDEN if !defined $user;
+			return HTTP_FORBIDDEN unless $user->is_staff || defined $repo->config( 'export', 'staff_check' ) && &{$repo->config( 'export', 'staff_check' )}( $repo, $user );
+		}
+		else
+		{
+			return HTTP_FORBIDDEN if !defined $user || !$user->is_staff;
+		}
 	}
 
 	my @privs = $self->_priv;
@@ -1008,7 +1017,7 @@ sub parse_input
 	}
 	elsif( $count == 0 || ( $list->count == 0 && $self->{method} ne "PUT" && $self->{method} ne "PATCH" ) )
 	{
-		$plugin->handler->message( "error", "Import plugin didn't create anything" );
+		$plugin->handler->message( "error", "Import plugin didn't create anything.  Check ".$repo->config( 'perl_url' )."/schema to ensure the metadata being sent is valid." );
 		$self->plugin_error( $plugin, \@messages );
 		return undef;
 	}
@@ -2574,33 +2583,12 @@ http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 
 http://en.wikipedia.org/wiki/Content_negotiation
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2023 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE

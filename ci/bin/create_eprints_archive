@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#adapted from eprints_ci
+
+ARCHIVE_NAME=$1
+ARCHIVE_CONFIG_FILE=$2
+
+if [[ "$ARCHIVE_NAME" == "" ]]; then 
+	echo "No archive specified"
+	exit 1
+fi
+if [[ "$ARCHIVE_CONFIG_FILE" == "" ]]; then
+	echo "No location specified"
+	exit 2
+fi
+
+d=`dirname $0`
+
+EPRINTS_PATH="/opt/eprints3"
+
+sudo systemctl stop httpd
+sudo systemctl stop epindexer
+if [[ -d /var/lib/mysql/$ARCHIVE_NAME ]]; then
+	sudo mysql -e "DROP DATABASE $ARCHIVE_NAME;"
+	sudo mysql -e "DROP USER $ARCHIVE_NAME@localhost;"
+fi
+rm -rf $EPRINTS_PATH/archives
+$EPRINTS_PATH/bin/epadmin create --config=${ARCHIVE_CONFIG_FILE}
+# fixup ssl. Assumes ssl was set up by certbot (when you will need to add line "PerlSetVar EPrints_Secure yes")
+cp /home/eprints/playwright-le-ssl.conf /opt/eprints3/cfg/apache/playwright-le-ssl.conf
+$EPRINTS_PATH/testdata/bin/import_test_data ${ARCHIVE_NAME}
+sudo systemctl start httpd
+rm -f $EPRINTS_PATH/var/indexer.pid $EPRINTS_PATH/var/indexer.tick
+sudo systemctl start epindexer

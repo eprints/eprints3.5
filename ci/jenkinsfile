@@ -1,0 +1,55 @@
+pipeline{
+    agent any
+    /** Note - because eprints is running on node "eprints_35_deploy" but playwright is running on "playwright" there's a risk another job could 
+    steal the eprints node mid-test.
+
+    For future expansion: multiple lockable resources which can return a proprety of the node they're locking, then we use that node? not sure if that's supported
+     */
+    options {
+        lock resource: 'eprints_35_deploy_lock'
+    }
+    stages{
+        
+        stage('Configure EPrints'){
+            agent {
+                node {
+                    label 'eprints_35_deploy'
+                    customWorkspace '/opt/eprints3/'
+                }
+            }
+            steps{
+                checkout scm
+                sh "pwd"
+                withCredentials([file(credentialsId: 'playwright_archive_config', variable: 'secretFile')]) {
+                    sh 'ci/bin/create_eprints_archive playwright $secretFile'
+                }
+            
+                
+            }
+        }
+        stage('Run Tests'){
+            steps{
+                node('playwright'){
+                    // l
+                    checkout scm
+                    withCredentials([file(credentialsId: 'playwright_credentials', variable: 'secretFile')]) {
+                        dir("ci/pytest"){
+                            script {
+                                try {
+                                    sh './jenkins_run_tests.sh $secretFile'
+                                }
+                                catch (err) {                                        
+                                    unstable(message: "${STAGE_NAME} is unstable")
+                                }
+                            }
+                            // we always want to archive results even if the tests don't all pass
+                            junit '*.xml'
+                            archiveArtifacts 'test-results/**/*'
+                        }
+                    }
+                }
+            }
+        }
+    
+    }
+}

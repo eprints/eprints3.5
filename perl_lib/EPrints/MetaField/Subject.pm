@@ -485,10 +485,14 @@ sub get_values
 {
 	my( $self, $session, $dataset, %opts ) = @_;
 
+	my $showall = defined $opts{showall} ? $opts{showall} : 0;
+	my $showtop = defined $opts{showtop} ? $opts{showtop} : 1;
+
 	my $topsubj = $self->get_top_subject( $session );
+
 	my ( $pairs ) = $topsubj->get_subjects(
-		0,
-		1,
+		!$showall,
+		$showtop,
 		0 );
 	my @outvalues;
 	my $seen = {};
@@ -505,39 +509,23 @@ sub tags
 {
 	my( $self, $session ) = @_;
 
-	return @{$self->get_values( $session )};
+	my %opts = (
+		showtop => $self->{showtop},
+		showall => $self->{showall},
+	);
+
+	return @{$self->get_values( $session, undef, %opts )};
 }
 
 ######################################################################
 1;
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-=begin COPYRIGHT
+=begin COPYRIGHT_AND_LICENSE
 
-Copyright 2023 University of Southampton.
-EPrints 3.4 is supplied by EPrints Services.
+Copyright University of Southampton under the GNU Lesser General Public License. See README at https://github.com/eprints/eprints3.5 for further information.
 
-http://www.eprints.org/eprints-3.4/
+EPrints 3.5 is supplied by EPrints Services.
 
-=end COPYRIGHT
-
-=begin LICENSE
-
-This file is part of EPrints 3.4 L<http://www.eprints.org/>.
-
-EPrints 3.4 and this file are released under the terms of the
-GNU Lesser General Public License version 3 as published by
-the Free Software Foundation unless otherwise stated.
-
-EPrints 3.4 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with EPrints 3.4.
-If not, see L<http://www.gnu.org/licenses/>.
-
-=end LICENSE
-
+=end COPYRIGHT_AND_LICENSE
