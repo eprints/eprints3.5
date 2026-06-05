@@ -37,6 +37,22 @@ BEGIN
 
 use EPrints::MetaField;
 
+sub new
+{
+        my( $class, %properties ) = @_;
+
+	my %defaults = $class->get_property_defaults;
+
+	if ( !$properties{form_input_style} && defined $properties{input_style} && $properties{input_style} ne $defaults{form_input_style} )
+	{
+		$properties{form_input_style} = $properties{input_style};
+	}
+
+	my $self = $class->SUPER::new( %properties );
+
+	return $self;
+}
+
 
 sub get_sql_type
 {
@@ -180,7 +196,14 @@ sub get_basic_input_elements
 			$f->appendChild( $session->make_element( "br" ) );
 		}
 		
-		return [[{ el=>$f }]];
+		my $fieldset = $session->make_element( "fieldset", class=>"ep_boolean_fieldset" );
+		my $legend = $session->make_element( "legend" );
+		my $legendtext = $session->make_text( EPrints::Utils::tree_to_utf8( $self->render_name( $self->{session} ) ) . EPrints::Utils::tree_to_utf8( $session->html_phrase( "lib/metafield/set:legend_suffix" ) ) );
+		$legend->appendChild( $legendtext );
+		$fieldset->appendChild( $legend );
+		$fieldset->appendChild( $f );
+
+		return [[{ el=>$fieldset }]];
 	}
 			
 	# render as checkbox (ugly)

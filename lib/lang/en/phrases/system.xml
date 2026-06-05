@@ -2679,7 +2679,7 @@ Titles and Help for the System Fields
       <div class="ep_subjectinput_searchbar mb-3 border rounded m-3 mb-4 p-3 shadow-sm">
         <div class="row g-2 align-items-center justify-content-center">
           <div class="col-auto">
-            <label class="col-form-label mb-0"><epc:pin name="label"/>:</label>
+            <epc:pin name="label"/>:
           </div>
           <div class="col-auto d-flex gap-3">
             <epc:pin name="input"/>
@@ -3441,6 +3441,7 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldname_ids_id_type">Identifier Types</epp:phrase>
     <epp:phrase id="person_fieldname_id_value">Primary Identifier</epp:phrase>
     <epp:phrase id="person_fieldname_id_type">Primary Identifier Type</epp:phrase>
+    <epp:phrase id="person_id_type_typename_">Unspecified ID Type</epp:phrase>
     <epp:phrase id="person_id_type_typename_email">Email</epp:phrase>
     <epp:phrase id="person_id_type_typename_username">Username</epp:phrase>
     <epp:phrase id="person_fieldname_name">Primary Name</epp:phrase>
@@ -3488,6 +3489,7 @@ Titles and Help for the System Fields
     <epp:phrase id="organisation_fieldname_ids_id_type">Identifier Types</epp:phrase>
     <epp:phrase id="organisation_fieldname_id_value">Primary Identifier</epp:phrase>
     <epp:phrase id="organisation_fieldname_id_type">Primary Identifier Type</epp:phrase>
+    <epp:phrase id="organisation_id_type_typename_">Unspecified ID Type</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_ror">ROR</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_url">URL</epp:phrase>
     <epp:phrase id="organisation_id_type_typename_email">Email</epp:phrase>
@@ -3531,10 +3533,12 @@ Titles and Help for the System Fields
     <epp:phrase id="archive:workflow:stage:files:title" ref="metapage_title_files"/>
     <epp:phrase id="archive:workflow:stage:core:title" ref="metapage_title_core"/>
     <epp:phrase id="archive:workflow:stage:subjects:title" ref="metapage_title_subjects"/>
+    <epp:phrase id="archive:workflow:stage:divisions:title" ref="metapage_title_divisions"/>
 
     <epp:phrase id="eprint:workflow:stage:files:title" ref="archive:workflow:stage:files:title"/>
     <epp:phrase id="eprint:workflow:stage:core:title" ref="archive:workflow:stage:core:title"/>
     <epp:phrase id="eprint:workflow:stage:subjects:title" ref="archive:workflow:stage:subjects:title"/>
+    <epp:phrase id="eprint:workflow:stage:divisions:title" ref="archive:workflow:stage:divisions:title"/>
 
     <epp:phrase id="Plugin/Screen:render_action_img_suffix"> button</epp:phrase>
     <epp:phrase id="Plugin/Screen/Listing:title">View</epp:phrase>
@@ -3791,5 +3795,9 @@ EPrints Homepage Menu
 <epp:phrase id="homepage_menu_option_about:desc">More information about this site.</epp:phrase>
 <epp:phrase id="homepage_menu_option_policies:title">Repository Policies</epp:phrase>
 <epp:phrase id="homepage_menu_option_policies:desc">Policy for use of material in this repository.</epp:phrase>
+
+<!-- PDF Viewer -->
+<epp:phrase id="pdf_viewer:expand">Expand PDF Preview</epp:phrase>
+<epp:phrase id="pdf_viewer:toggle">Expand/Contract PDF Preview</epp:phrase>
 
 </epp:phrases>

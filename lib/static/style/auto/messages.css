@@ -31,3 +31,8 @@
 .ep_msg_message_text p:last-child, .ep_msg_error_text p:last-child, .ep_msg_warning_text p:last-child, .ep_msg_other_text p:last-child {
         margin-bottom: 0;
 }
+
+.ep_msg_message_text code {
+	color: #9300fe;
+	font-weight: bolder;
+}
