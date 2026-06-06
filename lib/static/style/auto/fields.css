@@ -62,3 +62,7 @@ dl.ep_field_set_long dd {
 .ep_field_set_long label, .ep_field_set_medium label {
 	display: inline;
 }
+
+.ep_option_list_long legend, .ep_option_list_medium legend, .ep_boolean_fieldset legend {
+	display: none;
+}

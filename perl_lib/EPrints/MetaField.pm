@@ -1831,17 +1831,28 @@ sub get_describedby
         }
         $basename_top =~ s/_\d+$// if $multiple;
         $basename_top =~ s/$self->{name}/$parent->{name}/ unless $self->{name} eq $parent->{name};
-        $basename_top =~ s/$parent->{name}// if $one_field_component;
+        $basename_top =~ s/$parent->{name}_// if $one_field_component;
         my @basename_bits = split( "_", $basename_top );
-        if ( ( defined $basename_bits[1] && $basename_bits[1] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" )
-        {
-                push @basename_bits, 'help';
-        }
-        else
-        {
-                splice(@basename_bits, 1, 0, ('help') );
-        }
-        return join( "_", @basename_bits );
+
+	if ( ( defined $basename_bits[1] && $basename_bits[1] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" || $one_field_component )
+	{
+		if ( $basename_bits[0] =~ /^c[0-9]+$/ )
+		{
+			my $basename_new =  $basename_bits[0] . "_help";
+			@basename_bits = split( "_", $basename_new );
+		}
+		else
+		{
+			push @basename_bits, 'help';
+		}
+	}
+	else
+	{
+		my @name_bits = split( $parent->{name}, $basename_top );
+		my $basename_new = $name_bits[0] ? $name_bits[0] . "help_" . $parent->{name} : $parent->{name} . "_help";
+		@basename_bits = split( "_", $basename_new );
+	}
+	return join( "_", @basename_bits );
 }
 
 

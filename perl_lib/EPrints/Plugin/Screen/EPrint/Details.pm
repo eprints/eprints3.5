@@ -73,7 +73,7 @@ sub _render_name_maybe_with_link
 	return $r_name if( !defined $stage );
 
 	my $url = "?eprintid=".$eprint->get_id."&screen=".$self->edit_screen_id."&stage=$stage#$name";
-	my $link = $eprint->{session}->render_link( $url );
+	my $link = $eprint->{session}->render_link( $url, undef, id => $name );
 	$link->setAttribute( title => $self->phrase( "edit_field_link",
 			field => $self->{session}->xhtml->to_text_dump( $r_name )
 		) );

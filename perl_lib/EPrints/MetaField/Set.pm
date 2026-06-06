@@ -265,18 +265,28 @@ sub render_set_input
 
 	my( $fieldset, $list );
 
+	if( $input_style eq "long" || $input_style eq "medium" )
+	{
+		$fieldset = $session->make_element( "fieldset", class=>"flex-grow-1 ep_option_list ep_option_list_" . $input_style );
+		my $legend = $session->make_element( "legend" );
+		my $legendtext = $session->make_text( EPrints::Utils::tree_to_utf8( $self->render_name( $self->{session} ) ) . EPrints::Utils::tree_to_utf8( $session->html_phrase( "lib/metafield/set:legend_suffix" ) ) );
+		$legend->appendChild( $legendtext );
+		$fieldset->appendChild( $legend );
+	}
 	if( $input_style eq "long" )
 	{
 		$list = $session->make_element( "dl", class=>"form-control m-0 ep_field_set_" . $input_style );
+		$fieldset->appendChild( $list );
 	}
 	elsif ( $input_style eq "medium" )	
 	{
 		 $list = $session->make_element( "ul", class=>"form-control m-0 ep_field_set_" . $input_style );
+		 $fieldset->appendChild( $list );
 	}
 	else
 	{
 		$list = $session->make_element( "fieldset", class=>"ep_option_list" );
-		my $legend = $session->make_element( "legend", id=> $basename."_label", class=>"ep_field_legend", "aria-labelledby" => $basename."_legend_label" );
+		my $legend = $session->make_element( "legend", id=> $basename."_label", class=>"ep_field_legend" );
 	        my $legendtext = $session->make_text( EPrints::Utils::tree_to_utf8( $self->render_name( $self->{session} ) ) . EPrints::Utils::tree_to_utf8( $session->html_phrase( "lib/metafield/set:legend_suffix" ) ) );
         	if( $self->{required} )
 	        {

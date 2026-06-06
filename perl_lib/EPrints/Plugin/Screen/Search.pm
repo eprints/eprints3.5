@@ -835,7 +835,7 @@ sub render_facet_list
 
 	if( $show_this_facet )
 	{
-		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
+		my $heading = $session->make_element( "h2", "class" => "ep_facet_heading" );
 		my $field_name = $session->phrase( $facet_config->{field_name} ) if defined $facet_config->{field_name};
 		$heading->appendChild( $session->make_text( $field_name || $field->render_name ) );
 
