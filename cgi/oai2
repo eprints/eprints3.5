@@ -680,7 +680,7 @@ sub ListSets
 			$set->appendChild( $repo->xhtml->data_element(
 				"setSpec",
 				$spec ) );
-			my $name = $repo->get_view_name( $ds, $info->{id} )." = ".$v{$_};
+			my $name = _set_group_name( $repo, $info->{id} )." = ".$v{$_};
 			$set->appendChild( $repo->xhtml->data_element(
 				"setName",
 				$name ) );
@@ -960,6 +960,13 @@ END
 	}
 
 	return ();
+}
+
+sub _set_group_name 
+{
+	my( $repo, $set_group_id ) = @_;
+	
+	return $repo->phrase( "oai_set_group_name_". $set_group_id );
 }
 
 1;
