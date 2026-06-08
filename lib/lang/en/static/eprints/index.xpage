@@ -29,47 +29,30 @@
 
 <p><a rel="external" href="https://www.eprints.org/uk/index.php/services/">EPrints Services</a> based in Southampton can also provide hosting, training and consultancy services for your EPrints repository.</p>
 
-<h2 id="credits">Credits</h2>
+<h2 id="credits">EPrints 3v5 Credits</h2>
 
 <h3 id="software-architects">Software Architects</h3>
 <ul>
-  <li>Christopher Gutteridge</li>
-  <li>Dr Tim Brody</li>
-  <li>Seb Francois</li>
   <li>Professor Justin Bradley</li>
+  <li>Dr David Newman</li>
 </ul>
 
 <h3 id="developers">Developers</h3>
 <ul>
-  <li>Dr David Newman</li>
-  <li>Dr Don Cruickshank</li>
   <li>Ed Oakley</li>
-  <li>Kelly Terrell</li>
-  <li>Dr Will Fyson</li>
-  <li>Dr Jiadi Yao</li>
-  <li>Adam Field</li>
-  <li>Dr Timothy Miles-Board</li>
-  <li>Dr Dave Tarrant</li>
-  <li>Patrick McSweeney</li>
+  <li>Luke Wallin</li>
+  <li>William Rose</li>
+  <li>William Robertson</li>
+  <li>Dr Don Cruickshank</li>
+  <li>Richard Cook</li>
 </ul>
 
 <h3 id="contributors">Contributors</h3>
 <ul>
-  <li>Alexander Bergolth</li>
-  <li>Dr Michael O. Jewell</li>
-  <li>Dr Jessie Hey</li>
-  <li>Dr Harry Mason</li>
-  <li>Al Riddoch</li>
-  <li>Dr Gui Power</li>
-  <li>Pauline Simpson</li>
-  <li>Robert Tansley</li>
-  <li>Adam White</li>
-  <li>Wendy White</li>
-  <li>Dr Steve Hitchcock</li>
-  <li>Denis Pitzalis</li>
-  <li>Matthew Kerwin</li>
-  <li>Mark Gregson</li>
   <li>John Salter</li>
+  <li>Alex Ball</li>
+  <li>Adam Field</li>
+  <li>Martin Braendle</li>
 </ul>
 
 <h3 id="project-management">Project Management</h3>
@@ -78,15 +61,7 @@
   <li>John Darlington</li>
 </ul>
 
-<h3 id="user-experience-consultant">user experience consultant</h3>
-<ul>
-  <li>prof mc schraefel</li>
-</ul>
-
-<h3 id="visonary-and-software-specifications">Visionary and Software Specifications</h3>
-<ul>
-  <li>Professor Stevan Harnad</li>
-</ul>
+<p><a href="credits.html">Extended List of Credits</a></p>
 
 <p>Thanks to the EPrints users and community for contributing ideas, bug reports and fixes.</p>
 
@@ -118,7 +93,7 @@
 
 <div style="text-align: center; margin-top: 2em;">
   <a href="https://www.southampton.ac.uk/" target="_blank"><img src="{$config{rel_path}}/images/uoslogo.png" style="border: 0; vertical-align: top; max-width: 500px;"  alt="University of Southampton"/></a>
-  <p>EPrints is Copyright &#169; University of Southampton, 2000-2025.</p>
+  <p>EPrints is Copyright &#169; University of Southampton, 2000-2026.</p>
 </div>
 
 </xpage:body>
