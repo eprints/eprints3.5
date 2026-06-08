@@ -1834,7 +1834,7 @@ sub get_describedby
         $basename_top =~ s/$parent->{name}_// if $one_field_component;
         my @basename_bits = split( "_", $basename_top );
 
-	if ( ( defined $basename_bits[1] && $basename_bits[1] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" || $one_field_component )
+	if ( ( defined $basename_bits[2] && $basename_bits[2] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" || $one_field_component )
 	{
 		if ( $basename_bits[0] =~ /^c[0-9]+$/ )
 		{
