@@ -2324,7 +2324,7 @@ Titles and Help for the System Fields
     <epp:phrase id="Plugin/Screen/Import:import_section">
 <div class="ep_import_bar">
 <div>
-  <div><label>Import from <epc:pin name="menu"/></label><epc:pin name="button"/></div>
+  <div><label for="import_format">Import from</label> <epc:pin name="menu"/><epc:pin name="button"/></div>
 </div>
 <div>
   <div>

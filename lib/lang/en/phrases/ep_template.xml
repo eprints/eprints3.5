@@ -563,11 +563,11 @@
     <div class="ep_columns_add">
       <epv:form method="post" action="{current_url()}">
         <input type="hidden" name="screen" id="screen" value="{screen}"/>
-        <label>
+        <label for="col">
           <epc:phrase ref="Plugin/Screen/{screen}:add_label"/>
-          <epc:whitespace empty="preserve"> </epc:whitespace>
-          <epc:print expr="add_column_option_list"/>
         </label>
+        <epc:whitespace empty="preserve"> </epc:whitespace>
+        <epc:print expr="add_column_option_list"/>
         <epv:button value="{string_phrase(concat('Plugin/Screen/', screen, ':add'))}" role="button" name="_action_add_col"/>
       </epv:form>
     </div>
