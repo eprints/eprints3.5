@@ -1821,18 +1821,18 @@ sub get_describedby
 	return "" if defined $self->{help_xhtml} && EPrints::Utils::tree_to_utf8( $self->{help_xhtml} ) eq "";
 
 	my $basename_top = $basename;
-        $basename_top =~ s/_\d+_/_/ if $self->{multiple} || ( defined $self->{parent} && $self->{parent}->{multiple} );
-        my $parent = $self;
-        my $multiple = $self->{multiple};
-        while ( defined $parent->{parent} )
-        {
-                $parent = $parent->{parent};
-                $multiple = $multiple || $parent->{multiple};
-        }
-        $basename_top =~ s/_\d+$// if $multiple;
-        $basename_top =~ s/$self->{name}/$parent->{name}/ unless $self->{name} eq $parent->{name};
-        $basename_top =~ s/$parent->{name}_// if $one_field_component;
-        my @basename_bits = split( "_", $basename_top );
+	$basename_top =~ s/_\d+_/_/ if $self->{multiple} || ( defined $self->{parent} && $self->{parent}->{multiple} );
+	my $parent = $self;
+	my $multiple = $self->{multiple};
+	while ( defined $parent->{parent} )
+	{
+		$parent = $parent->{parent};
+		$multiple = $multiple || $parent->{multiple};
+	}
+	$basename_top =~ s/_\d+$// if $multiple;
+	$basename_top =~ s/$self->{name}/$parent->{name}/ unless $self->{name} eq $parent->{name};
+	$basename_top =~ s/$parent->{name}_// if $one_field_component;
+	my @basename_bits = split( "_", $basename_top );
 
 	if ( ( defined $basename_bits[2] && $basename_bits[2] =~ m/^doc\d+/ ) || $basename_bits[0] eq "requester" || $one_field_component )
 	{
@@ -1849,6 +1849,17 @@ sub get_describedby
 	else
 	{
 		my @name_bits = split( $parent->{name}, $basename_top );
+
+		# When component and field share same name or start of name
+		# (It is probably possible to just remove parent name from the end more generally 
+		# but there may be use cases where that does not do the right thing).
+		if ( scalar @name_bits gt 1 )
+		{
+			my $name_bit_0 = $basename_top; 
+			$name_bit_0 =~ s/$parent->{name}$//;
+			@name_bits = ( $name_bit_0 );
+		}
+		
 		my $basename_new = $name_bits[0] ? $name_bits[0] . "help_" . $parent->{name} : $parent->{name} . "_help";
 		@basename_bits = split( "_", $basename_new );
 	}

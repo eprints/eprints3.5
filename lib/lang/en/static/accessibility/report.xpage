@@ -10,7 +10,7 @@
     <div class="ep_msg_message_icon" style="width: 32px;">
       <img alt="Message" src="/style/images/message.png"/>
     </div>
-    <div class="ep_msg_message_text">This report is based on a default publication flavour installation of <a href="https://www.eprints.org/uk/index.php/eprints-3-4/" rel="external">EPrints 3.4</a> using the data imported by the testdata/bin/import_test_data script.  Any rebranding to EPrints or significant customisation is liable to significantly alter the results show below.</div>
+    <div class="ep_msg_message_text">This report is based on a default publication flavour installation of <a href="https://github.com/eprints/eprints3.5" rel="external">EPrints 3.5</a>, using the data imported by the testdata/bin/import_test_data script.  Any rebranding to EPrints or significant customisation is liable to significantly alter the results show below.</div>
   </div>
 </div>
 
@@ -28,7 +28,7 @@
 </ul>
 
 <h2 id="introduction">Introduction</h2>
-<p>This report is intended to present the results of the testing of <epc:phrase ref="archive_name"/> to assess its accessibility compliance.  This has been undertaken with the use of the <a href="https://wave.webaim.org/extension/" rel="external">Chrome Extension</a> of the <a href="https://wave.webaim.org/" rel="external">WAVE web accessibility evaluation tool</a>.  To emulate user-generated content EPrints' testdata/bin/import_test_data script has been used to import 100 publications to populate various pages under test.  In addition to this one empty (unedited) publication was added and a Saved Search for "Habits" was created. Also, due to a permissions change "+eprint/remove_once_archived" and "+eprint/remove_with_email" has been added to the admin user who is logged in to test the non-public administration pages.</p>
+<p>This report is intended to present the results of the testing of <epc:phrase ref="archive_name"/> to assess its compliance to <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2 Level A</a>.  This has been undertaken with the use of the <a href="https://wave.webaim.org/extension/" rel="external">Firefox Extension</a> of the <a href="https://wave.webaim.org/" rel="external">WAVE web accessibility evaluation tool</a>.  To emulate user-generated content EPrints' testdata/bin/import_test_data script has been used to import 100 publications to populate various pages under test.  In addition to this one empty (unedited) publication was added and a Saved Search for "Habits" was created. Also, due to a permissions change "+eprint/remove_once_archived" and "+eprint/remove_with_email" has been added to the admin user who is logged in to test the non-public administration pages.</p>
 <p>Where there are known issues, the comments section should describe the reasons and where appropriate how these issues are likely be addressed.</p>
 
 <h2 id="test-results">Test Results</h2>
@@ -42,137 +42,142 @@
   </tr>
   <tr> 
     <td><a href="{$config{rel_path}}/"><epc:print expr="$config{rel_path}"/>/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;10&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;13</div></td>
-    <td>None</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;15</div><div class="ep_accessibility_good">Features:&#160;26&#160;|&#160;Structural&#160;Elements:&#160;21&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>9.7</big> / 10</div></td>
+    <td>8 alerts due to redundant links as first creator on latest addition items is link directly on the page as well as a popup listing all creators, making either of these links unclickable would be confusing.  7 alerts are due to nearby images sharing the same alternative text, due to the way the import_test_data script works.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/information.html"><epc:print expr="$config{rel_path}"/>/information.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/"><epc:print expr="$config{rel_path}"/>/view/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/year/"><epc:print expr="$config{rel_path}"/>/view/year/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content.</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/view/year/2004.html"><epc:print expr="$config{rel_path}"/>/view/year/2004.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;21&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><a href="{$config{rel_path}}/view/year/2022.html"><epc:print expr="$config{rel_path}"/>/view/year/2022.html</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;26&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Contains user-generated content.  Only testing one listing per browse view type.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/subjects/"><epc:print expr="$config{rel_path}"/>/view/subjects/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;220&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;224&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/subjects/D.html"><epc:print expr="$config{rel_path}"/>/view/subjects/D.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;24&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;29&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content. Only testing one sub-menu per browse view type.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/subjects/D051.html"><epc:print expr="$config{rel_path}"/>/view/subjects/D051.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Contains user-generated content. Only testing one listing per browse view type.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/divisions/"><epc:print expr="$config{rel_path}"/>/view/divisions/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content.</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/view/divisions/sch=5Fmat/"><epc:print expr="$config{rel_path}"/>/view/divisions/sch=5fmat/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><a href="{$config{rel_path}}/view/divisions/sch=5Fmat/"><epc:print expr="$config{rel_path}"/>/view/divisions/sch=5Fmat/</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content. Only testing one sub-menu per browse view type.</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/view/divisions/sch=5Fmat/1998.html"><epc:print expr="$config{rel_path}"/>/view/divisions/sch=5Fmat/1998.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><a href="{$config{rel_path}}/view/divisions/sch=5Fmat/2016.html"><epc:print expr="$config{rel_path}"/>/view/divisions/sch=5Fmat/2016.html</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Contains user-generated content. Only testing one listing per browse view type.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/creators/"><epc:print expr="$config{rel_path}"/>/view/creators/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Index based on user-generated content.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/view/creators/Bonardi=3AN=2E=3A=3A.html"><epc:print expr="$config{rel_path}"/>/view/creators/Bonardi=3AN=2E=3A=3A.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Contains user-generated content. Only testing one listing per browse view type.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/id/eprint/4/"><epc:print expr="$config{rel_path}"/>/id/eprint/4/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;9&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;14</div></td>
-    <td>Contains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Conference of Workshop Item&quot;. 3 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;24&#160;|&#160;ARIA:&#160;58</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Contains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Conference of Workshop Item&quot;. 2 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL. 1 alert is due to using a PDF viewer plugin.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/id/eprint/54/"><epc:print expr="$config{rel_path}"/>/id/eprint/54/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;9&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;14</div></td>
-    <td>Contains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Article&quot;. 2 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;54</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>ontains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Conference of Workshop Item&quot;. 2 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL. 1 alert is due to using a PDF viewer plugin.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/login"><epc:print expr="$config{rel_path}"/>/cgi/users/login</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;18</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/logout"><epc:print expr="$config{rel_path}"/>/cgi/logout</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/latest"><epc:print expr="$config{rel_path}"/>/cgi/latest</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;17</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Contains user-generated content.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/advanced"><epc:print expr="$config{rel_path}"/>/cgi/search/advanced</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;67&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;100</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;81&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;74</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/archive/advanced?screen=Search&amp;dataset=archive&amp;_action_search=Search&amp;documents_merge=ALL&amp;documents=&amp;title_merge=ALL&amp;title=Habits&amp;subjects_merge=ANY&amp;satisfyall=ALL&amp;order=title%2Ftype"><epc:print expr="$config{rel_path}"/>/cgi/search/archive/advanced?screen=Search...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;21</div><div class="ep_accessibility_good">Features:&#160;32&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;20</div></td>
-    <td>10 (of 21) alerts are caused by thumbnail image previews of PDFs having the same alternative text, due to the original PDF filenames are the same, due to the wat the import_test_data script works. The other 11 (of 21) alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. (Based on a search of "Habits" in title field. Contains user-generated content.)</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;21</div><div class="ep_accessibility_good">Features:&#160;44&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>9.6</big> / 10</div></td>
+    <td>10 (of 21) alerts are caused by thumbnail image previews of PDFs having the same alternative text, due to the original PDF filenames are the same, due to the way the import_test_data script works. The other 11 (of 21) alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. (Based on a search of "Habits" in title field. Contains user-generated content.)</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/simple"><epc:print expr="$config{rel_path}"/>/cgi/search/simple</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;16</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/archive/simple?screen=Search&amp;dataset=archive&amp;_action_search=Search&amp;dataset=archive&amp;order=&amp;q=Habits&amp;_action_search=Search"><epc:print expr="$config{rel_path}"/>/cgi/search/archive/simple?screen=Search...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;21</div><div class="ep_accessibility_good">Features:&#160;32&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;20</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;21</div><div class="ep_accessibility_good">Features:&#160;44&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>9.6</big> / 10</div></td>
     <td>Same alerts as for /cgi/search/archive/advanced?screen=Search... (Based on a search of "Habits" in title field. Contains user-generated content.)</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/policies.html"><epc:print expr="$config{rel_path}"/>/policies.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;20</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/eprints/"><epc:print expr="$config{rel_path}"/>/eprints/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;24&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;27&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/eprints/credits.html"><epc:print expr="$config{rel_path}"/>/eprints/credits.html</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;27&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/error401.html"><epc:print expr="$config{rel_path}"/>/error401.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>One alert is due to registration link appearing in both the menu and main content of the page.  This is appropriate, to make it as straightforward as possible for a user to gain legitimate access.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/accessibility/"><epc:print expr="$config{rel_path}"/>/accessibility/</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;32&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;38&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/accessibility/report.html"><epc:print expr="$config{rel_path}"/>/accessibility/report.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;37&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
 </table>
@@ -187,232 +192,347 @@
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home"><epc:print expr="$config{rel_path}"/>/cgi/users/home</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;64&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;57</div></td>
-    <td>Alerts due to two redundant links as &quot;Show All&quot; links are same as links to show 100 items, as there is exactly 100 items from test data.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;55&#160;|&#160;Structural&#160;Elements:&#160;32&#160;|&#160;ARIA:&#160;46</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Items"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Items</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;64&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;57</div></td>
-    <td>Alerts the same as /cgi/users/home as this is effectively the same page.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;55&#160;|&#160;Structural&#160;Elements:&#160;32&#160;|&#160;ARIA:&#160;46</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None. (Effectively the same as /cgi/users/home).</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AView&amp;eprintid=4"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AView&amp;eprintid=4</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;6</div><div class="ep_accessibility_good">Features:&#160;11&#160;|&#160;Structural&#160;Elements:&#160;64&#160;|&#160;ARIA:&#160;73</div></td>
-    <td>Alerts due to five links to PDF documents (essential to the purpose of an Open Access repository) and one suspicious link text "Details" which within the context of the page is appropriate.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;6</div><div class="ep_accessibility_good">Features:&#160;9&#160;|&#160;Structural&#160;Elements:&#160;79&#160;|&#160;ARIA:&#160;121</div><div class="ep_accessibility_score">AIM Score: <big>9.8</big> / 10</div></td>
+    <td>Alerts due to four links to PDF documents (essential to the purpose of an Open Access repository). One suspicious link text "Details" which within the context of the page is appropriate.  The final alert is due to the PDF viewer plugin in the "Details" tab.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=type"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=type</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;9&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;59</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;29&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;48</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=files"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=files</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;42&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;63</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;49&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;66</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to one link to a PDF document (essential to the purpose of an Open Access repository).</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=core"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=core</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;99&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;157</div></td>
-    <td>None</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;6</div><div class="ep_accessibility_good">Features:&#160;141&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;124</div><div class="ep_accessibility_score">AIM Score: <big>9.9</big> / 10</div></td>
+    <td>Six alerts due to "Contributions" field clear row buttons being defined as links with "javascript:" set for the href attribute.  A future version will look to replace these with proper buttons.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=subjects"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=subjects</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;10&#160;|&#160;Structural&#160;Elements:&#160;52&#160;|&#160;ARIA:&#160;266</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;244&#160;|&#160;Structural&#160;Elements:&#160;58&#160;|&#160;ARIA:&#160;274</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=divisions"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3AEdit&amp;eprintid=4&amp;stage=divisions</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;25&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;52</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3ADeposit&amp;eprintid=4"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3ADeposit&amp;eprintid=4</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;20</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;27</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=uploadPDFs"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=UploadPDFs</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;20</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None.</td>
+  </tr>
+  <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?format=XML&amp;_action_import_from=Import&amp;screen=Import"><epc:print expr="$config{rel_path}"/>/cgi/users/home?format=XML&amp;_action_import_from=Import&amp;screen=Import</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;27</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;18&#160;|&#160;ARIA:&#160;36</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None. (Only one EPrint import form is tested as forms for different formats are almost identical).</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=DataSets"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=DataSets</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=eprint"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=eprint</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;12</div><div class="ep_accessibility_good">Features:&#160;60&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;71</div></td>
-    <td>>2 (of 12) alerts due to redundant links as &quot;Show All&quot; links are same as links to show 100 items, as there is exactly 100 items from test data. 10 (of 12) alerts due to links to PDF documents (essential for an Open Access repository).</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;70&#160;|&#160;Structural&#160;Elements:&#160;31&#160;|&#160;ARIA:&#160;64</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=eprint&amp;dataobj=4"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=eprint&amp;dataobj=4</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;48&#160;|&#160;ARIA:&#160;24</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;61&#160;|&#160;ARIA:&#160;37</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alerts due to two links to PDF documents (essential for an Open Access repository) and a suspicious link text "Details" which within the context of the page is appropriate.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=event_queue"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=event_queue</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;39&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;36</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;50&#160;|&#160;Structural&#160;Elements:&#160;23&#160;|&#160;ARIA:&#160;39</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to possible table caption due to deliberate feature to indicate a table has "No items" rather than displaying as empty that might imply something is broken.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=file"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=file</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;60&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;69</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;65&#160;|&#160;Structural&#160;Elements:&#160;31&#160;|&#160;ARIA:&#160;64</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=file&amp;dataobj=3"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=file&amp;dataobj=3</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;23&#160;|&#160;ARIA:&#160;20</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;32</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
   </tr>
   <tr>
-    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=import"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=import</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;30&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;30</div></td>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=organisation"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=organisation</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;55&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;50</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=organisation&amp;dataobj=3"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=organisation&amp;dataobj=3</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;33</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AView&amp;dataset=organisation&amp;dataobj=3"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AView&amp;dataset=organisation&amp;dataobj=3</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;42</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=organisation"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=organisation</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;34</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AUpdateIDs&amp;dataobj=3&amp;dataset=organisation"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AUpdateIDs&amp;dataobj=3&amp;dataset=organisation</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;34</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3ASplit&amp;dataobj=3&amp;dataset=organisation"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3ASplit&amp;dataobj=3&amp;dataset=organisation</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;36</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=page"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=page</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;175&#160;|&#160;Structural&#160;Elements:&#160;21&#160;|&#160;ARIA:&#160;35</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to possible table caption due to deliberate feature to indicate a table has "No items" rather than displaying as empty that might imply something is broken.</td>
   </tr>
   <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=person"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=person</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;78&#160;|&#160;Structural&#160;Elements:&#160;31&#160;|&#160;ARIA:&#160;74</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AView&amp;dataset=person&amp;dataobj=3"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AView&amp;dataset=person&amp;dataobj=3</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;42</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=person"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=person</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=person"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AUpdateNames&amp;dataobj=3&amp;dataset=person</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3AUpdateIDs&amp;dataobj=3&amp;dataset=person"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3AUpdateIDs&amp;dataobj=3&amp;dataset=person</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Entity%3A%3ASplit&amp;dataobj=3&amp;dataset=person"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Entity%3A%3ASplit&amp;dataobj=3&amp;dataset=person</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;23</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=person&amp;dataobj=3"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=person&amp;dataobj=3</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;33</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
+  </tr>
+  <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=saved_search"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=saved_search</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;23&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;28</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;26&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;32</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=saved_search&amp;dataobj=1"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=saved_search&amp;dataobj=1</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;23&#160;|&#160;ARIA:&#160;21</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;30&#160;|&#160;ARIA:&#160;33</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=saved_search&amp;dataobj=1"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=saved_search&amp;dataobj=1</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;17&#160;|&#160;Structural&#160;Elements:&#160;10&#160;|&#160;ARIA:&#160;31</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;28&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;30</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=subject"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=subject</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;40&#160;|&#160;Structural&#160;Elements:&#160;25&#160;|&#160;ARIA:&#160;51</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;45&#160;|&#160;Structural&#160;Elements:&#160;31&#160;|&#160;ARIA:&#160;46</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=subject&amp;dataobj=A"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=subject&amp;dataobj=A</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;17</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;18&#160;|&#160;ARIA:&#160;25</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Listing&amp;dataset=user"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Listing&amp;dataset=user</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;33&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;34</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;38&#160;|&#160;Structural&#160;Elements:&#160;22&#160;|&#160;ARIA:&#160;37</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=user&amp;dataobj=1"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AView&amp;dataset=user&amp;dataobj=1</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;31&#160;|&#160;ARIA:&#160;22</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;38&#160;|&#160;ARIA:&#160;34</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to suspicious link text "Details" which within the context of the page is appropriate.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=user&amp;dataobj=1&amp;stage=usertype"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=user&amp;dataobj=1&amp;stage=usertype</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;17&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;36</div></td>
-    <td>None</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;26&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;39</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Alerts due to "Roles" field clear row buttons being defined as links with "javascript:" set for the href attribute.  A future version will look to replace these with proper buttons.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=user&amp;dataobj=1&amp;stage=default"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=user&amp;dataobj=1&amp;stage=default</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;44&#160;|&#160;Structural&#160;Elements:&#160;11&#160;|&#160;ARIA:&#160;80</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;65&#160;|&#160;Structural&#160;Elements:&#160;18&#160;|&#160;ARIA:&#160;59</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Review"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Review</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;59&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;46</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;65&#160;|&#160;Structural&#160;Elements:&#160;21&#160;|&#160;ARIA:&#160;34</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert due to possible table caption due to deliberate feature to indicate a table has "No items" rather than displaying as empty that might imply something is broken.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=EPrint%3A%3ARemoveWithEmail&amp;eprintid=4"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=EPrint%3A%3ARemoveWithEmail&amp;eprintid=4</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;16</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;22</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Alert is due to email address for the one and only admin being linked for the To and From address, which is just a result of the testing regime.</td> 
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?edit_phrases=yes"><epc:print expr="$config{rel_path}"/>/cgi/users/home?edit_phrases=yes</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;149</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;168</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;101</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;149</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/eprint/staff"><epc:print expr="$config{rel_path}"/>/cgi/search/eprint/staff</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;84&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;125</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;104&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;97</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/search/eprint/staff?screen=Search&amp;eprintid=&amp;userid.username=&amp;userid.name_merge=ALL&amp;serid.name=&amp;eprint_status=archive&amp;dir_merge=ALL&amp;dir=&amp;documents_merge=ALL&amp;documents=&amp;title_merge=ALL&amp;title=Habits&amp;creators_name_merge=ALL&amp;creators_name=&amp;abstract_merge=ALL&amp;abstract=&amp;date=&amp;keywords_merge=ALL&amp;keywords=&amp;subjects_merge=ANY&amp;department_merge=ALL&amp;department=&amp;editors_name_merge=ALL&amp;editors_name=&amp;refereed=EITHER&amp;publication_merge=ALL&amp;publication=&amp;satisfyall=ALL&amp;order=-date%2Fcreators_name%2Ftitle&amp;_action_search=Search"><epc:print expr="$config{rel_path}"/>/cgi/search/eprint/staff?screen=Search&amp;...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;39</div><div class="ep_accessibility_good">Features:&#160;51&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;20</div></td>
-    <td>19 (of 39) alerts are caused by thumbnail image previews of PDFs having the same alternative text, as a result of the original PDF filenames are the same, due to the way the import_test_data script works. The other 20 (of 39) alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. (Based on a search where "Item Status" is "Live Archive".)</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;21</div><div class="ep_accessibility_good">Features:&#160;44&#160;|&#160;Structural&#160;Elements:&#160;28&#160;|&#160;ARIA:&#160;34</div><div class="ep_accessibility_score">AIM Score: <big>9.6</big> / 10</div></td>
+    <td>10 (of 21) alerts are caused by thumbnail image previews of PDFs having the same alternative text, as a result of the original PDF filenames are the same, due to the way the import_test_data script works. The other 11 (of 21) alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. (Based on a search where "Item Status" is "Live Archive".)</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AIssueSearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AIssueSearch</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;46&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;66</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;54&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;50</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AUserSearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AUserSearch</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;24&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;46</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;25&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;41</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AUserSearch&amp;name_merge=ALL&amp;name=&amp;username=&amp;userid=1&amp;dept%2Forg_merge=ALL&amp;dept%2Forg=&amp;address%2Fcountry_merge=ALL&amp;address%2Fcountry=&amp;email=&amp;satisfyall=ALL&amp;order=name%2Fjoined&amp;_action_search=Search"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AUserSearch...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;20</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None. (Search for user with ID 1.)</td>
   </tr>
   <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3APersonSearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3APersonSearch</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;27&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;50</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3APersonSearch&amp;_action_search=Search&amp;name_merge=ALL&amp;name=Bonardi%2C+N.&amp;names_name_merge=ALL&amp;names_name=Bonardi%2C+N.&amp;id_value=&amp;ids_id=&amp;dept_merge=ALL&amp;;dept=&amp;organisation=&amp;address%2Fcountry_merge=ALL&amp;address%2Fcountry=&amp;satisfyall=ALL&amp;order=name%2Flastmod"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3APersonSearch...</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None. (Search for person with Primary Name "Bonardi, N.".)</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AOrganisationSearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AOrganisationSearch</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;21&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;43</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AOrganisationSearch&amp;_action_search=Search&amp;name_merge=ALL&amp;name=Elseware+Publishing&amp;names_name_merge=ALL&amp;names_name=&amp;id_value=&amp;ids_id=&amp;address%2Fcountry_merge=ALL&amp;address%2Fcountry=&amp;satisfyall=ALL&amp;order=name%2Flastmod"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AOrganisationSearch...</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None. (Search for person with Primary Name "Elseware Publishing".)</td>
+  </tr>
+  <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AHistorySearch"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AHistorySearch</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;30&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;46</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;30&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;37</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Staff%3A%3AHistorySearch&amp;userid.username=&amp;action=create&amp;timestamp=&amp;objectid=&amp;satisfyall=ALL&amp;order=-timestamp&amp;_action_search=Search"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Staff%3A%3AHistorySearch...</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;20</div></td>
-    <td>Search for Action: Created.  Two alerts are due the there being exactly 100 results so show 100 results and show all results links are the same.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;17&#160;|&#160;ARIA:&#160;31</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Status"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Status</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;38&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;45&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>EPrints Indexer is running.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=NewUser"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=NewUser</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;15</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=NewPerson"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=NewPerson</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=NewOrganisation"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=NewOrganisation</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;21</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3ATestEmail"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3ATestEmail</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;8&#160;|&#160;ARIA:&#160;17</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;23</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=DatabaseSchema"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=DatabaseSchema</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;177&#160;|&#160;ARIA:&#160;13</div></td>
-    <td>Number of structured elements liable to vary based on number of cache tables in the database.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;211&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Number of structural elements liable to vary based on number of cache tables in the database.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3AStorageManager"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3AStorageManager</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;16&#160;|&#160;ARIA:&#160;19</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;25</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3AConfig"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3AConfig</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;17&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;35</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;17&#160;|&#160;Structural&#160;Elements:&#160;27&#160;|&#160;ARIA:&#160;41</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3APhrases"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3APhrases</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;12&#160;|&#160;ARIA:&#160;3145</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;3643</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Number ARIA elements likely to vary dependent on total number of phrases defined.</td>
+  </tr>
+ <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Admin%3A%3ATemplateTest"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Admin%3A%3ATemplateTest</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;2&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;19&#160;|&#160;ARIA:&#160;3643</div><div class="ep_accessibility_score">AIM Score: <big>9.8</big> / 10</div></td>
+    <td>2 Errors are due to elements having more than one form label associated with them. These are due to all template rendering appearing on the same page where there are liable to be overlap. 2 (out of 3 alerts have the suspicious link text "Details" and the last alert is due to deliberate feature to indicate a table has "No items" rather than displaying as empty that might imply something is broken.</td>
+  </tr>
+  <tr>
+    <td><a href="{$config{rel_path}}/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=page&amp;dataobj=1&amp;return_to&amp;stage=main&amp;stage=main"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Workflow%3A%3AEdit&amp;dataset=page&amp;...</a></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;17&#160;|&#160;Structural&#160;Elements:&#160;29&#160;|&#160;ARIA:&#160;112</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=Subject%3A%3AEdit"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=Subject%3A%3AEdit</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;18</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;7&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;24</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=MetaField%3A%3AListing"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=MetaField%3A%3AListing</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;28&#160;|&#160;ARIA:&#160;13</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;36&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/home?screen=MetaField%3A%3AListing&amp;dataset=access"><epc:print expr="$config{rel_path}"/>/cgi/users/home?screen=MetaField%3A%3AListing&amp;dataset=access</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;21&#160;|&#160;ARIA:&#160;14</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;27&#160;|&#160;ARIA:&#160;20</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>None (Only testing one object type for its MetaField listing.)</td>
   </tr>
 </table>
@@ -427,32 +547,32 @@
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2"><epc:print expr="$config{rel_path}"/>/cgi/oai2</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;0</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;2</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;9&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Two alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2?verb=Identify"><epc:print expr="$config{rel_path}"/>/cgi/oai2?verb=Identify</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;0</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
     <td>Three alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2?verb=ListRecords&amp;metadataPrefix=oai_dc"><epc:print expr="$config{rel_path}"/>/cgi/oai2?verb=ListRecords&amp;metadataPrefix=oai_dc</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;201</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;308&#160;|&#160;ARIA:&#160;0</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;201</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;308&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>9.1</big> / 10</div></td>
     <td>201 alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2?verb=ListSets"><epc:print expr="$config{rel_path}"/>/cgi/oai2?verb=ListSets</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;283</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;290&#160;|&#160;ARIA:&#160;0</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;283</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;290&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>9.1</big> / 10</div></td>
     <td>283 alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2?verb=ListMetadataFormats"><epc:print expr="$config{rel_path}"/>/cgi/oai2?verb=ListMetadataFormats</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;7</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;14&#160;|&#160;ARIA:&#160;0</div></td>
-    <td>Seven alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;6</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;13&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>9.9</big> / 10</div></td>
+    <td>Six alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/oai2?verb=ListIdentifiers&amp;metadataPrefix=oai_dc"><epc:print expr="$config{rel_path}"/>/cgi/oai2?verb=ListIdentifiers&amp;metadataPrefix=oai_dc</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;101</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;108&#160;|&#160;ARIA:&#160;0</div></td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;101</div><div class="ep_accessibility_good">Features:&#160;1&#160;|&#160;Structural&#160;Elements:&#160;108&#160;|&#160;ARIA:&#160;0</div><div class="ep_accessibility_score">AIM Score: <big>9.2</big> / 10</div></td>
     <td>101 alerts are due to suspicion of tables being used for layout but are actually being used as tables.</td>
   </tr>
 </table>
