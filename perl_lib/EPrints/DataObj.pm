@@ -1911,12 +1911,12 @@ sub render_export_bar
 	$form->appendChild( $xhtml->hidden_field( dataset => $self->get_dataset_id ) );
 	$form->appendChild( $xhtml->hidden_field( dataobj => $self->id ) );
 
-	my $label = $xml->create_element( "label" );
+	my $label = $xml->create_element( "label", "for" => "export_format" );
         $form->appendChild( $label );
         $label->appendChild( $repo->make_text( $repo->phrase( "lib/searchexpression:export_label" ) . " " ) );
 
-        my $select = $xml->create_element( "select", name => "format" );
-        $label->appendChild( $select );
+        my $select = $xml->create_element( "select", name => "format", id => "export_format" );
+        $form->appendChild( $select );
 
 	my @plugins = $self->{session}->get_plugins( 
 					type=>"Export",
