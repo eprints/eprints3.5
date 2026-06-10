@@ -113,7 +113,7 @@
   <tr>
     <td><a href="{$config{rel_path}}/id/eprint/54/"><epc:print expr="$config{rel_path}"/>/id/eprint/54/</a></td>
     <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;3</div><div class="ep_accessibility_good">Features:&#160;8&#160;|&#160;Structural&#160;Elements:&#160;20&#160;|&#160;ARIA:&#160;54</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
-    <td>ontains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Conference of Workshop Item&quot;. 2 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL. 1 alert is due to using a PDF viewer plugin.</td>
+    <td>Contains user-generated content. Only testing one eprint summary page per eprint type, in this case &quot;Conference of Workshop Item&quot;. 2 alerts are caused by linking to PDFs, which is cannot be fixed as is essential to the purpose of an Open Access repository. However, one of the links is actually for front page JPEG image preview but is identified as a PDF due to the file extension used in the URL. 1 alert is due to using a PDF viewer plugin.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/cgi/users/login"><epc:print expr="$config{rel_path}"/>/cgi/users/login</a></td>

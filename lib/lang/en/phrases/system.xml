@@ -3470,7 +3470,7 @@ Titles and Help for the System Fields
     <epp:phrase id="person_fieldname_lastmod">Last Modified</epp:phrase>
 
     <epp:phrase id="person_fieldhelp_name" />
-    <epp:phrase id="person_fieldhelp_names">The full names of the person with option date spans fro names used in thge past.</epp:phrase>
+    <epp:phrase id="person_fieldhelp_names">The full names of the person with option date spans for names used in the past.</epp:phrase>
     <epp:phrase id="person_fieldhelp_ids">The identifiers for the person and the type of identifier they are. (E.g. email address, website URL, etc.)</epp:phrase>
     <epp:phrase id="person_fieldhelp_dept"/>
     <epp:phrase id="person_fieldhelp_organisation"/>

@@ -20,9 +20,9 @@ Application of RTF::Parser for document conversion
 
 =head1 OVERVIEW
 
-L<RTF::Control> is a sublass of L<RTF::Parser>. L<RTF::Control> can be seen as
-a helper module for people wanting to write their own document convertors -
-L<RTF::HTML::Convertor> and L<RTF::TEXT::Convertor> both subclass it.
+L<RTF::Control> is a subclass of L<RTF::Parser>. L<RTF::Control> can be seen as
+a helper module for people wanting to write their own document converters -
+L<RTF::HTML::Converter> and L<RTF::TEXT::Converter> both subclass it.
 
 I am the new maintainer of this module. My aim is to keep the interface
 identical to the old interface while cleaning up, documenting, and testing
@@ -32,7 +32,7 @@ interface is mostly frozen.
 
 =head1 HOW IT ALL WORKS
 
-For starters, go and look at the source of M<RTF::TEXT::Convertor>
+For starters, go and look at the source of M<RTF::TEXT::Converter>
 
 
 Except for B<RTF::Parser subs>, the following is a list of variables
@@ -237,7 +237,7 @@ nightmare. This method returns the ( wait for it ) path that the .pm file corres
 to the class that the object is contained, without a trailing semi-colon. Obviously
 this is nasty in several ways. If you've set C<-confdir> in C<new()> that will be
 returned instead. You should definitely take that route if you're on an OS on which
-Perl can't use / as a directory seperator.
+Perl can't use / as a directory separator.
 
 =cut
 
@@ -319,7 +319,7 @@ sub charmap_reader {
 #   works. I'm hoping it'll become more obvious as I go. The routines themselves
 #   are now all documented, but who knows what the stack is or why? hrm?
 
-# This hurts my little brane.
+# This hurts my little brain.
 
 # Holds the output stack
 my @output_stack;
@@ -363,7 +363,7 @@ sub output {
 }
 
 # I'm guessing (because I'm generous ;-) that this is done because
-#   subclasses might want to modifiy the values of these. These are
+#   subclasses might want to modify the values of these. These are
 #   obviously the two different ways to spit out ... something. We
 #   start with the string_output_sub being what &output does tho.
 
@@ -408,14 +408,14 @@ sub push_output {
 
     }
 
-    # Add an empty element to the end of the ouput stack
+    # Add an empty element to the end of the output stack
     push @output_stack, '';
 
 }
 
 =head2 pop_output
 
-Removes and returns the last element of the ouput stack
+Removes and returns the last element of the output stack
 
 =cut
 
@@ -653,7 +653,7 @@ my %symbol_ctrl = map {    # install the do_on_symbol() routine
 } keys %symbol;
 
 ###########################################################################################
-my %char_props;    # control hash must be declarated before install_callback()
+my %char_props;    # control hash must be declared before install_callback()
 # purpose: associate callbacks to controls
 # 1. an hash name that contains the controls
 # 2. a callback name
@@ -1269,7 +1269,7 @@ sub debug {
 
     # We seem to not want anything to do with the filetable
     # either - I guess the reason we define a control for it
-    # (because otherwise it'd get skipped as an unknow destination
+    # (because otherwise it'd get skipped as an unknown destination
     # I think) is so that subclassers can handle it if they
     # want.
     ###########################################################
@@ -1782,7 +1782,7 @@ sub debug {
 
     },
     # Resets to default paragraph properties
-    # Stop inheritence of paragraph properties
+    # Stop inheritance of paragraph properties
 
     'pard' => sub {
 
@@ -1835,7 +1835,7 @@ sub debug {
 
     },
 
-    'pnlvlblt' => sub {     # Paragraph level 11, processs the 'pntxtb' group
+    'pnlvlblt' => sub {     # Paragraph level 11, process the 'pntxtb' group
 
         $pn{level} = 11;    # bullet
 
@@ -1945,7 +1945,7 @@ END {
             printf LOG "%-20s\t%3d\n", "$key", "$value";
         }
         close LOG;
-        print STDERR qq^See Informations in the "$LOG_FILE" file\n^;
+        print STDERR qq^See Information in the "$LOG_FILE" file\n^;
     }
 }
 1;

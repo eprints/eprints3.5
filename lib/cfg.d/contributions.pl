@@ -3,7 +3,7 @@ $c->{filter_eprint_contributions_by_entity_type} = sub {
 	# The filtering will take place over 1 loop of the input arra listy
 	# Example: I want only the 'people' from the list of contributions in this eprint using $filter_entity_type = 'person'
 	# Example: I want only 'people' who are 'authors' of this eprint using: $filter_entity_type = 'person' and $filter_sub_type = 'author'
-	# Example: I want 'people' who are 'authors' and have a specific email domain: $filter_entity_type = 'person' and $filter_sub_type = 'author' and a $filter_callback sub() => { #logic to regex email adresses }
+	# Example: I want 'people' who are 'authors' and have a specific email domain: $filter_entity_type = 'person' and $filter_sub_type = 'author' and a $filter_callback sub() => { #logic to regex email addresses }
 	my( $session, $contributions, $filter_entity_type, $filter_sub_type, $filter_callback ) = @_;
 
 	return () if !defined $contributions;

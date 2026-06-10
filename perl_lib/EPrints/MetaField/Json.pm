@@ -288,7 +288,7 @@ EOJ
 	return $frag;
 }
 
-# Generates the JavsScript to both display our subfields, 
+# Generates the JavaScript to both display our subfields, 
 # and to write any changes to those subfields to the JSON object that EPrints will pick up and save to the database
 # Three render formats (see README), but all use the same underlying JS code for the fields, 
 # although the table also requires a row parameter as it is storing a JSON array

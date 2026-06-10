@@ -500,7 +500,7 @@ if there's nothing in the buffer, but still stuff we're reading from a
 file it won't be shown. Chances are, if you're using this function, you're
 debugging. There's an internal method called C<_get_line>, which is called
 without arguments (C<$self->_get_line()>) that's how we get more stuff into
-the buffer when we're reading from filehandles. There's no guarentee that'll
+the buffer when we're reading from filehandles. There's no guarantee that'll
 stay, or will always work that way, but, if you're debugging, that shouldn't
 matter.
 
@@ -522,7 +522,7 @@ my $control_word_standard_re = qr/
             ^([a-z]{1,32})          # Lowercase word
             (-?\d+)?                # Optional signed number
             (?:\s|(?=[^a-z0-9]))    # Either whitespace, which we gobble or a
-                                    # non alpha-numeric, which we leave
+                                    # non alphanumeric, which we leave
             /ix;
 my $control_word_whitespace_re = qr/
             ^([a-z]{1,32})          # Lowercase word
