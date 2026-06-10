@@ -8,5 +8,5 @@ def pytest_addoption(parser):
 
 @pytest.fixture
 def scope():
-    #TODO - system to reduce scope of tests so we cam have longer and quicker tests
+    #TODO - system to reduce scope of tests so we can have longer and quicker tests
     return "full"
