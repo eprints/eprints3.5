@@ -507,7 +507,7 @@ sub proc_exists
 
 	if ( $pid =~ m/[^0-9]/ )
 	{
-		print STDERR "ERROR: You can only check a procoess exists if its PID is an integer\n";
+		print STDERR "ERROR: You can only check a process exists if its PID is an integer\n";
 		return 0;
 	}
 

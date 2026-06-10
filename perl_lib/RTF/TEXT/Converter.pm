@@ -92,8 +92,8 @@ give them money!
 
 =cut
 
-# Symbol exported by the RTF::Ouptut module:
-# %info: informations of the {\info ...}
+# Symbol exported by the RTF::Output module:
+# %info: information of the {\info ...}
 # %par_props: paragraph properties
 # $style: name of the current style or pseudo-style
 # $event: start and end on the 'document' event
@@ -153,7 +153,7 @@ my %charmap_defaults = map( { sprintf( "%02x", $_ ) => chr($_) } ( 0 .. 255 ) );
 # so on. This makes it an awful lot cleaner, but falls back as
 # appropriate
 
-$do_on_control{'ansi'} =    # callcack redefinition
+$do_on_control{'ansi'} =    # callback redefinition
     sub {
 
     my @charmap_data = $_[SELF]->charmap_reader( $_[CONTROL] );

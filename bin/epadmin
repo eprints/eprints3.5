@@ -171,7 +171,7 @@ Print the full help message and exit.
 
 =item B<epadmin> logout_all_users I<repository_id> [I<exclude_user_id>, I<exclude_user_id> ...]
 
-Logout all users from a repositiory.  Potentially excluding one or more user IDs.
+Logout all users from a repository.  Potentially excluding one or more user IDs.
 
 =item B<epadmin> profile I<test>
 

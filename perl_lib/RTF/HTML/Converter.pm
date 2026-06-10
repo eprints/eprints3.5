@@ -96,8 +96,8 @@ give them money!
 
 =cut
 
-# Symbol exported by the RTF::Ouptut module:
-# %info: informations of the {\info ...}
+# Symbol exported by the RTF::Output module:
+# %info: information of the {\info ...}
 # %par_props: paragraph properties
 # $style: name of the current style or pseudo-style
 # $event: start and end on the 'document' event

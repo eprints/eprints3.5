@@ -271,7 +271,7 @@ sub get_lib_paths
 Update the library paths within EPrints that used in the include paths 
 
 Takes the array reference C<$load_order> of library paths and the
-C<$base_path> for EPrints to updat the includes path (i.e C<@INC> )
+C<$base_path> for EPrints to update the includes path (i.e C<@INC> )
 
 =cut
 ######################################################################
