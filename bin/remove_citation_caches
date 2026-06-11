@@ -21,8 +21,8 @@ B<remove_citation_caches> I<repository_id> [B<options>]
 =head1 DESCRIPTION
 
 This script will remove cached citations based on datasetid, citation-style or object id.
-By default it will only remove citations with a null 'context', which was added in 3.4.7.
-Other citations would naturally get regenerated over time, but these 'null-context citations
+By default it will only remove citations with a null 'context'.
+Other citations would naturally get regenerated over time, but these 'null-context' citations
 would never get updated.
 
 =head1 ARGUMENTS
