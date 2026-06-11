@@ -1,4 +1,5 @@
 push @{$c->{browse_views}},
+{
 	id => "person",
 	menus => [
 		fields => [ "contributions_contributor_id", "contributions_contributor_type" ],
