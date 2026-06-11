@@ -167,8 +167,8 @@
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/error401.html"><epc:print expr="$config{rel_path}"/>/error401.html</a></td>
-    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;1</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
-    <td>One alert is due to registration link appearing in both the menu and main content of the page.  This is appropriate, to make it as straightforward as possible for a user to gain legitimate access.</td>
+    <td><div class="ep_accessibility_bad">Errors:&#160;0&#160;|&#160;Contrast&#160;Errors:&#160;0&#160;|&#160;Alerts:&#160;0</div><div class="ep_accessibility_good">Features:&#160;6&#160;|&#160;Structural&#160;Elements:&#160;15&#160;|&#160;ARIA:&#160;19</div><div class="ep_accessibility_score">AIM Score: <big>10</big> / 10</div></td>
+    <td>Done.</td>
   </tr>
   <tr>
     <td><a href="{$config{rel_path}}/accessibility/"><epc:print expr="$config{rel_path}"/>/accessibility/</a></td>

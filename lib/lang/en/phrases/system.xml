@@ -3768,14 +3768,19 @@ EPrints Accessibility
     <epp:phrase id="accessibility_statement_last_updated_date">11 June 2026</epp:phrase>
     <epp:phrase id="accessibility_report_last_tested_date">10 June 2026</epp:phrase>
     <epp:phrase id="accessibility_report_summary">
-<p>Based on testing a default publication flavour installation of EPrints using standard test data, all tested public-facing and back-end administration pages currently report no errors or contrast errors. These pages may have one or more alerts. If so, these alerts are considered acceptable and/or essential for the functioning of EPrints as an Open Access repository and will fall into one of the following categories:</p>
+<p>Based on testing a default publication flavour installation of EPrints using standard test data, all tested public-facing and back-end administration pages currently report no errors or contrast errors, except fo the "Template Test" page. These pages may have one or more alerts. If so, some of these alerts are considered acceptable and/or essential for the functioning of EPrints as an Open Access repository and will fall into one of the following categories:</p>
 <ol>
   <li>Links to PDF documents.</li>
+  <li>Use of plugin to provide an in-page PDF viewer.</li>
   <li>Duplications in the test or third-party data leading to alerts about shared alternative texts for nearby images.</li>
-  <li>Reports of suspicious link texts that are not considered suspicious within the context of where they appear.</li>
-  <li>Apparent missing table captions due to a feature in EPrints to make clear a table has no items rather than leaving the table empty.</li>
+  <li>Reports of suspicious link texts that would not be considered suspicious within the context of where they appear.</li>
+  <li>Duplicate links in close proximity to each other. However, these are typically due to test or third-party data.</li>
 </ol>
-<p>It should be noted that whilst Chromium's WAVE extension that was used for testing.  It did not report any contrast errors for any of the tested public-facing and back-end administration pages.  However, Firefox's WAVE extension has been seen to report some contrast errors.  Firefox's contrast errors are due to its default setting for the background colour of select form elements.</p>
+<p>Fixes for other alerts detected by this testing continue to be investigated.  They include:</p>
+<ol>
+  <li>Use of a link to implement JavaScript "clear row" button functionality.</li>
+  <li>Missing table captions due to a feature in EPrints to make clear a table has no items rather than leaving the table empty.</li>
+</ol>
 <p>Miscellaneous pages like those for OAI metadata harvesting have been tested and found to have issues with tables being reported as being used for layout when they are genuinely being used as tables. However, as these pages are not intended for general human use, there is no intention to further address these issues.</p>
 </epp:phrase>
 
