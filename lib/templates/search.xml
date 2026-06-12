@@ -102,7 +102,7 @@
             </div>
           </div>
         </nav>
-        <nav class="navbar navbar-expand-lg" style="background: #1A4B73;">
+        <nav class="navbar navbar-expand-lg bg-dark" style="background: #1A4B73;">
           <div class="container m-auto w-100 p-4">
             <div class="d-flex flex-column w-100">
               <div class="d-flex my-4">
