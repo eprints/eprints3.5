@@ -23,11 +23,11 @@
 
 <p>This site is running <epc:print expr="$config{version_description}" />.</p>
 
-<p>EPrints has been developed at the <a rel="external" href="https://www.ecs.soton.ac.uk/">School of Electronics and Computer Science</a> at the <a ref="external" href="https://www.soton.ac.uk/">University of Southampton</a>, UK.</p>
+<p>EPrints was originally been developed by the <a rel="external" href="https://www.southampton.ac.uk/about/faculties-schools-departments/school-of-electronics-and-computer-science">School of Electronics and Computer Science</a> at the <a ref="external" href="https://www.southampton.ac.uk/">University of Southampton</a>, UK.  It is now maintained and developed by <a rel="external" href="https://www.eprints.org/eprints-services/">EPrints Services</a> as part of the University of Southampton.</p>
 
 <p>For more information please see <a rel="external" href="https://www.eprints.org/">www.eprints.org</a>.</p>
 
-<p><a rel="external" href="https://www.eprints.org/uk/index.php/services/">EPrints Services</a> based in Southampton can also provide hosting, training and consultancy services for your EPrints repository.</p>
+<p>EPrints Services can also provide hosting, training and consultancy services for your EPrints repository.</p>
 
 <h2 id="credits">EPrints 3v5 Credits</h2>
 
