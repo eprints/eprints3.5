@@ -17,6 +17,7 @@
 <h2>Table of Contents</h2>
 <ul>
   <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#technical-specification">Technical Specification</a></li>
   <li><a href="#test-results">Test Results</a>
     <ul>
       <li><a href="#public-facing-pages">Public-facing Pages</a></li>
@@ -28,8 +29,11 @@
 </ul>
 
 <h2 id="introduction">Introduction</h2>
-<p>This report is intended to present the results of the testing of <epc:phrase ref="archive_name"/> to assess its compliance to <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2 Level A</a>.  This has been undertaken with the use of the <a href="https://wave.webaim.org/extension/" rel="external">Firefox Extension</a> of the <a href="https://wave.webaim.org/" rel="external">WAVE web accessibility evaluation tool</a>.  To emulate user-generated content EPrints' testdata/bin/import_test_data script has been used to import 100 publications to populate various pages under test.  In addition to this one empty (unedited) publication was added and a Saved Search for "Habits" was created. Also, due to a permissions change "+eprint/remove_once_archived" and "+eprint/remove_with_email" has been added to the admin user who is logged in to test the non-public administration pages.</p>
+<p>This report is intended to present the results of the testing of <epc:phrase ref="archive_name"/> to assess its compliance to <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2 Level A</a>.  This has been undertaken with the use of the <a href="https://wave.webaim.org/extension/" rel="external">Firefox Extension</a> of the <a href="https://wave.webaim.org/" rel="external">WAVE web accessibility evaluation tool</a>. To emulate user-generated content, some technical and automated changes have been deployed, please see the <a href="#technical-specification">Technical Specification</a> below for more detail.</p>
 <p>Where there are known issues, the comments section should describe the reasons and where appropriate how these issues are likely be addressed.</p>
+
+<h2 id="technical-specification">Technical Specification</h2>
+<p>To emulate user-generated content EPrints' <code>testdata/bin/import_test_data</code> script has been used to import 100 publications to populate various pages under test.  In addition to this one empty (unedited) publication was added and a Saved Search for "Habits" was created. Also, due to a permissions change <code>+eprint/remove_once_archived</code> and <code>+eprint/remove_with_email</code> has been added to the admin user who is logged in to test the non-public administration pages.</p>
 
 <h2 id="test-results">Test Results</h2>
 <p><em>Test last run on <b><epc:phrase ref="accessibility_report_last_tested_date"/></b></em></p>
