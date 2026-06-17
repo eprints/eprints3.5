@@ -10,7 +10,7 @@
     <div class="ep_msg_message_icon" style="width: 32px;">
       <img alt="Message" src="/style/images/message.png"/>
     </div>
-    <div class="ep_msg_message_text">This page is intended as a generic accessibility statement for EPrints and should be amended as required before deployment of your EPrints repository. In particular the <code>organisation_name</code> phrase may need to be set if upgrading to EPrints 3.4.2+.</div>
+    <div class="ep_msg_message_text">This page is intended as a generic accessibility statement for EPrints and should be amended as required before deployment of your EPrints repository.</div>
   </div>
 </div>
 
@@ -40,7 +40,7 @@
 <p><epc:phrase ref="archive_name" /> is run by <epc:phrase ref="organisation_name" />. We want as many people as possible to be able to use <epc:phrase ref="archive_name" />. For example, that means you should be able to:</p>
 <ul>
   <li>change colours, contrast levels and fonts</li>
-  <li>zoom in up to 300% without the text spilling off the screen</li>
+  <li>zoom in up to 400% without the text spilling off the screen</li>
   <li>navigate most of the website using just a keyboard</li>
   <li>navigate most of the website using speech recognition software</li>
   <li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</li>
@@ -68,7 +68,7 @@
 </ul>
 
 <h3 id="what-to-do-if-you-cannot-access-parts-of-this-website">What to do if you cannot access parts of <epc:phrase ref="archive_name" /></h3>
-<p>If you need information on <epc:phrase ref="archive_name" /> in a different format, please contact our <a href="mailto:{$config{adminemail}}">repository administrators</a>. We will consider your request and will aim to get back to you within 7 working days.</p>
+<p>If you need information on <epc:phrase ref="archive_name" /> in a different format, please <a href="{$config{rel_path}}/contact.html">contact us</a>. We will consider your request and will aim to get back to you within 7 working days.</p>
 
 <h3 id="reporting-accessibility-problems-with-this-website">Reporting accessibility problems with  <epc:phrase ref="archive_name" /></h3>
 <p>We are always looking to improve the accessibility of <epc:phrase ref="archive_name" />. If you find any problems not listed on this page or think we are not meeting accessibility requirements, please <a href="{$config{rel_path}}/contact.html">contact us</a>.</p>
@@ -78,12 +78,12 @@
 
 <h2 id="technical-information-about-this-websites-accessibility">Technical information about  <epc:phrase ref="archive_name" />'s accessibility</h2>
 <p><epc:phrase ref="organisation_name" /> is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
-<!-- <p>This website is partially compliant with the <a rel="external" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1</a> AA standard, due to the non-compliances listed below.</p> -->
-<p><epc:phrase ref="archive_name" /> is not compliant with the <a rel="external" href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1</a> AA standard. The non-accessible sections are listed below.</p>
+<!-- <p>This website is partially compliant with the <a rel="external" href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines version 2.2</a> A guidelines, due to the non-compliances listed below.</p> -->
+<p><epc:phrase ref="archive_name" /> aims to be compliant with the <a rel="external" href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines version 2.2</a> level A. The non-accessible sections are listed below.</p>
 
 <h2 id="non-accessible-content">Non accessible content</h2>
 <p>The content listed below is non-accessible for the following reasons.</p>
-<p>We are always looking to improve the accessibility of <epc:phrase ref="archive_name" />. If you find any problems not listed on this page or think we are not meeting accessibility requirements, contact by email: <a href="mailto:{$config{adminemail}}"><epc:print expr="$config{adminemail}" /></a>.</p>
+<p>We are always looking to improve the accessibility of <epc:phrase ref="archive_name" />. If you find any problems not listed on this page or think we are not meeting accessibility requirements, please <a href="{$config{rel_path}}/contact.html">contact us</a>.</p>
 
 <h3 id="non-compliance-with-the-accessibility-regulations">Non-compliance with the accessibility regulations</h3>
 <p>We are yet to compile a list of where and how  <epc:phrase ref="archive_name" /> is non-compliant with accessibility regulations.</p>
@@ -91,16 +91,16 @@
 [Note: In this subsection, list:
 
     accessibility problems
-    which of the WCAG 2.1 AA success criteria the problem fails on
+    which of the WCAG 2.2 A success criteria the problem fails on
     when you plan to fix the problem
 
 Do not include any problems where you're claiming disproportionate burden, or where the problem is outside the scope of the accessibility regulations (those should go in the subsections below).]
 
 Example:
 
-Some images do not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.1 success criterion 1.1.1 (non-text content).
+Some images do not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.2 success criterion 1.1.1 (non-text content).
 
-We plan to add text alternatives for all images by September 2020. When we publish new content we will make sure our use of images meets accessibility standards.
+We plan to add text alternatives for all images by September 2026. When we publish new content we will make sure our use of images meets accessibility guidelines.
 -->
 
 <h3 id="disproportionate-burden">Disproportionate burden</h3>
@@ -109,7 +109,7 @@ We plan to add text alternatives for all images by September 2020. When we publi
 [Note: in this subsection list:
 
     accessibility problems you're claiming would be a disproportionate burden to fix
-    which of the WCAG 2.1 AA success criteria the problem fails on
+    which of the WCAG 2.2 A success criteria the problem fails on
 
 Bear in mind that something which is a disproportionate burden now will not necessarily be a disproportionate burden forever. If the circumstances change, your ability to claim disproportionate burden may change too.]
 
@@ -117,16 +117,16 @@ Examples:
 
 Navigation and accessing information
 
-There is no way to skip the repeated content in the page header (for example, a 'skip to main content' option). This fails WCAG 2.1 success criterion 2.4.1 (bypass blocks).
+There is no way to skip the repeated content in the page header (for example, a 'skip to main content' option). This fails WCAG 2.2 success criterion 2.4.1 (bypass blocks).
 
-It’s not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content. This fails WCAG 2.1 success criterion 1.3.4 (orientation).
+It’s not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content. This fails WCAG 2.2 success criterion 1.3.4 (orientation).
 
-It's not possible for users to change text size without some of the content overlapping. This fails WCAG 2.1 success criterion 1.4.4 (resize text).
+It's not possible for users to change text size without some of the content overlapping. This fails WCAG 2.2 success criterion 1.4.4 (resize text).
 Interactive tools and transactions
 
 Some of our interactive forms are difficult to navigate using a keyboard. For example, because some form controls are missing a 'label' tag.
 
-Our forms are built and hosted through third party software and 'skinned' to look like our website. This fails WCAG 2.1 success criterion 1.3.1 (information and relationships).
+Our forms are built and hosted through third party software and 'skinned' to look like our website. This fails WCAG 2.2 success criterion 1.3.1 (information and relationships).
 
 We have assessed the cost of fixing the issues with navigation and accessing information, and with interactive tools and transactions. We believe that doing so now would be a disproportionate burden within the meaning of the accessibility regulations. We will make another assessment when the supplier contract is up for renewal, likely to be in [rough timing].
 --> 
@@ -136,33 +136,36 @@ We have assessed the cost of fixing the issues with navigation and accessing inf
 [Note: in this subsection list:
 
   accessibility problems that fall outside the scope of the accessibility regulations
-  which of the WCAG 2.1 AA success criteria the problem fails on]
+  which of the WCAG 2.2 A success criteria the problem fails on]
 -->
 
 <h4 id="pdfs-and-other-documents">PDFs and other documents</h4>
 <p>As <epc:phrase ref="archive_name" /> is an open access research repository, the principal content made available to users are research outputs such as articles, papers, posters and reports, many of which are PDF documents. Many PDF documents, especially older ones, are not fully accessible to screen reader software and do not contain other common accessibility features. In particular:</p>
 <ul>
   <li>many documents, especially older ones, do not conform to the PDF/A archiving format.</li>
-  <li>many lack bookmarks or document titles, therefore failing to meet WCAG 2.1 success criteria 2.4.5 and 2.4.2.</li>
-  <li>many discuss scientific or scholarly concepts which may be abbreviated with no mechanism for discovering the meaning of the abbreviations, or unusual words arising from scholarly discourse without definitions. These issues each fail WCAG 2.1 criteria 3.1.4 and 3.1.1 respectively.</li>
-  <li>there may be some documents that fail to specify their human language, thereby failing WCAG 2.1 success criterion 3.1.1.</li>
-  <li>many documents may not reflow satisfactorily. This fails WCAG 2.1 success criterion 1.4.10.</li>
+  <li>many lack bookmarks or document titles, therefore failing to meet WCAG 2.2 success criteria 2.4.5 and 2.4.2.</li>
+  <li>many discuss scientific or scholarly concepts which may be abbreviated with no mechanism for discovering the meaning of the abbreviations, or unusual words arising from scholarly discourse without definitions. These issues each fail WCAG 2.2 criteria 3.1.4 and 3.1.1 respectively.</li>
+  <li>there may be some documents that fail to specify their human language, thereby failing WCAG 2.2 success criterion 3.1.1.</li>
+  <li>many documents may not reflow satisfactorily. This fails WCAG 2.2 success criterion 1.4.10.</li>
 </ul>
 <p>The accessibility regulations <a rel="external" href="http://www.legislation.gov.uk/uksi/2018/952/regulation/4/made">do not require us to fix PDFs or other documents placed in <epc:phrase ref="archive_name" />'s archive before 23 September 2019</a> as these items are considered "archives".</p>
-<p>PDFs and other documents added after 23 September 2019 may be user provided and therefore not fully accessible. <epc:phrase ref="archive_name" /> has a review process that should identify these before they are made available for download.  If this is not the case please contact by email: <a href="mailto:{$config{adminemail}}"><epc:print expr="$config{adminemail}" /></a>.</p>
+<p>PDFs and other documents added after 23 September 2019 may be user provided and therefore not fully accessible. <epc:phrase ref="archive_name" /> has a review process that should identify these before they are made available for download.  If this is not the case please <a href="{$config{rel_path}}/contact.html">contact us</a>.</p>
 
 <h4 id="general-issues">General issues</h4>
 <p>Areas of <epc:phrase ref="archive_name" /> which are not document-based demonstrate good levels of accessibility. However, the following issues have been identified and are in the process of being addressed:</p>
 <ul>
-<li>Headings on some of our pages do not appear in a logical order. This does not meet WCAG 2.1 success criterion 2.4.10.</li>
-<li>Some of the forms and interactive search pages on <epc:phrase ref="archive_name" /> are not appropriately labelled or do not have labels. This does not meet WCAG 2.1 success criterion 3.3.2.</li>
-<li>Interactive elements of <epc:phrase ref="archive_name" /> (such as search) do not utilise status messages to update screen readers of a change in state. This does not meet WCAG 2.1 success criterion 3.2.2.</li>
+<li>Interactive elements of <epc:phrase ref="archive_name" /> (such as search) do not utilise status messages to update screen readers of a change in state. This does not meet WCAG 2.2 success criterion 3.2.2.</li>
+<li>Some links on <epc:phrase ref="archive_name" /> are redundant.  Specifically, the "clear rows" link on workflow pages for fields with multiple rows. This does not meet WCAG 2.2 success criterion 2.4.4. We are working on converting these "clear row" links into buttons, whilst retaining their functionality.</li> 
+<li>Some links on <epc:phrase ref="archive_name" /> appear two or more time in close proximity. This does not meet WCAG 2.2 success criterion 3.3.7. We have tried to avoid this but it certain scenarios, removing a link would reduce utility.  (E.g. removing the link for the first author next to a pop-up for the links to all authors).</li>
+<li>Some image alternative texts on <epc:phrase ref="archive_name" /> appear two or more times in close proximity.  This does not meet WCAG 2.2 success criterion 1.1.1.  However, this only occurs when user-generated content share identical properties (e.g. filename or description).</li>
+<li>Some links texts on <epc:phrase ref="archive_name" /> are overly generalised. This does not meet WCAG 2.2 success criterion 2.4.4. We have tried to limit the occurences of these to only use them when wholly appropriate.  (E.g. the EPrint view page has a tab link labelled "Details", which will display the details of that eprint record).</li>
+<li>For empty listings on <epc:phrase ref="archive_name" /> where there are no items of a particular type the table display "No items" but this is not presented as a table caption.  This does not meet WCAG 2.2 success criterion 1.3.1.  We are investigating how we can retain the current layout of the table whilst making "No items" a caption.</li>
 </ul>
 
 <!--
 Other Example:
 <h4 id="video-captions">Audio and video captions</h4>
-<p>Most audio and video files do not have captions. This fails WCAG 2.1 success criterion 1.2.2 (captions - prerecorded).</p>
+<p>Most audio and video files do not have captions. This fails WCAG 2.2 success criterion 1.2.2 (captions - prerecorded).</p>
 -->
 
 <h2 id="how-we-tested-this-website">How we tested <epc:phrase ref="archive_name" /></h2>
