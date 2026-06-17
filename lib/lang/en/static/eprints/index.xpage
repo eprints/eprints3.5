@@ -25,9 +25,13 @@
 
 <p>EPrints was originally been developed by the <a rel="external" href="https://www.southampton.ac.uk/about/faculties-schools-departments/school-of-electronics-and-computer-science">School of Electronics and Computer Science</a> at the <a ref="external" href="https://www.southampton.ac.uk/">University of Southampton</a>, UK.  It is now maintained and developed by <a rel="external" href="https://www.eprints.org/eprints-services/">EPrints Services</a> as part of the University of Southampton.</p>
 
-<p>For more information please see <a rel="external" href="https://www.eprints.org/">www.eprints.org</a>.</p>
+<p>For more information please see <a rel="external" href="https://www.eprints.org/">www.eprints.org</a>.  For access to the open source codebase see <a rel="external" href="https://github.com/eprints/">https://github.com/eprints/</a>.</p>
 
-<p>EPrints Services can also provide hosting, training and consultancy services for your EPrints repository.</p>
+<p>EPrints Services can also provide hosting, support, and consultancy services for your EPrints repository.</p>
+
+<h2 id="technical-information">Technical Information</h2>
+
+<p>Please refer to the <a rel="external" href="https://wiki.eprints.org/w/Manual">EPrints wiki's manual</a>.</p>
 
 <h2 id="credits">EPrints 3v5 Credits</h2>
 
@@ -67,33 +71,9 @@
 
 <epc:phrase ref="ruler" />
 
-<h2 id="technologies-employed-and-supported">Technologies employed and supported:</h2>
-
-<dl class="technology">
-  <dt>Powered by:</dt>
-  <dd><a href="https://www.mysql.com/">MySQL</a></dd>
-  <dd><a href="https://www.apache.org/">Apache Webserver</a></dd>
-  <dd><a href="https://www.perl.org/">Perl</a></dd>
-  <dd><a href="https://perl.apache.org/">mod_perl</a></dd>
-  <dd><a href="https://www.w3c.org/XML/">XML</a></dd>
-  <dd><a href="https://dom.spec.whatwg.org/">DOM</a></dd>
-  <dd><a href="https://codemirror.net/">CodeMirror</a></dd>
-  <dd class="last"><a href="https://www.cpan.org/">CPAN</a></dd>
-
-  <dt>Supports:</dt>
-  <dd><a href="https://www.openarchives.org/">Open Archives Initiative Protocol for Metadata Harvesting</a></dd>
-  <dd><a href="https://www.w3.org/MarkUp/">Valid XHTML</a></dd>
-  <dd class="last"><a href="https://jigsaw.w3.org/css-validator/">Valid CSS</a></dd>
-
-  <dt>Part of:</dt>
-  <dd class="last"><a href="https://www.gnu.org/">The GNU Project</a></dd>
-</dl>
-
-<epc:phrase ref="ruler" />
-
 <div style="text-align: center; margin-top: 2em;">
-  <a href="https://www.southampton.ac.uk/" target="_blank"><img src="{$config{rel_path}}/images/uoslogo.png" style="border: 0; vertical-align: top; max-width: 500px;"  alt="University of Southampton"/></a>
-  <p>EPrints is Copyright &#169; University of Southampton, 2000-2026.</p>
+  <a href="https://www.southampton.ac.uk/" target="_blank"><img src="{$config{rel_path}}/images/uoslogo.png" style="border: 0; vertical-align: top; max-width: 380px;"  alt="University of Southampton"/></a>
+  <p style="padding-top: 0.3em;">EPrints is Copyright &#169; University of Southampton, 2000-2026.</p>
 </div>
 
 </xpage:body>
