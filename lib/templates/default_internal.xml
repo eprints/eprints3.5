@@ -163,10 +163,10 @@
         </div>
       </div>
       <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 mt-3 border-top" id="footer">
-        <div class="col-md-4 d-flex align-items-center p-3">
+        <div class="col-md-9 d-flex align-items-center p-3">
           <epc:phrase ref="template:about_eprints"/>
         </div>
-        <ul class="nav col-md-4 justify-content-end list-unstyled d-flex p-3">
+        <ul class="nav col-md-3 justify-content-end list-unstyled d-flex p-3">
           <a rel="external" href="https://eprints.org/software/">
             <img alt="EPrints Logo" src="{$config{rel_path}}/images/eprintslogo.png"/>
             <img alt="EPrints Publications Flavour Logo" src="{$config{rel_path}}/images/flavour.png" style="width: 28px"/>
