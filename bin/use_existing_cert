@@ -131,7 +131,7 @@ die "Could not load $repositoryid repository\n" unless $repo;
 
 if ( !$cert_path || !$key_path )
 {
-	print STDERR "ERROR: You must specify at least the --certificate and --key options. E.g. ./use_existing_cert my_archive --certificate /path/to/certficate --key /path/to/key\n";
+	print STDERR "ERROR: You must specify at least the --certificate and --key options. E.g. ./use_existing_cert my_archive --certificate /path/to/certificate --key /path/to/key\n";
 	exit 1;
 }
 if ( ! -e $cert_path )
