@@ -12,3 +12,7 @@
   bottom: 0;
   width: 100%;
 }
+
+#footer .nav a {
+  text-decoration: none;
+}
