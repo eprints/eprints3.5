@@ -18,12 +18,12 @@ B<use_existing_cert> - Allows the deployment of an existing certificate (with ke
 
 =head1 SYNOPSIS
 
-B<generate_le_cert> I<repository_id> [B<options>]
+B<use_existing_cert> I<repository_id> [B<options>]
 
 =head1 DESCRIPTION
 
-This script takes an existing EPrints repository that does not have HTTPS enabled and deploys and existing certificate, key and CA bundle 
-provided by the user.  It then makes the appropriate Apache and EPrints configuration to make the repository available over HTTPS.  
+This script takes an existing EPrints repository archive that does not have HTTPS enabled and deploys and existing certificate, key and CA
+bundle provided by the user.  It then makes the appropriate Apache and EPrints configuration to make the repository available over HTTPS. 
 
 HTTPS Apache configuration and certificate, keys, etc. will be added to the C<ssl/> directory of the archive.  For the latter the user can
 specify whether they wish these files to be copied or symlinked. Symlinking is useful if you have an existing Let's Encrypt certificate that
@@ -35,7 +35,7 @@ will auto-renew itself but in a different location.
 
 =item B<repository_id>
 
-The ID of the EPrints repository to generate a Let's Encrypt certificate.
+The ID of the EPrints repository to deploy an existing certificate into.
 
 =back
 
@@ -53,11 +53,11 @@ Specify the local path where the existing certificate key file can be found.
 
 =item B<--ca=/path/to/ca>
 
-Specify the local path where the existing certificate authority (CA) certificate file can be found.  This is not required if the CA certificates are bundles with the certificate of if you are using a self-signed certificate.
+Specify the local path where the existing certificate authority (CA) certificate file can be found.  This is not required if the CA certificates are bundled with the certificate or if you are using a self-signed certificate.
 
 =item B<--symlink>
 
-Rather that copying the certificate, key, etc. files into place symlink them instead.  This may be useful if you already have a Let's Encrypt certificate that is automatically renewed in a different location. 
+Rather that copying the certificate, key, etc. files into place, symlink them instead.  This may be useful if you already have a Let's Encrypt certificate that is automatically renewed in a different location. 
 
 =item B<--help>
 
