@@ -762,6 +762,17 @@ or:
  apache2ctl restart
 
 And then try connecting to your repository.
+
+After doing this, if you want to enable HTTPS for your repository you can
+use one of the following two scripts:
+
+  1. $base_path/bin/generate_le_cert - This will generate a Let's Encrypt
+     certificate for your archive and deploy appropiate configuration.
+
+  2. $base_path/bin/use_existing_cert - This allows an existing
+     certificate to be provided for your archive and will also deploy
+     appropriate configuration.
+
 --------------------------------------------------------------------------
 
 Don't forget to register your repository at https://roar.eprints.org/

@@ -1,0 +1,257 @@
+#!/usr/bin/perl -w
+
+use FindBin;
+use lib "$FindBin::Bin/../perl_lib";
+
+######################################################################
+#
+#
+######################################################################
+
+=pod
+
+=for Pod2Wiki
+
+=head1 NAME
+
+B<use_existing_cert> - Allows the deployment of an existing certificate (with key and CA certificates) for an EPrints repository including appropriate Apache configuration.
+
+=head1 SYNOPSIS
+
+B<generate_le_cert> I<repository_id> [B<options>]
+
+=head1 DESCRIPTION
+
+This script takes an existing EPrints repository that does not have HTTPS enabled and deploys and existing certificate, key and CA bundle 
+provided by the user.  It then makes the appropriate Apache and EPrints configuration to make the repository available over HTTPS.  
+
+HTTPS Apache configuration and certificate, keys, etc. will be added to the C<ssl/> directory of the archive.  For the latter the user can
+specify whether they wish these files to be copied or symlinked. Symlinking is useful if you have an existing Let's Encrypt certificate that
+will auto-renew itself but in a different location.
+
+=head1 ARGUMENTS
+
+=over 8
+
+=item B<repository_id>
+
+The ID of the EPrints repository to generate a Let's Encrypt certificate.
+
+=back
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--certificate=/path/to/certificate>
+
+Specify the local path where the existing certificate file can be found.
+
+=item B<--key=/path/to/key>
+
+Specify the local path where the existing certificate key file can be found.
+
+=item B<--ca=/path/to/ca>
+
+Specify the local path where the existing certificate authority (CA) certificate file can be found.  This is not required if the CA certificates are bundles with the certificate of if you are using a self-signed certificate.
+
+=item B<--symlink>
+
+Rather that copying the certificate, key, etc. files into place symlink them instead.  This may be useful if you already have a Let's Encrypt certificate that is automatically renewed in a different location. 
+
+=item B<--help>
+
+Print a brief help message and exit.
+
+=item B<--man>
+
+Print the full manual page and then exit.
+
+=item B<--quiet>
+
+Be vewwy vewwy quiet. This option will suppress all output unless an error occurs.
+
+=item B<--verbose>
+
+Explain in detail what is going on. May be repeated for greater effect.
+
+=item B<--version>
+
+Output version information and exit.
+
+=back
+
+=cut
+
+use EPrints;
+use File::Path qw(make_path);
+use File::Copy qw(cp);
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+
+my $verbose = 0;
+my $quiet = 0;
+my $help = 0;
+my $man = 0;
+my $force = 0;
+my $symlink =0;
+my $cert_path;
+my $key_path;
+my $ca_path;
+
+Getopt::Long::Configure("permute");
+
+GetOptions(
+	'symlink' => \$symlink,
+	'certificate=s' => \$cert_path,
+	'key=s' => \$key_path,
+	'ca=s' => \$ca_path,
+    'help|?' => \$help,
+    'man' => \$man,
+    'verbose+' => \$verbose,
+    'silent' => \$quiet,
+    'quiet' => \$quiet,
+) || pod2usage( 2 );
+pod2usage( 1 ) if $help;
+pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
+pod2usage( 2 ) if( scalar @ARGV == 0 );
+
+my $noise = 0;
+$noise = -1 if( $quiet );
+$noise = $noise+$verbose if( $verbose );
+
+my $repositoryid = shift @ARGV;
+my $ep = EPrints->new;
+my $repo = $ep->repository($repositoryid);
+
+die "Could not load $repositoryid repository\n" unless $repo;
+
+if ( !$cert_path || !$key_path )
+{
+	print STDERR "ERROR: You must specify at least the --certificate and --key options. E.g. ./use_existing_cert my_archive --certificate /path/to/certficate --key /path/to/key\n";
+	exit 1;
+}
+if ( ! -e $cert_path )
+{
+	print STDERR "ERROR: No certificate file exists at: $cert_path\n";
+	exit 1;
+}
+if ( ! -e $key_path )
+{
+    print STDERR "ERROR: No key file exists at: $key_path\n";
+    exit 1;
+}
+if ( $ca_path && ! -e $ca_path )
+{
+    print STDERR "ERROR: No CA file exists at: $ca_path\n";
+    exit 1;
+}
+
+my $hostname = $repo->config( 'host' ) ? $repo->config( 'host' ) : $repo->config( 'securehost' );
+my @domains = ( $hostname );
+my $aliases = "ServerAlias";
+foreach my $alias ( @{ $repo->config( 'aliases' ) } )
+{
+    push @domains, $alias->{name};
+	$aliases .= $alias->{name}." ";
+}
+$aliases = "" if $aliases eq "ServerAlias";
+my $adminemail = $repo->config( 'adminemail' );
+my $hostname_filename = $hostname;
+$hostname_filename =~ s/\./_/g;
+
+my $ssl_dir = $repo->config( 'archiveroot' ) . "/ssl";
+my $securevhost_file = "$ssl_dir/securevhost.conf";
+my $apache_ssl_cfg_file = EPrints::Config::get( 'cfg_path' ) . "/apache_ssl/$repositoryid.conf";
+my $domain_key_file = "$ssl_dir/$hostname_filename.key";
+my $domain_crt_file = "$ssl_dir/$hostname_filename.crt";
+my $domain_ca_file = "$ssl_dir/$hostname_filename.ca-bundle";
+
+my $cert_file_paths;
+if ( $ca_path )
+{
+	$cert_file_paths = "SSLCertificateFile ${domain_crt_file}
+SSLCertificateKeyFile ${domain_key_file}
+SSLCertificateChainFile ${domain_ca_file}";
+}
+else
+{
+	 $cert_file_paths = "SSLCertificateFile ${domain_crt_file}
+SSLCertificateKeyFile ${domain_key_file}";
+}
+
+
+if ( ! -d $ssl_dir )
+{
+	mkdir $ssl_dir or die "ERROR: Could not create directory $ssl_dir\n";
+}
+my $securevhost_conf = <<END;
+<VirtualHost *:443>
+
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+ServerAdmin ${adminemail}
+
+ServerName ${hostname}
+${aliases}
+
+LogLevel warn
+
+SSLEngine on
+SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLHonorCipherOrder on
+SSLCompression off
+SSLSessionTickets off
+SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+
+$cert_file_paths
+
+Include $apache_ssl_cfg_file
+
+PerlTransHandler +EPrints::Apache::Rewrite
+
+</VirtualHost>
+END
+
+unless ( -s $securevhost_file )
+{
+	EPrints->system->write_config_file( $securevhost_file, $securevhost_conf, BACKUP => 1 );
+}
+
+if ( $symlink )
+{
+	symlink( $cert_path, $domain_crt_file );
+	symlink( $key_path, $domain_key_file );
+	if ( $ca_path )
+	{
+		symlink( $ca_path, $domain_ca_file );
+	}
+}
+else
+{
+	cp( $cert_path, $domain_crt_file );
+	cp( $key_path, $domain_key_file );
+	if ( $ca_path )
+    {
+        cp( $ca_path, $domain_ca_file );
+    }
+}
+
+if ( ! defined $repo->config( 'securehost' ) )
+{
+    my $core_config_file = $repo->config( 'config_path' ) . "/cfg.d/10_core.pl";
+    my $core_config = read_file( $core_config_file );
+    $core_config =~ s/^\$c->\{securehost\}.*$/\$c->{securehost} = '$hostname';/m;
+    EPrints->system->write_config_file( $core_config_file, $core_config );
+    my $bin_path = EPrints::Config::get("bin_path");
+    system( "$bin_path/generate_apacheconf --system --replace --quiet" );
+}
+
+unless ( $quiet )
+{
+	print "Successfully deployed you existing certificate (key, etc.) and accompanying Apache configuration.  Be sure to add the following line to the appropriate configuration file (e.g. /etc/httpd/conf.d/eprints.conf or /etc/apache2/sites-available/eprints.conf) and then reload Apache:\n\n\tInclude $securevhost_file\n\nIf when you try to load the repository over HTTPS you get Apache's server test page, you may need to disable the default SSL virtualhost (e.g. in /etc/httpd/conf.d/ssl.conf).\n\n";
+}
+exit 0;
