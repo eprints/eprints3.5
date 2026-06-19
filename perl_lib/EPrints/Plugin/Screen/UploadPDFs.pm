@@ -71,12 +71,10 @@ sub render
 
 	my $form = $div->appendChild( $self->{processor}->screen->render_form( "import_file" ) );
 
-	my $input_label = $form->appendChild( $repo->make_element( "label", class => "ep_form_field_input", for => "pdf_upload") );
+	my $input_label = $form->appendChild( $repo->make_element( "label", class => "ep_form_field_input UploadMethod_file_container", for => "pdf_upload") );
 	my $dropbox = $input_label->appendChild( $repo->make_element( "div", id => "pdf_upload_dropbox", class => "ep_dropbox" ) );
-	my $dropbox_text = $dropbox->appendChild( $repo->make_element( "p", class => "ep_dropbox_text" ) );
-	my $upload_text = $dropbox_text->appendChild( $repo->make_element( "span", style => "color: blue;" ) );
-	$upload_text->appendChild( $repo->make_text( "Click to upload" ) );
-	$dropbox_text->appendChild( $repo->make_text( " or drag and drop" ) );
+	
+	$dropbox->appendChild( $repo->make_text( "Click this box or drag and drop files here to begin uploading." ) );
 
 	$dropbox->appendChild( $xhtml->input_field(
 		file => undef,

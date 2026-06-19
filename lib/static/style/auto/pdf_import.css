@@ -1,0 +1,27 @@
+.ep_form_field_input.UploadMethod_file_container, #upload_help, #pdf_upload_preview {
+    font-size: 1rem;
+}
+
+#pdf_upload_dropbox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pdf_upload_preview table {
+    margin-top: 20px;
+    width: 100%;
+    border-spacing: 10px;
+    border-collapse: separate;
+    text-align: left;
+
+    tbody {
+        width: 100%;
+    }
+
+    th:last-child {
+        text-align: right;
+    }
+}
