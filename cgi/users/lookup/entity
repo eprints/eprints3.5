@@ -18,11 +18,10 @@ my $datasets;
 if  ( $entity_types )
 {
 	$datasets = [ split( ',', $entity_types ) ];
-	print STDERR "datasets: $datasets\n";
 }
 else
 {
-        $datasets = $session->config( 'entities', 'datasets' );
+	$datasets = $session->config( 'entities', 'datasets' );
 }
 
 foreach my $datasetid ( @$datasets )
