@@ -66,7 +66,8 @@ sub generate_epdata
 
 	my $epdata = {
 		documents => [{
-			format => "application/pdf",
+			format => "text",
+			mime_type => "application/pdf",
 			main => $filename,
 			files => [{
 				filename => $filename,
