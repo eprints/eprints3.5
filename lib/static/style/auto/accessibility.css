@@ -19,7 +19,11 @@ table.ep_accessibility_results > tbody > tr > td:last-child {
 }
 
 .ep_accessibility_good {
-        color: #006400;
+	color: #006400;
+}
+
+.ep_accessibility_score {
+    font-weight: bold;
 }
 
 .sr-only{

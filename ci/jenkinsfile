@@ -3,7 +3,7 @@ pipeline{
     /** Note - because eprints is running on node "eprints_35_deploy" but playwright is running on "playwright" there's a risk another job could 
     steal the eprints node mid-test.
 
-    For future expansion: multiple lockable resources which can return a proprety of the node they're locking, then we use that node? not sure if that's supported
+    For future expansion: multiple lockable resources which can return a property of the node they're locking, then we use that node? not sure if that's supported
      */
     options {
         lock resource: 'eprints_35_deploy_lock'

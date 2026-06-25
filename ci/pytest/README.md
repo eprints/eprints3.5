@@ -1,6 +1,6 @@
 # Running the Tests Locally
 
-Pytest is being used (mildly abused) to provide system tests, rather than unit tests. The tests are intended for developers to use to expand automated testing of new features and bug fixes. It's not targetted at testing a new installation.
+Pytest is being used (mildly abused) to provide system tests, rather than unit tests. The tests are intended for developers to use to expand automated testing of new features and bug fixes. It's not targeted at testing a new installation.
 
 ## Setting up a Python Virtual Environment
 I recommend using a venv. The tests can be run from either Windows or Linux. Note that for Linux it's easiest to install Playwright on Ubuntu and not officially supported on Red Hat.

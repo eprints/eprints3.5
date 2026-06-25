@@ -30,7 +30,6 @@ my $bibtex = <<'EOB';
 	number =       "2",
 	pages =        "66--70",
 	year =         "1988",
-	keywords =     "conver",
 }
 EOB
 

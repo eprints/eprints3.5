@@ -646,7 +646,7 @@ sub serialise_name
 =item $human_serialised_name = $entity->human_serialise_name( $name )
 
 Returns human serialisation of an entity's <$name> to make it quicker 
-to transfrom between some other data object input field and an entity 
+to transform between some other data object input field and an entity 
 data object.
 
 =cut

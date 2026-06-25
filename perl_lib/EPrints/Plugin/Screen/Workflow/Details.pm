@@ -81,7 +81,7 @@ sub _render_name_maybe_with_link
 			screen => $self->edit_screen,
 			dataset => $dataset->id,
 			dataobj => $dataobj->id,
-			stage => $stage
+			stage => $stage,
 		);
 
 		$url->fragment( $name );
@@ -90,6 +90,7 @@ sub _render_name_maybe_with_link
 	return $self->{session}->template_phrase( "view:EPrints/Plugin/Screen/Workflow/Details:_render_name_maybe_with_link", { item => {
 		name => $field->render_name( $self->{session} ),
 		url => $url,
+		id => $name,
 	} } );
 }
 

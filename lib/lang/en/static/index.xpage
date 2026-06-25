@@ -88,11 +88,5 @@
     <div class="alert alert-dark mt-5" role="alert"><epc:phrase ref="archive_name"/> supports <a href="https://www.openarchives.org"><abbr title="Open Archives Protocol for Metadata Harvesting v2.0">OAI 2.0</abbr></a> with a base URL of <a href="{$config{perl_url}}/oai2" style="color: #0027ff;font-size: .875em;word-wrap: break-word;"><epc:print expr="$config{perl_url}"/>/oai2</a>
 </div>
 
-<epc:print expr="homepage_menu()" />
-
-<p style="margin-top: 2em; font-size: 90%">
-<epc:phrase ref="archive_name" /> supports <a href="https://www.openarchives.org"><abbr title="Open Archives Protocol for Metadata Harvesting v2.0">OAI 2.0</abbr></a> with a base URL of <code><epc:print expr="$config{perl_url}" />/oai2</code>
-</p>
-
 </xpage:body>
 </xpage:page>

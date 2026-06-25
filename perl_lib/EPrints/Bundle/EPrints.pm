@@ -11,6 +11,7 @@ BibTeX::Parser 1.05
 CGI 4.68 - This was included in Perl but deprecated in v5.19.7
 
 Config::General 2.67
+Crypt::LE	0.39
 
 DBI        1.647
 

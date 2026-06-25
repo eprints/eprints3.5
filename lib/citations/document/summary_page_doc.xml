@@ -16,10 +16,10 @@
         </audio>
       </epc:when>
       <epc:when test="$item.thumbnail_url('medium').is_set()">
-        <img src="{$item.thumbnail_url('medium')}" class="card-img-top object-fit-cover" style="height: 200px;" alt="lightbox image"/>
+        <img src="{$item.thumbnail_url('medium')}" class="card-img-top object-fit-cover" style="height: 200px;" alt="Preview of {main}"/>
       </epc:when>
       <epc:otherwise>
-        <img src="/style/images/fileicons/image.png" class="card-img-top object-fit-scale" style="height: 200px;" alt="lightbox image"/>
+        <img src="/style/images/fileicons/image.png" class="card-img-top object-fit-scale" style="height: 200px;" alt="Placeholder preview of {main}"/>
       </epc:otherwise>
     </epc:choose>
 

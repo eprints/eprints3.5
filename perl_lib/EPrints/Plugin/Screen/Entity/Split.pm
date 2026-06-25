@@ -176,7 +176,7 @@ sub render
 	}
 
 	my $id_div = $self->{session}->make_element( 'div', class => "ep_entity_ids" );
-	my $id_label = $self->{session}->make_element( 'label', id => "choose_entity_id" );
+	my $id_label = $self->{session}->make_element( 'span', id => "choose_entity_id" );
 	$id_label->appendChild( $self->{session}->html_phrase( 'lib/submissionform:choose_entity_id' ) );
 	$id_label->appendChild( $self->{session}->make_text( ': ' ) );
 	$id_div->appendChild( $id_label );

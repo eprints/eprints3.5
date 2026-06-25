@@ -94,7 +94,6 @@ my $help = 0;
 my $man = 0;
 my $force = 0;
 my $staging = 0;
-my $config;
 
 Getopt::Long::Configure("permute");
 

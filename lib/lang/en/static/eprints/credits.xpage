@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1"  standalone="no"  ?>
+<!DOCTYPE page SYSTEM "entities.dtd" >
+<xpage:page xmlns="http://www.w3.org/1999/xhtml" xmlns:xpage="http://eprints.org/ep3/xpage" xmlns:epc="http://eprints.org/ep3/control">
+<xpage:template>default_internal</xpage:template>	
+<xpage:title>Extended Credits</xpage:title>
+<xpage:body>
+
+<p>Since the inception of EPrints over a quarter of a century ago there have been many contributors to its development.</p>
+ 
+<h2 id="software-architects">Software Architects</h2>
+<ul>
+  <li>Christopher Gutteridge</li>
+  <li>Dr Tim Brody</li>
+  <li>Seb Francois</li>
+  <li>Professor Justin Bradley</li>
+  <li>Dr David Newman</li>
+</ul>
+
+<h2 id="developers">Developers</h2>
+<ul>
+  <li>Ed Oakley</li>
+  <li>Luke Wallin</li>
+  <li>William Rose</li>
+  <li>William Robertson</li>
+  <li>Dr Don Cruickshank</li>
+  <li>Richard Cook</li>
+  <li>Kelly Terrell</li>
+  <li>Dr Will Fyson</li>
+  <li>Dr Jiadi Yao</li>
+  <li>Adam Field</li>
+  <li>Dr Timothy Miles-Board</li>
+  <li>Dr Dave Tarrant</li>
+  <li>Patrick McSweeney</li>
+</ul>
+
+
+<h2 id="contributors">Contributors</h2>
+<ul>
+  <li>John Salter</li>
+  <li>Alex Ball</li>
+  <li>Martin Braendle</li>
+  <li>Alexander Bergolth</li>
+  <li>Dr Michael O. Jewell</li>
+  <li>Dr Jessie Hey</li>
+  <li>Dr Harry Mason</li>
+  <li>Al Riddoch</li>
+  <li>Dr Gui Power</li>
+  <li>Pauline Simpson</li>
+  <li>Robert Tansley</li>
+  <li>Adam White</li>
+  <li>Wendy White</li>
+  <li>Dr Steve Hitchcock</li>
+  <li>Denis Pitzalis</li>
+  <li>Matthew Kerwin</li>
+  <li>Mark Gregson</li>
+</ul>
+
+<h2 id="project-management">Project Management</h2>
+<ul>
+  <li>Professor Leslie Carr</li>
+  <li>John Darlington</li>
+</ul>
+
+<h2 id="user-experience-consultant">user experience consultant</h2>
+<ul>
+  <li>prof mc schraefel</li>
+</ul>
+
+<h2 id="visonary-and-software-specifications">Visionary and Software Specifications</h2>
+<ul>
+  <li>Professor Stevan Harnad</li>
+</ul>
+
+
+</xpage:body>
+</xpage:page>

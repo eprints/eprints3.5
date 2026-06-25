@@ -118,7 +118,7 @@ sub add_trigger
 
 Generates an ID for a trigger so it can be individually referenced.  If C<$trigger_id> is non-empty
 use this. If not, if C<B::Deparse> library is available and C<$code> is a code reference generate
-an md5sum of the function as a string. Otherwose just generate a random UUID.
+an md5sum of the function as a string. Otherwise, just generate a random UUID.
 
 Returns the generated ID for the trigger.
 
@@ -147,7 +147,7 @@ Add a field spec $fielddata to dataset $datasetid.
 This method will abort if the field already exists and 'reuse' is unspecified.
 
 Options:
-	reuse - re-use an existing field if it exists (must be same type)
+	reuse - reuse an existing field if it exists (must be same type)
 
 =cut
 

@@ -15,3 +15,8 @@ input { border: var(--bs-border-width) solid var(--bs-border-color); }
 
 .input-group select { border-color: #ccc; }
 
+select.btn:open {
+    color: var(--bs-btn-active-color);
+    background-color: var(--bs-btn-active-bg);
+    border-color: var(--bs-btn-active-border-color);
+}

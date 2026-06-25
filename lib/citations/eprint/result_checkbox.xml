@@ -7,15 +7,15 @@
 <cite:citation xmlns="http://www.w3.org/1999/xhtml" xmlns:cite="http://eprints.org/ep3/citation" xmlns:epc="http://eprints.org/ep3/control" type="div_table_row">
   <div class="ep_search_result">
     <div><epc:print expr="$n" />.</div>
-    <div>
+    <div id="eprint_{$item.property('eprintid')}_citation">
       <a href="{control_url($item)}" target="_blank">
         <epc:print expr="$item.citation('default')" />
       </a>
     </div>
     <div>
-	  <div class="ep_search_checkbox">
-        <input type="checkbox" id="ep_checkbox_eprint_{$item.property('eprintid')}" name="eprint:{$item.property('eprintid')}"/>
-	  </div>
+      <div class="ep_search_checkbox">
+        <input type="checkbox" id="ep_checkbox_eprint_{$item.property('eprintid')}" name="eprint:{$item.property('eprintid')}" aria-labelledby="eprint_{$item.property('eprintid')}_citation"/>
+      </div>
     </div>
   </div>
 </cite:citation>

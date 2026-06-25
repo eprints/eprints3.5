@@ -37,32 +37,12 @@ sub get_facet_config
 {
 	my( $self ) = @_;
 
-	return [
-		{
-			field_id => "type"
-		},
-		{
-			field_id => "department"
-		},
-		{
-			field_id => "ispublished"
-		},
-		{
-			field_id => "publisher"
-		},
-		{
-			field_id => "publication"
-		},
-		{
-			field_id => "date;res=year",
-			# Name the field 'Year' rather than 'Date'
-			field_name => "metafield_fieldopt_min_resolution_year",
-		},
-		# {
-		# 	field_id => "contributors"
+	if ( defined $self->{processor}->{sconf}->{facets} && ref $self->{processor}->{sconf}->{facets} eq "ARRAY" )
+	{
+		return $self->{processor}->{sconf}->{facets};
+	}
 
-		# },
-	];
+	return [ { field_id => 'datestamp;res=year' } ];
 }
 
 sub datasets
@@ -835,7 +815,7 @@ sub render_facet_list
 
 	if( $show_this_facet )
 	{
-		my $heading = $session->make_element( "h3", "class" => "ep_facet_heading" );
+		my $heading = $session->make_element( "h2", "class" => "ep_facet_heading" );
 		my $field_name = $session->phrase( $facet_config->{field_name} ) if defined $facet_config->{field_name};
 		$heading->appendChild( $session->make_text( $field_name || $field->render_name ) );
 

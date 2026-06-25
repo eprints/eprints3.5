@@ -7,13 +7,13 @@
     <div class="card">
       <div class="card-body">
         <a href="{$item.uri()}" class="text-decoration-none">
-          <h5 class="card-title">
+          <h2 class="card-title">
             <epc:print expr="name"/>
-          </h5>
+          </h2>
           <epc:if test="$type">
-            <h6 class="card-subtitle mb-2 text-muted">
+            <h3 class="card-subtitle mb-2 text-muted">
               <epc:print expr="$type"/>
-            </h6>
+            </h3>
           </epc:if>
         </a>
       </div>

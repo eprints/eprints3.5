@@ -649,11 +649,11 @@ sub paginate_opts
 	my $order_div = $self->{session}->make_element( "div", class=>"ep_search_reorder" );
 	my $form = $self->{session}->render_form( "GET" );
 	$order_div->appendChild( $form );
-	my $order_label = $self->{session}->make_element( "label" );
+	my $order_label = $self->{session}->make_element( "span", id => "order_label");
 	$form->appendChild( $order_label );
 	$order_label->appendChild( $self->{session}->html_phrase( "lib/searchexpression:order_results" ) );
 	$order_label->appendChild( $self->{session}->make_text( ": " ) );
-	$order_label->appendChild( $self->render_order_menu( ( auto_submit => 1 ) ) );
+	$form->appendChild( $self->render_order_menu( ( auto_submit => 1, "aria-labelledby" => "order_label" ) ) );
 
 	$form->appendChild( $self->{session}->render_button(
 			name=>"_action_search",
@@ -662,11 +662,28 @@ sub paginate_opts
 	$form->appendChild( 
 		$self->{session}->render_hidden_field( "exp", $escexp, "exp_order" ) );
 
+	my $order_bottom_div = $self->{session}->make_element( "div", class=>"ep_search_reorder" );
+	my $form_bottom = $self->{session}->render_form( "GET" );
+	$order_bottom_div->appendChild( $form_bottom );
+	my $order_bottom_label = $self->{session}->make_element( "span", id => "order_after_label" );
+	$form_bottom->appendChild( $order_bottom_label );
+	$order_bottom_label->appendChild( $self->{session}->html_phrase( "lib/searchexpression:order_results" ) );
+	$order_bottom_label->appendChild( $self->{session}->make_text( ": " ) );
+	$form_bottom->appendChild( $self->render_order_menu( ( auto_submit => 1, "aria-labelledby" => "order_after_label" ) ) );
+
+	$form_bottom->appendChild( $self->{session}->render_button(
+			name=>"_action_search",
+			value=>$self->{session}->phrase( "lib/searchexpression:reorder_button" ) ) );
+	$form_bottom->appendChild( $self->render_hidden_bits( "order" ) );
+	$form_bottom->appendChild(
+		$self->{session}->render_hidden_field( "exp", $escexp, "exp_order" ) );
+
 	return (
 		pins => \%bits,
 		controls_before => \@controls_before,
 		above_results => $export_div,
 		controls_after => $order_div,
+		controls_bottom_after => $order_bottom_div,
 		params => { 
 			screen => $self->{processor}->{screenid},
 			_action_search => 1,
@@ -780,7 +797,7 @@ sub render_cache_not_found
 		screen => $self->{processor}->{screenid},
 		dataset => $self->search_dataset->id,
 		order => $self->{processor}->{search}->{custom_order},
-		# including original ID allows futher analysis of traffic if needed, in cases where these links have been followed
+		# including original ID allows further analysis of traffic if needed, in cases where these links have been followed
 		cache_miss => $self->_validated_cache_param( $self->{session}->param( "cache" ) ),
 		# TODO add action, or 'regen cache and link to old cache id' (if that's implemented)
 	);

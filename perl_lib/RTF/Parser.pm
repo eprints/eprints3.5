@@ -31,7 +31,7 @@ RTF, which fixed a whole class of problems.
 The big problem is really that the whole module is an API which happens to have
 C<rtf2html> and C<rtf2text> stuck on top of it. Any serious changes involve
 breaking the API, and that seems the greater sin than telling people to go and
-get themselves a better RTF convertor suite.
+get themselves a better RTF converter suite.
 
 I had high hopes of overhauling the whole thing, but it didn't happen. I handed
 over maintainership some years later, but no new version was forthcoming, and
@@ -185,10 +185,10 @@ sub new {
 
 }
 
-# For backwards compatability, we import RTF::Control's %do_on_control
+# For backwards compatibility, we import RTF::Control's %do_on_control
 # if we've loaded RTF::Control (which would suggest we're being subclassed
 # by RTF::Control). This isn't nice or pretty, but it doesn't break things.
-# I'd do this in new() but there's no guarentee it'll be set by then...
+# I'd do this in new() but there's no guarantee it'll be set by then...
 
 sub _install_do_on_control {
 

@@ -550,7 +550,7 @@ def test_phrase_editor(logged_in_page, base_url):
     table = logged_in_page.locator("//table[@id='ep_phraseedit_table']")
     edit_cell = get_table_cell(table, "Content", {"Identifier": "archive_name"})
 
-    test_text = "Text to replace the name of the reposity for testing here"
+    test_text = "Text to replace the name of the repository for testing here"
 
     # textbox = edit_cell.get_by_role("textbox")
     edit_cell.click()

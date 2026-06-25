@@ -1,6 +1,6 @@
 =head1 AUTHOR
 
-This is part of this EPrints 3.4 system. EPrints 3.4 is developed by EPrints Services
+This is part of this EPrints 3.5 system. EPrints 3.5 is developed by EPrints Services
 
 =head1 VERSION
 
@@ -8,7 +8,7 @@ EPrints Version: __VERSION__
 
 =head1 CONTACT
 
-For more information goto B<http://www.eprints.org/eprints-3.4/> which give information on mailing lists and the like.
+For more information goto B<https://www.eprints.org/3v5/> which give information on mailing lists and the like.
 
 EPrints Services may be contacted at B<support@eprints.org>
 

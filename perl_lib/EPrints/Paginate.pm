@@ -319,11 +319,16 @@ sub paginate_list
 
 	$paginate_data->{control_links} = \@controls;
 	$paginate_data->{controls_after} = $opts{controls_after};
+	$paginate_data->{controls_bottom_after} = $opts{controls_bottom_after};
 	$paginate_data->{has_main_controls} = $has_main_controls;
 
 	if( $has_main_controls || $opts{controls_after} )
 	{
 		$pins{controls} = $session->template_phrase( "view:EPrints/Paginate:paginate_list/controls", { item => $paginate_data } );
+	}
+	if( $opts{controls_bottom_after} )
+	{
+		$pins{controls_bottom} = $session->template_phrase( "view:EPrints/Paginate:infinite_search_list/controls_bottom", { item => $paginate_data } );
 	}
 
 	# Apply custom pins.
@@ -339,6 +344,7 @@ sub paginate_list
 	$paginate_data->{below_results} = $pins{below_results};
 	$paginate_data->{results} = $pins{results};
 	$paginate_data->{controls} = $pins{controls};
+	$paginate_data->{controls_bottom} = $pins{controls_bottom};
 
 	return $session->template_phrase( "view:EPrints/Paginate:paginate_list", { item => $paginate_data } );
 }
@@ -512,11 +518,16 @@ sub infinite_search_list
 
 	$paginate_data->{control_links} = \@controls;
 	$paginate_data->{controls_after} = $opts{controls_after};
+	$paginate_data->{controls_bottom_after} = $opts{controls_bottom_after};
 	$paginate_data->{has_main_controls} = $has_main_controls;
 
 	if( $has_main_controls || $opts{controls_after} )
 	{
 		$pins{controls} = $session->template_phrase( "view:EPrints/Paginate:infinite_search_list/controls", { item => $paginate_data } );
+	}
+	if( $opts{controls_bottom_after} )
+	{
+		$pins{controls_bottom} = $session->template_phrase( "view:EPrints/Paginate:infinite_search_list/controls_bottom", { item => $paginate_data } );
 	}
 
 	# Apply custom pins.
@@ -532,6 +543,7 @@ sub infinite_search_list
 	$paginate_data->{below_results} = $pins{below_results};
 	$paginate_data->{results} = $pins{results};
 	$paginate_data->{controls} = $pins{controls};
+	$paginate_data->{controls_bottom} = $pins{controls_bottom};
 
 	return $session->template_phrase( "view:EPrints/Paginate:paginate_list", { item => $paginate_data } );
 }

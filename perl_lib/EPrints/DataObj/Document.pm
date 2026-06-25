@@ -98,7 +98,7 @@ A compound field containing a description of the document media - dimensions, co
 
 =item upload_url (longtext)
 
-If document is uploaed from a URL record this URL for reference purposes.
+If document is uploaded from a URL record this URL for reference purposes.
 
 =back
 
@@ -372,7 +372,7 @@ sub get_defaults
 		$data->{pos} = $session->get_database->next_doc_pos( $data->{eprintid} );
 	}
 
-	$data->{placement} = $data->{pos};
+	$data->{placement} = $session->get_database->next_doc_pos( $data->{eprintid}, 'placement' );
 
 	return $data;
 }
@@ -1043,7 +1043,7 @@ C<$file> is the full path to a file to be added to the document, with
 name C<$filename>. C<$filename> is passed through 
 L<EPrints::System#sanitise> before being written.
 
-If C<$preserve_path> is C<tru>e then include path components in 
+If C<$preserve_path> is C<true> then include path components in 
 C<$filename>.
 
 Returns the file object if successfully created or C<undef> on 

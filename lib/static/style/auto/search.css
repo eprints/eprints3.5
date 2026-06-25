@@ -123,3 +123,16 @@ span.search_desc {
     margin: 0.4em 0 0 auto;
     text-align: center;
 }
+
+.ep_facet_heading {
+	padding-top: 0.8rem;
+	font-size: 1.5em;
+	font-weight: 500;
+}
+
+.accordion-item #resultsOptions, .accordion-item #exportOptions {
+	font-size: 1rem;
+	font-weight: normal;
+	color: #212429;
+	padding-top: 0;
+}
