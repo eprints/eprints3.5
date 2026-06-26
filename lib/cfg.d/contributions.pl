@@ -394,8 +394,10 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 	my $workflow = EPrints::Workflow->new( $repo, 'default', ( item => $eprint ) );
 	my $primary_id_types = $repo->config( 'entities', 'primary_id_types' );
 	my $all_contrib_fields =  $repo->config( 'entities', 'field_contribution_types', 'eprint' );
+	my $contributions = $eprint->exists_and_set( 'contributions' ) ? $eprint->get_value( "contributions" ) : [];
+	my $old_contributions = defined $changed->{contributions_contributor} ? $changed->{contributions_contributor} : [];
 
-	if ( $workflow->{field_stages}->{contributions} )
+	if ( $workflow->{field_stages}->{contributions} && ( scalar @$contributions > 0 || ( scalar @$contributions == 0 && scalar @$old_contributions > 0 ) ) )
 	{
 		my $dataset = $repo->dataset( 'eprint' );
 		my $all_contrib_maps = $repo->config( 'entities', 'field_contribution_maps', 'eprint' );
@@ -406,9 +408,7 @@ $c->add_dataset_trigger( 'eprint', EPrints::Const::EP_TRIGGER_BEFORE_COMMIT, sub
 			$entity_datasets->{$dsid} = $repo->dataset( $dsid );
 		}
 
-		my $contributions = $eprint->exists_and_set( 'contributions' ) ? $eprint->get_value( "contributions" ) : [];
 		my $changes = {};
-
 
 		foreach my $entity_type ( keys %$all_contrib_fields )
 		{		
