@@ -29,13 +29,21 @@ def test_eprint_submit_article(logged_in_page, random_eprint):
 
     random_pdf_bytes = random_eprint.pdf.output()
 
+    # page.on("dialog", lambda dialog: dialog.dismiss())
+
+    #works, but in headed mode the upload file dialogue doesn't go away. A minor irritance
     page.get_by_label("Click this box or drag and drop files here to begin uploading.").set_input_files(files={
-        'name': file_name, 'mimeType': 'application/pdf', 'buffer': random_pdf_bytes})
+        'name': file_name, 'mimeType': 'application/pdf', 'buffer': random_pdf_bytes}, timeout=500)
+    # with page.expect_file_chooser() as fc_info:
+    #     page.get_by_label("Click this box or drag and drop files here to begin uploading.").click()
+    # file_chooser = fc_info.value
+    # file_chooser.set_files({'name': file_name, 'mimeType': 'application/pdf', 'buffer': random_pdf_bytes})
 
     #wait for the block that describes the uploaded file to be present
     expect(page.get_by_role("textbox", name="Description")).to_be_visible()
 
     page.get_by_role("button", name="Next →").nth(1).click()
+    # page.reload()
 
     page.get_by_role("textbox", name="Required Title").fill(random_eprint.title)
 

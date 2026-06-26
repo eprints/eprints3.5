@@ -226,6 +226,11 @@ def get_random_organisation_info():
     org["name"] = f"University of {org['name_family']}"
     return org
 
+def main_page_search_button(page: Page):
+    main_page = page.locator("#main_content")
+    # get the search button in the page, not in the navigation bar
+    return main_page.get_by_role("button", name="Search").first
+
 def get_table_cell(table_locator, column_header, row):
     '''
 

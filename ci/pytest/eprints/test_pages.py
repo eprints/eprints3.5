@@ -4,9 +4,7 @@ from playwright.sync_api import Page, expect
 import re
 import pytest
 
-from eprints.utils import login, select_locator, get_counts_from_titles_per_key, \
-    get_titles_for_year_from_test_data, get_titles_for_subject_from_test_data, get_titles_for_authors_from_test_data, \
-    fill_in_register_user, get_table_cell
+from eprints.utils import *
 
 '''
 These are intended to replace the "simple" selenium tests. Where possible they are based on the test data and are parameterised
@@ -330,7 +328,9 @@ I wonder if it was possible to abstract out and unify the admin search pages. Th
 def test_admin_search_issues_page(logged_in_page):
     logged_in_page.get_by_role("link", name="Admin", exact=True).click()
     logged_in_page.get_by_role("button", name ="Search issues").click()
-    logged_in_page.get_by_role("button", name="Search").first.click()
+
+    main_page_search_button(logged_in_page).click()
+
     expect(logged_in_page.get_by_text("Search has no matches.")).to_be_visible()
 
     logged_in_page.get_by_role("link", name="Logout").click()
@@ -342,7 +342,7 @@ def test_admin_search_items_page(logged_in_page):
 
     logged_in_page.get_by_role("textbox", name="Title", exact=True).fill("monkey")
 
-    logged_in_page.get_by_role("button", name="Search").first.click()
+    main_page_search_button(logged_in_page).click()
 
     expect(logged_in_page.get_by_text("1.	McInerny, Γαία (2018) Giant Waxing Monkey Tree Frogs in the Wild. Natural World Journal (NWJ), 4 (19). pp. 145-191.")).to_be_visible()
     expect(logged_in_page.get_by_text("2.	Joergensen, M. and Notley, V. and Beda, J. (2017) Waxing Monkey Frogs in the Wild. Fine Animal Breeding, 9 (17). pp. 117-163.")).to_be_visible()
@@ -386,7 +386,7 @@ def test_admin_search_users_page(logged_in_page, test_admin_user_info, temp_user
     logged_in_page.get_by_role("checkbox", name="User").check()
     logged_in_page.get_by_role("checkbox", name="Repository Administrator").check()
 
-    logged_in_page.get_by_role("button", name="Search").first.click()
+    main_page_search_button(logged_in_page).click()
 
     def check_user(user_info, position):
 
