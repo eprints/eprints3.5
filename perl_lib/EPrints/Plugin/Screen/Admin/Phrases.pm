@@ -164,6 +164,17 @@ sub write_phrase
 	# create an empty webcfg phrases file, if it doesn't exist already
 	if( !-e $file )
 	{
+		# create parent directories for webcfg phrases file if they do not already exist
+		my $parent_dir =  $session->config( "config_path" );
+		foreach my $sub_dir ( "lang", $langid, "phrases" )
+		{
+			$parent_dir .= "/" . $sub_dir;
+			if ( ! -d $parent_dir )
+			{
+				mkdir $parent_dir;
+			}
+		}
+
 		my $fh;
 		unless( open( $fh, ">", $file ) )
 		{
