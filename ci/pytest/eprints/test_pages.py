@@ -361,7 +361,7 @@ def test_admin_search_items_page(logged_in_page):
     title_box.clear()
     title_box.fill("snake")
 
-    logged_in_page.get_by_role("button", name="Search").first.click()
+    main_page_search_button(logged_in_page).click()
 
     expect(logged_in_page.get_by_text(
         "2.	Tachizaki, H. and Aφροδίτη, S. and Ciavola, C. and Leir, Γαία (2019) Observations on the Green Vine Snake. Fine Animal Breeding, 6 (20). pp. 35-66.")).to_be_visible()
@@ -405,7 +405,7 @@ def test_admin_search_users_page(logged_in_page, test_admin_user_info, temp_user
 
 
     logged_in_page.get_by_role("textbox", name="Username").fill("admin")
-    logged_in_page.get_by_role("button", name="Search").first.click()
+    main_page_search_button(logged_in_page).click()
 
     expect(logged_in_page.get_by_text("Displaying results 1 to 1 of 1").first).to_be_visible()
 
