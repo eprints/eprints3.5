@@ -1,0 +1,19 @@
+# /etc/systemd/system/epindexer.service
+[Unit]
+Description=EPrints Indexer
+After=crond.service
+Requires=mariadb.service
+# we want to restart whenever httpd restarts or reloads
+PartOf=httpd.service
+
+[Service]
+Type=exec 
+Restart=always
+ExecStart=/opt/eprints3/bin/indexer
+RestartSec=30
+User=eprints
+Group=eprints
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

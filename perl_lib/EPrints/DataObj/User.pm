@@ -230,9 +230,7 @@ my $PRIVMAP =
 
     "admin" =>
     [
-        "indexer/stop",
-        "indexer/start",
-        "indexer/force_start",
+        "indexer/restart",
         "indexer/retry_tasks",
         "indexer/clear_tasks",
         "create_user",

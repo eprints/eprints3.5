@@ -15,31 +15,17 @@ use lib "$FindBin::Bin/../perl_lib";
 
 =head1 NAME
 
-B<indexer> - Indexing daemon for EPrints
+B<indexer> - Indexing daemon for EPrints. Intended to be run from systemd: systemd/epindexer.service
 
 =head1 SYNOPSIS
-
-B<indexer> start [B<options>]
-
-B<indexer> stop 
-
-B<indexer> status
-
-B<indexer> install
-
-B<indexer> uninstall
-
-B<indexer> debug
 
 B<indexer> --help
 
 =head1 DESCRIPTION
 
-This daemon runs in the background and creates index files for all eprints repositories.
+This daemon runs in the background and runs background jobs for EPrints, including creating index files for all eprints repositories (hence the name).
 
-Messages and errors are logged to /EPRINTS_PATH/var/indexer.log unless you change the log options. If it appears to be having problems try raising the log level and examining the log.
-
-Once every 24 hours, the indexer rolls the logs (up to logfile.5) and then starts again. See --rollcount for ways to customise this.
+Messages and errors are logged to STDOUT/STDERR and can be read via `journalctl -u epindexer`
 
 =over 8
 
@@ -61,12 +47,6 @@ Print the full manual page and then exit.
 
 Be vewwy vewwy quiet. This option will suppress all output unless an error occurs.
 
-=item B<--force>
-
-Start up, even if the PID file exists (implying another copy is running). This
-is useful for starting after a crash, but be carefully not to run to copies at
-once as BAD THINGS will happen.
-
 =item B<--verbose>
 
 Explain in detail what is going on.
@@ -80,33 +60,13 @@ Clear broken event queue items (items that are "inprogress" or "failed") before 
 
 Retry broken event queue items (items that are "inprogress" or "failed") before commencing.
 
-=item B<--logfile> I<filename>
-
-Log to I<filename> rather than default indexer log.
-
 =item B<--loglevel> I<level>
 
 Set the level of detail to log. Level may be 0-6.
 
-=item B<--rollcount> I<number>
-
-Set the number of once-through logs that should be kept. If set to zero then indexer will never roll the logs but rather just keep writing to the main log.
-
-=item B<--respawn> I<seconds>
-
-Respawn the indexer every I<seconds> (rolls the log files).
-
 =item B<--timeout> I<seconds>
 
 Set the maximum run time for an indexing task before an alarm is raised. EPrints::Index::Daemon uses a default value of 600 seconds.
-
-=item B<--notdaemon>
-
-Do not become a daemon, remain attached to the current terminal.
-
-Log goes to STDERR instead of the log file.
-
-Does not create a .pid file.
 
 =item B<--once>
 
@@ -118,18 +78,17 @@ Output version information and exit.
 
 =back   
 
-=head1 Making into a service 
+=head1 Making into a service.
 
-This has only been tested under redhat linux. It make work on other OS's, but not promise.
+The systemd service file has only been tested on Red Hat. For other distros it may need modifying to use the correct service names of its dependencies.
 
-To make the indexer into a service which starts and stops on reboots etc. like httpd and mysqld do the following (as root):
+Symlink epindexer.service into systemd/service:
 
- ln -s EPRINTS_PATH/bin/epindexer /etc/init.d/epindexer 
- chkconfig --add epindexer
- chkconfig epindexer on
+`sudo ln -s /opt/eprints3/systemd/epindexer.service /etc/systemd/system/`
 
-The epindexer script runs as root, changes user to "eprints" (or whatever uid your eprints install runs as) and then calls indexer. 
+Enable and start the service:
 
+`sudo systemctl enable epindexer --now`
 
 =cut
 
@@ -138,7 +97,6 @@ BEGIN {
 }
 
 use EPrints;
-use POSIX;
 use strict;
 use Getopt::Long;
 use Pod::Usage;
@@ -149,16 +107,12 @@ my $quiet = 0;
 my $help = 0;
 my $man = 0;
 
-my $force = 0;
-my $logfile;
 my $loglevel;
-my $rollcount;
-my $notdaemon = 0;
 my $once = 0;
 my $opt_clear;
 my $opt_retry;
-my $opt_respawn;
 my $opt_timeout;
+my $opt_kill;
 
 Getopt::Long::Configure("permute");
 
@@ -168,62 +122,53 @@ GetOptions(
 	'version' => \$version,
 	'verbose+' => \$verbose,
 	'silent' => \$quiet,
-	'force' => \$force,
 	'quiet' => \$quiet,
-	'notdaemon' => \$notdaemon,
 	'once' => \$once,
-	'rollcount=s' => \$rollcount,
-	'logfile=s' => \$logfile,
 	'loglevel=s' => \$loglevel,
 	'clear' => \$opt_clear,
 	'retry' => \$opt_retry,
-	'respawn=s' => \$opt_respawn,
+	'kill' => \$opt_kill,
 	'timeout=s' => \$opt_timeout,
 ) || pod2usage( 2 );
 EPrints::Utils::cmd_version( "indexer" ) if $version;
 pod2usage( 1 ) if $help;
 pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
-pod2usage( 2 ) if( scalar @ARGV != 1 );
+# pod2usage( 2 ) if( scalar @ARGV != 1 );
 
 our $noise = 1;
 $noise = 0 if( $quiet );
 $noise = 1+$verbose if( $verbose );
 
-if( $ARGV[0] eq "debug" )
+if( scalar @ARGV > 0 && $ARGV[0] eq "debug" )
 {
-	$once = 1;
-	$notdaemon = 1;
 	$loglevel = 5;
-	$ARGV[0] = "start";
+	$once = 1;
 }
 
-$logfile ||= EPrints::Index::logfile();
-$logfile = undef if $logfile eq "-" or $notdaemon;
 
 $loglevel += 0 if defined $loglevel;
-$opt_respawn += 0 if defined $opt_respawn;
 $opt_timeout += 0 if defined $opt_timeout;
 
 my $daemon = EPrints::Index::Daemon->new(
 	loglevel => $loglevel,
-	respawn => $opt_respawn,
-	logfile => $logfile,
 	noise => $noise,
-	once => $once,
 	timeout => $opt_timeout,
 );
 
-if( $ARGV[0] eq "status" )
+if( $opt_kill )
 {
-	status();
-}
-elsif( $ARGV[0] eq "start" )
-{
-	if( $force )
-	{
-		$daemon->remove_pid;
-	}
+	# Create the suicide file, which should cause a running process to die.
+	# Useful if user doesn't have permissions to restart systemd service
 
+	my $success = $daemon->create_suicide_file();
+
+	if (!$success)
+	{
+		print "Failed to create suicide file\n";
+	}
+}
+else
+{
 	if( $opt_clear || $opt_retry )
 	{
 		my $eprints = EPrints->new;
@@ -254,121 +199,10 @@ elsif( $ARGV[0] eq "start" )
 
 	start();
 }
-elsif( $ARGV[0] eq "stop" )
-{
-	stop();
-}
-elsif( $ARGV[0] eq "install" && $^O eq 'MSWin32' )
-{
-	install();
-}
-elsif( $ARGV[0] eq "uninstall" && $^O eq 'MSWin32' )
-{
-	uninstall();
-}
-elsif( $daemon->can( "run_".$ARGV[0] ) )
-{
-	my $f = "run_".shift(@ARGV);
-	$daemon->$f( @ARGV );
-}
-else
-{
-	pod2usage( 2 );
-}
-
-sub status
-{
-	if( !$daemon->is_running )
-	{
-		print "Indexer is not running\n";
-	} 
-	elsif( $daemon->has_stalled() )
-	{
-		print "Indexer appears to have stalled. It may need restarting.\n";
-	}	
-	else
-	{
-		my $last_tick = $daemon->get_last_tick();
-		my $pid = $daemon->get_pid;
-		my $interval = $daemon->get_interval;
-		if( $last_tick > $interval )
-		{
-			print "Indexer is running with PID $pid but the next index is overdue by ".($last_tick-$interval)." seconds.\n";
-		}
-		else
-		{
-			print "Indexer is running with PID $pid. Next index in ".($interval-$last_tick)." seconds.\n";
-		}
-	}
-}
-
-
-sub stop
-{
-	if( !$daemon->is_running )
-	{
-		exit 1;
-	}
-
-	if( !$daemon->stop_daemon )
-	{
-		my $pid = $daemon->get_pid();
-		print STDERR <<END;
-The indexer process with process ID $pid failed to stop. You may
-need to stop it (and any child processes) by hand.
-END
-		exit 1;
-	}
-
-	exit 0;
-}
-
 
 sub start
 {
-	if( $daemon->is_running )
-	{
-		my $pid = $daemon->get_pid();
-		my $pidfile = $daemon->get_pidfile();
-		print <<END;
-
-EPrints indexer appears to be running with process ID $pid. 
-It may have crashed. 
-
-To check if the process is still running (on a linux system)
-use:
-
-ps auwx | grep indexer
-
-Options to "ps" vary on other systems. You may also try:
-
-ps -ef | grep indexer
-
-If indexer is not already running you may either:
- * delete the PID file: $pidfile
- * run indexer with the --force option
-
-END
-		exit 1;
-	}
-	elsif( $notdaemon )
-	{
-		$daemon->run_index();
-	}
-	else
-	{
-		$daemon->start_daemon();
-	}
-}
-
-sub install
-{
-	$daemon->create_service();
-}
-
-sub uninstall
-{
-	$daemon->delete_service();
+	$daemon->run_index();
 }
 
 ####################################################################################

@@ -3687,7 +3687,7 @@ sub upgrade
 	my $repo = &repository( $repoid, check_db => 0 );
 	
 	print STDERR "Stopping indexer ...\n";
-	run_script( $repo, "indexer", "stop" );
+	run_script( $repo, "indexer", "--kill" );
 
 	my $db = $repo->database();
 
