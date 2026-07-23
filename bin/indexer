@@ -23,7 +23,7 @@ B<indexer> --help
 
 =head1 DESCRIPTION
 
-This daemon runs in the background and runs background jobs for EPrints, including creating index files for all eprints repositories (hence the name).
+This script is a wrapper around EPrints::Index::Daemon. It is a single threaded application and runs background jobs for EPrints, including creating index files for all eprints repositories (hence the name).
 
 Messages and errors are logged to STDOUT/STDERR and can be read via `journalctl -u epindexer`
 
@@ -133,7 +133,6 @@ GetOptions(
 EPrints::Utils::cmd_version( "indexer" ) if $version;
 pod2usage( 1 ) if $help;
 pod2usage( -exitstatus => 0, -verbose => 2 ) if $man;
-# pod2usage( 2 ) if( scalar @ARGV != 1 );
 
 our $noise = 1;
 $noise = 0 if( $quiet );
