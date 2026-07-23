@@ -128,13 +128,6 @@ sub write_phrase
 
 	my $info = $lang->get_phrase_info( $phraseid, $session );
 
-	# if the phrase comes from zz_webcfg we don't need to reload config
-	my $reload = 1;
-	if( defined $info && $info->{filename} eq $file )
-	{
-		$reload = 0;
-	}
-
 	my $lib_path = $session->config( "lib_path" );
 
 	# check the phrase is valid XML
@@ -244,17 +237,13 @@ END
 	# force a load of zz_webcfg.xml to get the new phrase
 	$lang->load_phrases( $file );
 
-	if( !$reload )
-	{
-		$message_dom->appendChild( $self->html_phrase( "reload_not_required" ) );
-	}
-	elsif( !$self->EPrints::Plugin::Screen::Admin::Reload::allow_reload_config )
+	if( !$self->EPrints::Plugin::Screen::Admin::Reload::allow_reload_config() )
 	{
 		$message_dom->appendChild( $self->html_phrase( "reload_required" ) );
 	}
 	else
 	{
-		$self->EPrints::Plugin::Screen::Admin::Reload::action_reload_config;
+		$self->EPrints::Plugin::Screen::Admin::Reload::action_reload_config();
 		$message_dom->appendChild( $self->html_phrase( "will_reload" ) );
 	}
 
