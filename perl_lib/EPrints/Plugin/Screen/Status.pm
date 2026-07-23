@@ -26,20 +26,7 @@ sub new
 		},
 	];
 
-	$self->{daemon} = EPrints::Index::Daemon->new(
-		session => $self->{session},
-		Handler => $self->{processor},
-		logfile => EPrints::Index::logfile(),
-		noise => ($self->{session}->{noise}||1),
-	);
-
 	return $self;
-}
-
-sub get_daemon
-{
-	my( $self ) = @_;
-	return $self->{daemon};
 }
 
 sub can_be_viewed

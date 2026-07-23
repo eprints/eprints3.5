@@ -3716,7 +3716,7 @@ sub upgrade
 		update_datasets( $repo, $db ); 
 		update_counters( $repo, $db );
 	}
-	print STDERR "Please restart the indexer\n";
+	print STDERR "The indexer should have restarted via systemd\n";
 	print "Database version is now: ".$db->get_version()."\n";
 }
 
