@@ -1364,14 +1364,14 @@ User Area CGI Scripts
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:force_start_indexer:description">Forcefully stops and cleans up the indexer, then restarts it.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:start_indexer:title">Start Indexer</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:start_indexer:description">Starts the full-text indexer.</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:stop_indexer:title">Stop Indexer</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:stop_indexer:description">Stops the full-text indexer.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:restart_indexer:title">Restart Indexer</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:restart_indexer:description">Restarts the indexer by killing it and letting systemd restart it.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:retry_tasks:title">Retry Tasks</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:retry_tasks:description">Retry all failed and stale in progress tasks from the event queue.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:clear_tasks:title">Clear Tasks</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:action:clear_tasks:description">Clear all failed and stale in progress tasks from the event queue.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:indexer_started">Indexer started successfully.</epp:phrase>
-    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:indexer_stopped">Indexer stopped successfully.</epp:phrase>
+    <epp:phrase id="Plugin/Screen/Admin/IndexerControl:indexer_stopped">Indexer requested to stop. If controlled by SystemD it should restart in 30 seconds.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:cant_start_indexer">Unable to start indexer. You should check the log file in <epc:pin name="logpath" /> for more information.</epp:phrase>
     <epp:phrase id="Plugin/Screen/Admin/IndexerControl:cant_stop_indexer">Unable to stop indexer. You should check the log file in <epc:pin name="logpath" /> for more information.</epp:phrase>
 

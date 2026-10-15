@@ -311,7 +311,7 @@ def test_admin_pages(logged_in_page):
 
     logged_in_page.get_by_text("System Tools").click()
 
-    for button_text in ["Status", "Create user", "Create person", "Create organisation", "Force Start Indexer", "Stop Indexer", "Regenerate Abstracts", "Regenerate Entities", "Regenerate Citations", "Regenerate Views", "Send Test Email", "Database Schema"]:
+    for button_text in ["Status", "Create user", "Create person", "Create organisation", "Restart Indexer", "Regenerate Abstracts", "Regenerate Entities", "Regenerate Citations", "Regenerate Views", "Send Test Email", "Database Schema"]:
         button_present(button_text)
 
     logged_in_page.get_by_text("Config. Tools").click()
