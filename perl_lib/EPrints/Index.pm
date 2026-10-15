@@ -317,21 +317,6 @@ sub delete_ordervalues
 	}
 }
 
-sub pidfile
-{
-	return EPrints::Config::get("var_path")."/indexer.pid";
-}
-
-sub tickfile
-{
-	return EPrints::Config::get("var_path")."/indexer.tick";
-}
-
-sub logfile
-{
-	return EPrints::Config::get("var_path")."/indexer.log";
-}
-
 sub binfile
 {
 	return EPrints::Config::get("bin_path")."/indexer";

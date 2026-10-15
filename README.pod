@@ -36,6 +36,10 @@ If you wish to revert back to the original styling (still using xml template fra
 
 See the README in ingredients/classic_eprints_styling for more information.
 
+=head2 SystemD Setup
+
+The indexer is now intended to be controlled by systemd. See "Making into a service." in bin/indexer for details
+
 =head1 DESCRIPTION
 
 EPrints is a document management system aimed at Higher Educational
